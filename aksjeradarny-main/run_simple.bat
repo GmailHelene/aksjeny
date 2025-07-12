@@ -1,6 +1,0 @@
-@echo off
-echo Installing minimal Flask requirements...
-pip install -r simple_requirements.txt
-
-echo Running the application...
-python run.py
