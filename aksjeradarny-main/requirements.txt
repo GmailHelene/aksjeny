@@ -1,4 +1,6 @@
-pip-requirements
+# filepath: /workspaces/aksjeny/aksjeradarny-main/requirements.txt
+# Production dependencies
+
 setuptools
 wheel
 
@@ -47,7 +49,7 @@ colorama==0.4.6
 Flask-Mail==0.9.1
 
 # Security and middleware
-Flask-Limiter==2.10.0
+Flask-Limiter==2.9.2
 structlog==22.3.0
 
 # API documentation
