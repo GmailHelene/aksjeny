@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Teknisk Analyse - {{ ticker|default('Aksjeradar') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    {% if ticker and technical_data %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Teknisk Analyse: {{ ticker }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Technical indicators -->
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h6 class="text-muted">RSI (14)</h6>
+                                <h3 class="mb-0 {{ 'text-danger' if technical_data.rsi > 70 else 'text-success' if technical_data.rsi < 30 else '' }}">
+                                    {{ "{:.1f}".format(technical_data.rsi|default(50)).replace('.', ',') }}
+                                </h3>
+                                <small class="text-muted">
+                                    {% if technical_data.rsi > 70 %}
+                                        Overkjøpt
+                                    {% elif technical_data.rsi < 30 %}
+                                        Oversolgt
+                                    {% else %}
+                                        Nøytral
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h6 class="text-muted">MACD</h6>
+                                <h3 class="mb-0 {{ 'text-success' if technical_data.macd > technical_data.macd_signal else 'text-danger' }}">
+                                    {{ "{:.2f}".format(technical_data.macd|default(0)).replace('.', ',') }}
+                                </h3>
+                                <small class="text-muted">
+                                    Signal: {{ "{:.2f}".format(technical_data.macd_signal|default(0)).replace('.', ',') }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h6 class="text-muted">Anbefaling</h6>
+                                <h3 class="mb-0">
+                                    <span class="badge {{ 'bg-success' if technical_data.signal == 'BUY' else 'bg-danger' if technical_data.signal == 'SELL' else 'bg-warning' }}">
+                                        {% if technical_data.signal == 'BUY' %}
+                                            KJØP
+                                        {% elif technical_data.signal == 'SELL' %}
+                                            SELG
+                                        {% else %}
+                                            HOLD
+                                        {% endif %}
+                                    </span>
+                                </h3>
+                                <small class="text-muted">Teknisk signal</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Moving averages -->
+                    <h5 class="mb-3">Glidende Gjennomsnitt</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>SMA 20:</span>
+                                <strong>
+                                    {% if technical_data.sma20 %}
+                                        {% if ticker.endswith('.OL') %}
+                                            kr {{ "{:,.2f}".format(technical_data.sma20).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            $ {{ "{:,.2f}".format(technical_data.sma20) }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>SMA 50:</span>
+                                <strong>
+                                    {% if technical_data.sma50 %}
+                                        {% if ticker.endswith('.OL') %}
+                                            kr {{ "{:,.2f}".format(technical_data.sma50).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            $ {{ "{:,.2f}".format(technical_data.sma50) }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>SMA 200:</span>
+                                <strong>
+                                    {% if technical_data.sma200 %}
+                                        {% if ticker.endswith('.OL') %}
+                                            kr {{ "{:,.2f}".format(technical_data.sma200).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            $ {{ "{:,.2f}".format(technical_data.sma200) }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if technical_data.signal_reason %}
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ technical_data.signal_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- AI Analysis sidebar -->
+            {% if ai_analysis %}
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">AI-Analyse</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Anbefaling</h6>
+                        <span class="badge {{ 'bg-success' if ai_analysis.recommendation == 'BUY' else 'bg-danger' if ai_analysis.recommendation == 'SELL' else 'bg-warning' }} fs-6">
+                            {% if ai_analysis.recommendation == 'BUY' %}
+                                KJØP
+                            {% elif ai_analysis.recommendation == 'SELL' %}
+                                SELG
+                            {% else %}
+                                HOLD
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Konfidensgrad</h6>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ (ai_analysis.confidence * 100)|int }}%">
+                                {{ "{:.0f}".format(ai_analysis.confidence * 100).replace('.', ',') }}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if ai_analysis.price_target %}
+                    <div class="mb-3">
+                        <h6 class="text-muted">Kursmål</h6>
+                        <strong>
+                            {% if ticker.endswith('.OL') %}
+                                kr {{ "{:,.2f}".format(ai_analysis.price_target).replace(',', ' ').replace('.', ',') }}
+                            {% else %}
+                                $ {{ "{:,.2f}".format(ai_analysis.price_target) }}
+                            {% endif %}
+                        </strong>
+                    </div>
+                    {% endif %}
+                    
+                    {% if ai_analysis.summary %}
+                    <p class="small">{{ ai_analysis.summary }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% elif ticker and error %}
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Kunne ikke laste teknisk analyse for {{ ticker }}. {{ error }}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        Velg en aksje for å se teknisk analyse.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

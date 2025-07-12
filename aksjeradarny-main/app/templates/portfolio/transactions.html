@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Transaksjoner{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Transaksjoner</h1>
+    <div class="alert alert-info">
+        Her vil du se en oversikt over dine porteføljetransaksjoner.
+    </div>
+    {% if portfolios %}
+    <ul class="list-group">
+        {% for portfolio in portfolios %}
+        <li class="list-group-item">
+            {{ portfolio.name }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Ingen transaksjoner funnet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,433 @@
+from flask import Flask, render_template, request, jsonify
+from config import config
+from app.extensions import db, login_manager, mail
+from flask_wtf.csrf import CSRFProtect, CSRFError
+import os
+import time
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
+from flask_migrate import Migrate
+import logging
+
+# Load environment variables
+load_dotenv()
+
+def create_app(config_name='default'):
+    """Production-ready app factory with Railway compatibility"""
+    app = Flask(__name__)
+    
+    # Set up logging
+    logging.basicConfig(level=logging.INFO)
+    app.logger.setLevel(logging.INFO)
+    
+    try:
+        # Load config
+        app.config.from_object(config[config_name])
+        app.logger.info(f"✅ App created in {config_name} mode")
+        
+        # Basic app configuration
+        configure_app(app, config[config_name])
+        
+        # Register custom unauthorized handler for Flask-Login
+        from flask import request, redirect, url_for
+        def aksjeradar_unauthorized():
+            app.logger.warning(f"[UNAUTHORIZED HANDLER] endpoint={request.endpoint} url={request.url}")
+            # Redirect to /demo for main/index routes
+            if request.endpoint in ('main.index', 'main', 'main.landing', 'main.home', 'main.demo'):
+                app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /demo")
+                return redirect(url_for('main.demo', source='trial_expired'))
+            # Otherwise, default to login
+            app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /login")
+            return redirect(url_for('main.login', next=request.url))
+        
+        login_manager.unauthorized_handler(aksjeradar_unauthorized)
+        app.logger.info('Custom unauthorized handler registered for Flask-Login')
+        
+        # Initialize core extensions
+        init_core_extensions(app, config[config_name])
+        
+        # Import database models early to ensure user_loader is registered
+        try:
+            from app.models import User, Portfolio, Watchlist
+            from app.models.user import load_user
+            app.logger.info("✅ Database models imported successfully")
+        except Exception as e:
+            app.logger.error(f"❌ Error importing database models: {e}")
+            # Continue without models for now
+        
+        # Register blueprints
+        register_blueprints(app)
+        
+        # Add context processors and error handlers
+        setup_app_handlers(app)
+        
+        # Initialize database for production
+        if config_name == 'production':
+            setup_production_database(app)
+        else:
+            setup_lazy_database_init(app)
+        
+        # Register custom Jinja2 filters
+        try:
+            from app.utils.filters import register_filters
+            register_filters(app)
+        except ImportError:
+            app.logger.warning("Could not import custom filters")
+        
+        # Register Norwegian formatting filters
+        try:
+            from app.utils.norwegian_formatter import register_norwegian_filters
+            register_norwegian_filters(app)
+        except ImportError:
+            app.logger.warning("Could not import Norwegian filters")
+        
+        # Debug: Print all registered endpoints
+        app.logger.info("Registered endpoints:")
+        for rule in app.url_map.iter_rules():
+            app.logger.info(f"Endpoint: {rule.endpoint} -> {rule}")
+        app.logger.info("✅ App initialization complete")
+        return app
+        
+    except Exception as e:
+        app.logger.error(f"❌ Critical error during app creation: {e}")
+        raise
+
+def register_blueprints(app):
+    """Register all blueprints"""
+    blueprints_registered = []
+    
+    # Core blueprints that must be registered
+    try:
+        from app.routes.main import main
+        app.register_blueprint(main)
+        blueprints_registered.append('main')
+        # Explicitly import and register portfolio blueprint
+        from app.routes.portfolio import portfolio
+        app.register_blueprint(portfolio)
+        blueprints_registered.append('portfolio')
+    except ImportError as e:
+        app.logger.error(f"Failed to import main or portfolio blueprint: {e}")
+        raise
+    
+    # Other blueprints with error handling
+    blueprint_configs = [
+        ('app.routes.stocks', 'stocks', '/stocks'),
+        ('app.routes.api', 'api', None),
+        ('app.routes.blog', 'blog', '/blog'),
+        ('app.routes.investment_guides', 'investment_guides', '/investment-guides'),
+        ('app.routes.pricing', 'pricing_bp', '/pricing'),
+        ('app.routes.notifications', 'notifications_bp', '/notifications'),
+        ('app.routes.admin', 'admin', None),
+        ('app.routes.features', 'features', None),
+        ('app.routes.analysis', 'analysis', None),
+        ('app.routes.health', 'health', '/health'),
+        ('app.routes.news', 'news_bp', '/news'),
+    ]
+    
+    for module_path, blueprint_name, url_prefix in blueprint_configs:
+        try:
+            module = __import__(module_path, fromlist=[blueprint_name])
+            blueprint = getattr(module, blueprint_name)
+            
+            if url_prefix:
+                app.register_blueprint(blueprint, url_prefix=url_prefix)
+            else:
+                app.register_blueprint(blueprint)
+            
+            blueprints_registered.append(blueprint_name)
+            app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
+            
+        except ImportError as e:
+            app.logger.warning(f"Could not import {blueprint_name}: {e}")
+        except AttributeError as e:
+            app.logger.warning(f"Blueprint {blueprint_name} not found in {module_path}: {e}")
+        except Exception as e:
+            app.logger.error(f"Error registering {blueprint_name}: {e}")
+    
+    app.logger.info(f"✅ Registered {len(blueprints_registered)} blueprints: {', '.join(blueprints_registered)}")
+
+def setup_production_database(app):
+    """Setup database for production with proper error handling"""
+    try:
+        with app.app_context():
+            # Create database tables if they don't exist
+            db.create_all()
+            app.logger.info("✅ Database tables created/verified")
+            
+            # Set up exempt users for production
+            setup_exempt_users(app)
+            
+    except Exception as e:
+        app.logger.error(f"❌ Production database setup failed: {e}")
+
+def setup_exempt_users(app):
+    """Set up exempt users for production"""
+    try:
+        from app.models.user import User
+        
+        exempt_users = [
+            {'email': 'helene721@gmail.com', 'username': 'helene721', 'password': 'aksjeradar2024'},
+            {'email': 'tonjekit91@gmail.com', 'username': 'tonjekit91', 'password': 'aksjeradar2024'},
+            {'email': 'helene@luxushair.com', 'username': 'helene_luxus', 'password': 'aksjeradar2024'},
+            {'email': 'eiriktollan.berntsen@gmail.com', 'username': 'eirik_berntsen', 'password': 'aksjeradar2024'}
+        ]
+        
+        for user_data in exempt_users:
+            user = User.query.filter_by(email=user_data['email']).first()
+            if not user:
+                user = User(
+                    email=user_data['email'],
+                    username=user_data['username'],
+                    subscription_type='premium',
+                    is_admin=True,
+                    trial_used=False
+                )
+                user.set_password(user_data['password'])
+                db.session.add(user)
+                
+        db.session.commit()
+        app.logger.info("✅ Exempt users configured")
+        
+    except Exception as e:
+        app.logger.error(f"❌ Failed to set up exempt users: {e}")
+
+def configure_app(app, config_obj):
+    """Configure app settings and security headers"""
+    # Database configuration - Railway compatibility
+    database_url = os.getenv('DATABASE_URL', 'sqlite:///app.db')
+    
+    # Fix postgres:// to postgresql:// for Railway
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'echo': os.getenv('SQL_ECHO', 'False').lower() == 'true'
+    }
+    
+    # Basic app security and config
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-key-change-this')
+    app.config['WTF_CSRF_SECRET_KEY'] = os.getenv('WTF_CSRF_SECRET_KEY', 'csrf-key-change-this')
+    
+    # Session and Cookie Security configuration
+    app.config['PERMANENT_SESSION_LIFETIME'] = 14400  # 4 hours
+    app.config['SESSION_PERMANENT'] = True
+    app.config['SESSION_COOKIE_NAME'] = config_obj.SESSION_COOKIE_NAME
+    app.config['SESSION_COOKIE_HTTPONLY'] = config_obj.SESSION_COOKIE_HTTPONLY
+    app.config['SESSION_COOKIE_SAMESITE'] = config_obj.SESSION_COOKIE_SAMESITE
+    
+    # Set secure flag for production
+    if hasattr(config_obj, 'SESSION_COOKIE_SECURE'):
+        app.config['SESSION_COOKIE_SECURE'] = config_obj.SESSION_COOKIE_SECURE
+    
+    # CSRF configuration
+    app.config['WTF_CSRF_TIME_LIMIT'] = 14400  # 4 hours
+    app.config['WTF_CSRF_SSL_STRICT'] = False
+    app.config['WTF_CSRF_ENABLED'] = True
+    
+    # Flask-Mail config
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True').lower() == 'true'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', os.getenv('MAIL_USERNAME'))
+    
+    # Stripe config
+    app.config['STRIPE_PUBLIC_KEY'] = os.getenv('STRIPE_PUBLIC_KEY')
+    app.config['STRIPE_SECRET_KEY'] = os.getenv('STRIPE_SECRET_KEY')
+    app.config['STRIPE_WEBHOOK_SECRET'] = os.getenv('STRIPE_WEBHOOK_SECRET')
+    
+    # Add security headers
+    @app.after_request
+    def add_security_headers(response):
+        # Content type protection
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        
+        # Clickjacking protection
+        response.headers['X-Frame-Options'] = 'DENY'
+        
+        # XSS protection
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        
+        # Content Security Policy
+        csp = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.jsdelivr.net; "
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            "img-src 'self' data: https: *; "
+            "font-src 'self' https: data:; "
+            "connect-src 'self' https: wss:; "
+            "frame-src 'self' https://js.stripe.com; "
+            "object-src 'none'; "
+            "base-uri 'self';"
+        )
+        response.headers['Content-Security-Policy'] = csp
+        
+        # Additional security headers
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+        
+        return response
+
+def init_core_extensions(app, config_obj):
+    """Initialize only core extensions for faster startup"""
+    # Core database and auth
+    db.init_app(app)
+    login_manager.init_app(app)
+    
+    # CSRF protection
+    csrf = CSRFProtect()
+    csrf.init_app(app)
+    
+    # Configure Flask-Login with secure cookie settings
+    # Removed login_manager.login_view to allow custom access control and redirects
+    login_manager.login_message = ''
+    login_manager.login_message_category = 'info'
+    login_manager.session_protection = 'strong'
+    login_manager.remember_cookie_duration = timedelta(days=30)
+    login_manager.remember_cookie_name = config_obj.REMEMBER_COOKIE_NAME
+    login_manager.remember_cookie_httponly = config_obj.REMEMBER_COOKIE_HTTPONLY
+
+    # Set remember cookie secure flag for production
+    if hasattr(config_obj, 'REMEMBER_COOKIE_SECURE'):
+        login_manager.remember_cookie_secure = config_obj.REMEMBER_COOKIE_SECURE
+
+    login_manager.refresh_view = 'main.login'
+    login_manager.needs_refresh_message = ''
+    
+    # Mail (lazy init)
+    mail.init_app(app)
+    
+    # Database migrations
+    migrate = Migrate(app, db)
+
+def setup_lazy_database_init(app):
+    """Setup lazy database initialization"""
+    @app.before_request
+    def init_database():
+        """Initialize database models on first request"""
+        # Only initialize once
+        if hasattr(app, '_database_models_imported'):
+            return
+            
+        try:
+            # Import models here to ensure they're registered with SQLAlchemy
+            from app.models import User, Portfolio, Watchlist
+            from app.models.notifications import (
+                Notification, PriceAlert, NotificationSettings, 
+                AIModel, PredictionLog
+            )
+            # Ensure user_loader is imported and registered
+            from app.models.user import load_user
+            app._database_models_imported = True
+            app.logger.info("Database models imported successfully")
+        except Exception as e:
+            app.logger.error(f"Error importing database models: {e}")
+
+def setup_app_handlers(app):
+    """Setup context processors and error handlers"""
+    @app.context_processor
+    def utility_processor():
+        from flask_login import current_user
+        from flask import session, g
+        from flask_wtf.csrf import generate_csrf
+        
+        try:
+            from app.utils.access_control import get_trial_status
+            trial_status = get_trial_status()
+        except:
+            trial_status = None
+        
+        # Make current_user and login status available globally
+        login_status = {
+            'current_user': current_user,
+            'is_authenticated': current_user.is_authenticated if current_user else False,
+            'user_email': current_user.email if current_user and current_user.is_authenticated else None,
+            'user_name': current_user.username if current_user and current_user.is_authenticated else None,
+            'datetime': datetime,
+            'csrf_token': generate_csrf,
+            'trial_status': trial_status
+        }
+        
+        # Also set in g for template access
+        g.current_user = current_user
+        g.is_authenticated = current_user.is_authenticated if current_user else False
+        
+        return login_status
+    
+    @app.template_filter('now')
+    def now_filter(format_string):
+        """Template filter for current timestamp"""
+        return datetime.now().strftime(format_string)
+    
+    # Add error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        """Handle 404 errors"""
+        if request.path.startswith('/api/'):
+            return jsonify({'error': 'Endpoint ikke funnet'}), 404
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        """Handle 500 errors"""
+        app.logger.error(f'Server Error: {error}')
+        if request.path.startswith('/api/'):
+            return jsonify({'error': 'Intern serverfeil'}), 500
+        return render_template('errors/500.html'), 500
+    
+    @app.errorhandler(Exception)
+    def handle_unexpected_error(error):
+        """Handle unexpected errors"""
+        app.logger.error(f'Unexpected error: {error}', exc_info=True)
+        if request.path.startswith('/api/'):
+            return jsonify({'error': 'En uventet feil oppstod'}), 500
+        return render_template('errors/500.html'), 500
+    
+    # Add CSRF error handler
+    @app.errorhandler(400)
+    def handle_csrf_error(e):
+        """Handle CSRF errors gracefully"""
+        from flask import redirect, url_for
+        
+        # Check if this is a CSRF error
+        if isinstance(e, CSRFError) or 'csrf' in str(e).lower():
+            app.logger.warning(f'CSRF error: {str(e)}')
+            
+            # Redirect based on request path
+            if 'checkout' in request.path:
+                return redirect(url_for('main.subscription'))
+            elif 'login' in request.path:
+                return redirect(url_for('main.login'))
+            else:
+                return redirect(url_for('main.index'))
+        
+        # If not a CSRF error, return standard 400 page
+        return render_template('errors/400.html'), 400
+    
+    # Add specific CSRF error handler  
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error_specific(e):
+        """Handle CSRFError specifically"""
+        from flask import redirect, url_for
+        
+        app.logger.warning(f'CSRFError: {str(e)}')
+        
+        if 'checkout' in request.path:
+            return redirect(url_for('main.subscription'))
+        elif 'login' in request.path:
+            return redirect(url_for('main.login'))
+        else:
+            return redirect(url_for('main.index'))
+    
+    @app.context_processor
+    def inject_utils():
+        """Make utility functions available in templates"""
+        return dict(
+            now=datetime.utcnow,
+            datetime=datetime
+        )

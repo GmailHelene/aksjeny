@@ -1,0 +1,336 @@
+/details/EQNR.OL
+Når jeg forsøker knappene her for "Legg til i favoritter" og "Legg til i portefølje"; så får jeg: " Du må logge inn for å legge til favoritter."
+"Du må logge inn for å legge til i portefølje"og jeg ER allerede innlogget...
+
+----
+
+portfolio/create
+Stårt dette øverst her..?
+Opprett ny portefølje
+IjNiNWI0ZjJjNGIzNTMxMTQ0MjcyMzE5YWM5Mzc1NjFkNzNlMGM4OTUi.aFs-QA.y3dYAfO7SXq5jeIJAnybtZexC1g ---hva er dette
+
+
+--
+Gjerne legg til ENDA flere rader her: 1/stocks/list/global
+
+--
+Når jeg forsøker å kjøpe abb. (/create-checkout-session) så får jeg Bad Request
+The CSRF token is missing. -- Hvordan løser jeg dette når jeg skal lansere appen live på aksjeradar.trade?
+Jeg har allerede lagt inn stripe keys i railway dashboardet. 
+
+---
+Får beklager en feil oppstod her:
+/stocks/details/AKERBP.OL (og sikker på andre tickers og)
+---
+Overskriuften Aksjetips må her ha sort tekstfarge: /portfolio/tips
+
+--
+På forsiden, nesten nederst bak knappen  "Se alle aksjetips" så har det sneket seg med to bokstaver: "ps", de skal ikke være der 
+
+----
+Når jeg forsøker "Legg til tips" knappen her på /portfolio/tips , så får jeg Bad Request
+The CSRF token is missing.
+---
+I footeren, lenken under "Lenker"   "Analyse", endre den til å lenke hit i stedet:
+/ prediction
+
+---
+
+Kan du sjekke at det er fungerernde nå med at alle som er på siden får 10 min access til alle sider uten å kjøpe et abb. og etter 10 min er brukt opp, så blir de sendt til /recstricted_accedss.html  siden
+- Dette skal IKKE gjelde meg (helene721@gmail.com) jeg skal ha tilgang til alle sider, uansett hva, men det skal gjelde alle andre.
+
+----
+
+----
+Andre endepunkt som må fikses:
+127.0.0.1 - - [25/Jun/2025 02:11:45] "GET /static/manifest.json?v= HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/css/style.css?v= HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/images/logo-192.png HTTP/1.1" 304 
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/cache-buster.js?v=25020757 HTTP/1.1" 304 -        
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/cookie-consent.js?v=25020757 HTTP/1.1" 304 -      
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/main.js?v=25020757 HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /service-worker.js HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /offline.html HTTP/1.1" 404 -
+
+
+
+ -
+[2025-06-25 01:49:08,915] ERROR in main: Stripe error in /subscription: Invalid API Key provided: sk_tetatic/js/main.js?v=25014146 HTTP/1.1" 304 -
+
+192.168.227.126 - - [25/Jun/2025 01:49:12] "POST /create-checkout-session HTTP/1.1" 400 -
+-------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+Feil: /subscription
+
+
+TemplateSyntaxError
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'.
+
+Traceback (most recent call last)
+File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\main.py", line 312, in subscription
+prices = stripe.Price.list(
+         
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_resources\abstract\listable_api_resource.py", line 16, in list
+result = cls._static_request(
+         
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_resources\abstract\api_resource.py", line 141, in _static_request
+response, api_key = requestor.request(method_, url_, params, headers)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 121, in request
+resp = self.interpret_response(rbody, rcode, rheaders)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 398, in interpret_response
+self.handle_error_response(rbody, rcode, resp.data, rheaders)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 158, in handle_error_response
+raise err
+^^^^^^^^^
+During handling of the above exception, another exception occurred:
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\utils\subscription.py", line 19, in decorated_function
+return f(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\main.py", line 353, in subscription
+return render_template(
+       
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\templating.py", line 146, in render_template
+template = app.jinja_env.get_or_select_template(template_name_or_list)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
+return self.get_template(template_name_or_list, parent, globals)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1010, in get_template
+return self._load_template(name, globals)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Open an interactive python shell in this frame
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 969, in _load_template
+template = self.loader.load(self, name, self.make_globals(globals))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\loaders.py", line 138, in load
+code = environment.compile(source, name, filename)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 768, in compile
+self.handle_exception(source=source_hint)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 936, in handle_exception
+raise rewrite_traceback_stack(source=source)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\templates\subscription.html", line 173, in template
+{% endblock %}
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'.
+
+
+---
+/technical?ticker=EQNR.OL  (og andre tickers)
+
+Får "no data found for .." på disse sidene. Det må fikses.
+
+----
+Feil på disse sidene:
+/recommendation?ticker=MSFT  (og andre tickers)
+
+TemplateSyntaxError
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endfor'.
+
+Traceback (most recent call last)
+File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\analysis.py", line 456, in recommendation
+recommendation = AnalysisService.get_recommendation(ticker)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+During handling of the above exception, another exception occurred:
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\utils\subscription.py", line 19, in decorated_function
+return f(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\analysis.py", line 472, in recommendation
+return render_template('analysis/recommendation.html',
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\templating.py", line 146, in render_template
+template = app.jinja_env.get_or_select_template(template_name_or_list)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
+return self.get_template(template_name_or_list, parent, globals)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1010, in get_template
+return self._load_template(name, globals)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 969, in _load_template
+template = self.loader.load(self, name, self.make_globals(globals))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\loaders.py", line 138, in load
+code = environment.compile(source, name, filename)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 768, in compile
+self.handle_exception(source=source_hint)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 936, in handle_exception
+raise rewrite_traceback_stack(source=source)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\templates\analysis\recommendation.html", line 71, in template
+{% endfor %}
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endfor'.
+
+----
+
+/Portfolio/tips
+
+Feil her...:
+OperationalError
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: stock_tips.tip_type
+[SQL: SELECT stock_tips.id AS stock_tips_id, stock_tips.ticker AS stock_tips_ticker, stock_tips.tip_type AS stock_tips_tip_type, stock_tips.confidence AS stock_tips_confidence, stock_tips.analysis AS stock_tips_analysis, stock_tips.created_at AS stock_tips_created_at, stock_tips.user_id AS stock_tips_user_id 
+FROM stock_tips ORDER BY stock_tips.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (10, 0)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+
+Traceback (most recent call last)
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+self.dialect.do_execute(
+^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The above exception was the direct cause of the following exception:
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask_login\utils.py", line 290, in decorated_view
+return current_app.ensure_sync(func)(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\portfolio.py", line 53, in stock_tips
+tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\query.py", line 2773, in all
+return self._iter().all()
+       ^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\query.py", line 2916, in _iter
+result = self.session.execute(
+         
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\session.py", line 1714, in execute
+result = conn._execute_20(statement, params or {}, execution_options)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_20
+return meth(self, args_10style, kwargs_10style, execution_options)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\sql\elements.py", line 334, in _execute_on_connection
+return connection._execute_clauseelement(
+       
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1572, in _execute_clauseelement
+ret = self._execute_context(
+      
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1943, in _execute_context
+self._handle_dbapi_exception(
+^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 2124, in _handle_dbapi_exception
+util.raise_(
+^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
+raise exception
+^^^^^^^^^^^^^^^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+self.dialect.do_execute(
+^
+File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+---
+/stocks/details/TEL.OL (og andre tickers..)
+Får her: 
+
+"Beklager, en feil oppsto
+Vi jobber med å løse problemet. Prøv igjen senere."
+
+Kan du også på disse sidene sette inn visualisering, graf e.l?
+Gjerne sett graf inn på andre sider også, f.eks også på: /ai?ticker sidene
+
+----
+På forsiden kan følgende tabeller ha mangle flere rader med data (aksjer):
+I tabellen for: Oslo Børst, 
+Globale Markeder
+og
+Oslo Børs - Mest omsatte Live
+
+----
+
+/stocks/list?category=oslo
+Legg inn mange flere rader (aksjer her)
+
+og her:
+/stocks/list/global
+
+---
+
+Logg inn siden: Tittelen må ha sort tekstfarge 
+
+
+---
+Andre feilmeldinger:
+127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /static/manifest.json?v= HTTP/1.1" 304 -
+
+127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /service-worker.js HTTP/1.1" 304 -
+
+127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /offline.html HTTP/1.1" 404 -
+
+127.0.0.1 - - [25/Jun/2025 01:24:54] "GET /static/css/style.css?v= HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 01:24:54] "GET /static/images/logo-192.png HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/main.js?v=25011610 HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/cache-buster.js?v=25011610 HTTP/1.1" 304 -
+127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/cookie-consent.js?v=25011610 HTTP/1.1" 304 -
+

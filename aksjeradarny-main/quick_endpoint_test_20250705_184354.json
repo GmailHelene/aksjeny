@@ -1,0 +1,257 @@
+{
+  "timestamp": "2025-07-05T18:43:54.667588",
+  "total_tested": 31,
+  "passed": 28,
+  "failed": 3,
+  "success_rate": 90.32258064516128,
+  "results": [
+    {
+      "endpoint": "/",
+      "description": "Hovedside",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.008642,
+      "content_length": 298768
+    },
+    {
+      "endpoint": "/demo",
+      "description": "Demo-side",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.0026,
+      "content_length": 83049
+    },
+    {
+      "endpoint": "/login",
+      "description": "Innlogging",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.009689,
+      "content_length": 54878
+    },
+    {
+      "endpoint": "/register",
+      "description": "Registrering",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.012574,
+      "content_length": 59799
+    },
+    {
+      "endpoint": "/contact",
+      "description": "Kontakt",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.006217,
+      "content_length": 51653
+    },
+    {
+      "endpoint": "/privacy",
+      "description": "Personvern",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.004701,
+      "content_length": 58392
+    },
+    {
+      "endpoint": "/subscription",
+      "description": "Abonnement",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.010054,
+      "content_length": 61382
+    },
+    {
+      "endpoint": "/api/crypto",
+      "description": "Krypto API",
+      "status_code": 500,
+      "success": false,
+      "response_time": 0.001526,
+      "content_length": 78
+    },
+    {
+      "endpoint": "/api/currency",
+      "description": "Valuta API",
+      "status_code": 500,
+      "success": false,
+      "response_time": 0.001438,
+      "content_length": 80
+    },
+    {
+      "endpoint": "/api/oslo_stocks",
+      "description": "Oslo børs API",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.002308,
+      "content_length": 5946
+    },
+    {
+      "endpoint": "/api/global_stocks",
+      "description": "Globale aksjer API",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.002961,
+      "content_length": 5670
+    },
+    {
+      "endpoint": "/api/search",
+      "description": "Søk API",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.006714,
+      "content_length": 3
+    },
+    {
+      "endpoint": "/stocks/",
+      "description": "Aksjer hovedside",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.009409,
+      "content_length": 52118
+    },
+    {
+      "endpoint": "/stocks/list",
+      "description": "Aksjeliste",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.035296,
+      "content_length": 49444
+    },
+    {
+      "endpoint": "/stocks/details/AAPL",
+      "description": "Apple detaljer",
+      "status_code": 200,
+      "success": true,
+      "response_time": 3.400897,
+      "content_length": 49468
+    },
+    {
+      "endpoint": "/stocks/details/NHY.OL",
+      "description": "Norsk Hydro detaljer",
+      "status_code": 200,
+      "success": true,
+      "response_time": 3.348546,
+      "content_length": 49474
+    },
+    {
+      "endpoint": "/analysis/",
+      "description": "Analyse hovedside",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.03795,
+      "content_length": 72279
+    },
+    {
+      "endpoint": "/analysis/ai",
+      "description": "AI analyse",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.03479,
+      "content_length": 54816
+    },
+    {
+      "endpoint": "/analysis/market-overview",
+      "description": "Markedsoversikt",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.019537,
+      "content_length": 108594
+    },
+    {
+      "endpoint": "/portfolio/",
+      "description": "Portefølje",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.01238,
+      "content_length": 49423
+    },
+    {
+      "endpoint": "/portfolio/create",
+      "description": "Opprett portefølje",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.004043,
+      "content_length": 50377
+    },
+    {
+      "endpoint": "/news/",
+      "description": "Nyheter",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.012788,
+      "content_length": 58085
+    },
+    {
+      "endpoint": "/news/api/latest",
+      "description": "Siste nyheter API",
+      "status_code": 500,
+      "success": false,
+      "response_time": 0.001909,
+      "content_length": 126
+    },
+    {
+      "endpoint": "/market-intel/",
+      "description": "Markedsintelligens",
+      "status_code": 200,
+      "success": true,
+      "response_time": 2.468983,
+      "content_length": 71401
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "description": "Analytiker anbefalinger",
+      "status_code": 200,
+      "success": true,
+      "response_time": 2.441524,
+      "content_length": 72917
+    },
+    {
+      "endpoint": "/favicon.ico",
+      "description": "Favicon",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.003191,
+      "content_length": 4286
+    },
+    {
+      "endpoint": "/manifest.json",
+      "description": "PWA manifest",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.004721,
+      "content_length": 3296
+    },
+    {
+      "endpoint": "/service-worker.js",
+      "description": "Service worker",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.002426,
+      "content_length": 6921
+    },
+    {
+      "endpoint": "/version",
+      "description": "Versjon",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.00266,
+      "content_length": 33
+    },
+    {
+      "endpoint": "/demo/ping",
+      "description": "Ping test",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.004288,
+      "content_length": 42
+    },
+    {
+      "endpoint": "/demo/user",
+      "description": "Brukerinfo",
+      "status_code": 200,
+      "success": true,
+      "response_time": 0.003762,
+      "content_length": 29
+    }
+  ]
+}

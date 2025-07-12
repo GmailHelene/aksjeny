@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title or "Kryptovaluta" }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4 text-dark">{{ title or "Kryptovaluta" }}</h1>
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr class="text-dark">
+                            <th>Ticker</th>
+                            <th>Navn</th>
+                            <th>Siste</th>
+                            <th>Endring</th>
+                            <th>% Endring</th>
+                            <th>Volum</th>
+                            <th>Signal</th>
+                            <th>Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if crypto_data %}
+                            {% for crypto in crypto_data %}
+                            <tr class="text-dark">
+                                <td>{{ crypto.ticker }}</td>
+                                <td>{{ crypto.name }}</td>
+                                <td>{{ crypto.price }}</td>
+                                <td>{{ crypto.change }}</td>
+                                <td class="{{ 'text-success' if crypto.change_percent > 0 else 'text-danger' }}">
+                                    {{ crypto.change_percent }}%
+                                </td>
+                                <td>{{ crypto.volume }}</td>
+                                <td>
+                                    <span class="badge bg-{{ crypto.signal_color }}">{{ crypto.signal }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('stocks.details', ticker=crypto.ticker) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-graph-up"></i> Detaljer
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Static fallback data -->
+                            <tr class="text-dark"><td>BTC-USD</td><td>Bitcoin</td><td>65,432.10</td><td>+1200</td><td class="text-success">+1.87%</td><td>10000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='BTC-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>ETH-USD</td><td>Ethereum</td><td>3,456.78</td><td>+56.78</td><td class="text-success">+1.67%</td><td>8000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='ETH-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>XRP-USD</td><td>Ripple</td><td>0.5432</td><td>-0.012</td><td class="text-danger">-2.16%</td><td>5000</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='XRP-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>LTC-USD</td><td>Litecoin</td><td>78.12</td><td>+1.23</td><td class="text-success">+1.60%</td><td>2000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='LTC-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>ADA-USD</td><td>Cardano</td><td>0.4321</td><td>+0.008</td><td class="text-success">+1.89%</td><td>3500</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='ADA-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>SOL-USD</td><td>Solana</td><td>145.67</td><td>+2.34</td><td class="text-success">+1.63%</td><td>1800</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='SOL-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>BNB-USD</td><td>Binance Coin</td><td>590.12</td><td>-4.56</td><td class="text-danger">-0.77%</td><td>2200</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='BNB-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>DOT-USD</td><td>Polkadot</td><td>6.78</td><td>+0.12</td><td class="text-success">+1.80%</td><td>900</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='DOT-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>AVAX-USD</td><td>Avalanche</td><td>28.45</td><td>-0.34</td><td class="text-danger">-1.18%</td><td>700</td><td><span class="badge bg-danger">SELL</span></td><td><a href="{{ url_for('stocks.details', ticker='AVAX-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>LINK-USD</td><td>Chainlink</td><td>14.23</td><td>+0.21</td><td class="text-success">+1.50%</td><td>600</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='LINK-USD') }}">Detaljer</a></td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

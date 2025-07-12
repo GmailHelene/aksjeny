@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Markedsoversikt | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                {% for index_name, index_data in global_indices.items() %}
+                                <tr>
+                                    <td><strong>{{ index_name }}</strong> <small class="text-muted">{{ index_data.country|default('Global') }}</small></td>
+                                    <td class="text-end">{{ index_data.value|default('N/A') }}</td>
+                                    <td class="text-end {{ 'text-success' if index_data.change > 0 else 'text-danger' if index_data.change < 0 else 'text-muted' }}">
+                                        {{ '{:+.2f}%'.format(index_data.change) if index_data.change is defined else 'N/A' }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td><strong>S&P 500</strong> <small class="text-muted">USA</small></td>
+                                    <td class="text-end">{{ market_data.sp500.value|default('N/A') }}</td>
+                                    <td class="text-end text-success">{{ market_data.sp500.change|default('+0.00') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nasdaq</strong> <small class="text-muted">USA</small></td>
+                                    <td class="text-end">{{ market_data.nasdaq.value|default('N/A') }}</td>
+                                    <td class="text-end text-success">{{ market_data.nasdaq.change|default('+0.00') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>DAX</strong> <small class="text-muted">Tyskland</small></td>
+                                    <td class="text-end">{{ market_data.dax.value|default('N/A') }}</td>
+                                    <td class="text-end text-danger">{{ market_data.dax.change|default('-0.00') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FTSE 100</strong> <small class="text-muted">UK</small></td>
+                                    <td class="text-end">{{ market_data.ftse.value|default('N/A') }}</td>
+                                    <td class="text-end text-success">{{ market_data.ftse.change|default('+0.00') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nikkei 225</strong> <small class="text-muted">Japan</small></td>
+                                    <td class="text-end">{{ market_data.nikkei.value|default('N/A') }}</td>
+                                    <td class="text-end {{ 'text-success' if market_data.nikkei.change >= 0 else 'text-danger' }}">{{ market_data.nikkei.change|default('0.00') }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

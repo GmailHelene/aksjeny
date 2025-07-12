@@ -1,0 +1,608 @@
+{% extends "base.html" %}
+
+{% block title %}Finansnyheter - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="bi bi-newspaper"></i> Finansnyheter
+    </h1>
+
+    <!-- Category filter -->
+    <div class="mb-4">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('news.news_index', category='all') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'all' %}active{% endif %}">
+                Alle nyheter
+            </a>
+            <a href="{{ url_for('news.news_index', category='norwegian') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'norwegian' %}active{% endif %}">
+                Norge
+            </a>
+            <a href="{{ url_for('news.news_index', category='international') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'international' %}active{% endif %}">
+                Internasjonalt
+            </a>
+            <a href="{{ url_for('news.news_index', category='energy') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'energy' %}active{% endif %}">
+                Energi
+            </a>
+            <a href="{{ url_for('news.news_index', category='tech') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'tech' %}active{% endif %}">
+                Teknologi
+            </a>
+            <a href="{{ url_for('news.news_index', category='crypto') }}" 
+               class="btn btn-outline-primary {% if selected_category == 'crypto' %}active{% endif %}">
+                Krypto
+            </a>
+        </div>
+    </div>
+
+    <!-- News articles -->
+    <div class="row" id="newsContainer">
+        {% if news_articles %}
+            {% for article in news_articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 news-card">
+                    {% if article.image_url %}
+                    <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+                         style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.summary }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-globe"></i> {{ article.source }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> 
+                                {% if article.published %}
+                                    {{ article.published.strftime('%d.%m.%Y %H:%M') if article.published is string else article.published }}
+                                {% else %}
+                                    Ukjent
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ article.link }}" target="_blank" class="btn btn-sm btn-primary">
+                            Les mer <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                        {% if article.relevance_score %}
+                        <span class="float-end badge bg-{{ 'success' if article.relevance_score > 0.7 else 'warning' }}">
+                            Relevans: {{ "{:.0%}".format(article.relevance_score).replace('.', ',') }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Ingen nyheter tilgjengelig for øyeblikket.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Load more button -->
+    {% if news_articles and news_articles|length >= 20 %}
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" onclick="loadMoreNews()">
+            <i class="bi bi-arrow-down-circle"></i> Last flere nyheter
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.news-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-group .btn {
+    font-size: 0.9rem;
+}
+</style>
+
+<script>
+let currentPage = 1;
+const currentCategory = '{{ selected_category }}';
+
+function loadMoreNews() {
+    currentPage++;
+    fetch(`/news/api/latest?category=${currentCategory}&limit=20&page=${currentPage}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.articles.length > 0) {
+                const container = document.getElementById('newsContainer');
+                data.articles.forEach(article => {
+                    container.innerHTML += createNewsCard(article);
+                });
+            }
+        })
+        .catch(error => console.error('Error loading news:', error));
+}
+
+function createNewsCard(article) {
+    const imageHtml = article.image_url ? 
+        `<img src="${article.image_url}" class="card-img-top" alt="${article.title}" style="height: 200px; object-fit: cover;">` : '';
+    
+    const relevanceHtml = article.relevance_score ? 
+        `<span class="float-end badge bg-${article.relevance_score > 0.7 ? 'success' : 'warning'}">
+            Relevans: ${(article.relevance_score * 100).toFixed(0).replace('.', ',')}%
+        </span>` : '';
+    
+    return `
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 news-card">
+                ${imageHtml}
+                <div class="card-body">
+                    <h5 class="card-title">${article.title}</h5>
+                    <p class="card-text">${article.summary}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="bi bi-globe"></i> ${article.source}
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> ${article.published || 'Ukjent'}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="${article.link}" target="_blank" class="btn btn-sm btn-primary">
+                        Les mer <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    ${relevanceHtml}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Auto-refresh news every 5 minutes
+setInterval(() => {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}
+    .news-filters {
+        position: static;
+    }
+}
+
+.news-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.news-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.news-title a:hover {
+    color: #007bff;
+}
+
+.news-summary {
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.news-source {
+    font-weight: 600;
+    color: #495057;
+}
+
+.news-date {
+    font-style: italic;
+}
+
+.relevance-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.category-tags {
+    margin-bottom: 15px;
+}
+
+.category-tag {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.category-tag.oslo_bors { background: #d4edda; color: #155724; }
+.category-tag.energy { background: #fff3cd; color: #856404; }
+.category-tag.tech { background: #d1ecf1; color: #0c5460; }
+.category-tag.crypto { background: #f8d7da; color: #721c24; }
+
+.filter-btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- News Hero Section -->
+<div class="news-hero">
+    <div class="container">
+        <h1><i class="bi bi-newspaper"></i> Finansnyheter</h1>
+        <p class="lead">Siste nyheter fra de største finansavisene i Norge og verden</p>
+    </div>
+</div>
+
+<!-- News Filters -->
+<div class="news-filters">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center">
+            <h6 class="me-3 mb-0">Filter:</h6>
+            <button class="btn btn-outline-primary filter-btn {% if selected_category == 'all' %}active{% endif %}" onclick="filterNews('all')">
+                <i class="bi bi-globe"></i> Alle
+            </button>
+            <button class="btn btn-outline-primary filter-btn {% if selected_category == 'norwegian' %}active{% endif %}" onclick="filterNews('norwegian')">
+                <i class="bi bi-flag"></i> Norge
+            </button>
+            <button class="btn btn-outline-primary filter-btn {% if selected_category == 'international' %}active{% endif %}" onclick="filterNews('international')">
+                <i class="bi bi-globe-americas"></i> Internasjonalt
+            </button>
+            <button class="btn btn-outline-success filter-btn" onclick="refreshNews()">
+                <i class="bi bi-arrow-clockwise"></i> Oppdater
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- News Content -->
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Loading State -->
+            <div id="news-loading" class="loading-spinner d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Laster nyheter...</span>
+                </div>
+                <p class="mt-3">Henter siste finansnyheter...</p>
+            </div>
+
+            <!-- News Articles -->
+            <div id="news-container">
+                {% if news_articles %}
+                    {% for article in news_articles %}
+                    <div class="news-article" data-categories="{{ article.categories|join(',') if article.categories else '' }}">
+                        <div class="row no-gutters">
+                            {% if article.image_url %}
+                            <div class="col-md-4">
+                                <img src="{{ article.image_url }}" alt="{{ article.title }}" class="news-image" onerror="this.style.display='none'">
+                            </div>
+                            <div class="col-md-8">
+                            {% else %}
+                            <div class="col-12">
+                            {% endif %}
+                                <div class="news-content">
+                                    {% if article.categories %}
+                                    <div class="category-tags">
+                                        {% for category in article.categories %}
+                                        <span class="category-tag {{ category }}">{{ category.replace('_', ' ') }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+
+                                    <h3 class="news-title">
+                                        <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
+                                            {{ article.title }}
+                                        </a>
+                                    </h3>
+
+                                    <p class="news-summary">{{ article.summary }}</p>
+
+                                    <div class="news-meta">
+                                        <div>
+                                            <span class="news-source">{{ article.source }}</span>
+                                            <span class="mx-2">•</span>
+                                            <span class="news-date">{{ article.published.strftime('%d.%m.%Y %H:%M') }}</span>
+                                        </div>
+                                        {% if article.relevance_score > 10 %}
+                                        <div>
+                                            <span class="relevance-badge">Høy relevans</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-newspaper"></i>
+                        <h4>Ingen nyheter tilgjengelig</h4>
+                        <p>Vi finner for øyeblikket ingen nyheter. Prøv å oppdatere siden eller kom tilbake senere.</p>
+                        <button class="btn btn-primary" onclick="refreshNews()">
+                            <i class="bi bi-arrow-clockwise"></i> Prøv igjen
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Load More Button -->
+            {% if news_articles and news_articles|length >= 20 %}
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary btn-lg" onclick="loadMoreNews()">
+                    <i class="bi bi-plus-circle"></i> Last inn flere nyheter
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentCategory = '{{ selected_category }}';
+let currentOffset = {{ news_articles|length or 0 }};
+
+function filterNews(category) {
+    if (category === currentCategory) return;
+    
+    currentCategory = category;
+    currentOffset = 0;
+    
+    // Update filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Show loading
+    showLoading();
+    
+    // Fetch filtered news
+    fetch(`/news/api/latest?category=${category}&limit=20`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderNewsArticles(data.articles);
+                currentOffset = data.articles.length;
+            } else {
+                showError('Kunne ikke laste nyheter');
+            }
+        })
+        .catch(error => {
+            console.error('Error filtering news:', error);
+            showError('En feil oppstod ved lasting av nyheter');
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
+
+function refreshNews() {
+    showLoading();
+    
+    fetch(`/news/api/latest?category=${currentCategory}&limit=20`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderNewsArticles(data.articles);
+                currentOffset = data.articles.length;
+                showSuccess('Nyheter oppdatert!');
+            } else {
+                showError('Kunne ikke oppdatere nyheter');
+            }
+        })
+        .catch(error => {
+            console.error('Error refreshing news:', error);
+            showError('En feil oppstod ved oppdatering');
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
+
+function loadMoreNews() {
+    const loadBtn = event.target;
+    const originalText = loadBtn.innerHTML;
+    loadBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Laster...';
+    loadBtn.disabled = true;
+    
+    fetch(`/news/api/latest?category=${currentCategory}&limit=10&offset=${currentOffset}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.articles.length > 0) {
+                appendNewsArticles(data.articles);
+                currentOffset += data.articles.length;
+                
+                if (data.articles.length < 10) {
+                    loadBtn.style.display = 'none';
+                }
+            } else {
+                loadBtn.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading more news:', error);
+            showError('Kunne ikke laste flere nyheter');
+        })
+        .finally(() => {
+            loadBtn.innerHTML = originalText;
+            loadBtn.disabled = false;
+        });
+}
+
+function renderNewsArticles(articles) {
+    const container = document.getElementById('news-container');
+    container.innerHTML = '';
+    
+    if (articles.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-newspaper"></i>
+                <h4>Ingen nyheter funnet</h4>
+                <p>Vi fant ingen nyheter i denne kategorien for øyeblikket.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    articles.forEach(article => {
+        const articleHtml = createArticleHtml(article);
+        container.appendChild(articleHtml);
+    });
+}
+
+function appendNewsArticles(articles) {
+    const container = document.getElementById('news-container');
+    
+    articles.forEach(article => {
+        const articleHtml = createArticleHtml(article);
+        container.appendChild(articleHtml);
+    });
+}
+
+function createArticleHtml(article) {
+    const articleDiv = document.createElement('div');
+    articleDiv.className = 'news-article';
+    articleDiv.setAttribute('data-categories', article.categories.join(','));
+    
+    const publishedDate = new Date(article.published);
+    const formattedDate = publishedDate.toLocaleDateString('no-NO') + ' ' + 
+                         publishedDate.toLocaleTimeString('no-NO', {hour: '2-digit', minute: '2-digit'});
+    
+    const categoryTags = article.categories.map(cat => 
+        `<span class="category-tag ${cat}">${cat.replace('_', ' ')}</span>`
+    ).join('');
+    
+    const imageColumn = article.image_url ? 
+        `<div class="col-md-4">
+            <img src="${article.image_url}" alt="${article.title}" class="news-image" onerror="this.style.display='none'">
+         </div>
+         <div class="col-md-8">` : 
+        '<div class="col-12">';
+    
+    const relevanceBadge = article.relevance_score > 10 ? 
+        '<div><span class="relevance-badge">Høy relevans</span></div>' : '';
+    
+    articleDiv.innerHTML = `
+        <div class="row no-gutters">
+            ${imageColumn}
+                <div class="news-content">
+                    ${categoryTags ? `<div class="category-tags">${categoryTags}</div>` : ''}
+                    <h3 class="news-title">
+                        <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                            ${article.title}
+                        </a>
+                    </h3>
+                    <p class="news-summary">${article.summary}</p>
+                    <div class="news-meta">
+                        <div>
+                            <span class="news-source">${article.source}</span>
+                            <span class="mx-2">•</span>
+                            <span class="news-date">${formattedDate}</span>
+                        </div>
+                        ${relevanceBadge}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return articleDiv;
+}
+
+function showLoading() {
+    document.getElementById('news-loading').classList.remove('d-none');
+    document.getElementById('news-container').style.opacity = '0.5';
+}
+
+function hideLoading() {
+    document.getElementById('news-loading').classList.add('d-none');
+    document.getElementById('news-container').style.opacity = '1';
+}
+
+function showSuccess(message) {
+    // Use the global showSuccess function from main.js
+    if (typeof window.showSuccess === 'function') {
+        window.showSuccess(message);
+    }
+}
+
+function showError(message) {
+    // Use the global showError function from main.js
+    if (typeof window.showError === 'function') {
+        window.showError(message);
+    }
+}
+
+// Auto-refresh news every 5 minutes
+setInterval(() => {
+    refreshNews();
+}, 300000);
+</script>
+{% endblock %}

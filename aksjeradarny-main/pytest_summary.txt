@@ -1,0 +1,62 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.1, pytest-7.4.0, pluggy-1.6.0 -- /usr/local/python/3.12.1/bin/python3
+cachedir: .pytest_cache
+rootdir: /workspaces/aksjeradarv5
+plugins: anyio-4.9.0, flask-1.2.0
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting test_alle_rettelser.py ____________________
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/runner.py:341: in from_call
+    result: Optional[TResult] = func()
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/runner.py:372: in <lambda>
+    call = CallInfo.from_call(lambda: list(collector.collect()), "collect")
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/python.py:531: in collect
+    self._inject_setup_module_fixture()
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/python.py:545: in _inject_setup_module_fixture
+    self.obj, ("setUpModule", "setup_module")
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/python.py:310: in obj
+    self._obj = obj = self._getobj()
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/python.py:528: in _getobj
+    return self._importtestmodule()
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/python.py:617: in _importtestmodule
+    mod = import_path(self.path, mode=importmode, root=self.config.rootpath)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/pathlib.py:565: in import_path
+    importlib.import_module(module_name)
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+/usr/local/python/3.12.1/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+test_alle_rettelser.py:9: in <module>
+    from app import create_app
+app/__init__.py:98: in <module>
+    app = create_app()
+app/__init__.py:75: in create_app
+    app.register_blueprint(portfolio)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/scaffold.py:50: in wrapper_func
+    return f(self, *args, **kwargs)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py:1299: in register_blueprint
+    blueprint.register(self, options)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/blueprints.py:439: in register
+    deferred(state)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/blueprints.py:494: in <lambda>
+    lambda s: s.add_url_rule(
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/blueprints.py:112: in add_url_rule
+    self.app.add_url_rule(
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/scaffold.py:50: in wrapper_func
+    return f(self, *args, **kwargs)
+/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py:1361: in add_url_rule
+    raise AssertionError(
+E   AssertionError: View function mapping is overwriting an existing endpoint function: portfolio.view_portfolio
+=========================== short test summary info ============================
+ERROR test_alle_rettelser.py - AssertionError: View function mapping is overw...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================== 40 warnings, 1 error in 1.84s =========================

@@ -1,0 +1,712 @@
+nohup: ignoring input
+[2025-07-05 20:12:02,479] INFO in __init__: Database models imported successfully during app creation
+[2025-07-05 20:12:03,218] INFO in main: Stripe initialized (development mode)
+[2025-07-05 20:12:04,784] INFO in stripe_routes: Stripe API key configured
+[2025-07-05 20:12:04,797] INFO in __init__: All blueprints registered successfully
+[2025-07-05 20:12:04,799] ERROR in __init__: Database migration failed: (sqlite3.OperationalError) no such table: information_schema.columns
+[SQL: 
+                SELECT COUNT(*) 
+                FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'reports_used_this_month'
+            ]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+🚀 Starting Aksjeradar...
+✅ App initialized successfully in development mode!
+🌐 Visit http://localhost:5000 in your browser
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.10.57:5000
+Press CTRL+C to quit
+[2025-07-05 20:12:07,026] INFO in __init__: Database models imported successfully
+127.0.0.1 - - [05/Jul/2025 20:12:07] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:22] "GET / HTTP/1.1" 302 -
+127.0.0.1 - - [05/Jul/2025 20:13:22] "GET /static/images/flags/no.png HTTP/1.1" 404 -
+127.0.0.1 - - [05/Jul/2025 20:13:23] "GET /static/version.txt?1751746402373 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:24] "GET /service-worker.js HTTP/1.1" 304 -
+127.0.0.1 - - [05/Jul/2025 20:13:30] "GET /static/images/flags/no.png HTTP/1.1" 404 -
+127.0.0.1 - - [05/Jul/2025 20:13:30] "GET /static/version.txt?1751746409298 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:31] "GET / HTTP/1.1" 302 -
+127.0.0.1 - - [05/Jul/2025 20:13:31] "GET /static/version.txt?1751746410972 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:31] "GET /static/images/flags/no.png HTTP/1.1" 404 -
+127.0.0.1 - - [05/Jul/2025 20:13:31] "GET /service-worker.js HTTP/1.1" 304 -
+127.0.0.1 - - [05/Jul/2025 20:13:33] "GET /service-worker.js HTTP/1.1" 304 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/navigation-fix.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/trial-timer.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/performance-optimizer.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/watchlist-fix.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/loading-manager.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/notification-filter.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/i18n.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/enhanced-realtime.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/css/loading-states.css?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/css/mobile-optimized.css?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/css/style.css?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/images/flags/no.png HTTP/1.1" 404 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/js/onboarding-manager.js?v=1751746414 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:34] "GET /static/version.txt?1751746413855 HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:13:36] "GET /service-worker.js HTTP/1.1" 304 -
+127.0.0.1 - - [05/Jul/2025 20:14:01] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:14:32] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:18:15] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /restricted_access HTTP/1.1" 302 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /demo?source=legacy_redirect HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /subscription HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /pricing HTTP/1.1" 308 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /pricing/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /register HTTP/1.1" 200 -
+[2025-07-05 20:21:09,645] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+[2025-07-05 20:21:09,720] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET /subscription HTTP/1.1" 200 -
+[2025-07-05 20:21:09,788] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:09] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+[2025-07-05 20:21:43,009] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /contact HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /privacy HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /subscription HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /api/currency HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /api/oslo_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /api/global_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /api/search HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /stocks/ HTTP/1.1" 200 -
+[2025-07-05 20:21:43,112] ERROR in stocks: Error in list_stocks: 'dict object' has no attribute 'change_percent'
+127.0.0.1 - - [05/Jul/2025 20:21:43] "GET /stocks/list HTTP/1.1" 200 -
+[2025-07-05 20:21:43,116] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:21:43.116055
+[2025-07-05 20:21:43,692] DEBUG in simple_cache: Cache set for key: stock_info_AAPL
+[2025-07-05 20:21:43,692] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.42 seconds
+[2025-07-05 20:21:46,216] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:21:46.216273
+[2025-07-05 20:21:46,635] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.58 seconds
+[2025-07-05 20:21:49,316] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:21:49.316586
+[2025-07-05 20:21:49,430] DEBUG in simple_cache: Cache set for key: stock_data_AAPL_1mo_1d
+[2025-07-05 20:21:49,461] ERROR in stocks: Error in stock details for AAPL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:21:49] "GET /stocks/details/AAPL HTTP/1.1" 200 -
+[2025-07-05 20:21:49,465] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.85 seconds
+[2025-07-05 20:21:52,416] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:21:52.416804
+[2025-07-05 20:21:52,790] DEBUG in simple_cache: Cache set for key: stock_info_NHY.OL
+[2025-07-05 20:21:52,791] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.63 seconds
+[2025-07-05 20:21:55,517] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:21:55.517063
+[2025-07-05 20:21:55,964] DEBUG in simple_cache: Cache set for key: stock_data_NHY.OL_1mo_1d
+[2025-07-05 20:21:55,982] ERROR in stocks: Error in stock details for NHY.OL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:21:55] "GET /stocks/details/NHY.OL HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:56] "GET /analysis/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:56] "GET /analysis/ai HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:56] "GET /analysis/market-overview HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:56] "GET /portfolio/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:21:56] "GET /portfolio/create HTTP/1.1" 200 -
+[2025-07-05 20:21:56,239] ERROR in news_service: Error fetching from reuters_business: Cannot connect to host feeds.reuters.com:443 ssl:default [Name or service not known]
+[2025-07-05 20:21:56,253] WARNING in news_service: Failed to fetch cnbc: 403
+[2025-07-05 20:21:56,387] WARNING in news_service: Failed to fetch yahoo_finance: 404
+[2025-07-05 20:21:56,391] WARNING in news_service: Failed to fetch vg: 404
+[2025-07-05 20:21:56,404] WARNING in news_service: Failed to fetch tradingsat: 404
+[2025-07-05 20:21:56,511] WARNING in news_service: Failed to fetch aftenposten: 404
+[2025-07-05 20:21:56,537] WARNING in news_service: Failed to fetch zacks: 500
+[2025-07-05 20:21:56,579] WARNING in news_service: Failed to fetch dagbladet: 404
+[2025-07-05 20:21:56,641] WARNING in news_service: Failed to fetch morningstar: 403
+[2025-07-05 20:21:56,656] WARNING in news_service: Failed to fetch guru_focus: 403
+[2025-07-05 20:21:56,834] WARNING in news_service: Failed to fetch shifter: 404
+[2025-07-05 20:21:56,844] WARNING in news_service: Failed to fetch upstream: 404
+[2025-07-05 20:21:56,855] WARNING in news_service: Failed to fetch taloussanomat: 404
+[2025-07-05 20:21:56,899] WARNING in news_service: Failed to fetch thestreet: 403
+[2025-07-05 20:21:56,934] WARNING in news_service: Failed to fetch hegnar: 404
+[2025-07-05 20:21:56,993] WARNING in news_service: Failed to fetch finansavisen: 404
+[2025-07-05 20:21:57,009] WARNING in news_service: Failed to fetch intrafish: 404
+[2025-07-05 20:21:57,100] WARNING in news_service: Failed to fetch kapital: 404
+[2025-07-05 20:21:57,167] WARNING in news_service: Failed to fetch kauppalehti: 404
+127.0.0.1 - - [05/Jul/2025 20:22:06] "GET /news/api/latest HTTP/1.1" 200 -
+[2025-07-05 20:22:06,797] ERROR in news_service: Error fetching from alphaseek: 
+[2025-07-05 20:22:06,801] DEBUG in simple_cache: Cache set for key: news_latest_all_20
+[2025-07-05 20:22:06,801] DEBUG in simple_cache: Cache set for key: latest_news_20_all
+127.0.0.1 - - [05/Jul/2025 20:22:06] "GET /news/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:09] "GET /market-intel/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /features/analyst-recommendations HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /manifest.json HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /service-worker.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /version HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /demo/ping HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:22:11] "GET /demo/user HTTP/1.1" 200 -
+[2025-07-05 20:22:54,002] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:22:54] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:27:11] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:32:19] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:34:18] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:35:22] "GET /api/search?q=apple HTTP/1.1" 200 -
+[2025-07-05 20:36:13,918] ERROR in access_control: Access control error: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:36:13] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 78, in decorated_function
+    response = make_response(f(*args, **kwargs))
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/utils/access_control.py", line 89, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/routes/main.py", line 360, in index
+    return render_template('index.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/aksjeradarny/app/templates/index.html", line 1165, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+127.0.0.1 - - [05/Jul/2025 20:40:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:45] "GET /api/notifications/ HTTP/1.1" 302 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /contact HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /privacy HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /subscription HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /api/currency HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /api/oslo_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /api/global_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /api/search HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /stocks/ HTTP/1.1" 200 -
+[2025-07-05 20:43:56,164] ERROR in stocks: Error in list_stocks: 'dict object' has no attribute 'change_percent'
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /stocks/list HTTP/1.1" 200 -
+[2025-07-05 20:43:56,167] DEBUG in simple_cache: Cache hit for key: stock_info_AAPL
+[2025-07-05 20:43:56,168] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:43:56.168096
+[2025-07-05 20:43:56,626] DEBUG in simple_cache: Cache hit for key: stock_data_AAPL_1mo_1d
+[2025-07-05 20:43:56,637] ERROR in stocks: Error in stock details for AAPL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:43:56] "GET /stocks/details/AAPL HTTP/1.1" 200 -
+[2025-07-05 20:43:56,644] DEBUG in simple_cache: Cache hit for key: stock_info_NHY.OL
+[2025-07-05 20:43:56,644] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.52 seconds
+[2025-07-05 20:43:59,268] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:43:59.268341
+[2025-07-05 20:43:59,736] DEBUG in simple_cache: Cache hit for key: stock_data_NHY.OL_1mo_1d
+[2025-07-05 20:43:59,745] ERROR in stocks: Error in stock details for NHY.OL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /stocks/details/NHY.OL HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /analysis/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /analysis/ai HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /analysis/market-overview HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /portfolio/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /portfolio/create HTTP/1.1" 200 -
+[2025-07-05 20:43:59,773] DEBUG in simple_cache: Cache hit for key: latest_news_20_all
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /news/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:43:59] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:02] "GET /market-intel/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /features/analyst-recommendations HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /manifest.json HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /service-worker.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /version HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /demo/ping HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:44:04] "GET /demo/user HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:46:32] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /demo HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /contact HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /privacy HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /subscription HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /api/currency HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /api/oslo_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /api/global_stocks HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /api/search HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /stocks/ HTTP/1.1" 200 -
+[2025-07-05 20:48:24,911] ERROR in stocks: Error in list_stocks: 'dict object' has no attribute 'change_percent'
+127.0.0.1 - - [05/Jul/2025 20:48:24] "GET /stocks/list HTTP/1.1" 200 -
+[2025-07-05 20:48:24,914] DEBUG in simple_cache: Cache hit for key: stock_info_AAPL
+[2025-07-05 20:48:24,915] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:48:24.915022
+[2025-07-05 20:48:25,385] DEBUG in simple_cache: Cache hit for key: stock_data_AAPL_1mo_1d
+[2025-07-05 20:48:25,393] ERROR in stocks: Error in stock details for AAPL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:48:25] "GET /stocks/details/AAPL HTTP/1.1" 200 -
+[2025-07-05 20:48:25,397] DEBUG in simple_cache: Cache hit for key: stock_info_NHY.OL
+[2025-07-05 20:48:25,397] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.52 seconds
+[2025-07-05 20:48:28,015] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-05 20:48:28.015296
+[2025-07-05 20:48:28,476] DEBUG in simple_cache: Cache hit for key: stock_data_NHY.OL_1mo_1d
+[2025-07-05 20:48:28,484] ERROR in stocks: Error in stock details for NHY.OL: Could not build url for endpoint 'auth.login'. Did you mean 'main.login' instead?
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /stocks/details/NHY.OL HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /analysis/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /analysis/ai HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /analysis/market-overview HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /portfolio/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /portfolio/create HTTP/1.1" 200 -
+[2025-07-05 20:48:28,514] DEBUG in simple_cache: Cache hit for key: latest_news_20_all
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /news/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:28] "GET /news/api/latest HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:30] "GET /market-intel/ HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /features/analyst-recommendations HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /manifest.json HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /service-worker.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /version HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /demo/ping HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:33] "GET /demo/user HTTP/1.1" 200 -
+127.0.0.1 - - [05/Jul/2025 20:48:45] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:50:49] "GET /api/crypto HTTP/1.1" 500 -
+127.0.0.1 - - [05/Jul/2025 20:54:38] "GET /api/crypto HTTP/1.1" 500 -

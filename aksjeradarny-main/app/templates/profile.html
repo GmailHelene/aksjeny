@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% block title %}Min Profil - Aksjeradar{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h1 class="mb-4"><i class="bi bi-person-circle"></i> Min Profil</h1>
+            
+            <!-- User Info Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Kontoinformasjon</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Brukernavn:</strong> {{ current_user.username }}</p>
+                            <p><strong>E-post:</strong> {{ current_user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Abonnement:</strong> 
+                                {% if current_user.has_active_subscription() %}
+                                    <span class="badge bg-success">Aktiv</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Ingen</span>
+                                {% endif %}
+                            </p>
+                            <p><strong>Registrert:</strong> {{ current_user.created_at.strftime('%d.%m.%Y') if current_user.created_at else 'N/A' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral System Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-people-fill"></i> Venneverving - Få 20% rabatt!</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Referral Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h3 class="text-primary">{{ referrals_made }}</h3>
+                                    <p class="mb-0">Venner invitert</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h3 class="text-success">{{ referral_earnings }}%</h3>
+                                    <p class="mb-0">Rabatt opptjent</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h3 class="text-warning">20%</h3>
+                                    <p class="mb-0">Per venn som tegner årlig</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- How it works -->
+                    <div class="alert alert-info mb-4">
+                        <h6 class="mb-2"><i class="bi bi-lightbulb"></i> Slik fungerer det:</h6>
+                        <ul class="mb-0">
+                            <li>Del din invitasjonskode eller lenke med venner</li>
+                            <li>Når en venn registrerer seg og tegner <strong>årlig abonnement</strong> får du <strong>20% rabatt</strong> på ditt neste abonnement</li>
+                            <li>Ingen grense på hvor mange venner du kan invitere!</li>
+                            <li>Rabatten gjelder kun på årlige abonnementer (ikke månedlige)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Referral Code -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Din invitasjonskode:</h6>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" value="{{ referral_code or current_user.username }}" id="referralCode" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
+                                    <i class="bi bi-clipboard"></i> Kopier
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Din invitasjonslenke:</h6>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" value="{{ url_for('main.register', ref=referral_code or current_user.username, _external=True) }}" id="referralLink" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyReferralLink()">
+                                    <i class="bi bi-clipboard"></i> Kopier
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invite Friend Form -->
+                    <div class="card border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="mb-3"><i class="bi bi-envelope"></i> Inviter en venn direkte:</h6>
+                            <form method="POST" action="{{ url_for('main.invite_friend') }}">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="email" class="form-control" name="email" placeholder="Vennens e-postadresse" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-send"></i> Send invitasjon
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <small class="text-muted">Vi sender en invitasjon med din spesielle lenke til vennen din.</small>
+                        </div>
+                    </div>
+
+                    <!-- Social Sharing -->
+                    <div class="mt-4">
+                        <h6>Del på sosiale medier:</h6>
+                        <div class="btn-group" role="group">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ url_for('main.register', ref=referral_code or current_user.username, _external=True) }}" 
+                               target="_blank" class="btn btn-outline-primary">
+                                <i class="bi bi-facebook"></i> Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?text=Sjekk ut Aksjeradar - Norges smarteste aksjeplattform!&url={{ url_for('main.register', ref=referral_code or current_user.username, _external=True) }}" 
+                               target="_blank" class="btn btn-outline-info">
+                                <i class="bi bi-twitter"></i> Twitter
+                            </a>
+                            <a href="mailto:?subject=Invitasjon til Aksjeradar&body=Hei! Jeg vil invitere deg til Aksjeradar - Norges smarteste aksjeplattform. Registrer deg her: {{ url_for('main.register', ref=referral_code or current_user.username, _external=True) }}" 
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-envelope"></i> E-post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Preferences Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-sliders"></i> Brukerpreferanser</h5>
+                </div>
+                <div class="card-body">
+                    <form id="preferencesForm">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="language" class="form-label">Språk</label>
+                                <select class="form-select" id="language" name="language">
+                                    <option value="nb">Norsk</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="display_mode" class="form-label">Visningsmodus</label>
+                                <select class="form-select" id="display_mode" name="display_mode">
+                                    <option value="auto">Auto</option>
+                                    <option value="light">Lyst</option>
+                                    <option value="dark">Mørkt</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="number_format" class="form-label">Tallformat</label>
+                                <select class="form-select" id="number_format" name="number_format">
+                                    <option value="norwegian">Norsk (1 234,56)</option>
+                                    <option value="us">US (1,234.56)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dashboard_widgets" class="form-label">Dashboard-widgets (JSON)</label>
+                            <input type="text" class="form-control" id="dashboard_widgets" name="dashboard_widgets" placeholder='["portfolio","alerts","news"]'>
+                        </div>
+                        <button type="submit" class="btn btn-info">Lagre preferanser</button>
+                        <span id="prefStatus" class="ms-3"></span>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> Kontohandlinger</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('main.subscription') }}" class="btn btn-primary w-100 mb-2">
+                                <i class="bi bi-credit-card"></i> Administrer abonnement
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('main.logout') }}" class="btn btn-outline-danger w-100 mb-2">
+                                <i class="bi bi-box-arrow-right"></i> Logg ut
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyReferralCode() {
+    const codeInput = document.getElementById('referralCode');
+    codeInput.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check"></i> Kopiert!';
+    btn.classList.add('btn-success');
+    btn.classList.remove('btn-outline-secondary');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-secondary');
+    }, 2000);
+}
+
+function copyReferralLink() {
+    const linkInput = document.getElementById('referralLink');
+    linkInput.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check"></i> Kopiert!';
+    btn.classList.add('btn-success');
+    btn.classList.remove('btn-outline-secondary');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-secondary');
+    }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/notifications/api/user/preferences')
+        .then(r => r.json())
+        .then(data => {
+            if (data.language) document.getElementById('language').value = data.language;
+            if (data.display_mode) document.getElementById('display_mode').value = data.display_mode;
+            if (data.number_format) document.getElementById('number_format').value = data.number_format;
+            if (data.dashboard_widgets) document.getElementById('dashboard_widgets').value = data.dashboard_widgets;
+        });
+    document.getElementById('preferencesForm').onsubmit = function(e) {
+        e.preventDefault();
+        const payload = {
+            language: document.getElementById('language').value,
+            display_mode: document.getElementById('display_mode').value,
+            number_format: document.getElementById('number_format').value,
+            dashboard_widgets: document.getElementById('dashboard_widgets').value
+        };
+        fetch('/notifications/api/user/preferences', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('prefStatus').textContent = data.success ? 'Lagret!' : 'Feil ved lagring';
+            setTimeout(() => document.getElementById('prefStatus').textContent = '', 2000);
+        });
+    };
+});
+</script>
+{% endblock %}
+

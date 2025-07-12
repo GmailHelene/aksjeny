@@ -1,0 +1,1301 @@
+{
+  "timestamp": "2025-07-10T19:03:37.151480",
+  "base_url": "http://localhost:5000",
+  "summary": {
+    "total_endpoints": 0,
+    "successful_tests": 0,
+    "failed_tests": 0,
+    "endpoints_with_errors": 160,
+    "total_redirects": 0,
+    "demo_redirects": 0,
+    "login_redirects": 0,
+    "average_response_time": 0,
+    "error_details": [
+      {
+        "endpoint": "/",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/register",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/login",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b5f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/logout",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ba10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/demo",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82be30>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/profile",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/subscription",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bec0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/privacy",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/terms",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b620>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/contact",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b020>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/forgot-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/reset-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860230>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860b90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/technical/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860fe0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/ai",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8613a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/warren-buffett",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861820>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/benjamin-graham",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861c40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/short-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/market-overview",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b350>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bbc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8618b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861370>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860f50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/insider-trading",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/earnings-calendar",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860470>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/sector-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861d90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/economic-indicators",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862180>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/stock/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b560>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b350>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b680>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/technical-indicators/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862030>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/news/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8600b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/feedback",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860950>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860590>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/starter",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860920>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/professional",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861220>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/enterprise",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861af0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/analyst-recommendations",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862630>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/social-sentiment",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b020>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/ai-predictions",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bda0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861520>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin/users",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861220>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/logout",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861310>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/profile",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8606e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861ee0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/technical/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862960>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/ai",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862d80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/warren-buffett",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ba10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/benjamin-graham",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b770>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/short-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862930>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/market-overview",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862180>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861e80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860ef0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8612e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/insider-trading",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/earnings-calendar",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8635c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/sector-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82aea0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/economic-indicators",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/stock/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8636e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8630b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/technical-indicators/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8615b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/news/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860c50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/starter",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860440>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/professional",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/enterprise",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862570>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/analyst-recommendations",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862780>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/social-sentiment",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/ai-predictions",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82aea0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862540>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin/users",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862120>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860470>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/register",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/login",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861820>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/logout",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862ff0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/demo",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863860>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/profile",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863cb0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b4d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/subscription",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b6e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/privacy",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/terms",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8630e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/contact",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8603b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/forgot-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8601d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/reset-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861fa0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/technical/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862480>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/ai",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8260>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/warren-buffett",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861ee0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/benjamin-graham",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8600e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/short-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e30>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/market-overview",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8611f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863110>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863980>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b380>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/insider-trading",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b7f7500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/earnings-calendar",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8740>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/sector-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b200>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/economic-indicators",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b590>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/stock/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b950>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863170>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860860>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/technical-indicators/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861520>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/news/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860fe0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/feedback",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8609b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860da0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/starter",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8bc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/professional",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862210>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/enterprise",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862690>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/analyst-recommendations",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e60>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/social-sentiment",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/ai-predictions",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862750>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2bd5c0b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin/users",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b230>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/register",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861850>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/login",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bce0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/logout",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/demo",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861850>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/profile",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860560>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860530>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/subscription",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863380>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/privacy",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8632c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/terms",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8624e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/contact",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8d70>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/forgot-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a9460>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/reset-password",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b260>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bf50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/technical/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861400>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/ai",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8617f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/warren-buffett",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861c10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/benjamin-graham",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8611f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/short-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862fc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/analysis/market-overview",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861430>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863f50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/stocks/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bd40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b770>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/insider-trading",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/earnings-calendar",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860f80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/sector-analysis",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8621e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/market-intel/economic-indicators",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8622d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/stock/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861d60>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/portfolio",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8632c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/search?q=apple",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860bf0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/technical-indicators/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860740>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/news/AAPL",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/api/feedback",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/starter",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862570>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/professional",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861fa0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/pricing/checkout/enterprise",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/analyst-recommendations",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860110>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/social-sentiment",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863620>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/features/ai-predictions",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861b50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      {
+        "endpoint": "/admin/users",
+        "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82afc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      }
+    ],
+    "redirect_details": []
+  },
+  "all_results": [],
+  "errors": [
+    {
+      "endpoint": "/",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/register",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/login",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b5f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/logout",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ba10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/demo",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82be30>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/profile",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/subscription",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bec0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/privacy",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/terms",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b620>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/contact",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b020>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/forgot-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/reset-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860230>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860b90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/technical/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860fe0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/ai",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8613a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/warren-buffett",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861820>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/benjamin-graham",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861c40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/short-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/market-overview",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b350>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bbc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8618b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861370>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860f50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/insider-trading",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/earnings-calendar",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860470>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/sector-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861d90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/economic-indicators",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862180>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/stock/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b560>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b350>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b680>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/technical-indicators/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862030>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/news/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8600b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/feedback",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860950>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860590>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/starter",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860920>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/professional",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861220>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/enterprise",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861af0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862630>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b020>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bda0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861520>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin/users",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861220>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/logout",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861310>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/profile",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8606e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861ee0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/technical/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862960>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/ai",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862d80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/warren-buffett",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ba10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/benjamin-graham",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b770>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/short-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862930>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/market-overview",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862180>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861e80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860ef0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8612e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/insider-trading",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/earnings-calendar",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8635c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/sector-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82aea0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/economic-indicators",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/stock/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8636e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8630b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/technical-indicators/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8615b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/news/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860c50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/starter",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860440>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/professional",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/enterprise",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862570>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862780>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82aea0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862540>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin/users",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862120>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860470>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/register",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8604a0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/login",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861820>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/logout",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862ff0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/demo",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863860>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/profile",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863cb0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b4d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/subscription",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b6e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/privacy",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/terms",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8630e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/contact",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8603b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/forgot-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8601d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/reset-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861fa0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/technical/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862480>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/ai",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8260>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/warren-buffett",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861ee0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/benjamin-graham",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8600e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/short-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e30>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/market-overview",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8611f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863110>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863980>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b380>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/insider-trading",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b7f7500>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/earnings-calendar",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8740>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/sector-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b200>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/economic-indicators",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b590>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/stock/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b950>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863170>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860860>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/technical-indicators/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861520>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/news/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860fe0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/feedback",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8609b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860da0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/starter",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8bc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/professional",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862210>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/enterprise",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862690>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e60>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860a40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862750>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2bd5c0b0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin/users",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b230>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/register",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /register (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861850>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/login",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bce0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/logout",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /logout (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82a510>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/demo",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /demo (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861850>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/profile",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /profile (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860560>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860530>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/subscription",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /subscription (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863380>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/privacy",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /privacy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8632c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/terms",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /terms (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8624e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/contact",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /contact (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a8d70>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/forgot-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /forgot-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b6a9460>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/reset-password",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /reset-password (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b260>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bf50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/technical/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/technical/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861400>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/ai",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/ai (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8617f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/warren-buffett",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/warren-buffett (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861c10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/benjamin-graham",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/benjamin-graham (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8611f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/short-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/short-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862fc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/analysis/market-overview",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /analysis/market-overview (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861430>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863f50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863830>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/stocks/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /stocks/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82bd40>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b770>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/insider-trading",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/insider-trading (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8602f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/earnings-calendar",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/earnings-calendar (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860f80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/sector-analysis",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/sector-analysis (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8621e0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/market-intel/economic-indicators",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /market-intel/economic-indicators (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8622d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/stock/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/stock/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861d60>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/portfolio",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/portfolio (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b8632c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/search?q=apple",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/search?q=apple (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860bf0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/technical-indicators/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/technical-indicators/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860740>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/news/AAPL",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/news/AAPL (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82b890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/api/feedback",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /api/feedback (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82ae10>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/starter",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/starter (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b862570>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/professional",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/professional (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861fa0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/pricing/checkout/enterprise",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /pricing/checkout/enterprise (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860140>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/analyst-recommendations (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860110>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/social-sentiment (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b863620>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /features/ai-predictions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b860e90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b861b50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    {
+      "endpoint": "/admin/users",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /admin/users (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ca2b82afc0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    }
+  ],
+  "redirects": []
+}

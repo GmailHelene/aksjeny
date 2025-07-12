@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Gratis Demo - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center py-5">
+                    <h1 class="mb-4 text-primary">🎯 Prøv Aksjeradar Gratis</h1>
+                    <p class="lead text-muted mb-4">Opplev Norges mest avanserte aksjeanalyseplattform</p>
+                    
+                    <div class="row mb-5">
+                        <div class="col-md-4">
+                            <div class="feature-card h-100">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+                                </div>
+                                <h4>Teknisk Analyse</h4>
+                                <p>Avanserte tekniske indikatorer og signaler</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card h-100">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-robot fa-3x text-success"></i>
+                                </div>
+                                <h4>AI-Analyse</h4>
+                                <p>Intelligent markedsanalyse og prediksjoner</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card h-100">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-briefcase fa-3x text-info"></i>
+                                </div>
+                                <h4>Porteføljestyring</h4>
+                                <p>Profesjonelle porteføljeanalyseverktøy</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-controls mb-4">
+                        <h3>Demo Funksjoner</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="demo-section">
+                                    <h5>Søk etter aksjer</h5>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Søk aksjer (f.eks. EQNR, AAPL)">
+                                        <button class="btn btn-primary">Søk</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="demo-section">
+                                    <h5>Populære aksjer</h5>
+                                    <div class="popular-stocks">
+                                        <span class="badge bg-primary me-2">EQNR</span>
+                                        <span class="badge bg-success me-2">AAPL</span>
+                                        <span class="badge bg-info me-2">MSFT</span>
+                                        <span class="badge bg-warning me-2">TSLA</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <h3 class="mb-3">Klar for å komme i gang?</h3>
+                        <p class="mb-4">Registrer deg gratis og få tilgang til alle funksjoner</p>
+                        <a href="/register" class="btn btn-primary btn-lg me-3">Registrer deg gratis</a>
+                        <a href="/login" class="btn btn-outline-primary btn-lg">Logg inn</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.feature-card {
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.demo-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+.popular-stocks .badge {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+}
+</style>
+{% endblock %}

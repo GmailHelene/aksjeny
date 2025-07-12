@@ -1,0 +1,631 @@
+{
+  "test_timestamp": "2025-07-04 07:07:56",
+  "base_url": "http://localhost:5000",
+  "total_endpoints_tested": 9,
+  "summary": {
+    "passed": 4,
+    "warnings": 0,
+    "failed": 5
+  },
+  "results": [
+    {
+      "endpoint": "/analysis",
+      "description": "Main analysis page",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 308,
+          "redirected": true,
+          "redirect_location": "http://localhost:5000/analysis/",
+          "has_login_redirect": false,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"http://localhost:5000/analysis/\">http://local",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'auth': ('demo@aksjeradar.no', 'demo123')}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/analysis/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/analysis/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/analysis/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": true,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/analysis/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [],
+        "warnings": [],
+        "correct_behaviors": [
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "PASSED"
+      }
+    },
+    {
+      "endpoint": "/portfolio",
+      "description": "Portfolio overview",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 308,
+          "redirected": true,
+          "redirect_location": "http://localhost:5000/portfolio/",
+          "has_login_redirect": false,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"http://localhost:5000/portfolio/\">http://loca",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'cookies': {'demo_user': 'true'}}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/portfolio/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/portfolio/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/portfolio/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": false,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/portfolio/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [
+          "Expired trial user has full access without restrictions"
+        ],
+        "warnings": [],
+        "correct_behaviors": [
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "ISSUES_FOUND"
+      }
+    },
+    {
+      "endpoint": "/portfolio/advanced",
+      "description": "Advanced portfolio features",
+      "should_require_auth": true,
+      "should_allow_demo": false,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 308,
+          "redirected": true,
+          "redirect_location": "http://localhost:5000/portfolio/advanced/",
+          "has_login_redirect": false,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"http://localhost:5000/portfolio/advanced/\">ht",
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/portfolio/advanced/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/portfolio/advanced/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": true,
+          "has_restriction_message": true,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/portfolio/advanced/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": true,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [],
+        "warnings": [],
+        "correct_behaviors": [
+          "Trial user has access",
+          "Expired trial correctly shows upgrade prompt or blocks access",
+          "Premium user has full access"
+        ],
+        "overall_status": "PASSED"
+      }
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "description": "Analyst recommendations",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 200,
+          "redirected": false,
+          "redirect_location": "",
+          "has_login_redirect": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'cookies': {'demo_user': 'true'}}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/analyst-recommendations",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/analyst-recommendations",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/analyst-recommendations",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": false,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/analyst-recommendations",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [
+          "Endpoint accessible without authentication when it should require auth",
+          "Expired trial user has full access without restrictions"
+        ],
+        "warnings": [],
+        "correct_behaviors": [
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "ISSUES_FOUND"
+      }
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "description": "Social sentiment analysis",
+      "should_require_auth": true,
+      "should_allow_demo": false,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 200,
+          "redirected": false,
+          "redirect_location": "",
+          "has_login_redirect": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/social-sentiment",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/social-sentiment",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": false,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/social-sentiment",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [
+          "Endpoint accessible without authentication when it should require auth",
+          "Expired trial user has full access without restrictions"
+        ],
+        "warnings": [],
+        "correct_behaviors": [
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "ISSUES_FOUND"
+      }
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "description": "AI predictions",
+      "should_require_auth": true,
+      "should_allow_demo": false,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 200,
+          "redirected": false,
+          "redirect_location": "",
+          "has_login_redirect": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/ai-predictions",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/ai-predictions",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": false,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/features/ai-predictions",
+          "redirected": false,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [
+          "Endpoint accessible without authentication when it should require auth",
+          "Expired trial user has full access without restrictions"
+        ],
+        "warnings": [],
+        "correct_behaviors": [
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "ISSUES_FOUND"
+      }
+    },
+    {
+      "endpoint": "/market-intel",
+      "description": "Market intelligence",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 308,
+          "redirected": true,
+          "redirect_location": "http://localhost:5000/market-intel/",
+          "has_login_redirect": false,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"http://localhost:5000/market-intel/\">http://l",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'cookies': {'demo_user': 'true'}}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/market-intel/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/market-intel/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": false,
+          "has_restriction_message": false,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/market-intel/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": false,
+          "has_restriction_message": false,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/market-intel/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": false,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [
+          "Expired trial user has full access without restrictions"
+        ],
+        "warnings": [],
+        "correct_behaviors": [
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Premium user has full access"
+        ],
+        "overall_status": "ISSUES_FOUND"
+      }
+    },
+    {
+      "endpoint": "/profile",
+      "description": "User profile",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 302,
+          "redirected": true,
+          "redirect_location": "/login?next=http://localhost:5000/profile",
+          "has_login_redirect": true,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"/login?next=http://localhost:5000/profile\">/l",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'auth': ('demo@aksjeradar.no', 'demo123')}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/profile",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/profile",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/profile",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": true,
+          "has_restriction_message": true,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/profile",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": true,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [],
+        "warnings": [],
+        "correct_behaviors": [
+          "Correctly redirects to login when not authenticated",
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Expired trial correctly shows upgrade prompt or blocks access",
+          "Premium user has full access"
+        ],
+        "overall_status": "PASSED"
+      }
+    },
+    {
+      "endpoint": "/notifications",
+      "description": "User notifications",
+      "should_require_auth": true,
+      "should_allow_demo": true,
+      "should_allow_trial": true,
+      "tests": {
+        "no_auth": {
+          "status_code": 308,
+          "redirected": true,
+          "redirect_location": "http://localhost:5000/notifications/",
+          "has_login_redirect": false,
+          "content_snippet": "<!doctype html>\n<html lang=en>\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href=\"http://localhost:5000/notifications/\">http://",
+          "success": true,
+          "error": null
+        },
+        "demo_user": {
+          "method": "{'auth': ('demo@aksjeradar.no', 'demo123')}",
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/notifications/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_demo_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "trial_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/notifications/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_trial_indicators": true,
+          "has_restriction_message": true,
+          "success": true,
+          "error": null
+        },
+        "expired_trial": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/notifications/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_upgrade_prompt": true,
+          "has_restriction_message": true,
+          "blocked_access": false,
+          "success": true,
+          "error": null
+        },
+        "premium_user": {
+          "status_code": 200,
+          "final_url": "http://localhost:5000/login?next=http://localhost:5000/notifications/",
+          "redirected": true,
+          "content_snippet": "<!DOCTYPE html>\n<html lang=\"no\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"csrf-token\" content=\"IjFkYjIyN2Q4ZjY1ZmE3M",
+          "has_full_access": true,
+          "has_premium_features": true,
+          "success": true,
+          "error": null
+        }
+      },
+      "analysis": {
+        "issues": [],
+        "warnings": [],
+        "correct_behaviors": [
+          "Demo user has appropriate access with demo indicators",
+          "Trial user has access",
+          "Expired trial correctly shows upgrade prompt or blocks access",
+          "Premium user has full access"
+        ],
+        "overall_status": "PASSED"
+      }
+    }
+  ],
+  "recommendations": [
+    "Review authentication decorators on protected endpoints",
+    "Implement proper trial expiration checking",
+    "Regularly test access control with automated tests",
+    "Implement proper logging for access control violations",
+    "Consider rate limiting for demo/trial users",
+    "Ensure consistent UX for access restrictions across all features"
+  ]
+}

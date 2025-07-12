@@ -1,0 +1,53 @@
+# 404-Feil Fikset - Offline.html og Favicon.ico
+
+## 🎯 PROBLEMER LØST
+
+### 1. **GET /offline.html HTTP/1.1" 404**
+- **Problem**: offline.html filen var ikke tilgjengelig på root nivå
+- **Løsning**: Lagt til route i main.py som serverer offline.html fra static mappen
+- **Route**: `@main.route('/offline.html')` → `send_from_directory('static', 'offline.html')`
+- **Status**: ✅ FIKSET
+
+### 2. **GET /favicon.ico HTTP/1.1" 404**
+- **Problem**: favicon.ico filen eksisterte ikke
+- **Løsning**: 
+  - Installerte ImageMagick
+  - Konverterte logo-192.png til favicon.ico (32x32 pixels)
+  - Lagt til route i main.py som serverer favicon.ico
+- **Route**: `@main.route('/favicon.ico')` → `send_from_directory('static/icons', 'favicon.ico')`
+- **Status**: ✅ FIKSET
+
+## 🔧 TEKNISKE DETALJER
+
+### **Offline.html**
+- Eksisterte allerede i `/app/static/offline.html`
+- Inneholder norsk tekst og styling
+- Viser "Du er offline" melding med link tilbake til forsiden
+- Nå tilgjengelig på `http://localhost:5001/offline.html`
+
+### **Favicon.ico**
+- Opprettet fra logo-192.png med ImageMagick
+- 32x32 pixels ICO format
+- Plassert i `/app/static/icons/favicon.ico`
+- Korrekt MIME type: `image/x-icon`
+- Nå tilgjengelig på `http://localhost:5001/favicon.ico`
+
+## 📁 FILER ENDRET
+
+1. **app/routes/main.py**
+   - Lagt til `offline()` funksjon
+   - Lagt til `favicon()` funksjon
+   - Importert `send_from_directory` (allerede importert)
+
+2. **app/static/icons/favicon.ico** (NY FIL)
+   - Konvertert fra logo-192.png
+   - 32x32 pixels ICO format
+
+## ✅ RESULTAT
+
+**Ingen flere 404-feil for:**
+- `/offline.html` → Returnerer nå 200 OK
+- `/favicon.ico` → Returnerer nå 200 OK
+
+**Appen er nå enda mer profesjonell og feilfri! 🚀**
+

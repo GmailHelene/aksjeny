@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}KI-analyse | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Hjem</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+            <li class="breadcrumb-item active">KI-analyse</li>
+        </ol>
+    </nav>
+    
+    {% include 'analysis/_menu.html' %}
+    
+    <div class="card border-0 shadow mb-4">
+        <div class="card-header bg-info text-white">
+            <h2 class="h5 mb-0">KI-analyse</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <p class="lead">Vår KI-drevne analyse kombinerer tekniske indikatorer, markedssentiment og fundamentale faktorer for å gi deg dypere innsikt i aksjer.</p>
+                    <p>Få detaljerte analyser med:</p>
+                    <ul>
+                        <li>Tekniske indikatorer og trender</li>
+                        <li>Fundamental analyse</li>
+                        <li>Sentiment-analyse fra nyheter og sosiale medier</li>
+                        <li>Markedsdata og sammenlignbare selskaper</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Hvorfor KI-analyse?</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Rask og omfattende analyse</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Objektiv vurdering</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Oppdatert i sanntid</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="get" action="{{ url_for('analysis.ai') }}" class="mb-4">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="ticker" name="ticker" placeholder="Skriv inn ticker (f.eks. EQNR.OL, AAPL)" required>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-robot me-2"></i> Analyser
+                    </button>
+                </div>
+                <div class="form-text">Skriv inn en aksjeticker for å få en KI-drevet analyse. For norske aksjer, legg til .OL (f.eks. EQNR.OL)</div>
+            </form>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-graph-up text-primary me-2"></i>Teknisk analyse</h5>
+                            <p class="mb-0 small">Analyserer prisutvikling, volum og tekniske indikatorer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-newspaper text-primary me-2"></i>Nyhetsanalyse</h5>
+                            <p class="mb-0 small">Vurderer nyheter og markedssentiment</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-calculator text-primary me-2"></i>Fundamental analyse</h5>
+                            <p class="mb-0 small">Evaluerer nøkkeltall og finansielle data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Autofokuser på søkefeltet når siden lastes
+        document.getElementById('ticker').focus();
+    });
+</script>
+{% endblock %}

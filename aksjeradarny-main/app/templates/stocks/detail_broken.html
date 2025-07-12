@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ ticker }} - Aksjedetaljer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('stocks.index') }}">Aksjer</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ticker }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h2 class="mb-0">
+                          {% if stock_info and stock_info.longName %}
+                            {{ stock_info.longName }}
+                          {% elif stock_info and stock_info.shortName %}
+                            {{ stock_info.shortName }}
+                          {% elif ticker %}
+                            {% if ticker == 'EQNR.OL' %}Equinor ASA
+                            {% elif ticker == 'DNB.OL' %}DNB Bank ASA
+                            {% elif ticker == 'TEL.OL' %}Telenor ASA
+                            {% elif ticker == 'YAR.OL' %}Yara International ASA
+                            {% elif ticker == 'NHY.OL' %}Norsk Hydro ASA
+                            {% elif ticker == 'MOWI.OL' %}Mowi ASA
+                            {% elif ticker == 'ORK.OL' %}Orkla ASA
+                            {% elif ticker == 'SALM.OL' %}SalMar ASA
+                            {% elif ticker == 'AAPL' %}Apple Inc.
+                            {% elif ticker == 'MSFT' %}Microsoft Corporation
+                            {% elif ticker == 'AMZN' %}Amazon.com Inc.
+                            {% elif ticker == 'GOOGL' %}Alphabet Inc.
+                            {% elif ticker == 'META' %}Meta Platforms Inc.
+                            {% elif ticker == 'TSLA' %}Tesla Inc.
+                            {% elif ticker == 'NVDA' %}NVIDIA Corporation
+                            {% elif ticker == 'BTC-USD' %}Bitcoin
+                            {% elif ticker == 'ETH-USD' %}Ethereum
+                            {% else %}{{ ticker }}{% endif %}
+                          {% else %}
+                            Ukjent selskap
+                          {% endif %}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Selskapsbeskrivelse</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ stock_info.get('longBusinessSummary', stock_info.get('description', 'Dette selskapet opererer innen ' + stock_info.get('sector', 'ulike sektorer') + ' og fokuserer på å levere verdi til sine aksjonærer.')) }}</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Nyheter</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if stock_info.get('news') and stock_info.get('news')|length > 0 %}
+                        {% for news_item in stock_info.get('news', [])[:5] %}
+                            <a href="{{ news_item.get('link', '#') }}" class="list-group-item list-group-item-action" target="_blank">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ news_item.get('title', 'Ingen tittel') }}</h6>
+                                    <small>{{ news_item.get('providerPublishTime', '')|safe }}</small>
+                                </div>
+                                <p class="mb-1">{{ news_item.get('publisher', news_item.get('source', 'Finansnyheter')) }}</p>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item">Ingen nylige nyheter tilgjengelig.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Relaterte aksjer</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if stock_info.get('recommendedSymbols') and stock_info.get('recommendedSymbols')|length > 0 %}
+                        {% for symbol in stock_info.get('recommendedSymbols', [])[:5] %}
+                            <a href="{{ url_for('stocks.details', ticker=symbol) }}" class="list-group-item list-group-item-action">
+                                {{ symbol }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item">Ingen relaterte aksjer tilgjengelig.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="stock-data">
+    {{ stock_data|tojson }}
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart data
+        const chartElem = document.getElementById('stockChart');
+        const stockDataElem = document.getElementById('stock-data');
+        let stockData = [];
+        if (stockDataElem && stockDataElem.textContent.trim()) {
+            try {
+                stockData = JSON.parse(stockDataElem.textContent);
+            } catch (e) {
+                stockData = [];
+            }
+        }
+        if (chartElem && stockData.length > 0) {
+            const ctx = chartElem.getContext('2d');
+            const dates = stockData.map(item => item.Date);
+            const prices = stockData.map(item => item.Close);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: '{{ ticker }} Pris',
+                        data: prices,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { display: true, title: { display: true, text: 'Dato' } },
+                        y: { display: true, title: { display: true, text: 'Pris' } }
+                    }
+                }
+            });
+        }
+
+        // Add to watchlist button
+        const watchBtn = document.getElementById('add-to-watchlist');
+        if (watchBtn) {
+            watchBtn.addEventListener('click', async function() {
+                const ticker = this.getAttribute('data-ticker');
+                try {
+                    const response = await fetch('/api/watchlist/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({ ticker: ticker })
+                    });
+                    
+                    if (response.headers.get('content-type')?.includes('application/json')) {
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert('Aksjen er lagt til i favoritter!');
+                            this.disabled = true;
+                        } else {
+                            alert(data.error || 'Kunne ikke legge til i favoritter.');
+                        }
+                    } else {
+                        // Handle HTML response (likely login redirect)
+                        alert('Du må logge inn for å legge til favoritter.');
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    alert('En feil oppstod: ' + error.message);
+                }
+            });
+        }
+
+        // Add to portfolio button
+        const portfolioBtn = document.getElementById('add-to-portfolio');
+        if (portfolioBtn) {
+            portfolioBtn.addEventListener('click', async function() {
+                const ticker = this.getAttribute('data-ticker');
+                try {
+                    const response = await fetch('/api/portfolio/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({ ticker: ticker })
+                    });
+                    
+                    if (response.headers.get('content-type')?.includes('application/json')) {
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert('Aksjen er lagt til i porteføljen!');
+                            this.disabled = true;
+                        } else {
+                            alert(data.error || 'Kunne ikke legge til i porteføljen.');
+                        }
+                    } else {
+                        // Handle HTML response (likely login redirect)
+                        alert('Du må logge inn for å legge til i portefølje.');
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    alert('En feil oppstod: ' + error.message);
+                }
+            });
+        }
+    });
+</script>
+</div>
+
+<!-- News Section -->
+<div class="col-md-4">
+    <div class="card">
+        <div class="card-header">
+            <h5>Seneste nyheter</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% if stock_info.get('news') and stock_info.get('news')|length > 0 %}
+                    {% for news_item in stock_info.get('news', [])[:5] %}
+                    {% else %}
+                        <div class="list-group-item">Ingen nylige nyheter tilgjengelig.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Relaterte aksjer</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if stock_info.get('recommendedSymbols') and stock_info.get('recommendedSymbols')|length > 0 %}
+                        {% for symbol in stock_info.get('recommendedSymbols', [])[:5] %}
+                            <a href="{{ url_for('stocks.details', ticker=symbol) }}" class="list-group-item list-group-item-action">
+                                {{ symbol }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item">Ingen relaterte aksjer tilgjengelig.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="stock-data">
+    {{ stock_data|tojson }}
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart data
+        const chartElem = document.getElementById('stockChart');
+        const stockDataElem = document.getElementById('stock-data');
+        let stockData = [];
+        if (stockDataElem && stockDataElem.textContent.trim()) {
+            try {
+                stockData = JSON.parse(stockDataElem.textContent);
+            } catch (e) {
+                stockData = [];
+            }
+        }
+        if (chartElem && stockData.length > 0) {
+            const ctx = chartElem.getContext('2d');
+            const dates = stockData.map(item => item.Date);
+            const prices = stockData.map(item => item.Close);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: '{{ ticker }} Pris',
+                        data: prices,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { display: true, title: { display: true, text: 'Dato' } },
+                        y: { display: true, title: { display: true, text: 'Pris' } }
+                    }
+                }
+            });
+        }
+
+        // Add to watchlist button
+        const watchBtn = document.getElementById('add-to-watchlist');
+        if (watchBtn) {
+            watchBtn.addEventListener('click', async function() {
+                const ticker = this.getAttribute('data-ticker');
+                try {
+                    const response = await fetch('/api/watchlist/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({ ticker: ticker })
+                    });
+                    
+                    if (response.headers.get('content-type')?.includes('application/json')) {
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert('Aksjen er lagt til i favoritter!');
+                            this.disabled = true;
+                        } else {
+                            alert(data.error || 'Kunne ikke legge til i favoritter.');
+                        }
+                    } else {
+                        // Handle HTML response (likely login redirect)
+                        alert('Du må logge inn for å legge til favoritter.');
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    alert('En feil oppstod: ' + error.message);
+                }
+            });
+        }
+
+        // Add to portfolio button
+        const portfolioBtn = document.getElementById('add-to-portfolio');
+        if (portfolioBtn) {
+            portfolioBtn.addEventListener('click', async function() {
+                const ticker = this.getAttribute('data-ticker');
+                try {
+                    const response = await fetch('/api/portfolio/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({ ticker: ticker })
+                    });
+                    
+                    if (response.headers.get('content-type')?.includes('application/json')) {
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert('Aksjen er lagt til i porteføljen!');
+                            this.disabled = true;
+                        } else {
+                            alert(data.error || 'Kunne ikke legge til i porteføljen.');
+                        }
+                    } else {
+                        // Handle HTML response (likely login redirect)
+                        alert('Du må logge inn for å legge til i portefølje.');
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    alert('En feil oppstod: ' + error.message);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,6658 @@
+## Oversikt over appen
+
+1. **Backend (Flask)**
+   - API-integrasjoner for aksjedata
+   - Database for å lagre brukerdata (portfolio, tips)
+   - AI-analyse funksjonalitet
+
+2. **Frontend**
+   - Dashboard for oversikt
+   - Portfolio-visning
+   - Analyseverktøy
+   - Aksjeoversikt med live data
+   - Søk og filter funksjonalitet
+
+3. **Data Sources**
+   - yfinance (Yahoo Finance) for aksjedata
+   - Alternative frie API-er for Oslo Børs data
+   - Krypto-data kilder
+   
+4. **AI-Analyse**
+   - Teknisk analyse
+   - Fundamentalanalyse
+   - Prediksjon og trendanalyse
+
+La oss begynne med å sette opp prosjektstrukturen:
+
+```
+stockanalysis/
+├── app/
+│   ├── __init__.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   ├── portfolio.py
+│   │   ├── analysis.py
+│   │   └── stocks.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   ├── stock.py
+│   │   └── portfolio.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── data_service.py
+│   │   ├── analysis_service.py
+│   │   └── ai_service.py
+│   ├── static/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   └── templates/
+│       ├── base.html
+│       ├── index.html
+│       ├── portfolio.html
+│       ├── analysis.html
+│       └── stocks.html
+├── config.py
+├── run.py
+└── requirements.txt
+```
+
+La oss begynne med å definere nødvendige pakker i `requirements.txt`:
+
+```
+Flask==2.0.1
+Flask-SQLAlchemy==2.5.1
+Flask-Login==0.5.0
+Flask-WTF==0.15.1
+yfinance==0.1.63
+pandas==1.3.3
+numpy==1.21.2
+scikit-learn==0.24.2
+matplotlib==3.4.3
+plotly==5.3.1
+requests==2.26.0
+beautifulsoup4==4.10.0
+openai==0.27.0
+```
+
+Nå, la oss lage hovedapplikasjonen. Først, `run.py`:
+
+```python
+from app import create_app
+
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+Deretter, `config.py`:
+
+```python
+import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard-to-guess-string'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///stockanalysis.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # OpenAI API key for AI analysis (optional)
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+```
+
+Nå, la oss definere Flask app factory i `app/__init__.py`:
+
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from config import Config
+
+db = SQLAlchemy()
+login_manager = LoginManager()
+login_manager.login_view = 'main.index'
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    
+    db.init_app(app)
+    login_manager.init_app(app)
+    
+    from app.routes.main import main as main_blueprint
+    from app.routes.portfolio import portfolio as portfolio_blueprint
+    from app.routes.analysis import analysis as analysis_blueprint
+    from app.routes.stocks import stocks as stocks_blueprint
+    
+    app.register_blueprint(main_blueprint)
+    app.register_blueprint(portfolio_blueprint, url_prefix='/portfolio')
+    app.register_blueprint(analysis_blueprint, url_prefix='/analysis')
+    app.register_blueprint(stocks_blueprint, url_prefix='/stocks')
+    
+    with app.app_context():
+        db.create_all()
+    
+    return app
+```
+
+La oss nå fokusere på å hente aksjedata. Vi vil bruke `yfinance` for å hente aksjedata fra Yahoo Finance. La oss lage `app/services/data_service.py`:
+
+```python
+import yfinance as yf
+import pandas as pd
+import datetime
+import requests
+from bs4 import BeautifulSoup
+
+# Oslo Børs ticker symbols
+OSLO_BORS_TICKERS = [
+    'EQNR.OL',  # Equinor
+    'DNB.OL',   # DNB
+    'TEL.OL',   # Telenor
+    'MOWI.OL',  # Mowi
+    'YAR.OL',   # Yara International
+    'ORK.OL',   # Orkla
+    'NHY.OL',   # Norsk Hydro
+    'AKERBP.OL',  # Aker BP
+    # Add more Oslo Børs tickers
+]
+
+# Global tickers
+GLOBAL_TICKERS = [
+    'AAPL',     # Apple
+    'MSFT',     # Microsoft
+    'AMZN',     # Amazon
+    'GOOGL',    # Alphabet (Google)
+    'FB',       # Facebook
+    # Add more global tickers
+]
+
+# Crypto tickers
+CRYPTO_TICKERS = [
+    'BTC-USD',  # Bitcoin
+    'ETH-USD',  # Ethereum
+    'XRP-USD',  # Ripple
+    'LTC-USD',  # Litecoin
+    # Add more crypto tickers
+]
+
+class DataService:
+    @staticmethod
+    def get_stock_data(ticker, period='1y'):
+        """
+        Get historical stock data for a specific ticker
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            period (str): Time period (1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max)
+            
+        Returns:
+            DataFrame: Historical stock data
+        """
+        try:
+            stock = yf.Ticker(ticker)
+            hist = stock.history(period=period)
+            return hist
+        except Exception as e:
+            print(f"Error fetching data for {ticker}: {e}")
+            return pd.DataFrame()
+    
+    @staticmethod
+    def get_stock_info(ticker):
+        """
+        Get detailed information about a stock
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            
+        Returns:
+            dict: Stock information
+        """
+        try:
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            return info
+        except Exception as e:
+            print(f"Error fetching info for {ticker}: {e}")
+            return {}
+    
+    @staticmethod
+    def get_multiple_stocks_data(tickers, period='1d'):
+        """
+        Get data for multiple stocks
+        
+        Args:
+            tickers (list): List of ticker symbols
+            period (str): Time period
+            
+        Returns:
+            dict: Dictionary with ticker as key and data as value
+        """
+        result = {}
+        for ticker in tickers:
+            data = DataService.get_stock_data(ticker, period)
+            if not data.empty:
+                # Calculate daily change and percentage
+                if len(data) > 0:
+                    last_close = data['Close'].iloc[-1]
+                    prev_close = data['Close'].iloc[-2] if len(data) > 1 else data['Open'].iloc[-1]
+                    change = last_close - prev_close
+                    change_percent = (change / prev_close) * 100 if prev_close > 0 else 0
+                    
+                    result[ticker] = {
+                        'current_price': last_close,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'data': data
+                    }
+        return result
+    
+    @staticmethod
+    def get_oslo_bors_overview():
+        """
+        Get an overview of Oslo Børs stocks
+        
+        Returns:
+            dict: Dictionary with ticker data for Oslo Børs
+        """
+        return DataService.get_multiple_stocks_data(OSLO_BORS_TICKERS)
+    
+    @staticmethod
+    def get_global_stocks_overview():
+        """
+        Get an overview of global stocks
+        
+        Returns:
+            dict: Dictionary with ticker data for global stocks
+        """
+        return DataService.get_multiple_stocks_data(GLOBAL_TICKERS)
+    
+    @staticmethod
+    def get_crypto_overview():
+        """
+        Get an overview of cryptocurrencies
+        
+        Returns:
+            dict: Dictionary with ticker data for cryptocurrencies
+        """
+        return DataService.get_multiple_stocks_data(CRYPTO_TICKERS)
+    
+    @staticmethod
+    def search_ticker(query):
+        """
+        Search for ticker symbols
+        
+        Args:
+            query (str): Search query
+            
+        Returns:
+            list: List of matching ticker symbols
+        """
+        all_tickers = OSLO_BORS_TICKERS + GLOBAL_TICKERS + CRYPTO_TICKERS
+        return [ticker for ticker in all_tickers if query.upper() in ticker.upper()]
+```
+
+Nå, la oss lage en analyse-tjeneste for å utføre teknisk analyse og AI-prediksjoner. Dette vil være i `app/services/analysis_service.py`:
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import io
+import base64
+from app.services.data_service import DataService
+
+class AnalysisService:
+    @staticmethod
+    def calculate_moving_averages(data, periods=[20, 50, 200]):
+        """
+        Calculate moving averages for given periods
+        
+        Args:
+            data (DataFrame): Historical stock data
+            periods (list): List of periods for moving averages
+            
+        Returns:
+            DataFrame: Data with moving averages
+        """
+        df = data.copy()
+        for period in periods:
+            df[f'MA_{period}'] = df['Close'].rolling(window=period).mean()
+        return df
+    
+    @staticmethod
+    def calculate_rsi(data, period=14):
+        """
+        Calculate Relative Strength Index (RSI)
+        
+        Args:
+            data (DataFrame): Historical stock data
+            period (int): Period for RSI calculation
+            
+        Returns:
+            DataFrame: Data with RSI
+        """
+        df = data.copy()
+        delta = df['Close'].diff()
+        gain = delta.where(delta > 0, 0)
+        loss = -delta.where(delta < 0, 0)
+        
+        avg_gain = gain.rolling(window=period).mean()
+        avg_loss = loss.rolling(window=period).mean()
+        
+        rs = avg_gain / avg_loss
+        df['RSI'] = 100 - (100 / (1 + rs))
+        return df
+    
+    @staticmethod
+    def calculate_macd(data, fast_period=12, slow_period=26, signal_period=9):
+        """
+        Calculate Moving Average Convergence Divergence (MACD)
+        
+        Args:
+            data (DataFrame): Historical stock data
+            fast_period (int): Fast period
+            slow_period (int): Slow period
+            signal_period (int): Signal period
+            
+        Returns:
+            DataFrame: Data with MACD
+        """
+        df = data.copy()
+        df['EMA_fast'] = df['Close'].ewm(span=fast_period, adjust=False).mean()
+        df['EMA_slow'] = df['Close'].ewm(span=slow_period, adjust=False).mean()
+        df['MACD'] = df['EMA_fast'] - df['EMA_slow']
+        df['MACD_signal'] = df['MACD'].ewm(span=signal_period, adjust=False).mean()
+        df['MACD_histogram'] = df['MACD'] - df['MACD_signal']
+        return df
+    
+    @staticmethod
+    def predict_next_day_price(ticker, days=30):
+        """
+        Predict stock price for the next day using linear regression
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            days (int): Number of days of historical data to use
+            
+        Returns:
+            dict: Prediction results
+        """
+        # Get historical data
+        data = DataService.get_stock_data(ticker, period='60d')
+        if data.empty:
+            return {'error': 'No data available'}
+        
+        # Prepare data
+        df = data.copy().tail(days)
+        df['Prediction'] = df['Close'].shift(-1)
+        df = df.dropna()
+        
+        if len(df) < 2:
+            return {'error': 'Not enough data for prediction'}
+        
+        # Create feature set X and target set y
+        X = np.array(range(len(df))).reshape(-1, 1)
+        y = df['Close'].values
+        
+        # Split data
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+        
+        # Train model
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        
+        # Make prediction for next day
+        next_day = np.array([len(df)]).reshape(-1, 1)
+        next_day_pred = model.predict(next_day)[0]
+        
+        # Calculate accuracy and trend
+        accuracy = model.score(X_test, y_test)
+        last_price = df['Close'].iloc[-1]
+        trend = 'UP' if next_day_pred > last_price else 'DOWN'
+        change_percent = ((next_day_pred - last_price) / last_price) * 100
+        
+        # Create a chart
+        plt.figure(figsize=(10, 5))
+        plt.plot(df.index, df['Close'], label='Historical Close Price')
+        
+        # Plot the prediction
+        pred_date = df.index[-1] + pd.Timedelta(days=1)
+        plt.scatter([pred_date], [next_day_pred], color='red', label='Prediction')
+        
+        plt.title(f'{ticker} Price Prediction')
+        plt.xlabel('Date')
+        plt.ylabel('Price')
+        plt.legend()
+        plt.grid(True)
+        
+        # Convert plot to base64 encoded image
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_str = base64.b64encode(buf.read()).decode('utf-8')
+        plt.close()
+        
+        return {
+            'ticker': ticker,
+            'last_price': last_price,
+            'prediction': next_day_pred,
+            'trend': trend,
+            'change_percent': change_percent,
+            'accuracy': accuracy,
+            'chart_img': img_str
+        }
+    
+    @staticmethod
+    def get_technical_analysis(ticker):
+        """
+        Perform technical analysis on a stock
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            
+        Returns:
+            dict: Technical analysis results
+        """
+        # Get historical data
+        data = DataService.get_stock_data(ticker, period='1y')
+        if data.empty:
+            return {'error': 'No data available'}
+        
+        # Calculate indicators
+        data_with_ma = AnalysisService.calculate_moving_averages(data)
+        data_with_rsi = AnalysisService.calculate_rsi(data_with_ma)
+        data_with_all = AnalysisService.calculate_macd(data_with_rsi)
+        
+        # Get latest values
+        latest = data_with_all.iloc[-1]
+        prev = data_with_all.iloc[-2] if len(data_with_all) > 1 else latest
+        
+        # Determine signals
+        ma_20_50_signal = 'BUY' if latest['MA_20'] > latest['MA_50'] else 'SELL'
+        ma_50_200_signal = 'BUY' if latest['MA_50'] > latest['MA_200'] else 'SELL'
+        
+        rsi_signal = 'OVERSOLD' if latest['RSI'] < 30 else 'OVERBOUGHT' if latest['RSI'] > 70 else 'NEUTRAL'
+        
+        macd_signal = 'BUY' if latest['MACD'] > latest['MACD_signal'] and prev['MACD'] <= prev['MACD_signal'] else \
+                     'SELL' if latest['MACD'] < latest['MACD_signal'] and prev['MACD'] >= prev['MACD_signal'] else 'NEUTRAL'
+        
+        # Overall signal (simple majority)
+        signals = [ma_20_50_signal, ma_50_200_signal, 
+                  'BUY' if rsi_signal == 'OVERSOLD' else 'SELL' if rsi_signal == 'OVERBOUGHT' else 'NEUTRAL',
+                  macd_signal]
+        
+        buy_count = signals.count('BUY')
+        sell_count = signals.count('SELL')
+        overall_signal = 'BUY' if buy_count > sell_count else 'SELL' if sell_count > buy_count else 'NEUTRAL'
+        
+        # Create charts
+        # Price and Moving Averages
+        plt.figure(figsize=(10, 15))
+        
+        # Price and MA subplot
+        plt.subplot(3, 1, 1)
+        plt.plot(data_with_all.index, data_with_all['Close'], label='Close Price')
+        plt.plot(data_with_all.index, data_with_all['MA_20'], label='MA 20')
+        plt.plot(data_with_all.index, data_with_all['MA_50'], label='MA 50')
+        plt.plot(data_with_all.index, data_with_all['MA_200'], label='MA 200')
+        plt.title(f'{ticker} Price and Moving Averages')
+        plt.legend()
+        plt.grid(True)
+        
+        # RSI subplot
+        plt.subplot(3, 1, 2)
+        plt.plot(data_with_all.index, data_with_all['RSI'], label='RSI')
+        plt.axhline(y=70, color='r', linestyle='-', alpha=0.3)
+        plt.axhline(y=30, color='g', linestyle='-', alpha=0.3)
+        plt.title(f'{ticker} RSI')
+        plt.legend()
+        plt.grid(True)
+        
+        # MACD subplot
+        plt.subplot(3, 1, 3)
+        plt.plot(data_with_all.index, data_with_all['MACD'], label='MACD')
+        plt.plot(data_with_all.index, data_with_all['MACD_signal'], label='Signal Line')
+        plt.bar(data_with_all.index, data_with_all['MACD_histogram'], label='Histogram')
+        plt.title(f'{ticker} MACD')
+        plt.legend()
+        plt.grid(True)
+        
+        plt.tight_layout()
+        
+        # Convert plot to base64 encoded image
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_str = base64.b64encode(buf.read()).decode('utf-8')
+        plt.close()
+        
+        return {
+            'ticker': ticker,
+            'last_price': latest['Close'],
+            'ma_20': latest['MA_20'],
+            'ma_50': latest['MA_50'],
+            'ma_200': latest['MA_200'],
+            'rsi': latest['RSI'],
+            'macd': latest['MACD'],
+            'macd_signal': latest['MACD_signal'],
+            'ma_20_50_signal': ma_20_50_signal,
+            'ma_50_200_signal': ma_50_200_signal,
+            'rsi_signal': rsi_signal,
+            'macd_signal': macd_signal,
+            'overall_signal': overall_signal,
+            'chart_img': img_str
+        }
+    
+    @staticmethod
+    def get_stock_recommendation(ticker):
+        """
+        Get a recommendation for a stock based on technical analysis and prediction
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            
+        Returns:
+            dict: Recommendation
+        """
+        # Get technical analysis
+        ta_result = AnalysisService.get_technical_analysis(ticker)
+        if 'error' in ta_result:
+            return {'error': ta_result['error']}
+        
+        # Get prediction
+        pred_result = AnalysisService.predict_next_day_price(ticker)
+        if 'error' in pred_result:
+            return {'error': pred_result['error']}
+        
+        # Get stock info
+        stock_info = DataService.get_stock_info(ticker)
+        
+        # Combine signals for a recommendation
+        ta_signal = ta_result['overall_signal']
+        pred_signal = pred_result['trend']
+        
+        if ta_signal == 'BUY' and pred_signal == 'UP':
+            recommendation = 'STRONG BUY'
+            confidence = 'HIGH'
+        elif ta_signal == 'SELL' and pred_signal == 'DOWN':
+            recommendation = 'STRONG SELL'
+            confidence = 'HIGH'
+        elif ta_signal == 'BUY' or pred_signal == 'UP':
+            recommendation = 'BUY'
+            confidence = 'MEDIUM'
+        elif ta_signal == 'SELL' or pred_signal == 'DOWN':
+            recommendation = 'SELL'
+            confidence = 'MEDIUM'
+        else:
+            recommendation = 'HOLD'
+            confidence = 'LOW'
+        
+        return {
+            'ticker': ticker,
+            'recommendation': recommendation,
+            'confidence': confidence,
+            'technical_analysis': ta_result,
+            'prediction': pred_result,
+            'company_name': stock_info.get('longName', ticker),
+            'sector': stock_info.get('sector', 'Unknown'),
+            'industry': stock_info.get('industry', 'Unknown'),
+            'market_cap': stock_info.get('marketCap', 'Unknown'),
+            'pe_ratio': stock_info.get('trailingPE', 'Unknown'),
+            'dividend_yield': stock_info.get('dividendYield', 'Unknown'),
+            'target_price': stock_info.get('targetMeanPrice', 'Unknown'),
+        }
+```
+
+Nå skal vi lage en AI-tjeneste for mer avanserte analyser. Dette vil være i `app/services/ai_service.py`:
+
+```python
+import os
+import openai
+from app.services.data_service import DataService
+from app.services.analysis_service import AnalysisService
+
+class AIService:
+    @staticmethod
+    def get_ai_analysis(ticker, api_key=None):
+        """
+        Get AI-powered analysis for a stock
+        
+        Args:
+            ticker (str): Stock ticker symbol
+            api_key (str, optional): OpenAI API key
+            
+        Returns:
+            dict: AI analysis
+        """
+        # Set API key
+        if api_key:
+            openai.api_key = api_key
+        else:
+            openai.api_key = os.environ.get('OPENAI_API_KEY')
+        
+        if not openai.api_key:
+            return {
+                'ticker': ticker,
+                'analysis': "AI analysis unavailable - API key not provided. Please set your OpenAI API key in the settings.",
+                'investment_strategy': None,
+                'risk_assessment': None
+            }
+        
+        try:
+            # Get stock data and analysis
+            stock_info = DataService.get_stock_info(ticker)
+            ta_result = AnalysisService.get_technical_analysis(ticker)
+            pred_result = AnalysisService.predict_next_day_price(ticker)
+            
+            # Create prompt with all the data
+            company_name = stock_info.get('longName', ticker)
+            sector = stock_info.get('sector', 'Unknown')
+            current_price = ta_result.get('last_price', 'Unknown')
+            ma_signals = f"MA 20/50: {ta_result.get('ma_20_50_signal', 'Unknown')}, MA 50/200: {ta_result.get('ma_50_200_signal', 'Unknown')}"
+            rsi = f"RSI: {ta_result.get('rsi', 'Unknown')} - {ta_result.get('rsi_signal', 'Unknown')}"
+            macd = f"MACD Signal: {ta_result.get('macd_signal', 'Unknown')}"
+            overall_ta = f"Overall Technical Analysis: {ta_result.get('overall_signal', 'Unknown')}"
+            prediction = f"Price Prediction: {pred_result.get('prediction', 'Unknown')} ({pred_result.get('trend', 'Unknown')}), Change: {pred_result.get('change_percent', 'Unknown'):.2f}%"
+            
+            prompt = f"""
+            Analyze the stock {ticker} ({company_name}) in the {sector} sector with the following information:
+            
+            Current Price: {current_price}
+            Technical Analysis:
+            - {ma_signals}
+            - {rsi}
+            - {macd}
+            - {overall_ta}
+            
+            {prediction}
+            
+            Provide a comprehensive analysis of this stock including:
+            1. Analysis of current market position and trends
+            2. Investment strategy recommendation (short-term and long-term)
+            3. Risk assessment
+            
+            Format your response in a structured way with clear sections.
+            """
+            
+            # Get AI response
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=prompt,
+                max_tokens=1000,
+                n=1,
+                stop=None,
+                temperature=0.7,
+            )
+            
+            analysis_text = response.choices[0].text.strip()
+            
+            # Extract sections
+            sections = analysis_text.split('\n\n')
+            
+            market_analysis = sections[0] if len(sections) > 0 else analysis_text
+            investment_strategy = sections[1] if len(sections) > 1 else None
+            risk_assessment = sections[2] if len(sections) > 2 else None
+            
+            return {
+                'ticker': ticker,
+                'company_name': company_name,
+                'analysis': analysis_text,
+                'market_analysis': market_analysis,
+                'investment_strategy': investment_strategy,
+                'risk_assessment': risk_assessment
+            }
+        
+        except Exception as e:
+            return {
+                'ticker': ticker,
+                'error': str(e),
+                'analysis': "An error occurred during AI analysis. Please try again later."
+            }
+    
+    @staticmethod
+    def get_ai_portfolio_recommendation(tickers, api_key=None):
+        """
+        Get AI portfolio recommendation based on a list of tickers
+        
+        Args:
+            tickers (list): List of stock ticker symbols
+            api_key (str, optional): OpenAI API key
+            
+        Returns:
+            dict: Portfolio recommendation
+        """
+        # Set API key
+        if api_key:
+            openai.api_key = api_key
+        else:
+            openai.api_key = os.environ.get('OPENAI_API_KEY')
+        
+        if not openai.api_key:
+            return {
+                'recommendation': "AI portfolio recommendation unavailable - API key not provided.",
+                'allocation': {},
+                'strategy': None
+            }
+        
+        try:
+            # Get data for all tickers
+            stocks_data = []
+            for ticker in tickers:
+                info = DataService.get_stock_info(ticker)
+                ta = AnalysisService.get_technical_analysis(ticker)
+                
+                if 'error' not in ta:
+                    stocks_data.append({
+                        'ticker': ticker,
+                        'name': info.get('longName', ticker),
+                        'sector': info.get('sector', 'Unknown'),
+                        'price': ta.get('last_price', 'Unknown'),
+                        'signal': ta.get('overall_signal', 'Unknown')
+                    })
+            
+            # Create prompt
+            stocks_text = "\n".join([
+                f"{s['ticker']} ({s['name']}): Price ${s['price']}, Sector: {s['sector']}, Signal: {s['signal']}"
+                for s in stocks_data
+            ])
+            
+            prompt = f"""
+            Analyze the following portfolio of stocks:
+            
+            {stocks_text}
+            
+            Provide:
+            1. Overall portfolio recommendation and strategy
+            2. Suggested allocation percentages for each stock
+            3. Risk assessment and diversification analysis
+            
+            Format your response in a structured way with clear sections.
+            """
+            
+            # Get AI response
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=prompt,
+                max_tokens=1000,
+                n=1,
+                stop=None,
+                temperature=0.7,
+            )
+            
+            recommendation_text = response.choices[0].text.strip()
+            
+            # Extract allocations from text (this is a simple approach, might need improvement)
+            allocation = {}
+            for stock in stocks_data:
+                ticker = stock['ticker']
+                # Look for percentage patterns
+                for line in recommendation_text.split('\n'):
+                    if ticker in line and '%' in line:
+                        # Extract percentage
+                        try:
+                            percentage = float(line.split('%')[0].split()[-1])
+                            allocation[ticker] = percentage
+                        except:
+                            allocation[ticker] = 0
+            
+            # If we couldn't find allocations, distribute equally
+            if not allocation:
+                equal_percent = 100 / len(tickers)
+                allocation = {ticker: equal_percent for ticker in tickers}
+            
+            # Extract sections
+            sections = recommendation_text.split('\n\n')
+            
+            overall_recommendation = sections[0] if len(sections) > 0 else recommendation_text
+            allocation_strategy = sections[1] if len(sections) > 1 else None
+            risk_assessment = sections[2] if len(sections) > 2 else None
+            
+            return {
+                'recommendation': recommendation_text,
+                'overall': overall_recommendation,
+                'allocation_strategy': allocation_strategy,
+                'risk_assessment': risk_assessment,
+                'allocation': allocation
+            }
+        
+        except Exception as e:
+            return {
+                'error': str(e),
+                'recommendation': "An error occurred during AI portfolio analysis. Please try again later."
+            }
+```
+
+Nå skal vi definere databasemodellene for appen. Først, la oss lage `app/models/user.py`:
+
+```python
+from datetime import datetime
+from flask_login import UserMixin
+from app import db, login_manager
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(120), unique=True, index=True)
+    password_hash = db.Column(db.String(128))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    portfolios = db.relationship('Portfolio', backref='user', lazy='dynamic')
+    watchlists = db.relationship('Watchlist', backref='user', lazy='dynamic')
+    
+    def __repr__(self):
+        return f'<User {self.username}>'
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+```
+
+Deretter, la oss lage `app/models/portfolio.py`:
+
+```python
+from datetime import datetime
+from app import db
+
+class Portfolio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    stocks = db.relationship('PortfolioStock', backref='portfolio', lazy='dynamic')
+    
+    def __repr__(self):
+        return f'<Portfolio {self.name}>'
+
+class PortfolioStock(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolio.id'))
+    ticker = db.Column(db.String(20))
+    shares = db.Column(db.Float, default=0)
+    average_price = db.Column(db.Float, default=0)
+    purchase_date = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<PortfolioStock {self.ticker}>'
+```
+
+Så, la oss lage `app/models/stock.py`:
+
+```python
+from datetime import datetime
+from app import db
+
+class Watchlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    stocks = db.relationship('WatchlistStock', backref='watchlist', lazy='dynamic')
+    
+    def __repr__(self):
+        return f'<Watchlist {self.name}>'
+
+class WatchlistStock(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    watchlist_id = db.Column(db.Integer, db.ForeignKey('watchlist.id'))
+    ticker = db.Column(db.String(20))
+    added_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<WatchlistStock {self.ticker}>'
+
+class StockTip(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(20))
+    tip_type = db.Column(db.String(20))  # BUY, SELL, HOLD
+    confidence = db.Column(db.String(20))  # HIGH, MEDIUM, LOW
+    analysis = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<StockTip {self.ticker} - {self.tip_type}>'
+```
+
+La oss nå implementere rutene for appen. Først, `app/routes/main.py`:
+
+```python
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from app.services.data_service import DataService
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def index():
+    # Get overview of Oslo Børs
+    oslo_stocks = DataService.get_oslo_bors_overview()
+    
+    # Get overview of global stocks
+    global_stocks = DataService.get_global_stocks_overview()
+    
+    # Get overview of crypto
+    crypto = DataService.get_crypto_overview()
+    
+    return render_template('index.html', 
+                           oslo_stocks=oslo_stocks, 
+                           global_stocks=global_stocks, 
+                           crypto=crypto)
+
+@main.route('/search')
+def search():
+    query = request.args.get('q', '')
+    if not query:
+        return redirect(url_for('main.index'))
+    
+    results = DataService.search_ticker(query)
+    return render_template('search_results.html', results=results, query=query)
+```
+
+Deretter, `app/routes/stocks.py`:
+
+```python
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
+from app.services.data_service import DataService
+from app.services.analysis_service import AnalysisService
+from app.services.ai_service import AIService
+
+stocks = Blueprint('stocks', __name__)
+
+@stocks.route('/')
+def index():
+    # Get overview of Oslo Børs
+    oslo_stocks = DataService.get_oslo_bors_overview()
+    
+    # Get overview of global stocks
+    global_stocks = DataService.get_global_stocks_overview()
+    
+    # Get overview of crypto
+    crypto = DataService.get_crypto_overview()
+    
+    return render_template('stocks/index.html', 
+                           oslo_stocks=oslo_stocks, 
+                           global_stocks=global_stocks, 
+                           crypto=crypto)
+
+@stocks.route('/<ticker>')
+def stock_detail(ticker):
+    # Get stock info
+    stock_info = DataService.get_stock_info(ticker)
+    
+    # Get historical data
+    stock_data = DataService.get_stock_data(ticker, period='1y')
+    
+    # Get technical analysis
+    technical_analysis = AnalysisService.get_technical_analysis(ticker)
+    
+    return render_template('stocks/detail.html', 
+                           ticker=ticker,
+                           stock_info=stock_info,
+                           stock_data=stock_data,
+                           technical_analysis=technical_analysis)
+
+@stocks.route('/<ticker>/analysis')
+def stock_analysis(ticker):
+    # Get recommendation
+    recommendation = AnalysisService.get_stock_recommendation(ticker)
+    
+    return render_template('stocks/analysis.html',
+                           ticker=ticker,
+                           recommendation=recommendation)
+
+@stocks.route('/<ticker>/ai-analysis')
+def stock_ai_analysis(ticker):
+    # Get AI analysis
+    ai_analysis = AIService.get_ai_analysis(ticker)
+    
+    return render_template('stocks/ai_analysis.html',
+                           ticker=ticker,
+                           ai_analysis=ai_analysis)
+
+@stocks.route('/api/<ticker>/data')
+def api_stock_data(ticker):
+    period = request.args.get('period', '1y')
+    data = DataService.get_stock_data(ticker, period=period)
+    return jsonify({
+        'ticker': ticker,
+        'data': data.to_dict(orient='records')
+    })
+
+@stocks.route('/api/<ticker>/info')
+def api_stock_info(ticker):
+    info = DataService.get_stock_info(ticker)
+    return jsonify({
+        'ticker': ticker,
+        'info': info
+    })
+```
+
+Nå, `app/routes/analysis.py`:
+
+```python
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
+from app.services.analysis_service import AnalysisService
+from app.services.ai_service import AIService
+from app.services.data_service import DataService, OSLO_BORS_TICKERS
+
+analysis = Blueprint('analysis', __name__)
+
+@analysis.route('/')
+def index():
+    # Show a list of analysis options
+    return render_template('analysis/index.html')
+
+@analysis.route('/technical')
+def technical():
+    # Get top Oslo Børs stocks for analysis
+    top_stocks = OSLO_BORS_TICKERS[:5]  # Limit to top 5 for performance
+    
+    # Get technical analysis for each
+    analyses = {}
+    for ticker in top_stocks:
+        analyses[ticker] = AnalysisService.get_technical_analysis(ticker)
+    
+    return render_template('analysis/technical.html', analyses=analyses)
+
+@analysis.route('/prediction')
+def prediction():
+    # Get top Oslo Børs stocks for prediction
+    top_stocks = OSLO_BORS_TICKERS[:5]  # Limit to top 5 for performance
+    
+    # Get predictions for each
+    predictions = {}
+    for ticker in top_stocks:
+        predictions[ticker] = AnalysisService.predict_next_day_price(ticker)
+    
+    return render_template('analysis/prediction.html', predictions=predictions)
+
+@analysis.route('/recommendation')
+def recommendation():
+    ticker = request.args.get('ticker')
+    
+    if not ticker:
+        # Show form to enter ticker
+        return render_template('analysis/recommendation_form.html')
+    
+    # Get recommendation
+    recommendation = AnalysisService.get_stock_recommendation(ticker)
+    
+    return render_template('analysis/recommendation.html',
+                           ticker=ticker,
+                           recommendation=recommendation)
+
+@analysis.route('/ai')
+def ai_analysis():
+    ticker = request.args.get('ticker')
+    
+    if not ticker:
+        # Show form to enter ticker
+        return render_template('analysis/ai_form.html')
+    
+    # Get AI analysis
+    ai_analysis = AIService.get_ai_analysis(ticker)
+    
+    return render_template('analysis/ai.html',
+                           ticker=ticker,
+                           ai_analysis=ai_analysis)
+
+@analysis.route('/market-overview')
+def market_overview():
+    # Get overall market analysis
+    oslo_overview = DataService.get_oslo_bors_overview()
+    
+    # Count buy/sell signals
+    buy_count = 0
+    sell_count = 0
+    neutral_count = 0
+    
+    for ticker, data in oslo_overview.items():
+        analysis = AnalysisService.get_technical_analysis(ticker)
+        signal = analysis.get('overall_signal', 'NEUTRAL')
+        
+        if signal == 'BUY':
+            buy_count += 1
+        elif signal == 'SELL':
+            sell_count += 1
+        else:
+            neutral_count += 1
+    
+    market_sentiment = 'Bullish' if buy_count > sell_count else 'Bearish' if sell_count > buy_count else 'Neutral'
+    
+    return render_template('analysis/market_overview.html',
+                           oslo_overview=oslo_overview,
+                           buy_count=buy_count,
+                           sell_count=sell_count,
+                           neutral_count=neutral_count,
+                           market_sentiment=market_sentiment)
+```
+
+Sist, `app/routes/portfolio.py`:
+
+```python
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
+from flask_login import login_required, current_user
+from app import db
+from app.models.portfolio import Portfolio, PortfolioStock
+from app.models.stock import Watchlist, WatchlistStock, StockTip
+from app.services.data_service import DataService
+from app.services.analysis_service import AnalysisService
+from app.services.ai_service import AIService
+
+portfolio = Blueprint('portfolio', __name__)
+
+@portfolio.route('/')
+#@login_required
+def index():
+    # Get user's portfolios
+    user_portfolios = Portfolio.query.filter_by(user_id=current_users.id).all()
+    
+    # Get current data for each portfolio
+    portfolios_data = []
+    for p in user_portfolios:
+        stocks_data = []
+        total_value = 0
+        
+        for stock in p.stocks:
+            # Get current price
+            current_data = DataService.get_stock_data(stock.ticker, period='1d')
+            if not current_data.empty:
+                current_price = current_data['Close'].iloc[-1]
+                value = current_price * stock.shares
+                gain_loss = (current_price - stock.average_price) * stock.shares
+                gain_loss_percent = ((current_price / stock.average_price) - 1) * 100 if stock.average_price > 0 else 0
+                
+                stocks_data.append({
+                    'ticker': stock.ticker,
+                    'shares': stock.shares,
+                    'average_price': stock.average_price,
+                    'current_price': current_price,
+                    'value': value,
+                    'gain_loss': gain_loss,
+                    'gain_loss_percent': gain_loss_percent
+                })
+                
+                total_value += value
+        
+        portfolios_data.append({
+            'portfolio': p,
+            'stocks': stocks_data,
+            'total_value': total_value
+        })
+    
+    return render_template('portfolio/index.html', portfolios=portfolios_data)
+
+@portfolio.route('/create', methods=['GET', 'POST'])
+#@login_required
+def create():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        
+        if not name:
+            flash('Portfolio name is required', 'danger')
+            return redirect(url_for('portfolio.create'))
+        
+        portfolio = Portfolio(name=name, user_id=current_users.id)
+        db.session.add(portfolio)
+        db.session.commit()
+        
+        flash('Portfolio created successfully', 'success')
+        return redirect(url_for('portfolio.index'))
+    
+    return render_template('portfolio/create.html')
+
+@portfolio.route('/<int:id>')
+#@login_required
+def view(id):
+    portfolio = Portfolio.query.get_or_404(id)
+    
+    # Verify ownership
+    if portfolio.user_id != current_users.id:
+        flash('You do not have permission to view this portfolio', 'danger')
+        return redirect(url_for('portfolio.index'))
+    
+    # Get current data for portfolio
+    stocks_data = []
+    total_value = 0
+    total_investment = 0
+    
+    for stock in portfolio.stocks:
+        # Get current price
+        current_data = DataService.get_stock_data(stock.ticker, period='1d')
+        if not current_data.empty:
+            current_price = current_data['Close'].iloc[-1]
+            value = current_price * stock.shares
+            investment = stock.average_price * stock.shares
+            gain_loss = (current_price - stock.average_price) * stock.shares
+            gain_loss_percent = ((current_price / stock.average_price) - 1) * 100 if stock.average_price > 0 else 0
+            
+            stocks_data.append({
+                'ticker': stock.ticker,
+                'shares': stock.shares,
+                'average_price': stock.average_price,
+                'current_price': current_price,
+                'value': value,
+                'investment': investment,
+                'gain_loss': gain_loss,
+                'gain_loss_percent': gain_loss_percent
+            })
+            
+            total_value += value
+            total_investment += investment
+    
+    total_gain_loss = total_value - total_investment
+    total_gain_loss_percent = ((total_value / total_investment) - 1) * 100 if total_investment > 0 else 0
+    
+    # Get AI portfolio recommendation
+    tickers = [stock.ticker for stock in portfolio.stocks]
+    ai_recommendation = AIService.get_ai_portfolio_recommendation(tickers) if tickers else None
+    
+    return render_template('portfolio/view.html',
+                           portfolio=portfolio,
+                           stocks=stocks_data,
+                           total_value=total_value,
+                           total_investment=total_investment,
+                           total_gain_loss=total_gain_loss,
+                           total_gain_loss_percent=total_gain_loss_percent,
+                           ai_recommendation=ai_recommendation)
+
+@portfolio.route('/<int:id>/add', methods=['GET', 'POST'])
+#@login_required
+def add_stock(id):
+    portfolio = Portfolio.query.get_or_404(id)
+    
+    # Verify ownership
+    if portfolio.user_id != current_users.id:
+        flash('You do not have permission to modify this portfolio', 'danger')
+        return redirect(url_for('portfolio.index'))
+    
+    if request.method == 'POST':
+        ticker = request.form.get('ticker')
+        shares = request.form.get('shares')
+        price = request.form.get('price')
+        
+        if not ticker or not shares or not price:
+            flash('All fields are required', 'danger')
+            return redirect(url_for('portfolio.add_stock', id=id))
+        
+        try:
+            shares = float(shares)
+            price = float(price)
+        except ValueError:
+            flash('Shares and price must be numbers', 'danger')
+            return redirect(url_for('portfolio.add_stock', id=id))
+        
+        # Check if stock exists
+        existing_stock = PortfolioStock.query.filter_by(portfolio_id=id, ticker=ticker).first()
+        
+        if existing_stock:
+            # Update existing stock
+            total_value = (existing_stock.shares * existing_stock.average_price) + (shares * price)
+            total_shares = existing_stock.shares + shares
+            existing_stock.average_price = total_value / total_shares if total_shares > 0 else 0
+            existing_stock.shares = total_shares
+        else:
+            # Add new stock
+            stock = PortfolioStock(
+                portfolio_id=id,
+                ticker=ticker,
+                shares=shares,
+                average_price=price
+            )
+            db.session.add(stock)
+        
+        db.session.commit()
+        flash('Stock added to portfolio', 'success')
+        return redirect(url_for('portfolio.view', id=id))
+    
+    return render_template('portfolio/add_stock.html', portfolio=portfolio)
+
+@portfolio.route('/<int:id>/remove/<int:stock_id>', methods=['POST'])
+#@login_required
+def remove_stock(id, stock_id):
+    portfolio = Portfolio.query.get_or_404(id)
+    
+    # Verify ownership
+    if portfolio.user_id != current_users.id:
+        flash('You do not have permission to modify this portfolio', 'danger')
+        return redirect(url_for('portfolio.index'))
+    
+    stock = PortfolioStock.query.get_or_404(stock_id)
+    
+    # Verify stock belongs to portfolio
+    if stock.portfolio_id != id:
+        flash('Stock does not belong to this portfolio', 'danger')
+        return redirect(url_for('portfolio.view', id=id))
+    
+    db.session.delete(stock)
+    db.session.commit()
+    
+    flash('Stock removed from portfolio', 'success')
+    return redirect(url_for('portfolio.view', id=id))
+
+@portfolio.route('/watchlist')
+#@login_required
+def watchlist():
+    # Get user's watchlists
+    user_watchlists = Watchlist.query.filter_by(user_id=current_users.id).all()
+    
+    # Get current data for each watchlist
+    watchlists_data = []
+    for w in user_watchlists:
+        stocks_data = []
+        
+        for stock in w.stocks:
+            # Get current price and data
+            current_data = DataService.get_stock_data(stock.ticker, period='1d')
+            if not current_data.empty:
+                current_price = current_data['Close'].iloc[-1]
+                prev_close = current_data['Close'].iloc[-2] if len(current_data) > 1 else current_data['Open'].iloc[-1]
+                change = current_price - prev_close
+                change_percent = (change / prev_close) * 100 if prev_close > 0 else 0
+                
+                # Get recommendation
+                analysis = AnalysisService.get_technical_analysis(stock.ticker)
+                
+                stocks_data.append({
+                    'ticker': stock.ticker,
+                    'current_price': current_price,
+                    'change': change,
+                    'change_percent': change_percent,
+                    'signal': analysis.get('overall_signal', 'NEUTRAL')
+                })
+        
+        watchlists_data.append({
+            'watchlist': w,
+            'stocks': stocks_data
+        })
+    
+    return render_template('portfolio/watchlist.html', watchlists=watchlists_data)
+
+@portfolio.route('/watchlist/create', methods=['GET', 'POST'])
+#@login_required
+def create_watchlist():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        
+        if not name:
+            flash('Watchlist name is required', 'danger')
+            return redirect(url_for('portfolio.create_watchlist'))
+        
+        watchlist = Watchlist(name=name, user_id=current_users.id)
+        db.session.add(watchlist)
+        db.session.commit()
+        
+        flash('Watchlist created successfully', 'success')
+        return redirect(url_for('portfolio.watchlist'))
+    
+    return render_template('portfolio/create_watchlist.html')
+
+@portfolio.route('/watchlist/<int:id>/add', methods=['GET', 'POST'])
+#@login_required
+def add_to_watchlist(id):
+    watchlist = Watchlist.query.get_or_404(id)
+    
+    # Verify ownership
+    if watchlist.user_id != current_users.id:
+        flash('You do not have permission to modify this watchlist', 'danger')
+        return redirect(url_for('portfolio.watchlist'))
+    
+    if request.method == 'POST':
+        ticker = request.form.get('ticker')
+        
+        if not ticker:
+            flash('Ticker is required', 'danger')
+            return redirect(url_for('portfolio.add_to_watchlist', id=id))
+        
+        # Check if stock already in watchlist
+        existing = WatchlistStock.query.filter_by(watchlist_id=id, ticker=ticker).first()
+        
+        if existing:
+            flash('Stock already in watchlist', 'warning')
+        else:
+            stock = WatchlistStock(watchlist_id=id, ticker=ticker)
+            db.session.add(stock)
+            db.session.commit()
+            flash('Stock added to watchlist', 'success')
+        
+        return redirect(url_for('portfolio.watchlist'))
+    
+    return render_template('portfolio/add_to_watchlist.html', watchlist=watchlist)
+
+@portfolio.route('/tips')
+#@login_required
+def stock_tips():
+    # Get latest stock tips
+    tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
+    
+    return render_template('portfolio/tips.html', tips=tips)
+```
+
+Nå skal vi lage noen grunnleggende maler for appen vår. Først, la oss lage `app/templates/base.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Oslo Børs Stock Analysis{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="bi bi-graph-up"></i> Stock Analysis
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('stocks.index') }}">Stocks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('analysis.index') }}">Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio.index') }}">Portfolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio.watchlist') }}">Watchlist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio.stock_tips') }}">Stock Tips</a>
+                    </li>
+                </ul>
+                <form class="d-flex" action="{{ url_for('main.search') }}" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search stocks..." name="q" aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-dark text-light mt-5 py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Stock Analysis</h5>
+                    <p>A comprehensive stock analysis application with focus on Oslo Børs.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('main.index') }}" class="text-light">Home</a></li>
+                        <li><a href="{{ url_for('stocks.index') }}" class="text-light">Stocks</a></li>
+                        <li><a href="{{ url_for('analysis.index') }}" class="text-light">Analysis</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.oslobors.no/" class="text-light" target="_blank">Oslo Børs</a></li>
+                        <li><a href="https://finance.yahoo.com/" class="text-light" target="_blank">Yahoo Finance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center">&copy; {% now 'Y' %} Stock Analysis. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+```
+
+Nå, la oss lage en side for hovedsiden, `app/templates/index.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}Oslo Børs Stock Analysis - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-light p-4 rounded">
+            <h1 class="display-4">Welcome to Stock Analysis</h1>
+            <p class="lead">Comprehensive stock analysis with focus on Oslo Børs</p>
+            <hr class="my-4">
+            <p>Analyze stocks, track your portfolio, and get AI-powered recommendations.</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('analysis.index') }}" role="button">Start Analyzing</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Oslo Børs Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Price</th>
+                                <th>Change</th>
+                                <th>Change %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticker, data in oslo_stocks.items() %}
+                            <tr>
+                                <td><a href="{{ url_for('stocks.stock_detail', ticker=ticker) }}">{{ ticker }}</a></td>
+                                <td>{{ data.current_price|round(2) }}</td>
+                                <td class="{{ 'text-success' if data.change > 0 else 'text-danger' }}">
+                                    {{ data.change|round(2) }}
+                                </td>
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+                                    {{ data.change_percent|round(2) }}%
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('stocks.stock_analysis', ticker=ticker) }}" class="btn btn-sm btn-primary">Analyze</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('stocks.index') }}" class="btn btn-outline-primary">View All Stocks</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Global Markets</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Price</th>
+                                <th>Change %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticker, data in global_stocks.items() %}
+                            <tr>
+                                <td><a href="{{ url_for('stocks.stock_detail', ticker=ticker) }}">{{ ticker }}</a></td>
+                                <td>{{ data.current_price|round(2) }}</td>
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+                                    {{ data.change_percent|round(2) }}%
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Cryptocurrencies</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Price</th>
+                                <th>Change %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticker, data in crypto.items() %}
+                            <tr>
+                                <td><a href="{{ url_for('stocks.stock_detail', ticker=ticker) }}">{{ ticker }}</a></td>
+                                <td>{{ data.current_price|round(2) }}</td>
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+                                    {{ data.change_percent|round(2) }}%
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Analysis Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{{ url_for('analysis.technical') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Technical Analysis</h5>
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <p class="mb-1">Analyze stocks using technical indicators like MA, RSI, and MACD.</p>
+                    </a>
+                    <a href="{{ url_for('analysis.prediction') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Price Prediction</h5>
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <p class="mb-1">Get price predictions for stocks based on historical data.</p>
+                    </a>
+                    <a href="{{ url_for('analysis.ai') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">AI Analysis</h5>
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <p class="mb-1">Advanced AI-powered stock analysis and recommendations.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Portfolio Management</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{{ url_for('portfolio.index') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Your Portfolios</h5>
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <p class="mb-1">Track your stock portfolios and monitor performance.</p>
+                    </a>
+                    <a href="{{ url_for('portfolio.watchlist') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Watchlists</h5>
+                            <i class="bi bi-eye"></i>
+                        </div>
+                        <p class="mb-1">Keep an eye on stocks you're interested in.</p>
+                    </a>
+                    <a href="{{ url_for('portfolio.stock_tips') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Stock Tips</h5>
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                        <p class="mb-1">Get the latest stock tips and recommendations.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+Nå, la oss lage en mål for aksjedetaljer, `app/templates/stocks/detail.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}{{ ticker }} - Stock Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('stocks.index') }}">Stocks</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ticker }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ stock_info.get('longName', ticker) }}</h3>
+                <h5>{{ ticker }} - {{ stock_info.get('exchange', '') }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h2 class="mb-0">{{ technical_analysis.last_price|round(2) }}</h2>
+                        <div class="{{ 'text-success' if technical_analysis.get('change', 0) > 0 else 'text-danger' }}">
+                            {{ technical_analysis.get('change', 0)|round(2) }} 
+                            ({{ technical_analysis.get('change_percent', 0)|round(2) }}%)
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="{{ url_for('stocks.stock_analysis', ticker=ticker) }}" class="btn btn-primary">Analyze</a>
+                        <a href="{{ url_for('stocks.stock_ai_analysis', ticker=ticker) }}" class="btn btn-success">AI Analysis</a>
+                    </div>
+                </div>
+                
+                <div class="stock-chart-container">
+                    <canvas id="stockChart"></canvas>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Company Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Sector:</strong> {{ stock_info.get('sector', 'N/A') }}</p>
+                                <p><strong>Industry:</strong> {{ stock_info.get('industry', 'N/A') }}</p>
+                                <p><strong>Market Cap:</strong> {{ (stock_info.get('marketCap', 0) / 1000000000)|round(2) }} B</p>
+                                <p><strong>Volume:</strong> {{ stock_info.get('volume', 'N/A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Key Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>P/E Ratio:</strong> {{ stock_info.get('trailingPE', 'N/A') }}</p>
+                                <p><strong>EPS:</strong> {{ stock_info.get('trailingEps', 'N/A') }}</p>
+                                <p><strong>Dividend Yield:</strong> {{ (stock_info.get('dividendYield', 0) * 100)|round(2) }}%</p>
+                                <p><strong>52-Week Range:</strong> {{ stock_info.get('fiftyTwoWeekLow', 'N/A') }} - {{ stock_info.get('fiftyTwoWeekHigh', 'N/A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Technical Indicators</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>RSI:</strong> {{ technical_analysis.get('rsi', 'N/A')|round(2) }}
+                                    <span class="badge {{ 'bg-danger' if technical_analysis.get('rsi', 50) > 70 else 'bg-success' if technical_analysis.get('rsi', 50) < 30 else 'bg-secondary' }}">
+                                        {{ technical_analysis.get('rsi_signal', 'NEUTRAL') }}
+                                    </span>
+                                </p>
+                                <p><strong>MA 20/50:</strong>
+                                    <span class="badge {{ 'bg-success' if technical_analysis.get('ma_20_50_signal') == 'BUY' else 'bg-danger' }}">
+                                        {{ technical_analysis.get('ma_20_50_signal', 'NEUTRAL') }}
+                                    </span>
+                                </p>
+                                <p><strong>MA 50/200:</strong>
+                                    <span class="badge {{ 'bg-success' if technical_analysis.get('ma_50_200_signal') == 'BUY' else 'bg-danger' }}">
+                                        {{ technical_analysis.get('ma_50_200_signal', 'NEUTRAL') }}
+                                    </span>
+                                </p>
+                                <p><strong>Overall Signal:</strong>
+                                    <span class="badge {{ 'bg-success' if technical_analysis.get('overall_signal') == 'BUY' else 'bg-danger' if technical_analysis.get('overall_signal') == 'SELL' else 'bg-secondary' }}">
+                                        {{ technical_analysis.get('overall_signal', 'NEUTRAL') }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary" id="add-to-watchlist" data-ticker="{{ ticker }}">
+                            <i class="bi bi-eye"></i> Add to Watchlist
+                        </button>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-outline-success" id="add-to-portfolio" data-ticker="{{ ticker }}">
+                            <i class="bi bi-briefcase"></i> Add to Portfolio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Company Description</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ stock_info.get('longBusinessSummary', 'No description available.') }}</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>News</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if stock_info.get('news') %}
+                        {% for news_item in stock_info.get('news', [])[:5] %}
+                            <a href="{{ news_item.get('link', '#') }}" class="list-group-item list-group-item-action" target="_blank">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ news_item.get('title', 'No title') }}</h6>
+                                    <small>{{ news_item.get('providerPublishTime', '')|datetime }}</small>
+                                </div>
+                                <p class="mb-1">{{ news_item.get('publisher', 'Unknown source') }}</p>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item">No recent news available.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Related Stocks</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if stock_info.get('recommendedSymbols') %}
+                        {% for symbol in stock_info.get('recommendedSymbols', [])[:5] %}
+                            <a href="{{ url_for('stocks.stock_detail', ticker=symbol) }}" class="list-group-item list-group-item-action">
+                                {{ symbol }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item">No related stocks available.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart data
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        const stockData = {{ stock_data|tojson }};
+        
+        // Extract dates and prices
+        const dates = stockData.map(item => item.Date);
+        const prices = stockData.map(item => item.Close);
+        
+        const stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '{{ ticker }} Price',
+                    data: prices,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Price'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Add to watchlist button
+        document.getElementById('add-to-watchlist').addEventListener('click', function() {
+            const ticker = this.getAttribute('data-ticker');
+            // Show modal to select watchlist (would be implemented with AJAX)
+            alert(`Adding ${ticker} to watchlist (demo functionality)`);
+        });
+        
+        // Add to portfolio button
+        document.getElementById('add-to-portfolio').addEventListener('click', function() {
+            const ticker = this.getAttribute('data-ticker');
+            // Show modal to select portfolio and enter shares/price (would be implemented with AJAX)
+            alert(`Adding ${ticker} to portfolio (demo functionality)`);
+        });
+    });
+</script>
+{% endblock %}
+```
+
+La oss også lage en analyse mal, `app/templates/analysis/recommendation.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}{{ ticker }} - Stock Recommendation{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analysis</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('analysis.recommendation') }}">Recommendation</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ticker }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3>{{ recommendation.company_name }} ({{ ticker }}) - Recommendation</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Recommendation</h5>
+                                <div class="display-4 mb-3 {{ 'text-success' if 'BUY' in recommendation.recommendation else 'text-danger' if 'SELL' in recommendation.recommendation else 'text-warning' }}">
+                                    {{ recommendation.recommendation }}
+                                </div>
+                                <div class="badge bg-{{ 'success' if recommendation.confidence == 'HIGH' else 'warning' if recommendation.confidence == 'MEDIUM' else 'secondary' }} fs-6">
+                                    {{ recommendation.confidence }} Confidence
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Current Price</h5>
+                                <div class="display-4 mb-3">
+                                    ${{ recommendation.technical_analysis.last_price|round(2) }}
+                                </div>
+                                <div>
+                                    <span class="badge bg-light text-dark fs-6">
+                                        Target: ${{ recommendation.target_price|round(2) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Prediction</h5>
+                                <div class="display-4 mb-3 {{ 'text-success' if recommendation.prediction.trend == 'UP' else 'text-danger' }}">
+                                    ${{ recommendation.prediction.prediction|round(2) }}
+                                </div>
+                                <div class="badge bg-{{ 'success' if recommendation.prediction.trend == 'UP' else 'danger' }} fs-6">
+                                    {{ recommendation.prediction.change_percent|round(2) }}% {{ recommendation.prediction.trend }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Technical Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <th>Moving Average (20/50)</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.technical_analysis.ma_20_50_signal == 'BUY' else 'danger' }}">
+                                                        {{ recommendation.technical_analysis.ma_20_50_signal }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Moving Average (50/200)</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.technical_analysis.ma_50_200_signal == 'BUY' else 'danger' }}">
+                                                        {{ recommendation.technical_analysis.ma_50_200_signal }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>RSI ({{ recommendation.technical_analysis.rsi|round(2) }})</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.technical_analysis.rsi_signal == 'OVERSOLD' else 'danger' if recommendation.technical_analysis.rsi_signal == 'OVERBOUGHT' else 'secondary' }}">
+                                                        {{ recommendation.technical_analysis.rsi_signal }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>MACD</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.technical_analysis.macd_signal == 'BUY' else 'danger' if recommendation.technical_analysis.macd_signal == 'SELL' else 'secondary' }}">
+                                                        {{ recommendation.technical_analysis.macd_signal }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Overall Technical Signal</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.technical_analysis.overall_signal == 'BUY' else 'danger' if recommendation.technical_analysis.overall_signal == 'SELL' else 'secondary' }}">
+                                                        {{ recommendation.technical_analysis.overall_signal }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <img src="data:image/png;base64,{{ recommendation.technical_analysis.chart_img }}" class="img-fluid" alt="Technical Analysis Chart">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Company Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <th>Sector</th>
+                                                <td>{{ recommendation.sector }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Industry</th>
+                                                <td>{{ recommendation.industry }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Market Cap</th>
+                                                <td>{{ (recommendation.market_cap / 1000000000)|round(2) }} B</td>
+                                            </tr>
+                                            <tr>
+                                                <th>P/E Ratio</th>
+                                                <td>{{ recommendation.pe_ratio }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Dividend Yield</th>
+                                                <td>{{ (recommendation.dividend_yield * 100)|round(2) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Price Prediction</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <th>Current Price</th>
+                                                <td>${{ recommendation.prediction.last_price|round(2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Predicted Price</th>
+                                                <td>${{ recommendation.prediction.prediction|round(2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Expected Change</th>
+                                                <td class="{{ 'text-success' if recommendation.prediction.change_percent > 0 else 'text-danger' }}">
+                                                    {{ recommendation.prediction.change_percent|round(2) }}%
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Trend</th>
+                                                <td>
+                                                    <span class="badge bg-{{ 'success' if recommendation.prediction.trend == 'UP' else 'danger' }}">
+                                                        {{ recommendation.prediction.trend }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Model Accuracy</th>
+                                                <td>{{ (recommendation.prediction.accuracy * 100)|round(2) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <img src="data:image/png;base64,{{ recommendation.prediction.chart_img }}" class="img-fluid" alt="Price Prediction Chart">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('stocks.stock_ai_analysis', ticker=ticker) }}" class="btn btn-primary">
+                                        <i class="bi bi-cpu"></i> AI Analysis
+                                    </a>
+                                    <button class="btn btn-success" id="add-to-portfolio" data-ticker="{{ ticker }}">
+                                        <i class="bi bi-briefcase"></i> Add to Portfolio
+                                    </button>
+                                    <button class="btn btn-info" id="add-to-watchlist" data-ticker="{{ ticker }}">
+                                        <i class="bi bi-eye"></i> Add to Watchlist
+                                    </button>
+                                    <a href="{{ url_for('stocks.stock_detail', ticker=ticker) }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-info-circle"></i> Stock Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+La oss lage en AI-analyse mal, `app/templates/analysis/ai.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}{{ ticker }} - AI Analysis{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analysis</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('analysis.ai') }}">AI Analysis</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ticker }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h3>{{ ai_analysis.get('company_name', ticker) }} ({{ ticker }}) - AI Analysis</h3>
+            </div>
+            <div class="card-body">
+                {% if ai_analysis.get('error') %}
+                    <div class="alert alert-danger">
+                        <h4 class="alert-heading">Error</h4>
+                        <p>{{ ai_analysis.get('error') }}</p>
+                        <p>{{ ai_analysis.get('analysis') }}</p>
+                    </div>
+                {% else %}
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h4 class="card-title">AI Market Analysis</h4>
+                                    <div class="card-text">
+                                        {% if ai_analysis.get('market_analysis') %}
+                                            {{ ai_analysis.market_analysis|safe|nl2br }}
+                                        {% else %}
+                                            {{ ai_analysis.analysis|safe|nl2br }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if ai_analysis.get('investment_strategy') %}
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h4 class="card-title">Investment Strategy</h4>
+                                    <div class="card-text">
+                                        {{ ai_analysis.investment_strategy|safe|nl2br }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if ai_analysis.get('risk_assessment') %}
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h4 class="card-title">Risk Assessment</h4>
+                                    <div class="card-text">
+                                        {{ ai_analysis.risk_assessment|safe|nl2br }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('analysis.recommendation', ticker=ticker) }}" class="btn btn-primary">
+                                        <i class="bi bi-graph-up"></i> Technical Analysis
+                                    </a>
+                                    <button class="btn btn-success" id="add-to-portfolio" data-ticker="{{ ticker }}">
+                                        <i class="bi bi-briefcase"></i> Add to Portfolio
+                                    </button>
+                                    <button class="btn btn-info" id="add-to-watchlist" data-ticker="{{ ticker }}">
+                                        <i class="bi bi-eye"></i> Add to Watchlist
+                                    </button>
+                                    <a href="{{ url_for('stocks.stock_detail', ticker=ticker) }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-info-circle"></i> Stock Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <h5><i class="bi bi-info-circle"></i> About AI Analysis</h5>
+                            <p>This analysis is powered by advanced AI models that examine market trends, technical indicators, and company fundamentals. The AI provides insights based on available data, but should not be the sole basis for investment decisions.</p>
+                            <p>Always do your own research and consider consulting with a financial advisor before making investment decisions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+La oss også lage en portefølje mal, `app/templates/portfolio/view.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}{{ portfolio.name }} - Portfolio{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('portfolio.index') }}">Portfolios</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ portfolio.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3>{{ portfolio.name }}</h3>
+                <a href="{{ url_for('portfolio.add_stock', id=portfolio.id) }}" class="btn btn-light">
+                    <i class="bi bi-plus-circle"></i> Add Stock
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Value</h5>
+                                <div class="display-4 mb-3">
+                                    ${{ total_value|round(2) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Investment</h5>
+                                <div class="display-4 mb-3">
+                                    ${{ total_investment|round(2) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Gain/Loss</h5>
+                                <div class="display-4 mb-3 {{ 'text-success' if total_gain_loss > 0 else 'text-danger' }}">
+                                    ${{ total_gain_loss|round(2) }}
+                                </div>
+                                <div class="badge bg-{{ 'success' if total_gain_loss_percent > 0 else 'danger' }} fs-6">
+                                    {{ total_gain_loss_percent|round(2) }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Portfolio Holdings</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if stocks %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Ticker</th>
+                                                <th>Shares</th>
+                                                <th>Avg Price</th>
+                                                <th>Current Price</th>
+                                                <th>Value</th>
+                                                <th>Gain/Loss</th>
+                                                <th>Gain/Loss %</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for stock in stocks %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ url_for('stocks.stock_detail', ticker=stock.ticker) }}">
+                                                        {{ stock.ticker }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ stock.shares }}</td>
+                                                <td>${{ stock.average_price|round(2) }}</td>
+                                                <td>${{ stock.current_price|round(2) }}</td>
+                                                <td>${{ stock.value|round(2) }}</td>
+                                                <td class="{{ 'text-success' if stock.gain_loss > 0 else 'text-danger' }}">
+                                                    ${{ stock.gain_loss|round(2) }}
+                                                </td>
+                                                <td class="{{ 'text-success' if stock.gain_loss_percent > 0 else 'text-danger' }}">
+                                                    {{ stock.gain_loss_percent|round(2) }}%
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a href="{{ url_for('stocks.stock_detail', ticker=stock.ticker) }}" class="btn btn-sm btn-info">
+                                                            <i class="bi bi-info-circle"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('analysis.recommendation', ticker=stock.ticker) }}" class="btn btn-sm btn-primary">
+                                                            <i class="bi bi-graph-up"></i>
+                                                        </a>
+                                                        <button class="btn btn-sm btn-danger" onclick="confirmRemove('{{ stock.ticker }}', {{ stock.id }})">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                    <form id="remove-form-{{ stock.id }}" action="{{ url_for('portfolio.remove_stock', id=portfolio.id, stock_id=stock.id) }}" method="post" style="display: none;"></form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <p>No stocks in this portfolio. <a href="{{ url_for('portfolio.add_stock', id=portfolio.id) }}">Add stocks</a> to get started.</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if ai_recommendation %}
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h5>AI Portfolio Recommendation</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6>Overall Assessment</h6>
+                                        <p>{{ ai_recommendation.overall }}</p>
+                                        
+                                        {% if ai_recommendation.allocation_strategy %}
+                                        <h6>Allocation Strategy</h6>
+                                        <p>{{ ai_recommendation.allocation_strategy }}</p>
+                                        {% endif %}
+                                        
+                                        {% if ai_recommendation.risk_assessment %}
+                                        <h6>Risk Assessment</h6>
+                                        <p>{{ ai_recommendation.risk_assessment }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6>Recommended Allocation</h6>
+                                        <canvas id="allocationChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmRemove(ticker, stockId) {
+        if (confirm(`Are you sure you want to remove ${ticker} from your portfolio?`)) {
+            document.getElementById(`remove-form-${stockId}`).submit();
+        }
+    }
+    
+    {% if ai_recommendation and ai_recommendation.allocation %}
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('allocationChart').getContext('2d');
+        
+        const allocation = {{ ai_recommendation.allocation|tojson }};
+        const tickers = Object.keys(allocation);
+        const percentages = Object.values(allocation);
+        
+        const allocationChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: tickers,
+                datasets: [{
+                    data: percentages,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(199, 199, 199, 0.7)',
+                        'rgba(83, 102, 255, 0.7)',
+                        'rgba(40, 159, 64, 0.7)',
+                        'rgba(210, 199, 199, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+    {% endif %}
+</script>
+{% endblock %}
+```
+
+Til slutt, la oss lage en CSS-fil for appen vår, `app/static/css/style.css`:
+
+```css
+/* General styles */
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+.bg-success {
+    background-color: #198754 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.text-success {
+    color: #198754 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Cards */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+/* Stock chart */
+.stock-chart-container {
+    height: 400px;
+}
+
+/* Tables */
+.table-responsive {
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+/* Nav */
+.navbar {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+}
+
+/* Jumbotron */
+.jumbotron {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Charts */
+canvas {
+    max-width: 100%;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .stock-chart-container {
+        height: 300px;
+    }
+}
+```
+
+Og en enkel JavaScript-fil, `app/static/js/main.js`:
+
+```javascript
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if bootstrap is loaded
+    if (typeof bootstrap !== 'undefined') {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
+    
+    // Format number inputs
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+    });
+});
+
+// Utility function to format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount);
+}
+
+// Utility function to format percentage
+function formatPercentage(percentage) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(percentage / 100);
+}
+```
+
+Nå har vi laget en omfattende aksjeanalyseapp med Flask som analyserer aksjer, lagrer porteføljer, og bruker AI til å gi anbefalinger. Appen er fokusert på Oslo Børs, men støtter også globale aksjer og kryptovalutaer.
+
+Her er en oppsummering av funksjonene:
+
+1. **Aksjedata**:
+   - Oversikt over Oslo Børs
+   - Oversikt over globale aksjer
+   - Oversikt over kryptovalutaer
+   - Detaljert aksjeinformasjon
+
+2. **Analyse**:
+   - Teknisk analyse (MA, RSI, MACD)
+   - Prediksjon av aksjepriser
+   - AI-drevet analyse
+   - Anbefalinger basert på teknisk og fundamental analyse
+
+3. **Portefølje**:
+   - Mulighet til å opprette og administrere porteføljer
+   - Sporing av ytelse
+   - AI-drevet porteføljeanalyse
+   - Lagring av aksjemål og tips
+
+For å starte appen, kjør `python run.py` i prosjektmappen.
+
+Nå har vi ikke implementert brukerautentisering fullt ut (det vil si, vi har ikke laget skjermbilder for registrering og innlogging), så dette er noe som kunne legges til for å gjøre appen komplett.
+
+Det er også viktig å merke seg at denne appen bruker simulert data for AI-analysen hvis ingen OpenAI API-nøkkel er angitt. For best mulig resultat, bør brukeren angi sin egen OpenAI API-nøkkel i miljøvariabelen `OPENAI_API_KEY`.
+# Oslo Børs Stock Analyzer Flask App
+
+
+
+I'll create a comprehensive stock analysis Flask application focused on Oslo Børs with AI analysis, portfolio tracking, and more. Let's build it step by step!
+
+
+
+## Project Structure
+
+
+
+```
+
+stockanalyzer/
+
+├── app/
+
+│   ├── __init__.py
+
+│   ├── models/
+
+│   │   ├── __init__.py
+
+│   │   ├── portfolio.py
+
+│   │   ├── stock.py
+
+│   │   └── user.py
+
+│   ├── routes/
+
+│   │   ├── __init__.py
+
+│   │   ├── analysis.py
+
+│   │   ├── main.py
+
+│   │   ├── portfolio.py
+
+│   │   └── stocks.py
+
+│   ├── services/
+
+│   │   ├── __init__.py
+
+│   │   ├── ai_service.py
+
+│   │   ├── analysis_service.py
+
+│   │   └── data_service.py
+
+│   ├── static/
+
+│   │   ├── css/
+
+│   │   ├── js/
+
+│   │   └── img/
+
+│   └── templates/
+
+│       ├── analysis/
+
+│       ├── portfolio/
+
+│       ├── stocks/
+
+│       └── base.html
+
+├── config.py
+
+├── run.py
+
+└── requirements.txt
+
+```
+
+
+
+## First, the Requirements
+
+
+
+```
+
+# requirements.txt
+
+Flask==2.2.3
+
+Flask-SQLAlchemy==3.0.3
+
+Flask-Login==0.6.2
+
+yfinance==0.2.18
+
+pandas==1.5.3
+
+numpy==1.24.2
+
+scikit-learn==1.2.2
+
+matplotlib==3.7.1
+
+plotly==5.14.1
+
+openai==0.27.6
+
+requests==2.28.2
+
+```
+
+
+
+## Core Application Files
+
+
+
+Let's start with the app initialization and configuration:
+
+
+
+```python
+
+# config.py
+
+import os
+
+
+
+class Config:
+
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'oslo-bors-analyzer-secret-key'
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///stock_analyzer.db'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY') or None
+
+```
+
+
+
+```python
+
+# run.py
+
+from app import create_app
+
+
+
+app = create_app()
+
+
+
+if __name__ == '__main__':
+
+    app.run(debug=True)
+
+```
+
+
+
+```python
+
+# app/__init__.py
+
+from flask import Flask
+
+from flask_sqlalchemy import SQLAlchemy
+
+from flask_login import LoginManager
+
+from config import Config
+
+
+
+db = SQLAlchemy()
+
+login_manager = LoginManager()
+
+login_manager.login_view = 'auth.login'
+
+
+
+def create_app(config_class=Config):
+
+    app = Flask(__name__)
+
+    app.config.from_object(config_class)
+
+    
+
+    db.init_app(app)
+
+    login_manager.init_app(app)
+
+    
+
+    # Register blueprints
+
+    from app.routes.main import main_bp
+
+    from app.routes.stocks import stocks_bp
+
+    from app.routes.analysis import analysis_bp
+
+    from app.routes.portfolio import portfolio_bp
+
+    
+
+    app.register_blueprint(main_bp)
+
+    app.register_blueprint(stocks_bp, url_prefix='/stocks')
+
+    app.register_blueprint(analysis_bp, url_prefix='/analysis')
+
+    app.register_blueprint(portfolio_bp, url_prefix='/portfolio')
+
+    
+
+    # Create database tables
+
+    with app.app_context():
+
+        db.create_all()
+
+    
+
+    return app
+
+```
+
+
+
+## Data Service for Stock Information
+
+
+
+```python
+
+# app/services/data_service.py
+
+import yfinance as yf
+
+import pandas as pd
+
+import datetime
+
+
+
+# Oslo Børs ticker symbols with .OL suffix (Oslo Stock Exchange)
+
+OSLO_BORS_TICKERS = [
+
+    'EQNR.OL',  # Equinor
+
+    'DNB.OL',   # DNB
+
+    'TEL.OL',   # Telenor
+
+    'MOWI.OL',  # Mowi
+
+    'YAR.OL',   # Yara International
+
+    'ORK.OL',   # Orkla
+
+    'NHY.OL',   # Norsk Hydro
+
+    'AKERBP.OL',  # Aker BP
+
+    'SALM.OL',  # SalMar
+
+    'SCHA.OL',  # Schibsted
+
+    'AKER.OL',  # Aker
+
+    'STB.OL',   # Storebrand
+
+    'KOG.OL',   # Kongsberg Gruppen
+
+    'ODF.OL',   # Odfjell Drilling
+
+    'BWLPG.OL', # BW LPG
+
+]
+
+
+
+# Global popular tickers
+
+GLOBAL_TICKERS = [
+
+    'AAPL',     # Apple
+
+    'MSFT',     # Microsoft
+
+    'AMZN',     # Amazon
+
+    'GOOGL',    # Alphabet (Google)
+
+    'META',     # Meta (Facebook)
+
+    'TSLA',     # Tesla
+
+    'NVDA',     # NVIDIA
+
+    'JPM',      # JPMorgan Chase
+
+    'V',        # Visa
+
+    'JNJ',      # Johnson & Johnson
+
+]
+
+
+
+# Crypto tickers
+
+CRYPTO_TICKERS = [
+
+    'BTC-USD',  # Bitcoin
+
+    'ETH-USD',  # Ethereum
+
+    'XRP-USD',  # Ripple
+
+    'LTC-USD',  # Litecoin
+
+    'ADA-USD',  # Cardano
+
+    'DOT-USD',  # Polkadot
+
+    'DOGE-USD', # Dogecoin
+
+    'SOL-USD',  # Solana
+
+]
+
+
+
+class DataService:
+
+    @staticmethod
+
+    def get_stock_data(ticker, period='1y', interval='1d'):
+
+        """Get historical stock data for a specific ticker"""
+
+        try:
+
+            stock = yf.Ticker(ticker)
+
+            history = stock.history(period=period, interval=interval)
+
+            
+
+            if not history.empty:
+
+                history.reset_index(inplace=True)
+
+                # Convert date to string format for JSON serialization
+
+                history['Date'] = history['Date'].dt.strftime('%Y-%m-%d')
+
+            
+
+            return history
+
+        except Exception as e:
+
+            print(f"Error fetching data for {ticker}: {e}")
+
+            return pd.DataFrame()
+
+    
+
+    @staticmethod
+
+    def get_stock_info(ticker):
+
+        """Get detailed information about a stock"""
+
+        try:
+
+            stock = yf.Ticker(ticker)
+
+            info = stock.info
+
+            return info
+
+        except Exception as e:
+
+            print(f"Error fetching info for {ticker}: {e}")
+
+            return {}
+
+    
+
+    @staticmethod
+
+    def get_multiple_stocks_data(tickers, period='1d'):
+
+        """Get data for multiple stocks"""
+
+        result = {}
+
+        for ticker in tickers:
+
+            try:
+
+                stock = yf.Ticker(ticker)
+
+                data = stock.history(period=period)
+
+                
+
+                if not data.empty:
+
+                    # Calculate daily change
+
+                    if len(data) > 1:
+
+                        last_close = data['Close'].iloc[-1]
+
+                        prev_close = data['Close'].iloc[-2]
+
+                        change = last_close - prev_close
+
+                        change_percent = (change / prev_close) * 100
+
+                    else:
+
+                        last_close = data['Close'].iloc[-1]
+
+                        change = 0
+
+                        change_percent = 0
+
+                    
+
+                    # Get company name
+
+                    try:
+
+                        name = stock.info.get('shortName', ticker)
+
+                    except:
+
+                        name = ticker
+
+                    
+
+                    result[ticker] = {
+
+                        'name': name,
+
+                        'current_price': last_close,
+
+                        'change': change,
+
+                        'change_percent': change_percent
+
+                    }
+
+            except Exception as e:
+
+                print(f"Error processing {ticker}: {e}")
+
+        
+
+        return result
+
+    
+
+    @staticmethod
+
+    def get_oslo_bors_overview():
+
+        """Get an overview of Oslo Børs stocks"""
+
+        return DataService.get_multiple_stocks_data(OSLO_BORS_TICKERS)
+
+    
+
+    @staticmethod
+
+    def get_global_stocks_overview():
+
+        """Get an overview of global stocks"""
+
+        return DataService.get_multiple_stocks_data(GLOBAL_TICKERS)
+
+    
+
+    @staticmethod
+
+    def get_crypto_overview():
+
+        """Get an overview of cryptocurrencies"""
+
+        return DataService.get_multiple_stocks_data(CRYPTO_TICKERS)
+
+    
+
+    @staticmethod
+
+    def search_ticker(query):
+
+        """Search for ticker symbols"""
+
+        # Combine all tickers
+
+        all_tickers = OSLO_BORS_TICKERS + GLOBAL_TICKERS + CRYPTO_TICKERS
+
+        
+
+        # Filter by query
+
+        results = []
+
+        for ticker in all_tickers:
+
+            if query.upper() in ticker.upper():
+
+                try:
+
+                    stock = yf.Ticker(ticker)
+
+                    name = stock.info.get('shortName', ticker)
+
+                    results.append({
+
+                        'ticker': ticker,
+
+                        'name': name
+
+                    })
+
+                except:
+
+                    results.append({
+
+                        'ticker': ticker,
+
+                        'name': ticker
+
+                    })
+
+        
+
+        return results
+
+```
+
+
+
+## Analysis Service for Technical Indicators
+
+
+
+```python
+
+# app/services/analysis_service.py
+
+import pandas as pd
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from matplotlib.figure import Figure
+
+import io
+
+import base64
+
+from sklearn.linear_model import LinearRegression
+
+from sklearn.preprocessing import MinMaxScaler
+
+from app.services.data_service import DataService
+
+
+
+class AnalysisService:
+
+    @staticmethod
+
+    def calculate_moving_averages(data, periods=[20, 50, 200]):
+
+        """Calculate moving averages for given periods"""
+
+        df = data.copy()
+
+        for period in periods:
+
+            df[f'MA_{period}'] = df['Close'].rolling(window=period).mean()
+
+        return df
+
+    
+
+    @staticmethod
+
+    def calculate_rsi(data, period=14):
+
+        """Calculate Relative Strength Index (RSI)"""
+
+        df = data.copy()
+
+        delta = df['Close'].diff()
+
+        gain = delta.where(delta > 0, 0)
+
+        loss = -delta.where(delta < 0, 0)
+
+        
+
+        avg_gain = gain.rolling(window=period).mean()
+
+        avg_loss = loss.rolling(window=period).mean()
+
+        
+
+        rs = avg_gain / avg_loss
+
+        df['RSI'] = 100 - (100 / (1 + rs))
+
+        return df
+
+    
+
+    @staticmethod
+
+    def calculate_macd(data, fast_period=12, slow_period=26, signal_period=9):
+
+        """Calculate MACD (Moving Average Convergence Divergence)"""
+
+        df = data.copy()
+
+        df['EMA_fast'] = df['Close'].ewm(span=fast_period, adjust=False).mean()
+
+        df['EMA_slow'] = df['Close'].ewm(span=slow_period, adjust=False).mean()
+
+        df['MACD'] = df['EMA_fast'] - df['EMA_slow']
+
+        df['MACD_signal'] = df['MACD'].ewm(span=signal_period, adjust=False).mean()
+
+        df['MACD_histogram'] = df['MACD'] - df['MACD_signal']
+
+        return df
+
+    
+
+    @staticmethod
+
+    def get_technical_analysis(ticker):
+
+        """Perform technical analysis on a stock"""
+
+        # Get historical data
+
+        data = DataService.get_stock_data(ticker, period='1y')
+
+        if data.empty:
+
+            return {'error': 'No data available for this ticker'}
+
+        
+
+        # Calculate indicators
+
+        data_with_ma = AnalysisService.calculate_moving_averages(data)
+
+        data_with_rsi = AnalysisService.calculate_rsi(data_with_ma)
+
+        data_with_all = AnalysisService.calculate_macd(data_with_rsi)
+
+        
+
+        # Get latest values
+
+        latest = data_with_all.iloc[-1]
+
+        prev = data_with_all.iloc[-2] if len(data_with_all) > 1 else latest
+
+        
+
+        # Determine signals
+
+        ma_20_50_signal = 'BUY' if latest.get('MA_20', 0) > latest.get('MA_50', 0) else 'SELL'
+
+        ma_50_200_signal = 'BUY' if latest.get('MA_50', 0) > latest.get('MA_200', 0) else 'SELL'
+
+        
+
+        rsi_signal = 'OVERSOLD' if latest.get('RSI', 50) < 30 else 'OVERBOUGHT' if latest.get('RSI', 50) > 70 else 'NEUTRAL'
+
+        
+
+        macd_signal = 'BUY' if latest.get('MACD', 0) > latest.get('MACD_signal', 0) and prev.get('MACD', 0) <= prev.get('MACD_signal', 0) else \
+
+                      'SELL' if latest.get('MACD', 0) < latest.get('MACD_signal', 0) and prev.get('MACD', 0) >= prev.get('MACD_signal', 0) else 'NEUTRAL'
+
+        
+
+        # Overall signal
+
+        signals = [
+
+            ma_20_50_signal, 
+
+            ma_50_200_signal, 
+
+            'BUY' if rsi_signal == 'OVERSOLD' else 'SELL' if rsi_signal == 'OVERBOUGHT' else 'NEUTRAL',
+
+            macd_signal
+
+        ]
+
+        
+
+        buy_count = signals.count('BUY')
+
+        sell_count = signals.count('SELL')
+
+        overall_signal = 'BUY' if buy_count > sell_count else 'SELL' if sell_count > buy_count else 'NEUTRAL'
+
+        
+
+        # Generate charts
+
+        fig = Figure(figsize=(12, 18))
+
+        
+
+        # Price and MA subplot
+
+        ax1 = fig.add_subplot(3, 1, 1)
+
+        ax1.plot(data_with_all['Date'], data_with_all['Close'], label='Close Price')
+
+        ax1.plot(data_with_all['Date'], data_with_all['MA_20'], label='MA 20')
+
+        ax1.plot(data_with_all['Date'], data_with_all['MA_50'], label='MA 50')
+
+        ax1.plot(data_with_all['Date'], data_with_all['MA_200'], label='MA 200')
+
+        ax1.set_title(f'{ticker} Price and Moving Averages')
+
+        ax1.set_xlabel('Date')
+
+        ax1.set_ylabel('Price')
+
+        ax1.legend()
+
+        ax1.grid(True)
+
+        
+
+        # RSI subplot
+
+        ax2 = fig.add_subplot(3, 1, 2)
+
+        ax2.plot(data_with_all['Date'], data_with_all['RSI'], label='RSI')
+
+        ax2.axhline(y=70, color='r', linestyle='-', alpha=0.3)
+
+        ax2.axhline(y=30, color='g', linestyle='-', alpha=0.3)
+
+        ax2.set_title(f'{ticker} RSI')
+
+        ax2.set_xlabel('Date')
+
+        ax2.set_ylabel('RSI')
+
+        ax2.legend()
+
+        ax2.grid(True)
+
+        
+
+        # MACD subplot
+
+        ax3 = fig.add_subplot(3, 1, 3)
+
+        ax3.plot(data_with_all['Date'], data_with_all['MACD'], label='MACD')
+
+        ax3.plot(data_with_all['Date'], data_with_all['MACD_signal'], label='Signal Line')
+
+        ax3.bar(data_with_all['Date'], data_with_all['MACD_histogram'], label='Histogram', alpha=0.5)
+
+        ax3.set_title(f'{ticker} MACD')
+
+        ax3.set_xlabel('Date')
+
+        ax3.set_ylabel('Value')
+
+        ax3.legend()
+
+        ax3.grid(True)
+
+        
+
+        fig.tight_layout()
+
+        
+
+        # Convert plot to base64 encoded image
+
+        buf = io.BytesIO()
+
+        fig.savefig(buf, format='png')
+
+        buf.seek(0)
+
+        img_str = base64.b64encode(buf.read()).decode('utf-8')
+
+        
+
+        return {
+
+            'ticker': ticker,
+
+            'last_price': latest.get('Close', 0),
+
+            'change': latest.get('Close', 0) - prev.get('Close', 0),
+
+            'change_percent': ((latest.get('Close', 0) - prev.get('Close', 0)) / prev.get('Close', 1)) * 100 if prev.get('Close', 0) else 0,
+
+            'ma_20': latest.get('MA_20', 0),
+
+            'ma_50': latest.get('MA_50', 0),
+
+            'ma_200': latest.get('MA_200', 0),
+
+            'rsi': latest.get('RSI', 0),
+
+            'macd': latest.get('MACD', 0),
+
+            'macd_signal': latest.get('MACD_signal', 0),
+
+            'ma_20_50_signal': ma_20_50_signal,
+
+            'ma_50_200_signal': ma_50_200_signal,
+
+            'rsi_signal': rsi_signal,
+
+            'macd_signal': macd_signal,
+
+            'overall_signal': overall_signal,
+
+            'chart_img': img_str
+
+        }
+
+    
+
+    @staticmethod
+
+    def predict_next_day_price(ticker, days=30):
+
+        """Predict stock price for the next day using linear regression"""
+
+        # Get historical data
+
+        data = DataService.get_stock_data(ticker, period='60d')
+
+        if data.empty:
+
+            return {'error': 'No data available for this ticker'}
+
+        
+
+        # Prepare data
+
+        df = data.tail(days).copy()
+
+        if len(df) < 5:  # Need enough data points
+
+            return {'error': 'Not enough historical data for prediction'}
+
+        
+
+        # Create features (using day index as feature)
+
+        X = np.array(range(len(df))).reshape(-1, 1)
+
+        y = df['Close'].values
+
+        
+
+        # Train model
+
+        model = LinearRegression()
+
+        model.fit(X, y)
+
+        
+
+        # Make prediction for next day
+
+        next_day = np.array([len(df)]).reshape(-1, 1)
+
+        next_day_pred = model.predict(next_day)[0]
+
+        
+
+        # Calculate metrics
+
+        last_price = df['Close'].iloc[-1]
+
+        change = next_day_pred - last_price
+
+        change_percent = (change / last_price) * 100
+
+        trend = 'UP' if change > 0 else 'DOWN'
+
+        
+
+        # Generate prediction chart
+
+        fig = Figure(figsize=(10, 6))
+
+        ax = fig.add_subplot(1, 1, 1)
+
+        
+
+        # Plot historical prices
+
+        ax.plot(range(len(df)), df['Close'], label='Historical Prices', color='blue')
+
+        
+
+        # Plot prediction
+
+        ax.scatter(len(df), next_day_pred, color='red', s=100, label='Prediction')
+
+        
+
+        # Plot the regression line
+
+        ax.plot(range(len(df)+1), model.predict(np.array(range(len(df)+1)).reshape(-1, 1)), 
+
+                linestyle='--', color='green', label='Trend')
+
+        
+
+        ax.set_title(f'{ticker} Price Prediction')
+
+        ax.set_xlabel('Days')
+
+        ax.set_ylabel('Price')
+
+        ax.legend()
+
+        ax.grid(True)
+
+        
+
+        # Convert plot to base64 encoded image
+
+        buf = io.BytesIO()
+
+        fig.savefig(buf, format='png')
+
+        buf.seek(0)
+
+        img_str = base64.b64encode(buf.read()).decode('utf-8')
+
+        
+
+        # Get prediction accuracy (R²)
+
+        accuracy = model.score(X, y)
+
+        
+
+        return {
+
+            'ticker': ticker,
+
+            'last_price': last_price,
+
+            'prediction': next_day_pred,
+
+            'change': change,
+
+            'change_percent': change_percent,
+
+            'trend': trend,
+
+            'accuracy': accuracy,
+
+            'chart_img': img_str
+
+        }
+
+    
+
+    @staticmethod
+
+    def get_recommendation(ticker):
+
+        """Get a stock recommendation based on technical analysis and prediction"""
+
+        # Get technical analysis
+
+        ta = AnalysisService.get_technical_analysis(ticker)
+
+        if 'error' in ta:
+
+            return {'error': ta['error']}
+
+        
+
+        # Get prediction
+
+        pred = AnalysisService.predict_next_day_price(ticker)
+
+        if 'error' in pred:
+
+            return {'error': pred['error']}
+
+        
+
+        # Get stock info for fundamentals
+
+        info = DataService.get_stock_info(ticker)
+
+        
+
+        # Combine signals for recommendation
+
+        ta_signal = ta['overall_signal']
+
+        pred_signal = pred['trend']
+
+        
+
+        if ta_signal == 'BUY' and pred_signal == 'UP':
+
+            recommendation = 'STRONG BUY'
+
+            confidence = 'HIGH'
+
+        elif ta_signal == 'SELL' and pred_signal == 'DOWN':
+
+            recommendation = 'STRONG SELL'
+
+            confidence = 'HIGH'
+
+        elif ta_signal == 'BUY' or pred_signal == 'UP':
+
+            recommendation = 'BUY'
+
+            confidence = 'MEDIUM'
+
+        elif ta_signal == 'SELL' or pred_signal == 'DOWN':
+
+            recommendation = 'SELL'
+
+            confidence = 'MEDIUM'
+
+        else:
+
+            recommendation = 'HOLD'
+
+            confidence = 'LOW'
+
+        
+
+        return {
+
+            'ticker': ticker,
+
+            'company_name': info.get('shortName', ticker),
+
+            'recommendation': recommendation,
+
+            'confidence': confidence,
+
+            'technical_analysis': ta,
+
+            'prediction': pred,
+
+            'sector': info.get('sector', 'Unknown'),
+
+            'industry': info.get('industry', 'Unknown'),
+
+            'market_cap': info.get('marketCap', 0),
+
+            'pe_ratio': info.get('trailingPE', 0),
+
+            'dividend_yield': info.get('dividendYield', 0),
+
+            'target_price': info.get('targetMeanPrice', 0),
+
+        }
+
+```
+
+
+
+## AI Service for Advanced Analysis
+
+
+
+```python
+
+# app/services/ai_service.py
+
+import os
+
+import openai
+
+from app.services.data_service import DataService
+
+from app.services.analysis_service import AnalysisService
+
+
+
+class AIService:
+
+    @staticmethod
+
+    def get_ai_analysis(ticker, api_key=None):
+
+        """Get AI-powered analysis for a stock"""
+
+        # Set API key
+
+        if api_key:
+
+            openai.api_key = api_key
+
+        else:
+
+            openai.api_key = os.environ.get('OPENAI_API_KEY')
+
+        
+
+        # If no API key is available, provide simulated AI analysis
+
+        if not openai.api_key:
+
+            return AIService._get_simulated_analysis(ticker)
+
+        
+
+        try:
+
+            # Get stock data and analysis
+
+            stock_info = DataService.get_stock_info(ticker)
+
+            ta_result = AnalysisService.get_technical_analysis(ticker)
+
+            pred_result = AnalysisService.predict_next_day_price(ticker)
+
+            
+
+            # Create prompt with all the data
+
+            company_name = stock_info.get('shortName', ticker)
+
+            sector = stock_info.get('sector', 'Unknown')
+
+            current_price = ta_result.get('last_price', 'Unknown')
+
+            ma_signals = f"MA 20/50: {ta_result.get('ma_20_50_signal', 'Unknown')}, MA 50/200: {ta_result.get('ma_50_200_signal', 'Unknown')}"
+
+            rsi = f"RSI: {ta_result.get('rsi', 'Unknown')} - {ta_result.get('rsi_signal', 'Unknown')}"
+
+            macd = f"MACD Signal: {ta_result.get('macd_signal', 'Unknown')}"
+
+            overall_ta = f"Overall Technical Analysis: {ta_result.get('overall_signal', 'Unknown')}"
+
+            prediction = f"Price Prediction: {pred_result.get('prediction', 'Unknown')} ({pred_result.get('trend', 'Unknown')}), Change: {pred_result.get('change_percent', 'Unknown'):.2f}%"
+
+            
+
+            prompt = f"""
+
+            Analyze the stock {ticker} ({company_name}) in the {sector} sector with the following information:
+
+            
+
+            Current Price: {current_price}
+
+            Technical Analysis:
+
+            - {ma_signals}
+
+            - {rsi}
+
+            - {macd}
+
+            - {overall_ta}
+
+            
+
+            {prediction}
+
+            
+
+            Provide a comprehensive analysis of this stock including:
+
+            1. Analysis of current market position and trends
+
+            2. Investment strategy recommendation (short-term and long-term)
+
+            3. Risk assessment
+
+            
+
+            Format your response in a structured way with clear sections.
+
+            """
+
+            
+
+            # Get AI response
+
+            response = openai.ChatCompletion.create(
+
+                model="gpt-3.5-turbo",
+
+                messages=[
+
+                    {"role": "system", "content": "You are a financial analyst specializing in stock market analysis."},
+
+                    {"role": "user", "content": prompt}
+
+                ],
+
+                max_tokens=1000,
+
+                temperature=0.7,
+
+            )
+
+            
+
+            analysis_text = response.choices[0].message['content'].strip()
+
+            
+
+            # Extract sections
+
+            sections = analysis_text.split('\n\n')
+
+            
+
+            market_analysis = sections[0] if len(sections) > 0 else analysis_text
+
+            investment_strategy = sections[1] if len(sections) > 1 else None
+
+            risk_assessment = sections[2] if len(sections) > 2 else None
+
+            
+
+            return {
+
+                'ticker': ticker,
+
+                'company_name': company_name,
+
+                'analysis': analysis_text,
+
+                'market_analysis': market_analysis,
+
+                'investment_strategy': investment_strategy,
+
+                'risk_assessment': risk_assessment
+
+            }
+
+        
+
+        except Exception as e:
+
+            print(f"Error in AI analysis: {e}")
+
+            return AIService._get_simulated_analysis(ticker)
+
+    
+
+    @staticmethod
+
+    def _get_simulated_analysis(ticker):
+
+        """Provide simulated AI analysis when no API key is available"""
+
+        # Get some basic info
+
+        stock_info = DataService.get_stock_info(ticker)
+
+        ta_result = AnalysisService.get_technical_analysis(ticker)
+
+        
+
+        company_name = stock_info.get('shortName', ticker)
+
+        signal = ta_result.get('overall_signal', 'NEUTRAL')
+
+        
+
+        # Generate simulated analysis
+
+        if signal == 'BUY':
+
+            analysis = f"""
+
+            Market Analysis:
+
+            {company_name} ({ticker}) is showing positive technical indicators with bullish momentum. The stock has been trending upward, and multiple technical indicators suggest continued strength. Recent price movements show support at key levels, and volume patterns indicate increased buying interest.
+
+            
+
+            Investment Strategy:
+
+            Short-term: Consider buying positions with a clear stop loss. The current technical setup suggests potential for near-term gains.
+
+            Long-term: If you believe in the company's fundamentals, this could be a good entry point for a long-term position. Monitor quarterly reports and industry trends.
+
+            
+
+            Risk Assessment:
+
+            While technical indicators are positive, market volatility could affect performance. Major market events or company-specific news could reverse the current trend. Consider diversifying and using position sizing appropriate to your risk tolerance.
+
+            """
+
+        elif signal == 'SELL':
+
+            analysis = f"""
+
+            Market Analysis:
+
+            {company_name} ({ticker}) is displaying concerning technical indicators with bearish momentum. The stock has been trending downward, breaking key support levels. Multiple technical signals suggest potential continued weakness, and comparative sector analysis shows underperformance.
+
+            
+
+            Investment Strategy:
+
+            Short-term: Consider reducing positions or implementing hedging strategies. The current technical setup suggests potential for further decline.
+
+            Long-term: Reassess the fundamental investment thesis. If still strong, this weakness might present future buying opportunities at lower levels.
+
+            
+
+            Risk Assessment:
+
+            Technical indicators suggest downside risk is elevated. However, oversold conditions could lead to short-term bounces. Company fundamentals should be closely examined to determine if this is a temporary setback or the beginning of a longer-term issue.
+
+            """
+
+        else:
+
+            analysis = f"""
+
+            Market Analysis:
+
+            {company_name} ({ticker}) is currently showing mixed signals with no clear directional bias. The stock is trading in a consolidation pattern, with technical indicators providing conflicting signals. Volume patterns are inconsistent, suggesting market indecision.
+
+            
+
+            Investment Strategy:
+
+            Short-term: Consider a wait-and-see approach until a clearer trend emerges. Setting alerts at key technical levels may help identify breakout opportunities.
+
+            Long-term: Focus on fundamental analysis to determine if the current valuation presents value. Consider dollar-cost averaging if you have a long-term bullish outlook.
+
+            
+
+            Risk Assessment:
+
+            The current neutral pattern could break in either direction. Risk is balanced, but position sizing should still be managed carefully. Keep an eye on broader market trends and sector rotation that might influence future price movement.
+
+            """
+
+        
+
+        # Split into sections
+
+        sections = analysis.strip().split('\n\n')
+
+        
+
+        return {
+
+            'ticker': ticker,
+
+            'company_name': company_name,
+
+            'analysis': analysis.strip(),
+
+            'market_analysis': sections[0] if len(sections) > 0 else "",
+
+            'investment_strategy': sections[1] if len(sections) > 1 else "",
+
+            'risk_assessment': sections[2] if len(sections) > 2 else ""
+
+        }
+
+    
+
+    @staticmethod
+
+    def get_portfolio_recommendation(tickers, api_key=None):
+
+        """Get AI-powered portfolio recommendation"""
+
+        if not tickers:
+
+            return {'error': 'No stocks in portfolio'}
+
+        
+
+        # Get data for all tickers
+
+        stocks_data = []
+
+        overall_signal_counts = {'BUY': 0, 'SELL': 0, 'NEUTRAL': 0}
+
+        
+
+        for ticker in tickers:
+
+            ta = AnalysisService.get_technical_analysis(ticker)
+
+            info = DataService.get_stock_info(ticker)
+
+            
+
+            if 'error' not in ta:
+
+                signal = ta.get('overall_signal', 'NEUTRAL')
+
+                overall_signal_counts[signal] += 1
+
+                
+
+                stocks_data.append({
+
+                    'ticker': ticker,
+
+                    'name': info.get('shortName', ticker),
+
+                    'signal': signal,
+
+                    'price': ta.get('last_price', 0),
+
+                    'sector': info.get('sector', 'Unknown')
+
+                })
+
+        
+
+        # Determine portfolio sentiment
+
+        total_stocks = len(stocks_data)
+
+        buy_percent = (overall_signal_counts['BUY'] / total_stocks * 100) if total_stocks > 0 else 0
+
+        sell_percent = (overall_signal_counts['SELL'] / total_stocks * 100) if total_stocks > 0 else 0
+
+        
+
+        if buy_percent > 60:
+
+            portfolio_sentiment = "Strongly Bullish"
+
+        elif buy_percent > 40:
+
+            portfolio_sentiment = "Moderately Bullish"
+
+        elif sell_percent > 60:
+
+            portfolio_sentiment = "Strongly Bearish"
+
+        elif sell_percent > 40:
+
+            portfolio_sentiment = "Moderately Bearish"
+
+        else:
+
+            portfolio_sentiment = "Neutral"
+
+        
+
+        # Calculate recommended allocation (simple approach)
+
+        allocation = {}
+
+        buy_stocks = [s for s in stocks_data if s['signal'] == 'BUY']
+
+        neutral_stocks = [s for s in stocks_data if s['signal'] == 'NEUTRAL']
+
+        
+
+        # More weight to BUY signals
+
+        if buy_stocks:
+
+            buy_weight = 70 / len(buy_stocks) if len(buy_stocks) > 0 else 0
+
+            for stock in buy_stocks:
+
+                allocation[stock['ticker']] = buy_weight
+
+        
+
+        # Less weight to NEUTRAL signals
+
+        if neutral_stocks:
+
+            neutral_weight = 30 / len(neutral_stocks) if len(neutral_stocks) > 0 else 0
+
+            for stock in neutral_stocks:
+
+                allocation[stock['ticker']] = neutral_weight
+
+        
+
+        # Set SELL signals to 0
+
+        for stock in stocks_data:
+
+            if stock['signal'] == 'SELL':
+
+                allocation[stock['ticker']] = 0
+
+        
+
+        # Normalize to ensure total is 100%
+
+        total_allocation = sum(allocation.values())
+
+        if total_allocation > 0:
+
+            for ticker in allocation:
+
+                allocation[ticker] = (allocation[ticker] / total_allocation) * 100
+
+        
+
+        return {
+
+            'portfolio_sentiment': portfolio_sentiment,
+
+            'buy_percent': buy_percent,
+
+            'sell_percent': sell_percent,
+
+            'neutral_percent': 100 - buy_percent - sell_percent,
+
+            'stocks_data': stocks_data,
+
+            'allocation': allocation,
+
+            'summary': f"Portfolio is {portfolio_sentiment.lower()} with {buy_percent:.1f}% buy signals and {sell_percent:.1f}% sell signals."
+
+        }
+
+```
+
+
+
+## Database Models
+
+
+
+```python
+
+# app/models/user.py
+
+from datetime import datetime
+
+from flask_login import UserMixin
+
+from app import db, login_manager
+
+
+
+class User(UserMixin, db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(64), unique=True, index=True)
+
+    email = db.Column(db.String(120), unique=True, index=True)
+
+    password_hash = db.Column(db.String(128))
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+
+    portfolios = db.relationship('Portfolio', backref='owner', lazy='dynamic')
+
+    watchlists = db.relationship('Watchlist', backref='owner', lazy='dynamic')
+
+    
+
+    def __repr__(self):
+
+        return f'<User {self.username}>'
+
+
+
+@login_manager.user_loader
+
+def load_user(id):
+
+    return User.query.get(int(id))
+
+```
+
+
+
+```python
+
+# app/models/portfolio.py
+
+from datetime import datetime
+
+from app import db
+
+
+
+class Portfolio(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(64))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+
+    stocks = db.relationship('PortfolioStock', backref='portfolio', lazy='dynamic')
+
+    
+
+    def __repr__(self):
+
+        return f'<Portfolio {self.name}>'
+
+
+
+class PortfolioStock(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolio.id'))
+
+    ticker = db.Column(db.String(20))
+
+    shares = db.Column(db.Float, default=0)
+
+    purchase_price = db.Column(db.Float, default=0)
+
+    purchase_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+
+    def __repr__(self):
+
+        return f'<PortfolioStock {self.ticker}>'
+
+```
+
+
+
+```python
+
+# app/models/stock.py
+
+from datetime import datetime
+
+from app import db
+
+
+
+class Watchlist(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(64))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+
+    stocks = db.relationship('WatchlistStock', backref='watchlist', lazy='dynamic')
+
+    
+
+    def __repr__(self):
+
+        return f'<Watchlist {self.name}>'
+
+
+
+class WatchlistStock(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    watchlist_id = db.Column(db.Integer, db.ForeignKey('watchlist.id'))
+
+    ticker = db.Column(db.String(20))
+
+    added_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+
+    def __repr__(self):
+
+        return f'<WatchlistStock {self.ticker}>'
+
+
+
+class StockTip(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    ticker = db.Column(db.String(20))
+
+    tip_type = db.Column(db.String(20))  # BUY, SELL, HOLD
+
+    confidence = db.Column(db.String(20))  # HIGH, MEDIUM, LOW
+
+    analysis = db.Column(db.Text)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+
+    
+
+    def __repr__(self):
+
+        return f'<StockTip {self.ticker} - {self.tip_type}>'
+
+```
+
+
+
+## Main Routes
+
+
+
+```python
+
+# app/routes/main.py
+
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+
+from app.services.data_service import DataService
+
+
+
+main_bp = Blueprint('main', __name__)
+
+
+
+@main_bp.route('/')
+
+def index():
+
+    # Get overview of Oslo Børs
+
+    oslo_stocks = DataService.get_oslo_bors_overview()
+
+    
+
+    # Get overview of global stocks
+
+    global_stocks = DataService.get_global_stocks_overview()
+
+    
+
+    # Get overview of crypto
+
+    crypto = DataService.get_crypto_overview()
+
+    
+
+    return render_template('index.html', 
+
+                          oslo_stocks=oslo_stocks,
+
+                          global_stocks=global_stocks,
+
+                          crypto=crypto)
+
+
+
+@main_bp.route('/search')
+
+def search():
+
+    query = request.args.get('q', '')
+
+    if not query:
+
+        return redirect(url_for('main.index'))
+
+    
+
+    results = DataService.search_ticker(query)
+
+    return render_template('search_results.html', results=results, query=query)
+
+```
+
+
+
+## Stocks Routes
+
+
+
+```python
+
+# app/routes/stocks.py
+
+from flask import Blueprint, render_template, request, jsonify
+
+from app.services.data_service import DataService
+
+from app.services.analysis_service import AnalysisService
+
+
+
+stocks_bp = Blueprint('stocks', __name__)
+
+
+
+@stocks_bp.route('/')
+
+def index():
+
+    # Get overview of Oslo Børs
+
+    oslo_stocks = DataService.get_oslo_bors_overview()
+
+    
+
+    # Get overview of global stocks
+
+    global_stocks = DataService.get_global_stocks_overview()
+
+    
+
+    # Get overview of crypto
+
+    crypto = DataService.get_crypto_overview()
+
+    
+
+    return render_template('stocks/index.html',
+
+                          oslo_stocks=oslo_stocks,
+
+                          global_stocks=global_stocks,
+
+                          crypto=crypto)
+
+
+
+@stocks_bp.route('/<ticker>')
+
+def details(ticker):
+
+    # Get stock info
+
+    stock_info = DataService.get_stock_info(ticker)
+
+    
+
+    # Get technical analysis
+
+    analysis = AnalysisService.get_technical_analysis(ticker)
+
+    
+
+    # Get historical data
+
+    period = request.args.get('period', '1y')
+
+    interval = request.args.get('interval', '1d')
+
+    historical_data = DataService.get_stock_data(ticker, period=period, interval=interval)
+
+    
+
+    return render_template('stocks/details.html',
+
+                          ticker=ticker,
+
+                          stock_info=stock_info,
+
+                          analysis=analysis,
+
+                          historical_data=historical_data)
+
+
+
+@stocks_bp.route('/api/<ticker>/data')
+
+def api_stock_data(ticker):
+
+    period = request.args.get('period', '1y')
+
+    interval = request.args.get('interval', '1d')
+
+    data = DataService.get_stock_data(ticker, period=period, interval=interval)
+
+    
+
+    if data.empty:
+
+        return jsonify({'error': 'No data available'})
+
+    
+
+    return jsonify({
+
+        'ticker': ticker,
+
+        'data': data.to_dict(orient='records')
+
+    })
+
+
+
+@stocks_bp.route('/api/<ticker>/info')
+
+def api_stock_info(ticker):
+
+    info = DataService.get_stock_info(ticker)
+
+    return jsonify({
+
+        'ticker': ticker,
+
+        'info': info
+
+    })
+
+```
+
+
+
+## Analysis Routes
+
+
+
+```python
+
+# app/routes/analysis.py
+
+from flask import Blueprint, render_template, request, jsonify
+
+from app.services.data_service import DataService, OSLO_BORS_TICKERS
+
+from app.services.analysis_service import AnalysisService
+
+from app.services.ai_service import AIService
+
+
+
+analysis_bp = Blueprint('analysis', __name__)
+
+
+
+@analysis_bp.route('/')
+
+def index():
+
+    return render_template('analysis/index.html')
+
+
+
+@analysis_bp.route('/technical/<ticker>')
+
+def technical(ticker):
+
+    analysis = AnalysisService.get_technical_analysis(ticker)
+
+    return render_template('analysis/technical.html', analysis=analysis)
+
+
+
+@analysis_bp.route('/prediction/<ticker>')
+
+def prediction(ticker):
+
+    prediction = AnalysisService.predict_next_day_price(ticker)
+
+    return render_template('analysis/prediction.html', prediction=prediction)
+
+
+
+@analysis_bp.route('/recommendation/<ticker>')
+
+def recommendation(ticker):
+
+    recommendation = AnalysisService.get_recommendation(ticker)
+
+    return render_template('analysis/recommendation.html', recommendation=recommendation)
+
+
+
+@analysis_bp.route('/ai/<ticker>')
+
+def ai_analysis(ticker):
+
+    ai_analysis = AIService.get_ai_analysis(ticker)
+
+    return render_template('analysis/ai_analysis.html', ai_analysis=ai_analysis)
+
+
+
+@analysis_bp.route('/market-overview')
+
+def market_overview():
+
+    # Get overview of Oslo Børs
+
+    oslo_stocks = DataService.get_oslo_bors_overview()
+
+    
+
+    # Count buy/sell signals
+
+    buy_count = 0
+
+    sell_count = 0
+
+    neutral_count = 0
+
+    
+
+    stock_signals = {}
+
+    
+
+    for ticker in oslo_stocks:
+
+        analysis = AnalysisService.get_technical_analysis(ticker)
+
+        signal = analysis.get('overall_signal', 'NEUTRAL')
+
+        stock_signals[ticker] = signal
+
+        
+
+        if signal == 'BUY':
+
+            buy_count += 1
+
+        elif signal == 'SELL':
+
+            sell_count += 1
+
+        else:
+
+            neutral_count += 1
+
+    
+
+    total_stocks = len(oslo_stocks)
+
+    buy_percent = (buy_count / total_stocks * 100) if total_stocks > 0 else 0
+
+    sell_percent = (sell_count / total_stocks * 100) if total_stocks > 0 else 0
+
+    neutral_percent = (neutral_count / total_stocks * 100) if total_stocks > 0 else 0
+
+    
+
+    if buy_percent > sell_percent:
+
+        market_sentiment = 'Bullish'
+
+    elif sell_percent > buy_percent:
+
+        market_sentiment = 'Bearish'
+
+    else:
+
+        market_sentiment = 'Neutral'
+
+    
+
+    return render_template('analysis/market_overview.html',
+
+                          oslo_stocks=oslo_stocks,
+
+                          stock_signals=stock_signals,
+
+                          buy_count=buy_count,
+
+                          sell_count=sell_count,
+
+                          neutral_count=neutral_count,
+
+                          buy_percent=buy_percent,
+
+                          sell_percent=sell_percent,
+
+                          neutral_percent=neutral_percent,
+
+                          market_sentiment=market_sentiment)
+
+```
+
+
+
+## Portfolio Routes
+
+
+
+```python
+
+# app/routes/portfolio.py
+
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+
+from flask_login import current_user, login_required
+
+from app import db
+
+from app.models.portfolio import Portfolio, PortfolioStock
+
+from app.models.stock import Watchlist, WatchlistStock, StockTip
+
+from app.services.data_service import DataService
+
+from app.services.analysis_service import AnalysisService
+
+from app.services.ai_service import AIService
+
+
+
+portfolio_bp = Blueprint('portfolio', __name__)
+
+
+
+# Define a demo user for functionality without login
+
+class DemoUser:
+
+    id = 0
+
+    is_authenticated = True
+
+
+
+@portfolio_bp.before_request
+
+def before_request():
+
+    # Use demo user when not logged in
+
+    if not current_user.is_authenticated:
+
+        current_user._get_current_object = lambda: DemoUser()
+
+
+
+@portfolio_bp.route('/')
+
+def index():
+
+    # For demo, create default portfolio if none exists
+
+    default_portfolio = Portfolio.query.filter_by(user_id=current_user._get_current_object().id).first()
+
+    
+
+    if not default_portfolio:
+
+        default_portfolio = Portfolio(name="My Portfolio", user_id=current_user._get_current_object().id)
+
+        db.session.add(default_portfolio)
+
+        
+
+        # Add some demo stocks
+
+        demo_stocks = [
+
+            {"ticker": "EQNR.OL", "shares": 100, "price": 300},
+
+            {"ticker": "DNB.OL", "shares": 50, "price": 190},
+
+            {"ticker": "AAPL", "shares": 10, "price": 150}
+
+        ]
+
+        
+
+        for stock in demo_stocks:
+
+            portfolio_stock = PortfolioStock(
+
+                portfolio_id=default_portfolio.id,
+
+                ticker=stock["ticker"],
+
+                shares=stock["shares"],
+
+                purchase_price=stock["price"]
+
+            )
+
+            db.session.add(portfolio_stock)
+
+        
+
+        db.session.commit()
+
+    
+
+    # Get all portfolios
+
+    portfolios = Portfolio.query.filter_by(user_id=current_user._get_current_object().id).all()
+
+    
+
+    # Process portfolio data
+
+    portfolios_data = []
+
+    
+
+    for portfolio in portfolios:
+
+        portfolio_data = {
+
+            'id': portfolio.id,
+
+            'name': portfolio.name,
+
+            'stocks': [],
+
+            'total_value': 0,
+
+            'total_cost': 0
+
+        }
+
+        
+
+        for stock in portfolio.stocks:
+
+            # Get current price
+
+            stock_data = DataService.get_stock_data(stock.ticker, period='1d')
+
+            
+
+            if not stock_data.empty:
+
+                current_price = stock_data['Close'].iloc[-1]
+
+                current_value = current_price * stock.shares
+
+                cost_basis = stock.purchase_price * stock.shares
+
+                gain_loss = current_value - cost_basis
+
+                gain_loss_percent = (gain_loss / cost_basis * 100) if cost_basis > 0 else 0
+
+                
+
+                portfolio_data['stocks'].append({
+
+                    'id': stock.id,
+
+                    'ticker': stock.ticker,
+
+                    'shares': stock.shares,
+
+                    'purchase_price': stock.purchase_price,
+
+                    'current_price': current_price,
+
+                    'current_value': current_value,
+
+                    'cost_basis': cost_basis,
+
+                    'gain_loss': gain_loss,
+
+                    'gain_loss_percent': gain_loss_percent
+
+                })
+
+                
+
+                portfolio_data['total_value'] += current_value
+
+                portfolio_data['total_cost'] += cost_basis
+
+        
+
+        portfolio_data['total_gain_loss'] = portfolio_data['total_value'] - portfolio_data['total_cost']
+
+        portfolio_data['total_gain_loss_percent'] = (portfolio_data['total_gain_loss'] / portfolio_data['total_cost'] * 100) if portfolio_data['total_cost'] > 0 else 0
+
+        
+
+        portfolios_data.append(portfolio_data)
+
+    
+
+    return render_template('portfolio/index.html', portfolios=portfolios_data)
+
+
+
+@portfolio_bp.route('/add', methods=['GET', 'POST'])
+
+def add_stock():
+
+    if request.method == 'POST':
+
+        portfolio_id = request.form.get('portfolio_id')
+
+        ticker = request.form.get('ticker')
+
+        shares = request.form.get('shares')
+
+        price = request.form.get('price')
+
+        
+
+        try:
+
+            shares = float(shares)
+
+            price = float(price)
+
+        except:
+
+            flash('Invalid shares or price value', 'danger')
+
+            return redirect(url_for('portfolio.index'))
+
+        
+
+        portfolio = Portfolio.query.get(portfolio_id)
+
+        if not portfolio:
+
+            flash('Portfolio not found', 'danger')
+
+            return redirect(url_for('portfolio.index'))
+
+        
+
+        # Check if stock already exists in portfolio
+
+        existing_stock = PortfolioStock.query.filter_by(
+
+            portfolio_id=portfolio_id, ticker=ticker).first()
+
+        
+
+        if existing_stock:
+
+            # Update existing position
+
+            new_shares = existing_stock.shares + shares
+
+            new_price = ((existing_stock.shares * existing_stock.purchase_price) + 
+
+                        (shares * price)) / new_shares
+
+            
+
+            existing_stock.shares = new_shares
+
+            existing_stock.purchase_price = new_price
+
+        else:
+
+            # Add new position
+
+            stock = PortfolioStock(
+
+                portfolio_id=portfolio_id,
+
+                ticker=ticker,
+
+                shares=shares,
+
+                purchase_price=price
+
+            )
+
+            db.session.add(stock)
+
+        
+
+        db.session.commit()
+
+        flash(f'Added {shares} shares of {ticker} to portfolio', 'success')
+
+        
+
+        return redirect(url_for('portfolio.index'))
+
+    
+
+    # If GET request, show form
+
+    portfolios = Portfolio.query.filter_by(user_id=current_user._get_current_object().id).all()
+
+    ticker = request.args.get('ticker', '')
+
+    
+
+    # Get current price if ticker is provided
+
+    current_price = 0
+
+    if ticker:
+
+        stock_data = DataService.get_stock_data(ticker, period='1d')
+
+        if not stock_data.empty:
+
+            current_price = stock_data['Close'].iloc[-1]
+
+    
+
+    return render_template('portfolio/add_stock.html', 
+
+                          portfolios=portfolios,
+
+                          ticker=ticker,
+
+                          current_price=current_price)
+
+
+
+@portfolio_bp.route('/remove/<int:stock_id>', methods=['POST'])
+
+def remove_stock(stock_id):
+
+    stock = PortfolioStock.query.get_or_404(stock_id)
+
+    
+
+    # Get portfolio to redirect back
+
+    portfolio_id = stock.portfolio_id
+
+    ticker = stock.ticker
+
+    
+
+    db.session.delete(stock)
+
+    db.session.commit()
+
+    
+
+    flash(f'Removed {ticker} from portfolio', 'success')
+
+    return redirect(url_for('portfolio.index'))
+
+
+
+@portfolio_bp.route('/analyze/<int:portfolio_id>')
+
+def analyze_portfolio(portfolio_id):
+
+    portfolio = Portfolio.query.get_or_404(portfolio_id)
+
+    
+
+    # Get all tickers in portfolio
+
+    tickers = [stock.ticker for stock in portfolio.stocks]
+
+    
+
+    # Get AI recommendation
+
+    recommendation = AIService.get_portfolio_recommendation(tickers)
+
+    
+
+    # Get individual stock data
+
+    stocks_data = []
+
+    for stock in portfolio.stocks:
+
+        # Get current price and analysis
+
+        stock_data = DataService.get_stock_data(stock.ticker, period='1d')
+
+        analysis = AnalysisService.get_technical_analysis(stock.ticker)
+
+        
+
+        if not stock_data.empty:
+
+            current_price = stock_data['Close'].iloc[-1]
+
+            current_value = current_price * stock.shares
+
+            cost_basis = stock.purchase_price * stock.shares
+
+            gain_loss = current_value - cost_basis
+
+            gain_loss_percent = (gain_loss / cost_basis * 100) if cost_basis > 0 else 0
+
+            
+
+            stocks_data.append({
+
+                'ticker': stock.ticker,
+
+                'shares': stock.shares,
+
+                'purchase_price': stock.purchase_price,
+
+                'current_price': current_price,
+
+                'current_value': current_value,
+
+                'cost_basis': cost_basis,
+
+                'gain_loss': gain_loss,
+
+                'gain_loss_percent': gain_loss_percent,
+
+                'signal': analysis.get('overall_signal', 'NEUTRAL')
+
+            })
+
+    
+
+    return render_template('portfolio/analyze.html',
+
+                          portfolio=portfolio,
+
+                          stocks=stocks_data,
+
+                          recommendation=recommendation)
+
+
+
+@portfolio_bp.route('/watchlist')
+
+def watchlist():
+
+    # For demo, create default watchlist if none exists
+
+    default_watchlist = Watchlist.query.filter_by(user_id=current_user._get_current_object().id).first()
+
+    
+
+    if not default_watchlist:
+
+        default_watchlist = Watchlist(name="My Watchlist", user_id=current_user._get_current_object().id)
+
+        db.session.add(default_watchlist)
+
+        
+
+        # Add some demo stocks
+
+        demo_tickers = ["TSLA", "AAPL", "MSFT", "NHY.OL", "TEL.OL"]
+
+        
+
+        for ticker in demo_tickers:
+
+            watchlist_stock = WatchlistStock(
+
+                watchlist_id=default_watchlist.id,
+
+                ticker=ticker
+
+            )
+
+            db.session.add(watchlist_stock)
+
+        
+
+        db.session.commit()
+
+    
+
+    # Get all watchlists
+
+    watchlists = Watchlist.query.filter_by(user_id=current_user._get_current_object().id).all()
+
+    
+
+    # Process watchlist data
+
+    watchlists_data = []
+
+    
+
+    for watchlist in watchlists:
+
+        watchlist_data = {
+
+            'id': watchlist.id,
+
+            'name': watchlist.name,
+
+            'stocks': []
+
+        }
+
+        
+
+        for stock in watchlist.stocks:
+
+            # Get current price and analysis
+
+            stock_data = DataService.get_stock_data(stock.ticker, period='1d')
+
+            analysis = AnalysisService.get_technical_analysis(stock.ticker)
+
+            
+
+            if not stock_data.empty:
+
+                current_price = stock_data['Close'].iloc[-1]
+
+                if len(stock_data) > 1:
+
+                    prev_price = stock_data['Close'].iloc[-2]
+
+                    change = current_price - prev_price
+
+                    change_percent = (change / prev_price * 100) if prev_price > 0 else 0
+
+                else:
+
+                    change = 0
+
+                    change_percent = 0
+
+                
+
+                watchlist_data['stocks'].append({
+
+                    'id': stock.id,
+
+                    'ticker': stock.ticker,
+
+                    'price': current_price,
+
+                    'change': change,
+
+                    'change_percent': change_percent,
+
+                    'signal': analysis.get('overall_signal', 'NEUTRAL')
+
+                })
+
+        
+
+        watchlists_data.append(watchlist_data)
+
+    
+
+    return render_template('portfolio/watchlist.html', watchlists=watchlists_data)
+
+
+
+@portfolio_bp.route('/watchlist/add', methods=['GET', 'POST'])
+
+def add_to_watchlist():
+
+    if request.method == 'POST':
+
+        watchlist_id = request.form.get('watchlist_id')
+
+        ticker = request.form.get('ticker')
+
+        
+
+        watchlist = Watchlist.query.get(watchlist_id)
+
+        if not watchlist:
+
+            flash('Watchlist not found', 'danger')
+
+            return redirect(url_for('portfolio.watchlist'))
+
+        
+
+        # Check if stock already exists in watchlist
+
+        existing = WatchlistStock.query.filter_by(
+
+            watchlist_id=watchlist_id, ticker=ticker).first()
+
+        
+
+        if not existing:
+
+            stock = WatchlistStock(
+
+                watchlist_id=watchlist_id,
+
+                ticker=ticker
+
+            )
+
+            db.session.add(stock)
+
+            db.session.commit()
+
+            flash(f'Added {ticker} to watchlist', 'success')
+
+        else:
+
+            flash(f'{ticker} already in watchlist', 'warning')
+
+        
+
+        return redirect(url_for('portfolio.watchlist'))
+
+    
+
+    # If GET request, show form
+
+    watchlists = Watchlist.query.filter_by(user_id=current_user._get_current_object().id).all()
+
+    ticker = request.args.get('ticker', '')
+
+    
+
+    return render_template('portfolio/add_to_watchlist.html',
+
+                          watchlists=watchlists,
+
+                          ticker=ticker)
+
+
+
+@portfolio_bp.route('/watchlist/remove/<int:stock_id>', methods=['POST'])
+
+def remove_from_watchlist(stock_id):
+
+    stock = WatchlistStock.query.get_or_404(stock_id)
+
+    ticker = stock.ticker
+
+    
+
+    db.session.delete(stock)
+
+    db.session.commit()
+
+    
+
+    flash(f'Removed {ticker} from watchlist', 'success')
+
+    return redirect(url_for('portfolio.watchlist'))
+
+
+
+@portfolio_bp.route('/tips')
+
+def stock_tips():
+
+    # Get existing tips or create demo tips
+
+    tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
+
+    
+
+    if not tips:
+
+        # Create some demo tips
+
+        demo_tips = [
+
+            {"ticker": "EQNR.OL", "tip_type": "BUY", "confidence": "HIGH", 
+
+             "analysis": "Strong technical signals with support from rising oil prices."},
+
+            {"ticker": "DNB.OL", "tip_type": "HOLD", "confidence": "MEDIUM", 
+
+             "analysis": "Solid fundamentals but facing market headwinds in the banking sector."},
+
+            {"ticker": "NHY.OL", "tip_type": "BUY", "confidence": "MEDIUM", 
+
+             "analysis": "Potential growth with aluminum price recovery and green initiatives."},
+
+            {"ticker": "TEL.OL", "tip_type": "SELL", "confidence": "LOW", 
+
+             "analysis": "Increased competition and margin pressure in key markets."},
+
+            {"ticker": "AAPL", "tip_type": "BUY", "confidence": "HIGH", 
+
+             "analysis": "Strong product cycle and services growth with robust cash position."}
+
+        ]
+
+        
+
+        for tip in demo_tips:
+
+            stock_tip = StockTip(
+
+                ticker=tip["ticker"],
+
+                tip_type=tip["tip_type"],
+
+                confidence=tip["confidence"],
+
+                analysis=tip["analysis"]
+
+            )
+
+            db.session.add(stock_tip)
+
+        
+
+        db.session.commit()
+
+        tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
+
+    
+
+    return render_template('portfolio/tips.html', tips=tips)
+
+
+
+@portfolio_bp.route('/tips/add', methods=['GET', 'POST'])
+
+def add_tip():
+
+    if request.method == 'POST':
+
+        ticker = request.form.get('ticker')
+
+        tip_type = request.form.get('tip_type')
+
+        confidence = request.form.get('confidence')
+
+        analysis = request.form.get('analysis')
+
+        
+
+        tip = StockTip(
+
+            ticker=ticker,
+
+            tip_type=tip_type,
+
+            confidence=confidence,
+
+            analysis=analysis,
+
+            user_id=current_user._get_current_object().id if current_user.is_authenticated else None
+
+        )
+
+        
+
+        db.session.add(tip)
+
+        db.session.commit()
+
+        
+
+        flash('Stock tip added successfully', 'success')
+
+        return redirect(url_for('portfolio.stock_tips'))
+
+    
+
+    # If GET request, show form
+
+    ticker = request.args.get('ticker', '')
+
+    
+
+    return render_template('portfolio/add_tip.html', ticker=ticker)
+
+```
+
+
+
+## Templates
+
+
+
+Here I'll provide a few key templates to get you started. First, the base template:
+
+
+
+```html
+
+<!-- app/templates/base.html -->
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Oslo Børs Stock Analyzer{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+
+                <i class="fas fa-chart-line"></i> Oslo Børs Analyzer
+
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('stocks.index') }}">Stocks</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('analysis.index') }}">Analysis</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('portfolio.index') }}">Portfolio</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('portfolio.watchlist') }}">Watchlist</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('portfolio.stock_tips') }}">Stock Tips</a>
+
+                    </li>
+
+                </ul>
+
+                <form class="d-flex" action="{{ url_for('main.search') }}" method="get">
+
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search stocks...">
+
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- Flash Messages -->
+
+    <div class="container mt-3">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                        {{ message }}
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+    </div>
+
+
+
+    <!-- Main Content -->
+
+    <div class="container mt-3 mb-5">
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+
+
+    <!-- Footer -->
+
+    <footer class="bg-dark text-white py-4 mt-5">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <h5>Oslo Børs Stock Analyzer</h5>
+
+                    <p>A comprehensive stock analysis tool focusing on Oslo Børs</p>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <h5>Links</h5>
+
+                    <ul class="list-unstyled">
+
+                        <li><a href="{{ url_for('main.index') }}" class="text-white">Home</a></li>
+
+                        <li><a href="{{ url_for('stocks.index') }}" class="text-white">Stocks</a></li>
+
+                        <li><a href="{{ url_for('analysis.index') }}" class="text-white">Analysis</a></li>
+
+                    </ul>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <h5>Resources</h5>
+
+                    <ul class="list-unstyled">
+
+                        <li><a href="https://www.euronext.com/en/markets/oslo" class="text-white" target="_blank">Oslo Børs</a></li>
+
+                        <li><a href="https://finance.yahoo.com/" class="text-white" target="_blank">Yahoo Finance</a></li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <p class="text-center mb-0">&copy; 2023 Oslo Børs Stock Analyzer. All rights reserved.</p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- Bootstrap JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom JS -->
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>
+
+```
+
+
+
+And the index page:
+
+
+
+```html
+
+<!-- app/templates/index.html -->
+
+{% extends 'base.html' %}
+
+
+
+{% block title %}Oslo Børs Stock Analyzer - Home{% endblock %}
+
+
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card mb-4">
+
+            <div class="card-body bg-light">
+
+                <h1 class="display-5">Welcome to Oslo Børs Stock Analyzer</h1>
+
+                <p class="lead">Your comprehensive tool for stock analysis, portfolio tracking, and AI-powered investment recommendations.</p>
+
+                <hr>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+
+                    <a href="{{ url_for('analysis.index') }}" class="btn btn-primary">Start Analyzing</a>
+
+                    <a href="{{ url_for('portfolio.index') }}" class="btn btn-success">Track Portfolio</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="row">
+
+    <!-- Oslo Børs Overview -->
+
+    <div class="col-md-8">
+
+        <div class="card mb-4">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <h4>Oslo Børs Overview</h4>
+
+                <a href="{{ url_for('stocks.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Symbol</th>
+
+                                <th>Company</th>
+
+                                <th>Price</th>
+
+                                <th>Change</th>
+
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for ticker, data in oslo_stocks.items() %}
+
+                            <tr>
+
+                                <td>{{ ticker }}</td>
+
+                                <td>{{ data.name }}</td>
+
+                                <td>{{ data.current_price|round(2) }}</td>
+
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+
+                                    {{ data.change_percent|round(2) }}%
+
+                                </td>
+
+                                <td>
+
+                                    <div class="btn-group btn-group-sm">
+
+                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary">
+
+                                            <i class="fas fa-chart-line"></i>
+
+                                        </a>
+
+                                        <a href="{{ url_for('analysis.recommendation', ticker=ticker) }}" class="btn btn-outline-success">
+
+                                            <i class="fas fa-search-dollar"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+
+    <!-- Global Markets & Crypto -->
+
+    <div class="col-md-4">
+
+        <!-- Global Markets -->
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <h4>Global Markets</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-sm">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Symbol</th>
+
+                                <th>Price</th>
+
+                                <th>Change</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for ticker, data in global_stocks.items() %}
+
+                            <tr>
+
+                                <td>
+
+                                    <a href="{{ url_for('stocks.details', ticker=ticker) }}">{{ ticker }}</a>
+
+                                </td>
+
+                                <td>{{ data.current_price|round(2) }}</td>
+
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+
+                                    {{ data.change_percent|round(2) }}%
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        
+
+        <!-- Cryptocurrencies -->
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <h4>Cryptocurrencies</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-sm">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Symbol</th>
+
+                                <th>Price</th>
+
+                                <th>Change</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for ticker, data in crypto.items() %}
+
+                            <tr>
+
+                                <td>
+
+                                    <a href="{{ url_for('stocks.details', ticker=ticker) }}">{{ ticker }}</a>
+
+                                </td>
+
+                                <td>{{ data.current_price|round(2) }}</td>
+
+                                <td class="{{ 'text-success' if data.change_percent > 0 else 'text-danger' }}">
+
+                                    {{ data.change_percent|round(2) }}%
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="row">
+
+    <!-- Analysis Tools -->
+
+    <div class="col-md-6">
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <h4>Analysis Tools</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="list-group">
+
+                    <a href="{{ url_for('analysis.market_overview') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">Market Overview</h5>
+
+                            <i class="fas fa-globe"></i>
+
+                        </div>
+
+                        <p class="mb-1">Get a comprehensive overview of the Oslo Børs market sentiment.</p>
+
+                    </a>
+
+                    <a href="{{ url_for('analysis.index') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">Technical Analysis</h5>
+
+                            <i class="fas fa-chart-line"></i>
+
+                        </div>
+
+                        <p class="mb-1">Analyze stocks with indicators like RSI, MACD, and moving averages.</p>
+
+                    </a>
+
+                    <a href="{{ url_for('analysis.index') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">AI Analysis</h5>
+
+                            <i class="fas fa-robot"></i>
+
+                        </div>
+
+                        <p class="mb-1">Get advanced AI-powered recommendations for any stock.</p>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+
+    <!-- Portfolio Tools -->
+
+    <div class="col-md-6">
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <h4>Portfolio Tools</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="list-group">
+
+                    <a href="{{ url_for('portfolio.index') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">Portfolio Tracker</h5>
+
+                            <i class="fas fa-briefcase"></i>
+
+                        </div>
+
+                        <p class="mb-1">Track your stock portfolio performance and get insights.</p>
+
+                    </a>
+
+                    <a href="{{ url_for('portfolio.watchlist') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">Watchlist</h5>
+
+                            <i class="fas fa-eye"></i>
+
+                        </div>
+
+                        <p class="mb-1">Keep an eye on stocks you're interested in.</p>
+
+                    </a>
+
+                    <a href="{{ url_for('portfolio.stock_tips') }}" class="list-group-item list-group-item-action">
+
+                        <div class="d-flex w-100 justify-content-between">
+
+                            <h5 class="mb-1">Stock Tips</h5>
+
+                            <i class="fas fa-lightbulb"></i>
+
+                        </div>
+
+                        <p class="mb-1">View and share stock tips with the community.</p>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+```
+
+
+
+## CSS Styling
+
+
+
+```css
+
+/* app/static/css/style.css */
+
+/* General Styles */
+
+body {
+
+    background-color: #f8f9fa;
+
+    color: #333;
+
+}
+
+
+
+/* Card Styling */
+
+.card {
+
+    border-radius: 0.5rem;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    margin-bottom: 1.5rem;
+
+}
+
+
+
+.card-header {
+
+    background-color: #f1f3f5;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+
+    font-weight: 600;
+
+}
+
+
+
+/* Table Styling */
+
+.table {
+
+    margin-bottom: 0;
+
+}
+
+
+
+.table th {
+
+    font-weight: 600;
+
+    color: #495057;
+
+}
+
+
+
+.table-hover tbody tr:hover {
+
+    background-color: rgba(0, 123, 255, 0.05);
+
+}
+
+
+
+/* Text Colors */
+
+.text-success {
+
+    color: #28a745 !important;
+
+}
+
+
+
+.text-danger {
+
+    color: #dc3545 !important;
+
+}
+
+
+
+/* Charts */
+
+.chart-container {
+
+    position: relative;
+
+    height: 400px;
+
+    margin: 20px 0;
+
+}
+
+
+
+/* Stock Detail Page */
+
+.stock-info-box {
+
+    background-color: #f8f9fa;
+
+    border-radius: 0.5rem;
+
+    padding: 1.5rem;
+
+    margin-bottom: 1.5rem;
+
+}
+
+
+
+.stock-price {
+
+    font-size: 2.5rem;
+
+    font-weight: 700;
+
+}
+
+
+
+.stock-change {
+
+    font-size: 1.25rem;
+
+    font-weight: 600;
+
+}
+
+
+
+/* Recommendation badges */
+
+.badge.bg-buy {
+
+    background-color: #28a745;
+
+}
+
+
+
+.badge.bg-sell {
+
+    background-color: #dc3545;
+
+}
+
+
+
+.badge.bg-hold {
+
+    background-color: #6c757d;
+
+}
+
+
+
+/* Portfolio page */
+
+.portfolio-summary {
+
+    background-color: #e9ecef;
+
+    border-radius: 0.5rem;
+
+    padding: 1.5rem;
+
+    margin-bottom: 1.5rem;
+
+}
+
+
+
+.portfolio-value {
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+}
+
+
+
+/* Responsive Adjustments */
+
+@media (max-width: 768px) {
+
+    .chart-container {
+
+        height: 300px;
+
+    }
+
+    
+
+    .stock-price {
+
+        font-size: 2rem;
+
+    }
+
+}
+
+```
+
+
+
+## Installation and Running Instructions
+
+
+
+1. Create a new directory for your project and navigate to it:
+
+   ```
+
+   mkdir oslo-bors-analyzer
+
+   cd oslo-bors-analyzer
+
+   ```
+
+
+
+2. Create a virtual environment and activate it:
+
+   ```
+
+   python -m venv venv
+
+   # On Windows
+
+   venv\Scripts\activate
+
+   # On macOS/Linux
+
+   source venv/bin/activate
+
+   ```
+
+
+
+3. Create all the files as described above with their respective contents.
+
+
+
+4. Install the required packages:
+
+   ```
+
+   pip install -r requirements.txt
+
+   ```
+
+
+
+5. Run the application:
+python run.py
+
+
+
+
+6. Open your browser and navigate to `http://127.0.0.1:5000`
+
+
+
+## Features Summary
+
+
+
+The Oslo Børs Stock Analyzer application includes:
+
+
+
+1. **Live Stock Data**
+
+   - Real-time data from Oslo Børs
+
+   - Global stock markets
+
+   - Cryptocurrency markets
+
+
+
+2. **Technical Analysis**
+
+   - Moving averages (20, 50, 200-day)
+
+   - RSI (Relative Strength Index)
+
+   - MACD (Moving Average Convergence Divergence)
+
+   - Overall buy/sell signals
+
+
+
+3. **Price Prediction**
+
+   - Linear regression models
+
+   - Trend analysis
+
+   - Next-day price forecasts
+
+
+
+4. **AI-Powered Analysis**
+
+   - Comprehensive market analysis
+
+   - Investment strategies
+
+   - Risk assessments
+
+
+
+5. **Portfolio Management**
+
+   - Track multiple portfolios
+
+   - Performance monitoring
+
+   - Gain/loss calculations
+
+   - AI portfolio recommendations
+
+
+
+6. **Watchlist**
+
+   - Track stocks of interest
+
+   - Quick technical signals
+
+   - Easy addition to portfolio
+
+
+
+7. **Stock Tips**
+
+   - Community-shared stock tips
+
+   - Confidence ratings
+
+   - Analysis explanations
+
+
+
+This application provides a comprehensive stock analysis platform with a focus on Oslo Børs while also including global stocks and cryptocurrencies. The AI analysis can function without an OpenAI API key by using simulated analysis based on technical indicators.
+
+Drop here to insert into user message
+Max 100 files at 5MB each
+User
+
+
+Run prompt to see assistant response from the Anthropic API

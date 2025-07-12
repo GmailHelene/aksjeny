@@ -1,0 +1,860 @@
+{% extends "base.html" %}
+
+{% block title %}Backtest & Strategibygger - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1">📊 Backtest & Strategibygger</h1>
+                    <p class="text-muted">Test og optimaliser handelsstrategier med historiske data</p>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#backtestModal">
+                        <i class="bi bi-play-fill"></i> Ny Backtest
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="showStrategyBuilder()">
+                        <i class="bi bi-gear"></i> Strategibygger
+                    </button>
+                    <button type="button" class="btn btn-outline-info" onclick="showComparison()">
+                        <i class="bi bi-bar-chart"></i> Sammenlign
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategy Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">🚀 Populære Strategier</h5>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary w-100 mb-2" onclick="quickBacktest('sma_crossover')">
+                                <div class="text-center">
+                                    <i class="bi bi-graph-up fs-4"></i>
+                                    <div class="small">SMA Crossover</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-success w-100 mb-2" onclick="quickBacktest('rsi_mean_reversion')">
+                                <div class="text-center">
+                                    <i class="bi bi-arrow-repeat fs-4"></i>
+                                    <div class="small">RSI Mean Rev</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-info w-100 mb-2" onclick="quickBacktest('macd_momentum')">
+                                <div class="text-center">
+                                    <i class="bi bi-activity fs-4"></i>
+                                    <div class="small">MACD Momentum</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-warning w-100 mb-2" onclick="quickBacktest('bollinger_bands')">
+                                <div class="text-center">
+                                    <i class="bi bi-bounding-box fs-4"></i>
+                                    <div class="small">Bollinger Bands</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-purple w-100 mb-2" onclick="quickBacktest('multi_factor')">
+                                <div class="text-center">
+                                    <i class="bi bi-cpu fs-4"></i>
+                                    <div class="small">AI Multi-Factor</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary w-100 mb-2" onclick="optimizeStrategy()">
+                                <div class="text-center">
+                                    <i class="bi bi-sliders fs-4"></i>
+                                    <div class="small">Auto-Optimaliser</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" style="display: none;">
+        <!-- Performance Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total Avkastning</h6>
+                                <h4 id="total-return">--%</h4>
+                            </div>
+                            <i class="bi bi-graph-up fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Sharpe Ratio</h6>
+                                <h4 id="sharpe-ratio">--</h4>
+                            </div>
+                            <i class="bi bi-award fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Maks Drawdown</h6>
+                                <h4 id="max-drawdown">--%</h4>
+                            </div>
+                            <i class="bi bi-arrow-down fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Vinnrate</h6>
+                                <h4 id="win-rate">--%</h4>
+                            </div>
+                            <i class="bi bi-trophy fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📈 Porteføljeytelse vs Benchmark</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="performanceChart" width="800" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📊 Nøkkeltall</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="key-metrics">
+                            <!-- Dynamisk innhold -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Signals -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">🎯 Handelssignaler og Indikatorer</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="signalsChart" width="1000" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">🤖 AI-Analyse og Forbedring</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="ai-analysis">
+                            <!-- AI-generert analyse -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Backtest Modal -->
+<div class="modal fade" id="backtestModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">⚙️ Konfigurer Backtest</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="backtestForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Aksje/Symbol</label>
+                                <input type="text" class="form-control" id="backtestSymbol" placeholder="AAPL, EQNR.OL" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Strategi</label>
+                                <select class="form-select" id="backtestStrategy" required>
+                                    <option value="sma_crossover">SMA Crossover</option>
+                                    <option value="rsi_mean_reversion">RSI Mean Reversion</option>
+                                    <option value="macd_momentum">MACD Momentum</option>
+                                    <option value="bollinger_bands">Bollinger Bands</option>
+                                    <option value="multi_factor">AI Multi-Factor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Fra dato</label>
+                                <input type="date" class="form-control" id="backtestStartDate" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Til dato</label>
+                                <input type="date" class="form-control" id="backtestEndDate" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Startkapital (USD)</label>
+                        <input type="number" class="form-control" id="initialCapital" value="100000" min="1000" required>
+                    </div>
+
+                    <!-- Strategy-specific parameters -->
+                    <div id="strategyParams">
+                        <!-- Dynamisk innhold basert på valgt strategi -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                <button type="button" class="btn btn-primary" onclick="runBacktest()">
+                    <i class="bi bi-play-fill"></i> Kjør Backtest
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optimization Modal -->
+<div class="modal fade" id="optimizationModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🎯 Strategioptimalisering</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="optimization-results">
+                    <!-- Optimaliseringsresultater -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-outline-purple {
+    color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+.btn-outline-purple:hover {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.metric-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.metric-value {
+    font-weight: bold;
+}
+
+.metric-value.positive {
+    color: #198754;
+}
+
+.metric-value.negative {
+    color: #dc3545;
+}
+
+.analysis-card {
+    border-left: 4px solid;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
+}
+
+.analysis-card.success {
+    border-left-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.analysis-card.warning {
+    border-left-color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.analysis-card.info {
+    border-left-color: #0dcaf0;
+    background-color: rgba(13, 202, 240, 0.1);
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let performanceChart = null;
+let signalsChart = null;
+let currentBacktestData = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    setDefaultDates();
+    
+    // Strategy parameter handler
+    document.getElementById('backtestStrategy').addEventListener('change', updateStrategyParams);
+});
+
+function initializeCharts() {
+    // Performance chart
+    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+    performanceChart = new Chart(performanceCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Strategi',
+                data: [],
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: false,
+                tension: 0.1
+            }, {
+                label: 'Buy & Hold',
+                data: [],
+                borderColor: '#6c757d',
+                backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                fill: false,
+                tension: 0.1,
+                borderDash: [5, 5]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Kumulativ Avkastning'
+                }
+            },
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Porteføljeværdi'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('no-NO', {
+                                style: 'currency',
+                                currency: 'USD',
+                                minimumFractionDigits: 0
+                            }).format(value);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Signals chart
+    const signalsCtx = document.getElementById('signalsChart').getContext('2d');
+    signalsChart = new Chart(signalsCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Priser og Handelssignaler'
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                }
+            }
+        }
+    });
+}
+
+function setDefaultDates() {
+    const today = new Date();
+    const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+    
+    document.getElementById('backtestStartDate').value = oneYearAgo.toISOString().split('T')[0];
+    document.getElementById('backtestEndDate').value = today.toISOString().split('T')[0];
+}
+
+function updateStrategyParams() {
+    const strategy = document.getElementById('backtestStrategy').value;
+    const paramsDiv = document.getElementById('strategyParams');
+    
+    let html = '';
+    
+    switch(strategy) {
+        case 'sma_crossover':
+            html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Kort SMA (dager)</label>
+                            <input type="number" class="form-control" id="shortWindow" value="10" min="1" max="50">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Lang SMA (dager)</label>
+                            <input type="number" class="form-control" id="longWindow" value="50" min="20" max="200">
+                        </div>
+                    </div>
+                </div>
+            `;
+            break;
+        case 'rsi_mean_reversion':
+            html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">RSI Kjøpsterskel</label>
+                            <input type="number" class="form-control" id="rsiLow" value="30" min="10" max="40">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">RSI Salgsterskel</label>
+                            <input type="number" class="form-control" id="rsiHigh" value="70" min="60" max="90">
+                        </div>
+                    </div>
+                </div>
+            `;
+            break;
+        default:
+            html = '<div class="alert alert-info">Denne strategien bruker standardparametere.</div>';
+    }
+    
+    paramsDiv.innerHTML = html;
+}
+
+function quickBacktest(strategy) {
+    // Set default values and run backtest
+    document.getElementById('backtestSymbol').value = 'AAPL';
+    document.getElementById('backtestStrategy').value = strategy;
+    updateStrategyParams();
+    
+    runBacktest();
+}
+
+async function runBacktest() {
+    const symbol = document.getElementById('backtestSymbol').value.trim().toUpperCase();
+    const strategy = document.getElementById('backtestStrategy').value;
+    const startDate = document.getElementById('backtestStartDate').value;
+    const endDate = document.getElementById('backtestEndDate').value;
+    const initialCapital = parseFloat(document.getElementById('initialCapital').value);
+    
+    if (!symbol || !strategy || !startDate || !endDate) {
+        alert('Vennligst fyll ut alle påkrevde felter');
+        return;
+    }
+
+    const data = {
+        symbol: symbol,
+        strategy: strategy,
+        start_date: startDate,
+        end_date: endDate,
+        initial_capital: initialCapital
+    };
+
+    // Add strategy-specific parameters
+    if (strategy === 'sma_crossover') {
+        const shortWindow = document.getElementById('shortWindow');
+        const longWindow = document.getElementById('longWindow');
+        if (shortWindow) data.short_window = parseInt(shortWindow.value);
+        if (longWindow) data.long_window = parseInt(longWindow.value);
+    } else if (strategy === 'rsi_mean_reversion') {
+        const rsiLow = document.getElementById('rsiLow');
+        const rsiHigh = document.getElementById('rsiHigh');
+        if (rsiLow) data.rsi_low = parseInt(rsiLow.value);
+        if (rsiHigh) data.rsi_high = parseInt(rsiHigh.value);
+    }
+
+    try {
+        showLoading('Kjører backtest...');
+        
+        const response = await fetch('/backtest/api/run_backtest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            currentBacktestData = result;
+            displayBacktestResults(result);
+            if (document.getElementById('backtestModal')) {
+                bootstrap.Modal.getInstance(document.getElementById('backtestModal'))?.hide();
+            }
+        } else {
+            throw new Error(result.error || 'Feil ved backtest');
+        }
+    } catch (error) {
+        alert('Feil: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+function displayBacktestResults(data) {
+    // Show results section
+    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+    
+    // Update metric cards
+    const metrics = data.metrics;
+    document.getElementById('total-return').textContent = (metrics.total_return * 100).toFixed(1) + '%';
+    document.getElementById('sharpe-ratio').textContent = metrics.sharpe_ratio.toFixed(2);
+    document.getElementById('max-drawdown').textContent = (Math.abs(metrics.max_drawdown) * 100).toFixed(1) + '%';
+    document.getElementById('win-rate').textContent = (metrics.win_rate * 100).toFixed(1) + '%';
+    
+    // Update performance chart
+    const portfolioData = data.portfolio_data;
+    const benchmarkValues = portfolioData.total_value.map((_, i) => {
+        const initialPrice = data.signals_data.prices[0];
+        const currentPrice = data.signals_data.prices[i];
+        return (currentPrice / initialPrice) * data.initial_capital;
+    });
+    
+    performanceChart.data.labels = portfolioData.dates;
+    performanceChart.data.datasets[0].data = portfolioData.total_value;
+    performanceChart.data.datasets[1].data = benchmarkValues;
+    performanceChart.update();
+    
+    // Update signals chart
+    updateSignalsChart(data);
+    
+    // Update key metrics
+    updateKeyMetrics(metrics, data.benchmark_return);
+    
+    // Generate AI analysis
+    generateAIAnalysis(data);
+}
+
+function updateSignalsChart(data) {
+    const signalsData = data.signals_data;
+    
+    // Clear existing datasets
+    signalsChart.data.datasets = [];
+    
+    // Price data
+    signalsChart.data.labels = signalsData.dates;
+    signalsChart.data.datasets.push({
+        label: 'Pris',
+        data: signalsData.prices,
+        borderColor: '#212529',
+        backgroundColor: 'transparent',
+        yAxisID: 'y',
+        tension: 0.1
+    });
+    
+    // Buy/Sell signals
+    const buySignals = signalsData.prices.map((price, i) => 
+        signalsData.positions[i] > 0 ? price : null
+    );
+    const sellSignals = signalsData.prices.map((price, i) => 
+        signalsData.positions[i] < 0 ? price : null
+    );
+    
+    signalsChart.data.datasets.push({
+        label: 'Kjøp',
+        data: buySignals,
+        backgroundColor: '#198754',
+        borderColor: '#198754',
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        showLine: false,
+        yAxisID: 'y'
+    });
+    
+    signalsChart.data.datasets.push({
+        label: 'Selg',
+        data: sellSignals,
+        backgroundColor: '#dc3545',
+        borderColor: '#dc3545',
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        showLine: false,
+        yAxisID: 'y'
+    });
+    
+    // Add strategy-specific indicators
+    if (signalsData.short_sma) {
+        signalsChart.data.datasets.push({
+            label: 'Kort SMA',
+            data: signalsData.short_sma,
+            borderColor: '#0d6efd',
+            backgroundColor: 'transparent',
+            yAxisID: 'y',
+            tension: 0.1
+        });
+        
+        signalsChart.data.datasets.push({
+            label: 'Lang SMA',
+            data: signalsData.long_sma,
+            borderColor: '#6f42c1',
+            backgroundColor: 'transparent',
+            yAxisID: 'y',
+            tension: 0.1
+        });
+    }
+    
+    if (signalsData.rsi) {
+        signalsChart.data.datasets.push({
+            label: 'RSI',
+            data: signalsData.rsi,
+            borderColor: '#fd7e14',
+            backgroundColor: 'transparent',
+            yAxisID: 'y1',
+            tension: 0.1
+        });
+    }
+    
+    signalsChart.update();
+}
+
+function updateKeyMetrics(metrics, benchmarkReturn) {
+    const html = `
+        <div class="metric-item">
+            <span class="metric-label">Årlig avkastning:</span>
+            <span class="metric-value ${metrics.annual_return > 0 ? 'positive' : 'negative'}">
+                ${(metrics.annual_return * 100).toFixed(1)}%
+            </span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Volatilitet:</span>
+            <span class="metric-value">${(metrics.volatility * 100).toFixed(1)}%</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Calmar Ratio:</span>
+            <span class="metric-value">${metrics.calmar_ratio.toFixed(2)}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Sortino Ratio:</span>
+            <span class="metric-value">${metrics.sortino_ratio.toFixed(2)}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Antall handler:</span>
+            <span class="metric-value">${metrics.total_trades}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Snitt per handel:</span>
+            <span class="metric-value ${metrics.avg_return_per_trade > 0 ? 'positive' : 'negative'}">
+                ${(metrics.avg_return_per_trade * 100).toFixed(2)}%
+            </span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">vs Benchmark:</span>
+            <span class="metric-value ${metrics.total_return > benchmarkReturn ? 'positive' : 'negative'}">
+                ${((metrics.total_return - benchmarkReturn) * 100).toFixed(1)}%
+            </span>
+        </div>
+    `;
+    
+    document.getElementById('key-metrics').innerHTML = html;
+}
+
+function generateAIAnalysis(data) {
+    const metrics = data.metrics;
+    const strategy = data.strategy;
+    let analysis = [];
+    
+    // Performance analysis
+    if (metrics.sharpe_ratio > 1.5) {
+        analysis.push({
+            type: 'success',
+            title: 'Utmerket risikojustert avkastning',
+            message: `Sharpe ratio på ${metrics.sharpe_ratio.toFixed(2)} indikerer svært god risikojustert ytelse.`,
+            recommendation: 'Strategien viser sterke resultater og kan vurderes for live trading.'
+        });
+    } else if (metrics.sharpe_ratio < 0.5) {
+        analysis.push({
+            type: 'warning',
+            title: 'Lav risikojustert avkastning',
+            message: `Sharpe ratio på ${metrics.sharpe_ratio.toFixed(2)} er under ønskelig nivå.`,
+            recommendation: 'Vurder å optimalisere parametere eller velge en annen strategi.'
+        });
+    }
+    
+    // Drawdown analysis
+    if (Math.abs(metrics.max_drawdown) > 0.2) {
+        analysis.push({
+            type: 'warning',
+            title: 'Høy maksimal drawdown',
+            message: `Maksimal drawdown på ${(Math.abs(metrics.max_drawdown) * 100).toFixed(1)}% er høy.`,
+            recommendation: 'Implementer bedre risikostyring eller reduser posisjonsstørrelse.'
+        });
+    }
+    
+    // Win rate analysis
+    if (metrics.win_rate > 0.6) {
+        analysis.push({
+            type: 'success',
+            title: 'Høy vinnrate',
+            message: `Vinnrate på ${(metrics.win_rate * 100).toFixed(1)}% er imponerende.`,
+            recommendation: 'Strategien viser konsistente resultater.'
+        });
+    }
+    
+    // Strategy-specific analysis
+    if (strategy === 'sma_crossover') {
+        analysis.push({
+            type: 'info',
+            title: 'SMA Crossover Analyse',
+            message: 'Denne strategien fungerer best i trendende markeder.',
+            recommendation: 'Vurder å legge til volum-filter for å redusere falske signaler.'
+        });
+    }
+    
+    // Benchmark comparison
+    const outperformance = (metrics.total_return - data.benchmark_return) * 100;
+    if (outperformance > 5) {
+        analysis.push({
+            type: 'success',
+            title: 'Overpresterer benchmark',
+            message: `Strategien slo benchmark med ${outperformance.toFixed(1)}%.`,
+            recommendation: 'Sterk relativ ytelse indikerer strategisk fordel.'
+        });
+    } else if (outperformance < -5) {
+        analysis.push({
+            type: 'warning',
+            title: 'Underpresterer benchmark',
+            message: `Strategien underpresterte benchmark med ${Math.abs(outperformance).toFixed(1)}%.`,
+            recommendation: 'Vurder om transaksjonskostnadene rettferdiggjør aktiv trading.'
+        });
+    }
+    
+    // Display analysis
+    const analysisHtml = analysis.map(item => `
+        <div class="analysis-card ${item.type} p-3 mb-3">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-${item.type === 'success' ? 'check-circle' : item.type === 'warning' ? 'exclamation-triangle' : 'info-circle'} fs-5 me-2 mt-1"></i>
+                <div>
+                    <h6 class="mb-1">${item.title}</h6>
+                    <p class="mb-1 small">${item.message}</p>
+                    <p class="mb-0 small"><strong>Anbefaling:</strong> ${item.recommendation}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('ai-analysis').innerHTML = analysisHtml || '<p class="text-muted">Ingen spesifikke anbefalinger for denne strategien.</p>';
+}
+
+async function optimizeStrategy() {
+    // Implementation for strategy optimization
+    alert('Strategioptimalisering kommer snart!');
+}
+
+function showStrategyBuilder() {
+    alert('Avansert strategibygger kommer snart!');
+}
+
+function showComparison() {
+    alert('Strategisammenligning kommer snart!');
+}
+
+function showLoading(message) {
+    console.log('Loading:', message);
+    // Implement loading UI
+}
+
+function hideLoading() {
+    console.log('Loading complete');
+    // Hide loading UI
+}
+
+function getCSRFToken() {
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+}
+</script>
+{% endblock %}

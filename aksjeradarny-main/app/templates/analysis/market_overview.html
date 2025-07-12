@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block title %}Markedsoversikt{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <tbody>
+                                {% if global_indices %}
+                                    {% for index_name, index_data in global_indices.items() %}
+                                    <tr>
+                                        <td class="text-end">
+                                            {{ "{:,.2f}".format(index_data.value|default(0)).replace(',', ' ').replace('.', ',') }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oslo Børs Stocks -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h4 mb-3">Oslo Børs</h2>
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Navn</th>
+                                    <th class="text-end">Pris</th>
+                                    <th class="text-end">Endring</th>
+                                    <th class="text-end">Volum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if oslo_stocks %}
+                                    {% for ticker, stock in oslo_stocks.items() %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">
+                                                {{ ticker }}
+                                            </a>
+                                        </td>
+                                        <td>{{ stock.name|default(ticker) }}</td>
+                                        <td class="text-end">
+                                            {% if stock.last_price %}
+                                                kr {{ "{:,.2f}".format(stock.last_price).replace(',', ' ').replace('.', ',') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end {{ 'text-success' if stock.change_percent > 0 else 'text-danger' if stock.change_percent < 0 else 'text-muted' }}">
+                                            {% if stock.change_percent %}
+                                                {{ "{:+.2f}".format(stock.change_percent).replace('.', ',') }}%
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            {% if stock.volume %}
+                                                {{ "{:,.0f}".format(stock.volume).replace(',', ' ') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Crypto -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h4 mb-3">Kryptovaluta</h2>
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Navn</th>
+                                    <th class="text-end">Pris USD</th>
+                                    <th class="text-end">24t Endring</th>
+                                    <th class="text-end">Markedsverdi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if crypto %}
+                                    {% for ticker, data in crypto.items() %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">
+                                                {{ ticker }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if ticker == 'BTC-USD' %}
+                                                Bitcoin
+                                            {% elif ticker == 'ETH-USD' %}
+                                                Ethereum
+                                            {% else %}
+                                                {{ data.name|default(ticker) }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            {% if data.last_price %}
+                                                $ {{ "{:,.2f}".format(data.last_price) }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end {{ 'text-success' if data.change_percent > 0 else 'text-danger' if data.change_percent < 0 else 'text-muted' }}">
+                                            {% if data.change_percent %}
+                                                {{ "{:+.2f}".format(data.change_percent).replace('.', ',') }}%
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            {% if data.market_cap %}
+                                                {% set cap = data.market_cap %}
+                                                {% if cap >= 1000000000 %}
+                                                    $ {{ "{:.1f}".format(cap / 1000000000).replace('.', ',') }}B
+                                                {% elif cap >= 1000000 %}
+                                                    $ {{ "{:.1f}".format(cap / 1000000).replace('.', ',') }}M
+                                                {% else %}
+                                                    $ {{ "{:,.0f}".format(cap) }}
+                                                {% endif %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cryptocurrency Market Overview -->
+    <h2 class="h3 mb-3 text-dark">Kryptovaluta Markedsoversikt</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Navn</th>
+                            <th class="text-end">Siste pris</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Signal</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if crypto %}
+                            {% for ticker, data in crypto.items() %}
+                                <tr>
+                                    <td><strong>{{ ticker }}</strong></td>
+                                    <td>{{ data.name|default(ticker) }}</td>
+                                    <td class="text-end">
+                                        {% if data.last_price %}
+                                            $ {{ "{:,.2f}".format(data.last_price).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if data.change_percent is defined %}
+                                            <span class="{% if data.change_percent > 0 %}text-success{% elif data.change_percent < 0 %}text-danger{% endif %}">
+                                                {% if data.change_percent > 0 %}+{% endif %}{{ "{:.2f}".format(data.change_percent).replace('.', ',') }}%
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if data.signal %}
+                                            <span class="badge bg-{% if data.signal == 'BUY' %}success{% elif data.signal == 'SELL' %}danger{% else %}warning{% endif %}">
+                                                {{ data.signal }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">HOLD</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Ingen kryptodata tilgjengelig.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currency Market Overview -->
+    <h2 class="h3 mb-3 text-dark">Valuta Markedsoversikt</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Navn</th>
+                            <th class="text-end">Siste pris</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if currency %}
+                            {% for ticker, data in currency.items() %}
+                                <tr>
+                                    <td><strong>{{ ticker }}</strong></td>
+                                    <td>{{ data.name|default(ticker) }}</td>
+                                    <td class="text-end">
+                                        {% if data.last_price %}
+                                            kr {{ "{:,.2f}".format(data.last_price).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if data.change_percent is defined %}
+                                            <span class="{% if data.change_percent > 0 %}text-success{% elif data.change_percent < 0 %}text-danger{% endif %}">
+                                                {% if data.change_percent > 0 %}+{% endif %}{{ "{:.2f}".format(data.change_percent).replace('.', ',') }}%
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Ingen valutadata tilgjengelig.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-5">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Tilbake til forsiden
+        </a>
+        <a href="{{ url_for('analysis.technical') }}" class="btn btn-primary">
+            <i class="bi bi-graph-up"></i> Teknisk analyse
+        </a>
+    </div>
+</div>
+{% endblock %}
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Ingen valutadata tilgjengelig.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-5">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Tilbake til forsiden
+        </a>
+        <a href="{{ url_for('analysis.technical') }}" class="btn btn-primary">
+            <i class="bi bi-graph-up"></i> Teknisk analyse
+        </a>
+    </div>
+</div>
+{% endblock %}

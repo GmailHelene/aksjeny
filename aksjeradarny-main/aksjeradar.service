@@ -1,0 +1,15 @@
+[Unit]
+Description=Aksjeradar Gunicorn Daemon
+After=network.target
+
+[Service]
+User=aksjeradar
+Group=www-data
+WorkingDirectory=/var/www/aksjeradar
+Environment="PATH=/var/www/aksjeradar/venv/bin"
+Environment="FLASK_APP=run.py"
+Environment="FLASK_DEBUG=false"
+ExecStart=/var/www/aksjeradar/venv/bin/gunicorn --workers 3 --bind unix:aksjeradar.sock -m 007 run:app
+
+[Install]
+WantedBy=multi-user.target

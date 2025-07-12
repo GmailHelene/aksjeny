@@ -1,0 +1,39 @@
+For å deploye til Railway og få Stripe til å fungere live, her er hva som gjenstår:
+🚂 Railway Deployment:
+1. Miljøvariabler som må settes i Railway:
+DATABASE_URL=postgresql://... (Railway genererer automatisk)
+SECRET_KEY=din-sikre-secret-key-her
+FLASK_DEBUG=false
+2. Filer som trengs (allerede inkludert):
+✅ Procfile (eksisterer allerede)
+✅ requirements.txt (oppdatert)
+✅ run.py (klar)
+3. Deploy kommandoer:
+bash
+# I Railway dashboard:
+# 1. Connect GitHub repo
+# 2. Railway auto-detekterer Python app
+# 3. Deployment starter automatisk
+💳 Stripe Live Setup:
+VIKTIG: Stripe er satt opp med dummy keys for utvikling. For live bruk må du:
+1. Få ekte Stripe keys:
+Logg inn på stripe.com
+Gå til Developers → API keys
+Kopier "Publishable key" og "Secret key" (LIVE versjon)
+2. Sett miljøvariabler i Railway:
+STRIPE_PUBLISHABLE_KEY=pk_live_...
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_... (hvis du bruker webhooks)
+3. Oppdater Stripe produkter:
+Opprett ekte produkter i Stripe dashboard
+Oppdater price IDs i koden hvis nødvendig
+⚠️ Viktige endringer før live:
+1. Sikkerhet:
+Endre SECRET_KEY til en sterk, unik nøkkel
+Sett DEBUG=False i produksjon
+2. Database:
+Railway PostgreSQL er allerede konfigurert
+Kjør migrasjoner automatisk ved deploy
+3. Domene:
+Sett opp custom domain i Railway
+Oppdater CORS innstillinger hvis nødvendig

@@ -1,0 +1,307 @@
+🔍 Starting comprehensive endpoint testing...
+🌐 Base URL: http://localhost:5000
+
+📋 [  1/51] Testing Home page
+    🔗 GET /
+    ✅ Success (200) - 4.86ms
+📋 [  2/51] Testing Stocks overview
+    🔗 GET /stocks
+    ✅ Success (200) - 8.85ms
+📋 [  3/51] Testing Stocks overview (trailing slash)
+    🔗 GET /stocks/
+    ✅ Success (200) - 4.35ms
+📋 [  4/51] Testing Analysis page
+    🔗 GET /analysis
+    ✅ Success (200) - 8.36ms
+📋 [  5/51] Testing Portfolio page
+    🔗 GET /portfolio
+    ✅ Success (200) - 9.41ms
+📋 [  6/51] Testing Portfolio page (trailing slash)
+    🔗 GET /portfolio/
+    ✅ Success (200) - 4.42ms
+📋 [  7/51] Testing Advanced portfolio
+    🔗 GET /portfolio/advanced
+    ✅ Success (200) - 13.62ms
+📋 [  8/51] Testing Login page
+    🔗 GET /login
+    ✅ Success (200) - 4.68ms
+📋 [  9/51] Testing Registration page
+    🔗 GET /register
+    ✅ Success (200) - 5.0ms
+📋 [ 10/51] Testing Logout
+    🔗 POST /logout
+    ❌ Failed (405)
+📋 [ 11/51] Testing Pricing page
+    🔗 GET /pricing
+    ✅ Success (200) - 7.46ms
+📋 [ 12/51] Testing Pricing page (trailing slash)
+    🔗 GET /pricing/
+    ✅ Success (200) - 4.35ms
+📋 [ 13/51] Testing Demo page
+    🔗 GET /demo
+    ✅ Success (200) - 4.4ms
+📋 [ 14/51] Testing Features overview
+    🔗 GET /features
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 15/51] Testing Features overview (trailing slash)
+    🔗 GET /features/
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 16/51] Testing Analyst recommendations feature
+    🔗 GET /features/analyst-recommendations
+    ✅ Success (200) - 2893.37ms
+📋 [ 17/51] Testing Social sentiment feature
+    🔗 GET /features/social-sentiment
+    ✅ Success (200) - 708.53ms
+📋 [ 18/51] Testing AI predictions feature
+    🔗 GET /features/ai-predictions
+    ✅ Success (200) - 6.73ms
+📋 [ 19/51] Testing Equinor stock details
+    🔗 GET /stocks/details/EQNR.OL
+    ✅ Success (200) - 322.25ms
+📋 [ 20/51] Testing DNB stock details
+    🔗 GET /stocks/details/DNB.OL
+    ✅ Success (200) - 3048.27ms
+📋 [ 21/51] Testing Telenor stock details
+    🔗 GET /stocks/details/TEL.OL
+    ✅ Success (200) - 2981.1ms
+📋 [ 22/51] Testing Stock search API
+    🔗 GET /api/stocks/search
+    ❌ Failed (400)
+📋 [ 23/51] Testing Stock search API with query
+    🔗 GET /api/stocks/search?q=EQNR
+    ❌ Failed (200)
+       🔸 Expected HTML content type
+📋 [ 24/51] Testing Market data API
+    🔗 GET /api/market-data
+    ❌ Failed (200)
+       🔸 Expected HTML content type
+📋 [ 25/51] Testing Market data API (trailing slash)
+    🔗 GET /api/market-data/
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 26/51] Testing Realtime market data API
+    🔗 GET /api/market-data/realtime
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 27/51] Testing Single stock API
+    🔗 GET /api/stocks/EQNR.OL
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 28/51] Testing Stock history API
+    🔗 GET /api/stocks/EQNR.OL/history
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 29/51] Testing Market intelligence
+    🔗 GET /market-intel
+    ✅ Success (200) - 2236.48ms
+📋 [ 30/51] Testing Market intelligence (trailing slash)
+    🔗 GET /market-intel/
+    ✅ Success (200) - 2526.93ms
+📋 [ 31/51] Testing Sector analysis
+    🔗 GET /market-intel/sectors
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 32/51] Testing Market trends
+    🔗 GET /market-intel/trends
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 33/51] Testing User profile
+    🔗 GET /profile
+    ✅ Success (200) - 8.97ms
+📋 [ 34/51] Testing User settings
+    🔗 GET /settings
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 35/51] Testing Notifications
+    🔗 GET /notifications
+    ✅ Success (200) - 13.78ms
+📋 [ 36/51] Testing Privacy policy
+    🔗 GET /privacy
+    ✅ Success (200) - 4.35ms
+📋 [ 37/51] Testing Terms of service
+    🔗 GET /terms
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 38/51] Testing About page
+    🔗 GET /about
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 39/51] Testing Contact page
+    🔗 GET /contact
+    ✅ Success (200) - 4.7ms
+📋 [ 40/51] Testing Help page
+    🔗 GET /help
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 41/51] Testing Blog
+    🔗 GET /blog
+    ✅ Success (200) - 20.3ms
+📋 [ 42/51] Testing News
+    🔗 GET /news
+    ✅ Success (200) - 8.8ms
+📋 [ 43/51] Testing Offline page
+    🔗 GET /offline
+    ✅ Success (200) - 3.62ms
+📋 [ 44/51] Testing PWA manifest
+    🔗 GET /manifest.json
+    ✅ Success (200) - 3.62ms
+📋 [ 45/51] Testing Service worker
+    🔗 GET /service-worker.js
+    ✅ Success (200) - 3.6ms
+📋 [ 46/51] Testing Main CSS file
+    🔗 GET /static/css/style.css
+    ✅ Success (200) - 3.77ms
+📋 [ 47/51] Testing Main JS file
+    🔗 GET /static/js/main.js
+    ✅ Success (200) - 3.52ms
+📋 [ 48/51] Testing Favicon
+    🔗 GET /static/favicon.ico
+    ❌ Failed (404)
+       🔸 404 Not Found - endpoint may not exist
+📋 [ 49/51] Testing Logo image
+    🔗 GET /static/images/logo.png
+    ✅ Success (200) - 3.74ms
+📋 [ 50/51] Testing Admin panel
+    🔗 GET /admin
+    ❌ Failed (404)
+📋 [ 51/51] Testing Admin panel (trailing slash)
+    🔗 GET /admin/
+    ❌ Failed (404)
+
+📊 Test Summary:
+    ✅ Passed: 32
+    ❌ Failed: 19
+    📈 Success Rate: 62.7%
+📄 Detailed report saved to: endpoint_test_report.json
+
+🚨 Failed Endpoints Details:
+==================================================
+
+❌ /logout
+   Status: 405
+   Expected: 302
+   URL: http://localhost:5000/logout
+
+❌ /features
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/features
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /features/
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/features/
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /api/stocks/search
+   Status: 400
+   Expected: 200
+   URL: http://localhost:5000/api/stocks/search
+
+❌ /api/stocks/search?q=EQNR
+   Status: 200
+   Expected: 200
+   URL: http://localhost:5000/api/stocks/search?q=EQNR
+   Issues:
+     • Expected HTML content type
+
+❌ /api/market-data
+   Status: 200
+   Expected: 200
+   URL: http://localhost:5000/api/market-data
+   Issues:
+     • Expected HTML content type
+
+❌ /api/market-data/
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/api/market-data/
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /api/market-data/realtime
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/api/market-data/realtime
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /api/stocks/EQNR.OL
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/api/stocks/EQNR.OL
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /api/stocks/EQNR.OL/history
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/api/stocks/EQNR.OL/history
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /market-intel/sectors
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/market-intel/sectors
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /market-intel/trends
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/market-intel/trends
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /settings
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/settings
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /terms
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/terms
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /about
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/about
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /help
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/help
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /static/favicon.ico
+   Status: 404
+   Expected: 200
+   URL: http://localhost:5000/static/favicon.ico
+   Issues:
+     • 404 Not Found - endpoint may not exist
+
+❌ /admin
+   Status: 404
+   Expected: 302
+   URL: http://localhost:5000/admin
+
+❌ /admin/
+   Status: 404
+   Expected: 302
+   URL: http://localhost:5000/admin/
+
+⚠️  19 endpoints have issues. Check the report for details.

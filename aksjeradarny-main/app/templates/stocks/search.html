@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Søk etter aksjer{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1>Søk etter aksjer</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="d-flex" method="get">
+                        <input type="search" name="q" class="form-control me-2" 
+                               placeholder="Søk etter ticker, navn eller sektor..." 
+                               value="{{ query or '' }}">
+                        <button class="btn btn-primary" type="submit">Søk</button>
+                    </form>
+                </div>
+            </div>
+            
+            {% if query %}
+                <h2>Søkeresultater for "{{ query }}"</h2>
+                
+                {% if results %}
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% for result in results %}
+                                    <a href="{{ url_for('stocks.details', ticker=result.ticker) }}" 
+                                       class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">{{ result.ticker }}</h5>
+                                            <small>{{ result.exchange }}</small>
+                                        </div>
+                                        <p class="mb-1">{{ result.name }}</p>
+                                        <small class="text-muted">{{ result.sector }}</small>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p>Ingen resultater funnet for "{{ query }}".</p>
+                        <p>Prøv et annet søkeord eller bla gjennom:</p>
+                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-secondary me-2">Oslo Børs</a>
+                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-secondary">Globale markeder</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="mt-4">
+                <h3>Populære søk</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Oslo Børs</h5>
+                        <a href="{{ url_for('stocks.details', ticker='EQNR.OL') }}" class="btn btn-outline-primary btn-sm me-1 mb-1">EQNR</a>
+                        <a href="{{ url_for('stocks.details', ticker='DNB.OL') }}" class="btn btn-outline-primary btn-sm me-1 mb-1">DNB</a>
+                        <a href="{{ url_for('stocks.details', ticker='TEL.OL') }}" class="btn btn-outline-primary btn-sm me-1 mb-1">TEL</a>
+                        <a href="{{ url_for('stocks.details', ticker='MOWI.OL') }}" class="btn btn-outline-primary btn-sm me-1 mb-1">MOWI</a>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Globale aksjer</h5>
+                        <a href="{{ url_for('stocks.details', ticker='AAPL') }}" class="btn btn-outline-success btn-sm me-1 mb-1">AAPL</a>
+                        <a href="{{ url_for('stocks.details', ticker='MSFT') }}" class="btn btn-outline-success btn-sm me-1 mb-1">MSFT</a>
+                        <a href="{{ url_for('stocks.details', ticker='GOOGL') }}" class="btn btn-outline-success btn-sm me-1 mb-1">GOOGL</a>
+                        <a href="{{ url_for('stocks.details', ticker='TSLA') }}" class="btn btn-outline-success btn-sm me-1 mb-1">TSLA</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

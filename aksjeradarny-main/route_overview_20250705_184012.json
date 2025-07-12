@@ -1,0 +1,1498 @@
+{
+  "timestamp": "2025-07-05T18:40:12.428489",
+  "total_routes": 205,
+  "blueprints": {
+    "app": [
+      {
+        "endpoint": "static",
+        "methods": [
+          "GET"
+        ],
+        "path": "/static/<path:filename>"
+      }
+    ],
+    "main": [
+      {
+        "endpoint": "main.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/"
+      },
+      {
+        "endpoint": "main.demo",
+        "methods": [
+          "GET"
+        ],
+        "path": "/demo"
+      },
+      {
+        "endpoint": "main.ai_explained",
+        "methods": [
+          "GET"
+        ],
+        "path": "/ai-explained"
+      },
+      {
+        "endpoint": "main.search",
+        "methods": [
+          "GET"
+        ],
+        "path": "/search"
+      },
+      {
+        "endpoint": "main.login",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/login"
+      },
+      {
+        "endpoint": "main.logout",
+        "methods": [
+          "GET"
+        ],
+        "path": "/logout"
+      },
+      {
+        "endpoint": "main.register",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/register"
+      },
+      {
+        "endpoint": "main.handle_share",
+        "methods": [
+          "GET"
+        ],
+        "path": "/share-target"
+      },
+      {
+        "endpoint": "main.service_worker",
+        "methods": [
+          "GET"
+        ],
+        "path": "/service-worker.js"
+      },
+      {
+        "endpoint": "main.manifest",
+        "methods": [
+          "GET"
+        ],
+        "path": "/manifest.json"
+      },
+      {
+        "endpoint": "main.version",
+        "methods": [
+          "GET"
+        ],
+        "path": "/version"
+      },
+      {
+        "endpoint": "main.privacy",
+        "methods": [
+          "GET"
+        ],
+        "path": "/privacy"
+      },
+      {
+        "endpoint": "main.privacy_policy",
+        "methods": [
+          "GET"
+        ],
+        "path": "/privacy-policy"
+      },
+      {
+        "endpoint": "main.subscription",
+        "methods": [
+          "GET"
+        ],
+        "path": "/subscription"
+      },
+      {
+        "endpoint": "main.start_trial",
+        "methods": [
+          "POST"
+        ],
+        "path": "/start-trial"
+      },
+      {
+        "endpoint": "main.purchase_subscription",
+        "methods": [
+          "POST"
+        ],
+        "path": "/purchase_subscription"
+      },
+      {
+        "endpoint": "main.create_checkout_session",
+        "methods": [
+          "POST"
+        ],
+        "path": "/create-checkout-session"
+      },
+      {
+        "endpoint": "main.subscribe",
+        "methods": [
+          "GET"
+        ],
+        "path": "/subscribe/<plan>"
+      },
+      {
+        "endpoint": "main.payment_success",
+        "methods": [
+          "GET"
+        ],
+        "path": "/payment/success"
+      },
+      {
+        "endpoint": "main.payment_cancel",
+        "methods": [
+          "GET"
+        ],
+        "path": "/payment/cancel"
+      },
+      {
+        "endpoint": "main.stripe_webhook",
+        "methods": [
+          "POST"
+        ],
+        "path": "/webhook/stripe"
+      },
+      {
+        "endpoint": "main.trial_expired",
+        "methods": [
+          "GET"
+        ],
+        "path": "/trial-expired"
+      },
+      {
+        "endpoint": "main.contact",
+        "methods": [
+          "GET"
+        ],
+        "path": "/contact"
+      },
+      {
+        "endpoint": "main.contact_submit",
+        "methods": [
+          "POST"
+        ],
+        "path": "/contact/submit"
+      },
+      {
+        "endpoint": "main.api_search",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/search"
+      },
+      {
+        "endpoint": "main.get_oslo_stocks",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/oslo_stocks"
+      },
+      {
+        "endpoint": "main.get_global_stocks",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/global_stocks"
+      },
+      {
+        "endpoint": "main.get_crypto",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/crypto"
+      },
+      {
+        "endpoint": "main.get_currency",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/currency"
+      },
+      {
+        "endpoint": "main.api_realtime_price",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/price/<ticker>"
+      },
+      {
+        "endpoint": "main.offline",
+        "methods": [
+          "GET"
+        ],
+        "path": "/offline"
+      },
+      {
+        "endpoint": "main.currency",
+        "methods": [
+          "GET"
+        ],
+        "path": "/currency"
+      },
+      {
+        "endpoint": "main.add_to_watchlist",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/watchlist/add"
+      },
+      {
+        "endpoint": "main.add_to_portfolio",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/portfolio/add"
+      },
+      {
+        "endpoint": "main.offline_html",
+        "methods": [
+          "GET"
+        ],
+        "path": "/offline.html"
+      },
+      {
+        "endpoint": "main.favicon",
+        "methods": [
+          "GET"
+        ],
+        "path": "/favicon.ico"
+      },
+      {
+        "endpoint": "main.restricted_access",
+        "methods": [
+          "GET"
+        ],
+        "path": "/restricted_access"
+      },
+      {
+        "endpoint": "main.restricted_access",
+        "methods": [
+          "GET"
+        ],
+        "path": "/restricted_access.html"
+      },
+      {
+        "endpoint": "main.prediction",
+        "methods": [
+          "GET"
+        ],
+        "path": "/prediction"
+      },
+      {
+        "endpoint": "main.forgot_password",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/forgot_password"
+      },
+      {
+        "endpoint": "main.reset_password",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/reset_password/<token>"
+      },
+      {
+        "endpoint": "main.pwa_test",
+        "methods": [
+          "GET"
+        ],
+        "path": "/pwa-test"
+      },
+      {
+        "endpoint": "main.create_exempt_users",
+        "methods": [
+          "GET"
+        ],
+        "path": "/admin/create-exempt-users"
+      },
+      {
+        "endpoint": "main.reset_session",
+        "methods": [
+          "GET"
+        ],
+        "path": "/debug/reset-session"
+      },
+      {
+        "endpoint": "main.debug_status",
+        "methods": [
+          "GET"
+        ],
+        "path": "/debug/status"
+      },
+      {
+        "endpoint": "main.test_email",
+        "methods": [
+          "GET"
+        ],
+        "path": "/test-email"
+      },
+      {
+        "endpoint": "main.admin_user_management",
+        "methods": [
+          "GET"
+        ],
+        "path": "/admin/user-management"
+      },
+      {
+        "endpoint": "main.admin_reset_user",
+        "methods": [
+          "GET"
+        ],
+        "path": "/admin/reset-user/<int:user_id>"
+      },
+      {
+        "endpoint": "main.check_trial",
+        "methods": [
+          "GET"
+        ],
+        "path": "/check-trial"
+      },
+      {
+        "endpoint": "main.admin_clean_trials",
+        "methods": [
+          "GET"
+        ],
+        "path": "/admin/clean-trials"
+      },
+      {
+        "endpoint": "main.debug_user_info",
+        "methods": [
+          "GET"
+        ],
+        "path": "/debug/user-info"
+      },
+      {
+        "endpoint": "main.referrals",
+        "methods": [
+          "GET"
+        ],
+        "path": "/referrals"
+      },
+      {
+        "endpoint": "main.send_referral",
+        "methods": [
+          "POST"
+        ],
+        "path": "/send-referral"
+      },
+      {
+        "endpoint": "main.get_user_referral_code",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/user/referral-code"
+      },
+      {
+        "endpoint": "main.debug_test_reset",
+        "methods": [
+          "GET"
+        ],
+        "path": "/debug/test-reset"
+      },
+      {
+        "endpoint": "main.profile",
+        "methods": [
+          "GET"
+        ],
+        "path": "/profile"
+      },
+      {
+        "endpoint": "main.invite_friend",
+        "methods": [
+          "POST"
+        ],
+        "path": "/invite-friend"
+      },
+      {
+        "endpoint": "main.debug_csrf",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/debug/csrf"
+      },
+      {
+        "endpoint": "main.demo_ping",
+        "methods": [
+          "GET"
+        ],
+        "path": "/demo/ping"
+      },
+      {
+        "endpoint": "main.demo_echo",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/demo/echo"
+      },
+      {
+        "endpoint": "main.demo_user",
+        "methods": [
+          "GET"
+        ],
+        "path": "/demo/user"
+      },
+      {
+        "endpoint": "main.auth",
+        "methods": [
+          "GET"
+        ],
+        "path": "/auth"
+      }
+    ],
+    "stocks": [
+      {
+        "endpoint": "stocks.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/"
+      },
+      {
+        "endpoint": "stocks.list_stocks",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list"
+      },
+      {
+        "endpoint": "stocks.list_stocks_by_category",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list/<category>"
+      },
+      {
+        "endpoint": "stocks.details",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/details/<path:ticker>"
+      },
+      {
+        "endpoint": "stocks.search",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/search"
+      },
+      {
+        "endpoint": "stocks.api_search",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/api/search"
+      },
+      {
+        "endpoint": "stocks.list_oslo",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list/oslo"
+      },
+      {
+        "endpoint": "stocks.global_list",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list/global"
+      },
+      {
+        "endpoint": "stocks.list_crypto",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list/crypto"
+      },
+      {
+        "endpoint": "stocks.list_currency",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/list/currency"
+      },
+      {
+        "endpoint": "stocks.api_stock",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/api/stock/<ticker>"
+      },
+      {
+        "endpoint": "stocks.compare",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/compare"
+      },
+      {
+        "endpoint": "stocks.stocks_index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stocks/index"
+      }
+    ],
+    "analysis": [
+      {
+        "endpoint": "analysis.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/"
+      },
+      {
+        "endpoint": "analysis.technical",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/technical"
+      },
+      {
+        "endpoint": "analysis.technical_with_ticker",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/technical/<path:ticker>"
+      },
+      {
+        "endpoint": "analysis.prediction",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/analysis/prediction"
+      },
+      {
+        "endpoint": "analysis.recommendation",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/recommendation"
+      },
+      {
+        "endpoint": "analysis.ai",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/analysis/ai"
+      },
+      {
+        "endpoint": "analysis.get_indicators",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/api/analysis/indicators"
+      },
+      {
+        "endpoint": "analysis.get_trading_signals",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/api/analysis/signals"
+      },
+      {
+        "endpoint": "analysis.get_market_summary",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/api/market-summary"
+      },
+      {
+        "endpoint": "analysis.download_file",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/downloads/<path:filename>"
+      },
+      {
+        "endpoint": "analysis.market_overview",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/market-overview"
+      },
+      {
+        "endpoint": "analysis.warren_buffett_analysis",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/warren-buffett"
+      },
+      {
+        "endpoint": "analysis.benjamin_graham_analysis",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/benjamin-graham"
+      },
+      {
+        "endpoint": "analysis.short_analysis",
+        "methods": [
+          "GET"
+        ],
+        "path": "/analysis/short-analysis"
+      }
+    ],
+    "portfolio": [
+      {
+        "endpoint": "portfolio.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/"
+      },
+      {
+        "endpoint": "portfolio.stock_tips",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/tips"
+      },
+      {
+        "endpoint": "portfolio.portfolio_index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/"
+      },
+      {
+        "endpoint": "portfolio.create_portfolio",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/create"
+      },
+      {
+        "endpoint": "portfolio.view_portfolio",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/view/<int:id>"
+      },
+      {
+        "endpoint": "portfolio.add_stock_to_portfolio",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/portfolio/<int:id>/add"
+      },
+      {
+        "endpoint": "portfolio.remove_stock_from_portfolio",
+        "methods": [
+          "POST"
+        ],
+        "path": "/portfolio/portfolio/<int:id>/remove/<int:stock_id>"
+      },
+      {
+        "endpoint": "portfolio.watchlist",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/watchlist"
+      },
+      {
+        "endpoint": "portfolio.create_watchlist",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/watchlist/create"
+      },
+      {
+        "endpoint": "portfolio.add_to_watchlist",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/watchlist/<int:id>/add"
+      },
+      {
+        "endpoint": "portfolio.add_tip",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/tips/add"
+      },
+      {
+        "endpoint": "portfolio.tip_feedback",
+        "methods": [
+          "POST"
+        ],
+        "path": "/portfolio/tips/feedback/<int:tip_id>"
+      },
+      {
+        "endpoint": "portfolio.quick_add_stock",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/add/<ticker>"
+      },
+      {
+        "endpoint": "portfolio.add_stock",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/add"
+      },
+      {
+        "endpoint": "portfolio.edit_stock",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/portfolio/edit/<ticker>"
+      },
+      {
+        "endpoint": "portfolio.remove_stock",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/remove/<ticker>"
+      },
+      {
+        "endpoint": "portfolio.overview",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/overview"
+      },
+      {
+        "endpoint": "portfolio.transactions",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/transactions"
+      }
+    ],
+    "portfolio_advanced": [
+      {
+        "endpoint": "portfolio_advanced.advanced_portfolio",
+        "methods": [
+          "GET"
+        ],
+        "path": "/portfolio/advanced/advanced/"
+      },
+      {
+        "endpoint": "portfolio_advanced.optimize_portfolio",
+        "methods": [
+          "POST"
+        ],
+        "path": "/portfolio/advanced/optimize"
+      },
+      {
+        "endpoint": "portfolio_advanced.backtest_portfolio",
+        "methods": [
+          "POST"
+        ],
+        "path": "/portfolio/advanced/backtest"
+      },
+      {
+        "endpoint": "portfolio_advanced.monte_carlo_simulation",
+        "methods": [
+          "POST"
+        ],
+        "path": "/portfolio/advanced/monte_carlo"
+      }
+    ],
+    "market_intel": [
+      {
+        "endpoint": "market_intel.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/"
+      },
+      {
+        "endpoint": "market_intel.insider_trading",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/insider-trading"
+      },
+      {
+        "endpoint": "market_intel.earnings_calendar",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/earnings-calendar"
+      },
+      {
+        "endpoint": "market_intel.sector_analysis",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/sector-analysis"
+      },
+      {
+        "endpoint": "market_intel.economic_indicators",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/economic-indicators"
+      },
+      {
+        "endpoint": "market_intel.api_insider_trading",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/api/insider-trading/<ticker>"
+      },
+      {
+        "endpoint": "market_intel.api_institutional_ownership",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/api/institutional-ownership/<ticker>"
+      },
+      {
+        "endpoint": "market_intel.api_sector_performance",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/api/sector-performance"
+      },
+      {
+        "endpoint": "market_intel.api_earnings_calendar",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/api/earnings-calendar"
+      },
+      {
+        "endpoint": "market_intel.api_crypto_fear_greed",
+        "methods": [
+          "GET"
+        ],
+        "path": "/market-intel/api/crypto-fear-greed"
+      }
+    ],
+    "features": [
+      {
+        "endpoint": "features.analyst_recommendations",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/analyst-recommendations"
+      },
+      {
+        "endpoint": "features.social_sentiment",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/social-sentiment"
+      },
+      {
+        "endpoint": "features.ai_predictions",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/ai-predictions"
+      },
+      {
+        "endpoint": "features.market_news_sentiment",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/market-news-sentiment"
+      },
+      {
+        "endpoint": "features.notifications",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/notifications"
+      },
+      {
+        "endpoint": "features.api_analyst_recommendations",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/api/analyst-recommendations/<ticker>"
+      },
+      {
+        "endpoint": "features.api_social_sentiment",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/api/social-sentiment/<ticker>"
+      },
+      {
+        "endpoint": "features.api_ai_prediction",
+        "methods": [
+          "GET"
+        ],
+        "path": "/features/api/ai-prediction/<ticker>"
+      },
+      {
+        "endpoint": "features.api_create_price_alert",
+        "methods": [
+          "POST"
+        ],
+        "path": "/features/api/create-price-alert"
+      }
+    ],
+    "notifications": [
+      {
+        "endpoint": "notifications.get_notifications",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/notifications/"
+      },
+      {
+        "endpoint": "notifications.get_unread_count",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/notifications/unread_count"
+      },
+      {
+        "endpoint": "notifications.mark_notification_read",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/<int:notification_id>/read"
+      },
+      {
+        "endpoint": "notifications.mark_all_read",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/mark_all_read"
+      },
+      {
+        "endpoint": "notifications.get_notification_settings",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/notifications/settings"
+      },
+      {
+        "endpoint": "notifications.update_notification_settings",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/settings"
+      },
+      {
+        "endpoint": "notifications.get_price_alerts",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/notifications/price_alerts"
+      },
+      {
+        "endpoint": "notifications.create_price_alert",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/price_alerts"
+      },
+      {
+        "endpoint": "notifications.delete_price_alert",
+        "methods": [
+          "DELETE"
+        ],
+        "path": "/api/notifications/price_alerts/<int:alert_id>"
+      },
+      {
+        "endpoint": "notifications.send_test_notification",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/test"
+      },
+      {
+        "endpoint": "notifications.save_push_subscription",
+        "methods": [
+          "POST"
+        ],
+        "path": "/api/notifications/push_subscription"
+      }
+    ],
+    "notifications_web": [
+      {
+        "endpoint": "notifications_web.notifications_page",
+        "methods": [
+          "GET"
+        ],
+        "path": "/notifications/"
+      },
+      {
+        "endpoint": "notifications_web.settings_page",
+        "methods": [
+          "GET"
+        ],
+        "path": "/notifications/settings"
+      }
+    ],
+    "realtime_api": [
+      {
+        "endpoint": "realtime_api.get_live_price",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/price/<ticker>"
+      },
+      {
+        "endpoint": "realtime_api.get_market_summary",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/market-summary"
+      },
+      {
+        "endpoint": "realtime_api.get_trending_stocks",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/trending"
+      },
+      {
+        "endpoint": "realtime_api.get_batch_prices",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/batch-prices"
+      },
+      {
+        "endpoint": "realtime_api.start_real_time_updates",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/start-updates"
+      },
+      {
+        "endpoint": "realtime_api.stop_real_time_updates",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/stop-updates"
+      },
+      {
+        "endpoint": "realtime_api.get_service_status",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/realtime/status"
+      }
+    ],
+    "watchlist": [
+      {
+        "endpoint": "watchlist.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/"
+      },
+      {
+        "endpoint": "watchlist.create_watchlist",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "path": "/watchlist/create"
+      },
+      {
+        "endpoint": "watchlist.view_watchlist",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/<int:id>"
+      },
+      {
+        "endpoint": "watchlist.add_stock",
+        "methods": [
+          "POST"
+        ],
+        "path": "/watchlist/<int:id>/add_stock"
+      },
+      {
+        "endpoint": "watchlist.remove_stock",
+        "methods": [
+          "POST"
+        ],
+        "path": "/watchlist/item/<int:item_id>/remove"
+      },
+      {
+        "endpoint": "watchlist.get_alerts",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/api/alerts/<int:watchlist_id>"
+      },
+      {
+        "endpoint": "watchlist.get_weekly_report",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/api/weekly_report/<int:watchlist_id>"
+      },
+      {
+        "endpoint": "watchlist.send_weekly_reports",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/send_weekly_report"
+      },
+      {
+        "endpoint": "watchlist.notification_settings",
+        "methods": [
+          "GET"
+        ],
+        "path": "/watchlist/settings"
+      }
+    ],
+    "backtest": [
+      {
+        "endpoint": "backtest.index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/backtest/"
+      },
+      {
+        "endpoint": "backtest.strategy_builder",
+        "methods": [
+          "GET"
+        ],
+        "path": "/backtest/strategy_builder"
+      },
+      {
+        "endpoint": "backtest.run_backtest",
+        "methods": [
+          "POST"
+        ],
+        "path": "/backtest/api/run_backtest"
+      },
+      {
+        "endpoint": "backtest.optimize_strategy",
+        "methods": [
+          "POST"
+        ],
+        "path": "/backtest/api/optimize_strategy"
+      },
+      {
+        "endpoint": "backtest.compare_strategies",
+        "methods": [
+          "POST"
+        ],
+        "path": "/backtest/api/compare_strategies"
+      }
+    ],
+    "seo_content": [
+      {
+        "endpoint": "seo_content.blog_index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/blogg"
+      },
+      {
+        "endpoint": "seo_content.blog_post",
+        "methods": [
+          "GET"
+        ],
+        "path": "/blogg/<slug>"
+      },
+      {
+        "endpoint": "seo_content.technical_analysis_oslo",
+        "methods": [
+          "GET"
+        ],
+        "path": "/teknisk-analyse-oslobors"
+      },
+      {
+        "endpoint": "seo_content.ai_prediction_stocks",
+        "methods": [
+          "GET"
+        ],
+        "path": "/ai-prediksjon-aksjer"
+      },
+      {
+        "endpoint": "seo_content.weekly_market_report",
+        "methods": [
+          "GET"
+        ],
+        "path": "/ukentlig-markedsrapport"
+      },
+      {
+        "endpoint": "seo_content.blog_index_en",
+        "methods": [
+          "GET"
+        ],
+        "path": "/blog/"
+      },
+      {
+        "endpoint": "seo_content.blog_post_en",
+        "methods": [
+          "GET"
+        ],
+        "path": "/blog/<slug>"
+      },
+      {
+        "endpoint": "seo_content.investment_guides_index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/investment-guides/"
+      },
+      {
+        "endpoint": "seo_content.investment_guide_detail",
+        "methods": [
+          "GET"
+        ],
+        "path": "/investment-guides/<slug>"
+      }
+    ],
+    "api": [
+      {
+        "endpoint": "api.crypto_api",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/api/crypto"
+      },
+      {
+        "endpoint": "api.currency_api",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/api/currency"
+      },
+      {
+        "endpoint": "api.stocks_search",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/stocks/search"
+      },
+      {
+        "endpoint": "api.market_data",
+        "methods": [
+          "GET"
+        ],
+        "path": "/api/market-data"
+      }
+    ],
+    "stripe": [
+      {
+        "endpoint": "stripe.create_checkout_session",
+        "methods": [
+          "POST"
+        ],
+        "path": "/stripe/create-checkout-session"
+      },
+      {
+        "endpoint": "stripe.payment_success",
+        "methods": [
+          "GET"
+        ],
+        "path": "/stripe/payment/success"
+      },
+      {
+        "endpoint": "stripe.stripe_webhook",
+        "methods": [
+          "POST"
+        ],
+        "path": "/stripe/webhook"
+      }
+    ],
+    "pricing": [
+      {
+        "endpoint": "pricing.pricing",
+        "methods": [
+          "GET"
+        ],
+        "path": "/pricing/"
+      },
+      {
+        "endpoint": "pricing.upgrade",
+        "methods": [
+          "GET"
+        ],
+        "path": "/pricing/upgrade/<tier>"
+      },
+      {
+        "endpoint": "pricing.subscription_success",
+        "methods": [
+          "GET"
+        ],
+        "path": "/pricing/subscription/success"
+      },
+      {
+        "endpoint": "pricing.buy_report",
+        "methods": [
+          "POST"
+        ],
+        "path": "/pricing/buy-report"
+      },
+      {
+        "endpoint": "pricing.report_success",
+        "methods": [
+          "GET"
+        ],
+        "path": "/pricing/report/success"
+      },
+      {
+        "endpoint": "pricing.stripe_webhook",
+        "methods": [
+          "POST"
+        ],
+        "path": "/pricing/webhook"
+      }
+    ],
+    "external_data": [
+      {
+        "endpoint": "external_data.external_analysis",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/external-analysis/<symbol>"
+      },
+      {
+        "endpoint": "external_data.api_external_data",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/api/external-data/<symbol>"
+      },
+      {
+        "endpoint": "external_data.api_market_overview",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/api/market-overview"
+      },
+      {
+        "endpoint": "external_data.insider_trading_overview",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/insider-trading"
+      },
+      {
+        "endpoint": "external_data.analyst_coverage",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/analyst-coverage"
+      },
+      {
+        "endpoint": "external_data.market_intelligence",
+        "methods": [
+          "GET"
+        ],
+        "path": "/external/market-intelligence"
+      }
+    ],
+    "resources": [
+      {
+        "endpoint": "resources.analysis_tools",
+        "methods": [
+          "GET"
+        ],
+        "path": "/resources/analysis-tools"
+      },
+      {
+        "endpoint": "resources.tool_comparison",
+        "methods": [
+          "GET"
+        ],
+        "path": "/resources/comparison"
+      },
+      {
+        "endpoint": "resources.guides",
+        "methods": [
+          "GET"
+        ],
+        "path": "/resources/guides"
+      }
+    ],
+    "news": [
+      {
+        "endpoint": "news.news_index",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/"
+      },
+      {
+        "endpoint": "news.api_latest_news",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/latest"
+      },
+      {
+        "endpoint": "news.api_company_news",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/company/<string:symbol>"
+      },
+      {
+        "endpoint": "news.api_market_summary",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/market-summary"
+      },
+      {
+        "endpoint": "news.api_market_overview",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/market-overview"
+      },
+      {
+        "endpoint": "news.api_stock_news",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/stock/<stock_symbol>"
+      },
+      {
+        "endpoint": "news.api_trending_news",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/trending"
+      },
+      {
+        "endpoint": "news.api_news_sources",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/api/sources"
+      },
+      {
+        "endpoint": "news.news_embed",
+        "methods": [
+          "GET"
+        ],
+        "path": "/news/embed"
+      }
+    ]
+  }
+}

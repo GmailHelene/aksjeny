@@ -1,0 +1,189 @@
+[2025-06-30 20:08:22,853] INFO in main: Stripe initialized with dummy/test keys for development
+[2025-06-30 20:08:22,897] INFO in stripe_routes: Stripe initialized with dummy/test keys for development
+[2025-06-30 20:08:23,250] INFO in main: Stripe initialized with dummy/test keys for development
+[2025-06-30 20:08:23,297] INFO in stripe_routes: Stripe initialized with dummy/test keys for development
+🚀 AKSJERADAR V6 - COMPREHENSIVE TEST SUITE
+==================================================
+[20:08:20] INFO: 🧪 Starting Offline Tests
+[20:08:20] TEST: 📦 Testing Critical Imports
+[20:08:20] PASS: ✅ Import success: app - Main app module
+[20:08:21] PASS: ✅ Import success: app.services.portfolio_service - Portfolio service
+[20:08:21] PASS: ✅ Import success: app.services.data_service - Data service
+[20:08:21] PASS: ✅ Import success: app.services.ai_service - AI service
+[20:08:21] PASS: ✅ Import success: app.routes.resources - Resources blueprint
+[20:08:21] PASS: ✅ Import success: app.routes.external_data - External data blueprint
+[20:08:21] PASS: ✅ Import success: app.models.user - User model
+[20:08:21] PASS: ✅ Import success: app.models.portfolio - Portfolio model
+[20:08:21] TEST: 🚀 Testing Flask App Startup
+[20:08:22] PASS: ✅ Flask app startup successful
+[20:08:22] TEST: 🗄️ Testing Database Models
+[20:08:22] PASS: ✅ Database models test passed
+[20:08:22] TEST: ⚙️ Testing Service Modules
+[20:08:23] PASS: ✅ Services test passed
+[20:08:23] TEST: 🎨 Testing Template Rendering
+[20:08:23] WARN: ⚠️ Template rendering test skipped: Working outside of request context.
+
+This typically means that you attempted to use functionality that needed
+an active HTTP request. Consult the documentation on testing for
+information about how to avoid this problem.
+[20:08:23] INFO: ✅ Offline tests completed
+[20:08:23] INFO: 🌐 Attempting online tests...
+[20:08:23] INFO: 🌐 Starting Online Tests
+[20:08:23] INFO: ✅ Server is running at http://localhost:5000
+[20:08:23] TEST: 🌐 Testing All Endpoints
+[20:08:23] INFO: Testing GET / - Main homepage
+[20:08:23] PASS: ✅ PASS: / (200)
+[20:08:23] INFO: Testing GET /demo - Demo page
+[20:08:23] FAIL: ❌ FAIL: /demo - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /demo - Demo page (redirect)
+[20:08:23] FAIL: ❌ FAIL: /demo - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /ai-explained - AI explanation page
+[20:08:23] FAIL: ❌ FAIL: /ai-explained - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /ai-explained - AI explanation page (redirect)
+[20:08:23] FAIL: ❌ FAIL: /ai-explained - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /login - Login page
+[20:08:23] PASS: ✅ PASS: /login (200)
+[20:08:23] INFO: Testing GET /register - Registration page
+[20:08:23] PASS: ✅ PASS: /register (200)
+[20:08:23] INFO: Testing GET /stocks/ - Stocks index
+[20:08:23] PASS: ✅ PASS: /stocks/ (200)
+[20:08:23] INFO: Testing GET /stocks/list - Stocks list
+[20:08:23] PASS: ✅ PASS: /stocks/list (200)
+[20:08:23] INFO: Testing GET /stocks/search - Stocks search
+[20:08:23] PASS: ✅ PASS: /stocks/search (200)
+[20:08:23] INFO: Testing GET /analysis/ - Analysis index
+[20:08:23] PASS: ✅ PASS: /analysis/ (200)
+[20:08:23] INFO: Testing GET /analysis/market-overview - Market overview
+[20:08:23] PASS: ✅ PASS: /analysis/market-overview (200)
+[20:08:23] INFO: Testing GET /portfolio/ - Portfolio index
+[20:08:23] PASS: ✅ PASS: /portfolio/ (200)
+[20:08:23] INFO: Testing GET /portfolio/advanced/ - Advanced portfolio
+[20:08:23] FAIL: ❌ FAIL: /portfolio/advanced/ - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /portfolio/advanced/ - Advanced portfolio (redirect)
+[20:08:23] FAIL: ❌ FAIL: /portfolio/advanced/ - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /watchlist/ - Watchlist index
+[20:08:23] PASS: ✅ PASS: /watchlist/ (200)
+[20:08:23] INFO: Testing GET /resources/analysis-tools - Analysis tools page
+[20:08:23] PASS: ✅ PASS: /resources/analysis-tools (200)
+[20:08:23] INFO: Testing GET /resources/guides - Analysis guides
+[20:08:23] PASS: ✅ PASS: /resources/guides (200)
+[20:08:23] INFO: Testing GET /resources/comparison - Tool comparison
+[20:08:23] PASS: ✅ PASS: /resources/comparison (200)
+[20:08:23] INFO: Testing GET /external/market-intelligence - Market intelligence
+[20:08:23] PASS: ✅ PASS: /external/market-intelligence (200)
+[20:08:23] INFO: Testing GET /external/insider-trading - Insider trading
+[20:08:23] PASS: ✅ PASS: /external/insider-trading (200)
+[20:08:23] INFO: Testing GET /blog/ - Blog index
+[20:08:23] FAIL: ❌ FAIL: /blog/ - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /blog/ - Blog index (redirect)
+[20:08:23] FAIL: ❌ FAIL: /blog/ - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /investment-guides/ - Investment guides
+[20:08:23] FAIL: ❌ FAIL: /investment-guides/ - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /investment-guides/ - Investment guides (redirect)
+[20:08:23] FAIL: ❌ FAIL: /investment-guides/ - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /pricing/ - Pricing page
+[20:08:23] FAIL: ❌ FAIL: /pricing/ - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /pricing/ - Pricing page (redirect)
+[20:08:23] FAIL: ❌ FAIL: /pricing/ - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /api/stocks/search - API stock search
+[20:08:23] FAIL: ❌ FAIL: /api/stocks/search - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /api/stocks/search - API stock search (redirect)
+[20:08:23] FAIL: ❌ FAIL: /api/stocks/search - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] INFO: Testing GET /api/market-data - API market data
+[20:08:23] FAIL: ❌ FAIL: /api/market-data - Status: 404 (expected 200), Content: 207 bytes
+[20:08:23] INFO: Testing GET /api/market-data - API market data (redirect)
+[20:08:23] FAIL: ❌ FAIL: /api/market-data - Status: 404 (expected 302), Content: 207 bytes
+[20:08:23] TEST: 📁 Testing Static Files
+[20:08:23] INFO: Testing GET /static/css/mobile-optimized.css - Static file: /static/css/mobile-optimized.css
+[20:08:23] PASS: ✅ PASS: /static/css/mobile-optimized.css (200)
+[20:08:23] INFO: Testing GET /static/css/loading-states.css - Static file: /static/css/loading-states.css
+[20:08:23] PASS: ✅ PASS: /static/css/loading-states.css (200)
+[20:08:23] INFO: Testing GET /static/js/onboarding-manager.js - Static file: /static/js/onboarding-manager.js
+[20:08:23] PASS: ✅ PASS: /static/js/onboarding-manager.js (200)
+[20:08:23] INFO: Testing GET /static/js/loading-manager.js - Static file: /static/js/loading-manager.js
+[20:08:23] PASS: ✅ PASS: /static/js/loading-manager.js (200)
+[20:08:23] INFO: Testing GET /static/js/performance-optimizer.js - Static file: /static/js/performance-optimizer.js
+[20:08:23] PASS: ✅ PASS: /static/js/performance-optimizer.js (200)
+[20:08:23] INFO: Testing GET /static/js/enhanced-realtime.js - Static file: /static/js/enhanced-realtime.js
+[20:08:23] PASS: ✅ PASS: /static/js/enhanced-realtime.js (200)
+[20:08:23] INFO: 📊 Generating Test Report
+
+================================================================================
+AKSJERADAR V6 - COMPREHENSIVE TEST REPORT
+================================================================================
+
+📊 TEST SUMMARY:
+  • Total Tests: 47
+  • Passed: 31 ✅
+  • Failed: 16 ❌
+  • Pass Rate: 66.0%
+  • Warnings: 1 ⚠️
+
+❌ ERRORS:
+  • ❌ FAIL: /demo - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /demo - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /ai-explained - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /ai-explained - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /portfolio/advanced/ - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /portfolio/advanced/ - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /blog/ - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /blog/ - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /investment-guides/ - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /investment-guides/ - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /pricing/ - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /pricing/ - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /api/stocks/search - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /api/stocks/search - Status: 404 (expected 302), Content: 207 bytes
+  • ❌ FAIL: /api/market-data - Status: 404 (expected 200), Content: 207 bytes
+  • ❌ FAIL: /api/market-data - Status: 404 (expected 302), Content: 207 bytes
+
+⚠️ WARNINGS:
+  • Template rendering: Working outside of request context.
+
+This typically means that you attempted to use functionality that needed
+an active HTTP request. Consult the documentation on testing for
+information about how to avoid this problem.
+
+🌐 ENDPOINT TEST RESULTS:
+  ✅ GET / (200) - Main homepage
+  ❌ GET /demo (404) - Demo page
+  ❌ GET /demo (404) - Demo page (redirect)
+  ❌ GET /ai-explained (404) - AI explanation page
+  ❌ GET /ai-explained (404) - AI explanation page (redirect)
+  ✅ GET /login (200) - Login page
+  ✅ GET /register (200) - Registration page
+  ✅ GET /stocks/ (200) - Stocks index
+  ✅ GET /stocks/list (200) - Stocks list
+  ✅ GET /stocks/search (200) - Stocks search
+  ✅ GET /analysis/ (200) - Analysis index
+  ✅ GET /analysis/market-overview (200) - Market overview
+  ✅ GET /portfolio/ (200) - Portfolio index
+  ❌ GET /portfolio/advanced/ (404) - Advanced portfolio
+  ❌ GET /portfolio/advanced/ (404) - Advanced portfolio (redirect)
+  ✅ GET /watchlist/ (200) - Watchlist index
+  ✅ GET /resources/analysis-tools (200) - Analysis tools page
+  ✅ GET /resources/guides (200) - Analysis guides
+  ✅ GET /resources/comparison (200) - Tool comparison
+  ✅ GET /external/market-intelligence (200) - Market intelligence
+  ✅ GET /external/insider-trading (200) - Insider trading
+  ❌ GET /blog/ (404) - Blog index
+  ❌ GET /blog/ (404) - Blog index (redirect)
+  ❌ GET /investment-guides/ (404) - Investment guides
+  ❌ GET /investment-guides/ (404) - Investment guides (redirect)
+  ❌ GET /pricing/ (404) - Pricing page
+  ❌ GET /pricing/ (404) - Pricing page (redirect)
+  ❌ GET /api/stocks/search (404) - API stock search
+  ❌ GET /api/stocks/search (404) - API stock search (redirect)
+  ❌ GET /api/market-data (404) - API market data
+  ❌ GET /api/market-data (404) - API market data (redirect)
+  ✅ GET /static/css/mobile-optimized.css (200) - Static file: /static/css/mobile-optimized.css
+  ✅ GET /static/css/loading-states.css (200) - Static file: /static/css/loading-states.css
+  ✅ GET /static/js/onboarding-manager.js (200) - Static file: /static/js/onboarding-manager.js
+  ✅ GET /static/js/loading-manager.js (200) - Static file: /static/js/loading-manager.js
+  ✅ GET /static/js/performance-optimizer.js (200) - Static file: /static/js/performance-optimizer.js
+  ✅ GET /static/js/enhanced-realtime.js (200) - Static file: /static/js/enhanced-realtime.js
+
+⚠️ OVERALL ASSESSMENT: NEEDS WORK - Several issues found
+
+================================================================================
+

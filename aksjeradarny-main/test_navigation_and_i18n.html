@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navigation & i18n</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-dark text-white">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/static/images/logo-192.png" alt="Aksjeradar Logo" height="30" class="d-inline-block align-text-top me-2">
+                Aksjeradar
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <!-- Home with only house icon (no "Hjem" text) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" data-i18n-title="nav.home">
+                            <i class="bi bi-house-door"></i>
+                        </a>
+                    </li>
+                    <!-- Stocks with translation -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-graph-up"></i> 
+                            <span data-i18n="nav.stocks">Aksjer</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Expandable search field -->
+                <div class="search-container me-2">
+                    <button id="search-toggle" class="btn btn-outline-light" type="button" data-i18n-title="nav.search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <form class="search-form" style="display: none;">
+                        <div class="input-group">
+                            <input type="search" class="form-control" data-i18n-placeholder="nav.search" placeholder="Søk aksjer...">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-secondary" type="button" id="search-close"><i class="bi bi-x"></i></button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Language Toggle -->
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown">
+                        <i class="bi bi-globe"></i>
+                        <span id="current-language">NO</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="setLanguage('no')">
+                            <i class="bi bi-flag"></i> Norsk
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setLanguage('en')">
+                            <i class="bi bi-flag-fill"></i> English
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Login/Register buttons -->
+                <div class="d-flex">
+                    <a href="#" class="btn btn-outline-light me-2" data-i18n="nav.login">Logg inn</a>
+                    <a href="#" class="btn btn-primary" data-i18n="nav.register">Registrer deg</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Navigation & Translation Test</h1>
+        <div class="alert alert-success">
+            <h4>✅ Implementation Complete!</h4>
+            <ul class="mb-0">
+                <li><strong>Search field:</strong> Already an expandable icon ✅</li>
+                <li><strong>Home button:</strong> Only shows house icon (no "Hjem" text) ✅</li>
+                <li><strong>Dark/Light mode toggle:</strong> No visible toggle in navigation ✅</li>
+                <li><strong>Language toggle:</strong> English/Norwegian dropdown implemented ✅</li>
+                <li><strong>i18n system:</strong> Integrated with data-i18n attributes ✅</li>
+            </ul>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Test Translation</h3>
+                <p>Click the language dropdown above to test translation between Norwegian and English.</p>
+                <ul>
+                    <li data-i18n="nav.stocks">Aksjer</li>
+                    <li data-i18n="nav.analysis">Analyse</li>
+                    <li data-i18n="nav.portfolio">Portefølje</li>
+                    <li data-i18n="nav.pricing">Priser</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h3>Test Search</h3>
+                <p>Click the search icon (🔍) in the navigation to test the expandable search field.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- i18n System -->
+    <script>
+        // Simple i18n for testing
+        const translations = {
+            'no': {
+                'nav.stocks': 'Aksjer',
+                'nav.analysis': 'Analyse', 
+                'nav.portfolio': 'Portefølje',
+                'nav.pricing': 'Priser',
+                'nav.search': 'Søk aksjer...',
+                'nav.login': 'Logg inn',
+                'nav.register': 'Registrer deg'
+            },
+            'en': {
+                'nav.stocks': 'Stocks',
+                'nav.analysis': 'Analysis',
+                'nav.portfolio': 'Portfolio',
+                'nav.pricing': 'Pricing',
+                'nav.search': 'Search stocks...',
+                'nav.login': 'Login',
+                'nav.register': 'Sign Up'
+            }
+        };
+        
+        let currentLanguage = 'no';
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('current-language').textContent = lang.toUpperCase();
+            
+            // Translate all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Translate placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'toast position-fixed top-0 start-50 translate-middle-x mt-3';
+            notification.style.zIndex = '9999';
+            notification.innerHTML = `
+                <div class="toast-body bg-info text-white rounded">
+                    <i class="bi bi-globe me-2"></i>
+                    ${lang === 'en' ? 'Switched to English' : 'Byttet til norsk'}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            const toast = new bootstrap.Toast(notification, { delay: 2000 });
+            toast.show();
+            
+            notification.addEventListener('hidden.bs.toast', () => {
+                document.body.removeChild(notification);
+            });
+        }
+        
+        // Search toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchToggle = document.getElementById('search-toggle');
+            const searchForm = document.querySelector('.search-form');
+            const searchClose = document.getElementById('search-close');
+            
+            if (searchToggle && searchForm) {
+                searchToggle.addEventListener('click', function() {
+                    searchForm.style.display = 'block';
+                    searchForm.classList.add('show');
+                });
+                
+                searchClose.addEventListener('click', function() {
+                    searchForm.style.display = 'none';
+                    searchForm.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

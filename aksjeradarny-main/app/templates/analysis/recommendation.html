@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Handelsanbefaling{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+            <li class="breadcrumb-item active">Handelsanbefaling</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h2 class="h5 mb-0">Handelsanbefaling for {{ ticker }}</h2>
+        </div>
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {{ error }}
+                </div>
+            {% elif recommendation is defined and recommendation %}
+                <h4 class="mb-3">
+                    Anbefaling:
+                    <span class="badge 
+                        {% if recommendation == 'BUY' %}bg-success
+                        {% elif recommendation == 'SELL' %}bg-danger
+                        {% else %}bg-secondary
+                        {% endif %}">
+                        {{ recommendation or 'HOLD' }}
+                    </span>
+                </h4>
+                <p class="lead">{{ summary or 'Ingen sammendrag tilgjengelig.' }}</p>
+                <ul>
+                    <li><strong>Teknisk signal:</strong> {{ technical_signal or 'Nøytral' }}</li>
+                    <li><strong>RSI:</strong> {{ rsi or '50.0' }}</li>
+                    <li><strong>MACD:</strong> {{ macd or '0.00' }}</li>
+                    <li><strong>Volum:</strong> {{ volume or 'Normal' }}</li>
+                </ul>
+                <h5>Begrunnelse</h5>
+                <p>{{ details or 'Ingen ytterligere begrunnelse tilgjengelig.' }}</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-graph-up"></i> Se aksjedetaljer
+                    </a>
+                    <a href="{{ url_for('analysis.technical') }}?ticker={{ ticker }}" class="btn btn-outline-info">
+                        <i class="bi bi-bar-chart"></i> Teknisk analyse
+                    </a>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Ingen anbefaling tilgjengelig for denne aksjen akkurat nå.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Oslo Børs - Handelsanbefalinger</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Selskap</th>
+                                    <th>Pris</th>
+                                    <th>Endring %</th>
+                                    <th>Signal</th>
+                                    <th>Handlinger</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>EQNR.OL</strong></td>
+                                    <td>Equinor ASA</td>
+                                    <td>342.55</td>
+                                    <td><span class="text-success">+0.68%</span></td>
+                                    <td><span class="badge bg-success">KJØP</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=EQNR.OL" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>DNB.OL</strong></td>
+                                    <td>DNB Bank ASA</td>
+                                    <td>212.8</td>
+                                    <td><span class="text-danger">-0.56%</span></td>
+                                    <td><span class="badge bg-secondary">HOLD</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=DNB.OL" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TEL.OL</strong></td>
+                                    <td>Telenor ASA</td>
+                                    <td>125.9</td>
+                                    <td><span class="text-danger">-1.64%</span></td>
+                                    <td><span class="badge bg-danger">SELG</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=TEL.OL" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h5 mb-0">Globale Aksjer - Handelsanbefalinger</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Selskap</th>
+                                    <th>Pris</th>
+                                    <th>Endring %</th>
+                                    <th>Signal</th>
+                                    <th>Handlinger</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>AAPL</strong></td>
+                                    <td>Apple Inc</td>
+                                    <td>185.7</td>
+                                    <td><span class="text-success">+0.67%</span></td>
+                                    <td><span class="badge bg-success">KJØP</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=AAPL" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MSFT</strong></td>
+                                    <td>Microsoft Corporation</td>
+                                    <td>390.2</td>
+                                    <td><span class="text-success">+0.54%</span></td>
+                                    <td><span class="badge bg-success">KJØP</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=MSFT" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AMZN</strong></td>
+                                    <td>Amazon.com Inc</td>
+                                    <td>178.9</td>
+                                    <td><span class="text-danger">-0.45%</span></td>
+                                    <td><span class="badge bg-secondary">HOLD</span></td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker=AMZN" class="btn btn-sm btn-primary">Se anbefaling</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">Om handelsanbefalinger</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="h6 mb-3">Hva betyr signalene?</h3>
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-success">KJØP</span></div>
+                            <div>Tekniske indikatorer tyder på at kursen kan fortsette oppover.</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-danger">SELG</span></div>
+                            <div>Tekniske indikatorer tyder på at kursen kan falle.</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-secondary">HOLD</span></div>
+                            <div>Nøytrale signaler - vent på klarere retning.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="h6 mb-3">Viktig informasjon</h3>
+                    <div class="alert alert-warning">
+                        <strong>Advarsel:</strong> Handelsanbefalinger er kun for informasjonsformål og utgjør ikke investeringsrådgivning. Gjør alltid din egen research før du investerer.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,449 @@
+INFO:app:Custom unauthorized handler registered for Flask-Login
+INFO:app:✅ App created in default mode
+INFO:app:✅ Database models imported successfully
+INFO:app:Stripe initialized (development mode)
+ERROR:app:Failed to import main or portfolio blueprint: cannot import name 'StockTip' from 'app.models' (/workspaces/aksjeradarny/app/models/__init__.py)
+ERROR:app:❌ Critical error during app creation: cannot import name 'StockTip' from 'app.models' (/workspaces/aksjeradarny/app/models/__init__.py)
+Traceback (most recent call last):
+  File "/workspaces/aksjeradarny/run.py", line 5, in <module>
+    app = create_app()
+          ^^^^^^^^^^^^
+  File "/workspaces/aksjeradarny/app/__init__.py", line 65, in create_app
+    register_blueprints(app)
+  File "/workspaces/aksjeradarny/app/__init__.py", line 111, in register_blueprints
+    from app.routes.portfolio import portfolio
+  File "/workspaces/aksjeradarny/app/routes/portfolio.py", line 3, in <module>
+    from app.models import Portfolio, PortfolioStock, StockTip, Watchlist, WatchlistStock
+ImportError: cannot import name 'StockTip' from 'app.models' (/workspaces/aksjeradarny/app/models/__init__.py)
+INFO:app:Custom unauthorized handler registered for Flask-Login
+INFO:app:✅ App created in default mode
+INFO:app:✅ Database models imported successfully
+INFO:app:Stripe initialized (development mode)
+WARNING:app.services.cache_service:⚠️ Redis cache disabled: Error 111 connecting to localhost:6379. Connection refused.
+ERROR:app:Error registering stocks: View function mapping is overwriting an existing endpoint function: stocks.search
+INFO:app:✅ Registered blueprint: api
+INFO:app:✅ Registered blueprint: blog
+INFO:app:✅ Registered blueprint: investment_guides
+INFO:app:✅ Registered blueprint: pricing_bp
+INFO:app:✅ Registered blueprint: notifications_bp
+INFO:app:✅ Registered blueprint: admin
+INFO:app:✅ Registered blueprint: features
+INFO:app:✅ Registered blueprint: analysis
+INFO:app:✅ Registered blueprint: health
+INFO:app:✅ Registered blueprint: news_bp
+INFO:app:✅ Registered 12 blueprints: main, portfolio, api, blog, investment_guides, pricing_bp, notifications_bp, admin, features, analysis, health, news_bp
+INFO:app:Registered endpoints:
+INFO:app:Endpoint: static -> /static/<path:filename>
+INFO:app:Endpoint: main.index -> /
+INFO:app:Endpoint: main.demo -> /demo
+INFO:app:Endpoint: main.ai_explained -> /ai-explained
+INFO:app:Endpoint: main.pricing -> /pricing/
+INFO:app:Endpoint: main.pricing -> /pricing
+INFO:app:Endpoint: main.search -> /search
+INFO:app:Endpoint: main.login -> /login
+INFO:app:Endpoint: main.logout -> /logout
+INFO:app:Endpoint: main.register -> /register
+INFO:app:Endpoint: main.handle_share -> /share-target
+INFO:app:Endpoint: main.service_worker -> /service-worker.js
+INFO:app:Endpoint: main.manifest -> /manifest.json
+INFO:app:Endpoint: main.version -> /version
+INFO:app:Endpoint: main.privacy -> /privacy
+INFO:app:Endpoint: main.privacy_policy -> /privacy-policy
+INFO:app:Endpoint: main.subscription -> /subscription
+INFO:app:Endpoint: main.start_trial -> /start-trial
+INFO:app:Endpoint: main.purchase_subscription -> /purchase_subscription
+INFO:app:Endpoint: main.create_checkout_session -> /create-checkout-session
+INFO:app:Endpoint: main.subscribe -> /subscribe/<plan>
+INFO:app:Endpoint: main.payment_success -> /payment/success
+INFO:app:Endpoint: main.payment_cancel -> /payment/cancel
+INFO:app:Endpoint: main.stripe_webhook -> /webhook/stripe
+INFO:app:Endpoint: main.trial_expired -> /trial-expired
+INFO:app:Endpoint: main.contact -> /contact
+INFO:app:Endpoint: main.contact_submit -> /contact/submit
+INFO:app:Endpoint: main.api_search -> /api/search
+INFO:app:Endpoint: main.get_oslo_stocks -> /api/oslo_stocks
+INFO:app:Endpoint: main.get_global_stocks -> /api/global_stocks
+INFO:app:Endpoint: main.api_realtime_price -> /api/realtime/price/<ticker>
+INFO:app:Endpoint: main.batch_updates -> /api/realtime/batch-updates
+INFO:app:Endpoint: main.offline -> /offline
+INFO:app:Endpoint: main.currency -> /currency
+INFO:app:Endpoint: main.add_to_watchlist -> /api/watchlist/add
+INFO:app:Endpoint: main.add_to_portfolio -> /api/portfolio/add
+INFO:app:Endpoint: main.offline_html -> /offline.html
+INFO:app:Endpoint: main.favicon -> /favicon.ico
+INFO:app:Endpoint: main.restricted_access -> /restricted_access
+INFO:app:Endpoint: main.restricted_access -> /restricted_access.html
+INFO:app:Endpoint: main.prediction -> /prediction
+INFO:app:Endpoint: main.forgot_password -> /forgot_password
+INFO:app:Endpoint: main.reset_password -> /reset_password/<token>
+INFO:app:Endpoint: main.pwa_test -> /pwa-test
+INFO:app:Endpoint: main.create_exempt_users -> /admin/create-exempt-users
+INFO:app:Endpoint: main.reset_session -> /debug/reset-session
+INFO:app:Endpoint: main.debug_status -> /debug/status
+INFO:app:Endpoint: main.test_email -> /test-email
+INFO:app:Endpoint: main.admin_user_management -> /admin/user-management
+INFO:app:Endpoint: main.admin_reset_user -> /admin/reset-user/<int:user_id>
+INFO:app:Endpoint: main.check_trial -> /check-trial
+INFO:app:Endpoint: main.admin_clean_trials -> /admin/clean-trials
+INFO:app:Endpoint: main.debug_user_info -> /debug/user-info
+INFO:app:Endpoint: main.referrals -> /referrals
+INFO:app:Endpoint: main.send_referral -> /send-referral
+INFO:app:Endpoint: main.get_user_referral_code -> /api/user/referral-code
+INFO:app:Endpoint: main.debug_test_reset -> /debug/test-reset
+INFO:app:Endpoint: main.profile -> /profile
+INFO:app:Endpoint: main.invite_friend -> /invite-friend
+INFO:app:Endpoint: main.debug_csrf -> /debug/csrf
+INFO:app:Endpoint: main.demo_ping -> /demo/ping
+INFO:app:Endpoint: main.demo_echo -> /demo/echo
+INFO:app:Endpoint: main.demo_user -> /demo/user
+INFO:app:Endpoint: main.auth -> /auth
+INFO:app:Endpoint: main.set_user_language -> /language/<lang_code>
+INFO:app:Endpoint: main.set_app_language -> /set-language/<language>
+INFO:app:Endpoint: main.switch_language -> /api/language/switch
+INFO:app:Endpoint: main.stock_details -> /stocks/details/<ticker>
+INFO:app:Endpoint: main.market_overview -> /analysis/market-overview
+INFO:app:Endpoint: main.feedback -> /api/feedback
+INFO:app:Endpoint: portfolio.portfolio_index -> /
+INFO:app:Endpoint: portfolio.stock_tips -> /tips
+INFO:app:Endpoint: portfolio.create_portfolio -> /create
+INFO:app:Endpoint: portfolio.view_portfolio -> /view/<int:id>
+INFO:app:Endpoint: portfolio.add_stock_to_portfolio -> /portfolio/<int:id>/add
+INFO:app:Endpoint: portfolio.remove_stock_from_portfolio -> /portfolio/<int:id>/remove/<int:stock_id>
+INFO:app:Endpoint: portfolio.watchlist -> /watchlist
+INFO:app:Endpoint: portfolio.create_watchlist -> /watchlist/create
+INFO:app:Endpoint: portfolio.add_to_watchlist -> /watchlist/<int:id>/add
+INFO:app:Endpoint: portfolio.add_tip -> /tips/add
+INFO:app:Endpoint: portfolio.tip_feedback -> /tips/feedback/<int:tip_id>
+INFO:app:Endpoint: portfolio.quick_add_stock -> /add/<ticker>
+INFO:app:Endpoint: portfolio.add_stock -> /add
+INFO:app:Endpoint: portfolio.edit_stock -> /edit/<ticker>
+INFO:app:Endpoint: portfolio.remove_stock -> /remove/<ticker>
+INFO:app:Endpoint: portfolio.overview -> /overview
+INFO:app:Endpoint: portfolio.transactions -> /transactions
+INFO:app:Endpoint: portfolio.advanced -> /advanced/
+INFO:app:Endpoint: portfolio.advanced -> /advanced
+INFO:app:Endpoint: portfolio.export_portfolio -> /api/export
+INFO:app:Endpoint: stocks.index -> /stocks/
+INFO:app:Endpoint: stocks.list_stocks -> /stocks/list
+INFO:app:Endpoint: stocks.list_stocks_by_category -> /stocks/list/<category>
+INFO:app:Endpoint: stocks.details -> /stocks/details/<ticker>
+INFO:app:Endpoint: stocks.search -> /stocks/search
+INFO:app:Endpoint: stocks.search -> /stocks/search
+INFO:app:Endpoint: stocks.api_search -> /stocks/api/search
+INFO:app:Endpoint: stocks.list_oslo -> /stocks/list/oslo
+INFO:app:Endpoint: stocks.global_list -> /stocks/list/global
+INFO:app:Endpoint: stocks.list_crypto -> /stocks/list/crypto
+INFO:app:Endpoint: stocks.list_currency -> /stocks/list/currency
+INFO:app:Endpoint: stocks.api_stock -> /stocks/api/stock/<ticker>
+INFO:app:Endpoint: stocks.compare -> /stocks/compare
+INFO:app:Endpoint: stocks.stocks_index -> /stocks/index
+INFO:app:Endpoint: api.get_crypto -> /api/crypto
+INFO:app:Endpoint: api.get_currency -> /api/currency
+INFO:app:Endpoint: api.health_check -> /api/health
+INFO:app:Endpoint: api.search -> /api/search
+INFO:app:Endpoint: api.search_stocks -> /api/stocks/search
+INFO:app:Endpoint: api.get_stock_data -> /api/stock/<symbol>
+INFO:app:Endpoint: api.get_stock_price -> /api/stock/<symbol>/price
+INFO:app:Endpoint: api.get_stock_analysis -> /api/stock/<symbol>/analysis
+INFO:app:Endpoint: api.market_overview -> /api/market/overview
+INFO:app:Endpoint: api.market_data -> /api/market-data
+INFO:app:Endpoint: api.get_user_watchlist -> /api/user/watchlist
+INFO:app:Endpoint: api.get_user_portfolio -> /api/user/portfolio
+INFO:app:Endpoint: api.feedback -> /api/feedback
+INFO:app:Endpoint: api.realtime_price -> /api/realtime/price/<ticker>
+INFO:app:Endpoint: api.realtime_batch_updates -> /api/realtime/batch-updates
+INFO:app:Endpoint: blog.index -> /blog/index
+INFO:app:Endpoint: blog.index -> /blog/
+INFO:app:Endpoint: investment_guides.index -> /investment-guides/index
+INFO:app:Endpoint: investment_guides.index -> /investment-guides/
+INFO:app:Endpoint: pricing.pricing -> /pricing/
+INFO:app:Endpoint: pricing.upgrade -> /pricing/upgrade/<tier>
+INFO:app:Endpoint: pricing.subscription_success -> /pricing/subscription/success
+INFO:app:Endpoint: pricing.buy_report -> /pricing/buy-report
+INFO:app:Endpoint: pricing.report_success -> /pricing/report/success
+INFO:app:Endpoint: pricing.stripe_webhook -> /pricing/webhook
+INFO:app:Endpoint: notifications.index -> /notifications/
+INFO:app:Endpoint: notifications.api_mark_read -> /notifications/api/mark-read/<int:notification_id>
+INFO:app:Endpoint: notifications.api_mark_unread -> /notifications/api/mark-unread/<int:notification_id>
+INFO:app:Endpoint: notifications.api_mark_all_read -> /notifications/api/mark-all-read
+INFO:app:Endpoint: notifications.api_delete -> /notifications/api/delete/<int:notification_id>
+INFO:app:Endpoint: notifications.api_unread_count -> /notifications/api/unread-count
+INFO:app:Endpoint: notifications.settings -> /notifications/settings
+INFO:app:Endpoint: notifications.api_update_settings -> /notifications/api/settings
+INFO:app:Endpoint: notifications.api_test_notification -> /notifications/api/test
+INFO:app:Endpoint: notifications.save_push_subscription -> /notifications/api/push_subscription
+INFO:app:Endpoint: notifications.api_clear_read -> /notifications/api/clear-read
+INFO:app:Endpoint: notifications.api_get_notifications -> /notifications/api/notifications
+INFO:app:Endpoint: notifications.user_preferences -> /notifications/api/user/preferences
+INFO:app:Endpoint: admin.dashboard -> /admin
+INFO:app:Endpoint: admin.performance_stats -> /admin/performance
+INFO:app:Endpoint: admin.api_performance_stats -> /admin/api/performance
+INFO:app:Endpoint: admin.api_error_log -> /admin/api/errors
+INFO:app:Endpoint: admin.user_management -> /admin/users
+INFO:app:Endpoint: admin.system_status -> /admin/system
+INFO:app:Endpoint: features.ai_predictions -> /features/ai-predictions
+INFO:app:Endpoint: features.social_sentiment -> /features/social-sentiment
+INFO:app:Endpoint: features.analyst_recommendations -> /features/analyst-recommendations
+INFO:app:Endpoint: features.api_create_price_alert -> /features/api/create-price-alert
+INFO:app:Endpoint: features.api_predict -> /features/api/predict/<ticker>
+INFO:app:Endpoint: analysis.index -> /analysis/
+INFO:app:Endpoint: analysis.technical -> /analysis/technical
+INFO:app:Endpoint: analysis.technical_with_ticker -> /analysis/technical/<path:ticker>
+INFO:app:Endpoint: analysis.prediction -> /analysis/prediction
+INFO:app:Endpoint: analysis.recommendation -> /analysis/recommendation
+INFO:app:Endpoint: analysis.ai -> /analysis/ai
+INFO:app:Endpoint: analysis.get_indicators -> /analysis/api/analysis/indicators
+INFO:app:Endpoint: analysis.get_trading_signals -> /analysis/api/analysis/signals
+INFO:app:Endpoint: analysis.get_market_summary -> /analysis/api/market-summary
+INFO:app:Endpoint: analysis.download_file -> /analysis/downloads/<path:filename>
+INFO:app:Endpoint: analysis.market_overview -> /analysis/market-overview
+INFO:app:Endpoint: analysis.warren_buffett -> /analysis/warren-buffett
+INFO:app:Endpoint: analysis.benjamin_graham -> /analysis/benjamin-graham
+INFO:app:Endpoint: analysis.short_analysis -> /analysis/short-analysis
+INFO:app:Endpoint: analysis.fundamental -> /analysis/fundamental
+INFO:app:Endpoint: analysis.sentiment -> /analysis/sentiment
+INFO:app:Endpoint: analysis.screener -> /analysis/screener
+INFO:app:Endpoint: health.check_health -> /health/health
+INFO:app:Endpoint: health.check_health -> /health/
+INFO:app:Endpoint: health.detailed_health -> /health/detailed
+INFO:app:Endpoint: health.readiness -> /health/ready
+INFO:app:Endpoint: health.liveness -> /health/live
+INFO:app:Endpoint: health.check_routes -> /health/routes
+INFO:app:Endpoint: health.check_all_dependencies -> /health/check-all
+INFO:app:Endpoint: news.news_index -> /news/
+INFO:app:Endpoint: news.api_latest_news -> /news/api/latest
+INFO:app:Endpoint: news.api_company_news -> /news/api/company/<string:symbol>
+INFO:app:Endpoint: news.api_market_summary -> /news/api/market-summary
+INFO:app:Endpoint: news.api_market_overview -> /news/api/market-overview
+INFO:app:Endpoint: news.api_stock_news -> /news/api/stock/<stock_symbol>
+INFO:app:Endpoint: news.api_trending_news -> /news/api/trending
+INFO:app:Endpoint: news.api_news_sources -> /news/api/sources
+INFO:app:Endpoint: news.news_embed -> /news/embed
+INFO:app:✅ App initialization complete
+Starting app on 0.0.0.0:5000
+ * Serving Flask app 'app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.121:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:app:Database models imported successfully
+INFO:werkzeug:127.0.0.1 - - [12/Jul/2025 01:05:25] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Jul/2025 01:05:25] "GET / HTTP/1.1" 200 -
+INFO:app:Custom unauthorized handler registered for Flask-Login
+INFO:app:✅ App created in default mode
+INFO:app:✅ Database models imported successfully
+INFO:app:Stripe initialized (development mode)
+WARNING:app.services.cache_service:⚠️ Redis cache disabled: Error 111 connecting to localhost:6379. Connection refused.
+ERROR:app:Error registering stocks: View function mapping is overwriting an existing endpoint function: stocks.search
+INFO:app:✅ Registered blueprint: api
+INFO:app:✅ Registered blueprint: blog
+INFO:app:✅ Registered blueprint: investment_guides
+INFO:app:✅ Registered blueprint: pricing_bp
+INFO:app:✅ Registered blueprint: notifications_bp
+INFO:app:✅ Registered blueprint: admin
+INFO:app:✅ Registered blueprint: features
+INFO:app:✅ Registered blueprint: analysis
+INFO:app:✅ Registered blueprint: health
+INFO:app:✅ Registered blueprint: news_bp
+INFO:app:✅ Registered 12 blueprints: main, portfolio, api, blog, investment_guides, pricing_bp, notifications_bp, admin, features, analysis, health, news_bp
+INFO:app:Registered endpoints:
+INFO:app:Endpoint: static -> /static/<path:filename>
+INFO:app:Endpoint: main.index -> /
+INFO:app:Endpoint: main.demo -> /demo
+INFO:app:Endpoint: main.ai_explained -> /ai-explained
+INFO:app:Endpoint: main.pricing -> /pricing/
+INFO:app:Endpoint: main.pricing -> /pricing
+INFO:app:Endpoint: main.search -> /search
+INFO:app:Endpoint: main.login -> /login
+INFO:app:Endpoint: main.logout -> /logout
+INFO:app:Endpoint: main.register -> /register
+INFO:app:Endpoint: main.handle_share -> /share-target
+INFO:app:Endpoint: main.service_worker -> /service-worker.js
+INFO:app:Endpoint: main.manifest -> /manifest.json
+INFO:app:Endpoint: main.version -> /version
+INFO:app:Endpoint: main.privacy -> /privacy
+INFO:app:Endpoint: main.privacy_policy -> /privacy-policy
+INFO:app:Endpoint: main.subscription -> /subscription
+INFO:app:Endpoint: main.start_trial -> /start-trial
+INFO:app:Endpoint: main.purchase_subscription -> /purchase_subscription
+INFO:app:Endpoint: main.create_checkout_session -> /create-checkout-session
+INFO:app:Endpoint: main.subscribe -> /subscribe/<plan>
+INFO:app:Endpoint: main.payment_success -> /payment/success
+INFO:app:Endpoint: main.payment_cancel -> /payment/cancel
+INFO:app:Endpoint: main.stripe_webhook -> /webhook/stripe
+INFO:app:Endpoint: main.trial_expired -> /trial-expired
+INFO:app:Endpoint: main.contact -> /contact
+INFO:app:Endpoint: main.contact_submit -> /contact/submit
+INFO:app:Endpoint: main.api_search -> /api/search
+INFO:app:Endpoint: main.get_oslo_stocks -> /api/oslo_stocks
+INFO:app:Endpoint: main.get_global_stocks -> /api/global_stocks
+INFO:app:Endpoint: main.api_realtime_price -> /api/realtime/price/<ticker>
+INFO:app:Endpoint: main.batch_updates -> /api/realtime/batch-updates
+INFO:app:Endpoint: main.offline -> /offline
+INFO:app:Endpoint: main.currency -> /currency
+INFO:app:Endpoint: main.add_to_watchlist -> /api/watchlist/add
+INFO:app:Endpoint: main.add_to_portfolio -> /api/portfolio/add
+INFO:app:Endpoint: main.offline_html -> /offline.html
+INFO:app:Endpoint: main.favicon -> /favicon.ico
+INFO:app:Endpoint: main.restricted_access -> /restricted_access
+INFO:app:Endpoint: main.restricted_access -> /restricted_access.html
+INFO:app:Endpoint: main.prediction -> /prediction
+INFO:app:Endpoint: main.forgot_password -> /forgot_password
+INFO:app:Endpoint: main.reset_password -> /reset_password/<token>
+INFO:app:Endpoint: main.pwa_test -> /pwa-test
+INFO:app:Endpoint: main.create_exempt_users -> /admin/create-exempt-users
+INFO:app:Endpoint: main.reset_session -> /debug/reset-session
+INFO:app:Endpoint: main.debug_status -> /debug/status
+INFO:app:Endpoint: main.test_email -> /test-email
+INFO:app:Endpoint: main.admin_user_management -> /admin/user-management
+INFO:app:Endpoint: main.admin_reset_user -> /admin/reset-user/<int:user_id>
+INFO:app:Endpoint: main.check_trial -> /check-trial
+INFO:app:Endpoint: main.admin_clean_trials -> /admin/clean-trials
+INFO:app:Endpoint: main.debug_user_info -> /debug/user-info
+INFO:app:Endpoint: main.referrals -> /referrals
+INFO:app:Endpoint: main.send_referral -> /send-referral
+INFO:app:Endpoint: main.get_user_referral_code -> /api/user/referral-code
+INFO:app:Endpoint: main.debug_test_reset -> /debug/test-reset
+INFO:app:Endpoint: main.profile -> /profile
+INFO:app:Endpoint: main.invite_friend -> /invite-friend
+INFO:app:Endpoint: main.debug_csrf -> /debug/csrf
+INFO:app:Endpoint: main.demo_ping -> /demo/ping
+INFO:app:Endpoint: main.demo_echo -> /demo/echo
+INFO:app:Endpoint: main.demo_user -> /demo/user
+INFO:app:Endpoint: main.auth -> /auth
+INFO:app:Endpoint: main.set_user_language -> /language/<lang_code>
+INFO:app:Endpoint: main.set_app_language -> /set-language/<language>
+INFO:app:Endpoint: main.switch_language -> /api/language/switch
+INFO:app:Endpoint: main.stock_details -> /stocks/details/<ticker>
+INFO:app:Endpoint: main.market_overview -> /analysis/market-overview
+INFO:app:Endpoint: main.feedback -> /api/feedback
+INFO:app:Endpoint: portfolio.portfolio_index -> /
+INFO:app:Endpoint: portfolio.stock_tips -> /tips
+INFO:app:Endpoint: portfolio.create_portfolio -> /create
+INFO:app:Endpoint: portfolio.view_portfolio -> /view/<int:id>
+INFO:app:Endpoint: portfolio.add_stock_to_portfolio -> /portfolio/<int:id>/add
+INFO:app:Endpoint: portfolio.remove_stock_from_portfolio -> /portfolio/<int:id>/remove/<int:stock_id>
+INFO:app:Endpoint: portfolio.watchlist -> /watchlist
+INFO:app:Endpoint: portfolio.create_watchlist -> /watchlist/create
+INFO:app:Endpoint: portfolio.add_to_watchlist -> /watchlist/<int:id>/add
+INFO:app:Endpoint: portfolio.add_tip -> /tips/add
+INFO:app:Endpoint: portfolio.tip_feedback -> /tips/feedback/<int:tip_id>
+INFO:app:Endpoint: portfolio.quick_add_stock -> /add/<ticker>
+INFO:app:Endpoint: portfolio.add_stock -> /add
+INFO:app:Endpoint: portfolio.edit_stock -> /edit/<ticker>
+INFO:app:Endpoint: portfolio.remove_stock -> /remove/<ticker>
+INFO:app:Endpoint: portfolio.overview -> /overview
+INFO:app:Endpoint: portfolio.transactions -> /transactions
+INFO:app:Endpoint: portfolio.advanced -> /advanced/
+INFO:app:Endpoint: portfolio.advanced -> /advanced
+INFO:app:Endpoint: portfolio.export_portfolio -> /api/export
+INFO:app:Endpoint: stocks.index -> /stocks/
+INFO:app:Endpoint: stocks.list_stocks -> /stocks/list
+INFO:app:Endpoint: stocks.list_stocks_by_category -> /stocks/list/<category>
+INFO:app:Endpoint: stocks.details -> /stocks/details/<ticker>
+INFO:app:Endpoint: stocks.search -> /stocks/search
+INFO:app:Endpoint: stocks.search -> /stocks/search
+INFO:app:Endpoint: stocks.api_search -> /stocks/api/search
+INFO:app:Endpoint: stocks.list_oslo -> /stocks/list/oslo
+INFO:app:Endpoint: stocks.global_list -> /stocks/list/global
+INFO:app:Endpoint: stocks.list_crypto -> /stocks/list/crypto
+INFO:app:Endpoint: stocks.list_currency -> /stocks/list/currency
+INFO:app:Endpoint: stocks.api_stock -> /stocks/api/stock/<ticker>
+INFO:app:Endpoint: stocks.compare -> /stocks/compare
+INFO:app:Endpoint: stocks.stocks_index -> /stocks/index
+INFO:app:Endpoint: api.get_crypto -> /api/crypto
+INFO:app:Endpoint: api.get_currency -> /api/currency
+INFO:app:Endpoint: api.health_check -> /api/health
+INFO:app:Endpoint: api.search -> /api/search
+INFO:app:Endpoint: api.search_stocks -> /api/stocks/search
+INFO:app:Endpoint: api.get_stock_data -> /api/stock/<symbol>
+INFO:app:Endpoint: api.get_stock_price -> /api/stock/<symbol>/price
+INFO:app:Endpoint: api.get_stock_analysis -> /api/stock/<symbol>/analysis
+INFO:app:Endpoint: api.market_overview -> /api/market/overview
+INFO:app:Endpoint: api.market_data -> /api/market-data
+INFO:app:Endpoint: api.get_user_watchlist -> /api/user/watchlist
+INFO:app:Endpoint: api.get_user_portfolio -> /api/user/portfolio
+INFO:app:Endpoint: api.feedback -> /api/feedback
+INFO:app:Endpoint: api.realtime_price -> /api/realtime/price/<ticker>
+INFO:app:Endpoint: api.realtime_batch_updates -> /api/realtime/batch-updates
+INFO:app:Endpoint: blog.index -> /blog/index
+INFO:app:Endpoint: blog.index -> /blog/
+INFO:app:Endpoint: investment_guides.index -> /investment-guides/index
+INFO:app:Endpoint: investment_guides.index -> /investment-guides/
+INFO:app:Endpoint: pricing.pricing -> /pricing/
+INFO:app:Endpoint: pricing.upgrade -> /pricing/upgrade/<tier>
+INFO:app:Endpoint: pricing.subscription_success -> /pricing/subscription/success
+INFO:app:Endpoint: pricing.buy_report -> /pricing/buy-report
+INFO:app:Endpoint: pricing.report_success -> /pricing/report/success
+INFO:app:Endpoint: pricing.stripe_webhook -> /pricing/webhook
+INFO:app:Endpoint: notifications.index -> /notifications/
+INFO:app:Endpoint: notifications.api_mark_read -> /notifications/api/mark-read/<int:notification_id>
+INFO:app:Endpoint: notifications.api_mark_unread -> /notifications/api/mark-unread/<int:notification_id>
+INFO:app:Endpoint: notifications.api_mark_all_read -> /notifications/api/mark-all-read
+INFO:app:Endpoint: notifications.api_delete -> /notifications/api/delete/<int:notification_id>
+INFO:app:Endpoint: notifications.api_unread_count -> /notifications/api/unread-count
+INFO:app:Endpoint: notifications.settings -> /notifications/settings
+INFO:app:Endpoint: notifications.api_update_settings -> /notifications/api/settings
+INFO:app:Endpoint: notifications.api_test_notification -> /notifications/api/test
+INFO:app:Endpoint: notifications.save_push_subscription -> /notifications/api/push_subscription
+INFO:app:Endpoint: notifications.api_clear_read -> /notifications/api/clear-read
+INFO:app:Endpoint: notifications.api_get_notifications -> /notifications/api/notifications
+INFO:app:Endpoint: notifications.user_preferences -> /notifications/api/user/preferences
+INFO:app:Endpoint: admin.dashboard -> /admin
+INFO:app:Endpoint: admin.performance_stats -> /admin/performance
+INFO:app:Endpoint: admin.api_performance_stats -> /admin/api/performance
+INFO:app:Endpoint: admin.api_error_log -> /admin/api/errors
+INFO:app:Endpoint: admin.user_management -> /admin/users
+INFO:app:Endpoint: admin.system_status -> /admin/system
+INFO:app:Endpoint: features.ai_predictions -> /features/ai-predictions
+INFO:app:Endpoint: features.social_sentiment -> /features/social-sentiment
+INFO:app:Endpoint: features.analyst_recommendations -> /features/analyst-recommendations
+INFO:app:Endpoint: features.api_create_price_alert -> /features/api/create-price-alert
+INFO:app:Endpoint: features.api_predict -> /features/api/predict/<ticker>
+INFO:app:Endpoint: analysis.index -> /analysis/
+INFO:app:Endpoint: analysis.technical -> /analysis/technical
+INFO:app:Endpoint: analysis.technical_with_ticker -> /analysis/technical/<path:ticker>
+INFO:app:Endpoint: analysis.prediction -> /analysis/prediction
+INFO:app:Endpoint: analysis.recommendation -> /analysis/recommendation
+INFO:app:Endpoint: analysis.ai -> /analysis/ai
+INFO:app:Endpoint: analysis.get_indicators -> /analysis/api/analysis/indicators
+INFO:app:Endpoint: analysis.get_trading_signals -> /analysis/api/analysis/signals
+INFO:app:Endpoint: analysis.get_market_summary -> /analysis/api/market-summary
+INFO:app:Endpoint: analysis.download_file -> /analysis/downloads/<path:filename>
+INFO:app:Endpoint: analysis.market_overview -> /analysis/market-overview
+INFO:app:Endpoint: analysis.warren_buffett -> /analysis/warren-buffett
+INFO:app:Endpoint: analysis.benjamin_graham -> /analysis/benjamin-graham
+INFO:app:Endpoint: analysis.short_analysis -> /analysis/short-analysis
+INFO:app:Endpoint: analysis.fundamental -> /analysis/fundamental
+INFO:app:Endpoint: analysis.sentiment -> /analysis/sentiment
+INFO:app:Endpoint: analysis.screener -> /analysis/screener
+INFO:app:Endpoint: health.check_health -> /health/health
+INFO:app:Endpoint: health.check_health -> /health/
+INFO:app:Endpoint: health.detailed_health -> /health/detailed
+INFO:app:Endpoint: health.readiness -> /health/ready
+INFO:app:Endpoint: health.liveness -> /health/live
+INFO:app:Endpoint: health.check_routes -> /health/routes
+INFO:app:Endpoint: health.check_all_dependencies -> /health/check-all
+INFO:app:Endpoint: news.news_index -> /news/
+INFO:app:Endpoint: news.api_latest_news -> /news/api/latest
+INFO:app:Endpoint: news.api_company_news -> /news/api/company/<string:symbol>
+INFO:app:Endpoint: news.api_market_summary -> /news/api/market-summary
+INFO:app:Endpoint: news.api_market_overview -> /news/api/market-overview
+INFO:app:Endpoint: news.api_stock_news -> /news/api/stock/<stock_symbol>
+INFO:app:Endpoint: news.api_trending_news -> /news/api/trending
+INFO:app:Endpoint: news.api_news_sources -> /news/api/sources
+INFO:app:Endpoint: news.news_embed -> /news/embed
+INFO:app:✅ App initialization complete
+Starting app on 0.0.0.0:5000
+ * Serving Flask app 'app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.121:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:app:Database models imported successfully
+INFO:werkzeug:127.0.0.1 - - [12/Jul/2025 01:07:29] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Jul/2025 01:07:29] "GET / HTTP/1.1" 200 -

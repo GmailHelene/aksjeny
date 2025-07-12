@@ -1,0 +1,19 @@
+[2025-07-06 10:53:33,123] INFO in __init__: Database models imported successfully during app creation
+[2025-07-06 10:53:34,141] INFO in main: Stripe initialized (development mode)
+[2025-07-06 10:53:36,005] WARNING in cache_service: ⚠️ Redis cache disabled: Error 111 connecting to localhost:6379. Connection refused.
+[2025-07-06 10:53:36,052] INFO in stripe_routes: Stripe API key configured
+[2025-07-06 10:53:36,066] INFO in __init__: All blueprints registered successfully
+[2025-07-06 10:53:36,068] ERROR in __init__: Database migration failed: (sqlite3.OperationalError) no such table: information_schema.columns
+[SQL: 
+                SELECT COUNT(*) 
+                FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'reports_used_this_month'
+            ]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+🚀 Starting Aksjeradar...
+✅ App initialized successfully in development mode!
+🌐 Visit http://localhost:5000 in your browser
+ * Serving Flask app 'app'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.

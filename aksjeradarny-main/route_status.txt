@@ -1,0 +1,13 @@
+[2025-06-30 20:15:38,735] INFO in main: Stripe initialized with dummy/test keys for development
+[2025-06-30 20:15:38,780] INFO in stripe_routes: Stripe initialized with dummy/test keys for development
+ROUTE STATUS:
+/demo: FOUND
+/ai-explained: FOUND
+/portfolio/advanced/: FOUND
+/blog/: FOUND
+/investment-guides/: FOUND
+/pricing/: FOUND
+/api/stocks/search: FOUND
+/api/market-data: FOUND
+
+SUMMARY: 8/8 routes found

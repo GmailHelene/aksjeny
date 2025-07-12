@@ -1,0 +1,51 @@
+<!-- Simple news widget without recursive includes -->
+
+<div class="news-widget">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-newspaper me-2"></i>Siste Finansnyheter
+            </h5>
+            <div class="d-flex align-items-center">
+                <a href="/news" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-arrow-right"></i> Se alle
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="news-widget-content">
+                <div class="text-center p-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Laster nyheter...</span>
+                    </div>
+                    <p class="mt-2 mb-0 text-muted small">Henter siste nyheter...</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light text-center">
+            <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>
+                Oppdateres automatisk
+            </small>
+        </div>
+    </div>
+</div>
+
+<style>
+.news-widget {
+    margin-bottom: 2rem;
+}
+
+.news-widget-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s ease;
+}
+
+.news-widget-item:last-child {
+    border-bottom: none;
+}
+
+.news-widget-item:hover {
+    background-color: #f8f9fa;
+}

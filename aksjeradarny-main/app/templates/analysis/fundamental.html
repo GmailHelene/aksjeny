@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% block title %}Fundamental Analyse - {{ ticker }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4">Fundamental Analyse</h1>
+    
+    {% if ticker and fundamental_data %}
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Key Metrics -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Nøkkeltall for {{ ticker }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <h6 class="text-muted">P/E Forhold</h6>
+                            <h4>{{ "{:.2f}".format(fundamental_data.pe_ratio|default(0)).replace('.', ',') }}</h4>
+                            <small class="text-muted">
+                                {% if fundamental_data.pe_ratio < 15 %}
+                                    Lav verdsettelse
+                                {% elif fundamental_data.pe_ratio > 25 %}
+                                    Høy verdsettelse
+                                {% else %}
+                                    Moderat verdsettelse
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">P/B Forhold</h6>
+                            <h4>{{ "{:.2f}".format(fundamental_data.pb_ratio|default(0)).replace('.', ',') }}</h4>
+                            <small class="text-muted">
+                                Pris / Bokført verdi
+                            </small>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Utbytteavkastning</h6>
+                            <h4>{{ "{:.2f}".format((fundamental_data.dividend_yield|default(0)) * 100).replace('.', ',') }}%</h4>
+                            <small class="text-muted">
+                                Årlig utbytte
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Profitability Metrics -->
+                    <h5 class="mb-3">Lønnsomhet</h5>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>ROE:</span>
+                                <strong>{{ "{:.1f}".format((fundamental_data.roe|default(0)) * 100).replace('.', ',') }}%</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>ROA:</span>
+                                <strong>{{ "{:.1f}".format((fundamental_data.roa|default(0)) * 100).replace('.', ',') }}%</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>Profittmargin:</span>
+                                <strong>{{ "{:.1f}".format((fundamental_data.profit_margin|default(0)) * 100).replace('.', ',') }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Financial Health -->
+                    <h5 class="mb-3">Finansiell Helse</h5>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>Gjeld/Egenkapital:</span>
+                                <strong>{{ "{:.2f}".format(fundamental_data.debt_to_equity|default(0)).replace('.', ',') }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>Likviditetsgrad:</span>
+                                <strong>{{ "{:.2f}".format(fundamental_data.current_ratio|default(0)).replace('.', ',') }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <span>Quick Ratio:</span>
+                                <strong>{{ "{:.2f}".format(fundamental_data.quick_ratio|default(0)).replace('.', ',') }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Revenue & Earnings -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0">Inntekter og Resultat</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Total Inntekt</h6>
+                            <h4>
+                                {% if fundamental_data.revenue %}
+                                    {% set revenue = fundamental_data.revenue %}
+                                    {% if revenue >= 1000000000 %}
+                                        kr {{ "{:.1f}".format(revenue / 1000000000).replace('.', ',') }} mrd
+                                    {% elif revenue >= 1000000 %}
+                                        kr {{ "{:.1f}".format(revenue / 1000000).replace('.', ',') }} mill
+                                    {% else %}
+                                        kr {{ "{:,.0f}".format(revenue).replace(',', ' ') }}
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </h4>
+                            <small class="{{ 'text-success' if fundamental_data.revenue_growth > 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format((fundamental_data.revenue_growth|default(0)) * 100).replace('.', ',') }}% vekst
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Nettoresultat</h6>
+                            <h4>
+                                {% if fundamental_data.net_income %}
+                                    {% set income = fundamental_data.net_income %}
+                                    {% if income >= 1000000000 %}
+                                        kr {{ "{:.1f}".format(income / 1000000000).replace('.', ',') }} mrd
+                                    {% elif income >= 1000000 %}
+                                        kr {{ "{:.1f}".format(income / 1000000).replace('.', ',') }} mill
+                                    {% else %}
+                                        kr {{ "{:,.0f}".format(income).replace(',', ' ') }}
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </h4>
+                            <small class="{{ 'text-success' if fundamental_data.earnings_growth > 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format((fundamental_data.earnings_growth|default(0)) * 100).replace('.', ',') }}% vekst
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Stock Info Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ stock_info.longName|default(ticker) }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-6">Sektor</dt>
+                        <dd class="col-6 text-end">{{ stock_info.sector|default('-') }}</dd>
+                        
+                        <dt class="col-6">Industri</dt>
+                        <dd class="col-6 text-end text-truncate">{{ stock_info.industry|default('-') }}</dd>
+                        
+                        <dt class="col-6">Markedsverdi</dt>
+                        <dd class="col-6 text-end">
+                            {% if stock_info.marketCap %}
+                                {% set cap = stock_info.marketCap %}
+                                {% if cap >= 1000000000000 %}
+                                    kr {{ "{:.1f}".format(cap / 1000000000000).replace('.', ',') }}T
+                                {% elif cap >= 1000000000 %}
+                                    kr {{ "{:.1f}".format(cap / 1000000000).replace('.', ',') }}B
+                                {% else %}
+                                    kr {{ "{:.1f}".format(cap / 1000000).replace('.', ',') }}M
+                                {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </dd>
+                        
+                        <dt class="col-6">Beta</dt>
+                        <dd class="col-6 text-end">{{ "{:.2f}".format(stock_info.beta|default(1)).replace('.', ',') }}</dd>
+                    </dl>
+                </div>
+            </div>
+            
+            <!-- Analysis Score -->
+            {% if analysis_score %}
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Fundamentalscore</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h1 class="display-4 {{ 'text-success' if analysis_score.total >= 70 else 'text-warning' if analysis_score.total >= 50 else 'text-danger' }}">
+                            {{ analysis_score.total }}/100
+                        </h1>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Verdsettelse</span>
+                            <span>{{ analysis_score.valuation }}/25</span>
+                        </div>
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" style="width: {{ (analysis_score.valuation / 25 * 100)|int }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Lønnsomhet</span>
+                            <span>{{ analysis_score.profitability }}/25</span>
+                        </div>
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" style="width: {{ (analysis_score.profitability / 25 * 100)|int }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Vekst</span>
+                            <span>{{ analysis_score.growth }}/25</span>
+                        </div>
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" style="width: {{ (analysis_score.growth / 25 * 100)|int }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Finansiell helse</span>
+                            <span>{{ analysis_score.financial_health }}/25</span>
+                        </div>
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" style="width: {{ (analysis_score.financial_health / 25 * 100)|int }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        Velg en aksje for å se fundamental analyse.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

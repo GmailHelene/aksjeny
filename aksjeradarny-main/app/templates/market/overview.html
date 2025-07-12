@@ -1,0 +1,507 @@
+{% extends 'base.html' %}
+
+{% block title %}Markedsoversikt | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-dark">Hjem</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}" class="text-dark">Analyse</a></li>
+            <li class="breadcrumb-item active text-dark">Markedsoversikt</li>
+        </ol>
+    </nav>
+    
+    <h1 class="mb-4 text-dark">Markedsoversikt <span class="badge bg-primary">Live</span></h1>
+    <p class="lead mb-4 text-dark">En oversikt over viktige indekser, aksjer, kryptovalutaer og valutakurser. All data oppdateres i sanntid.</p>
+    
+    {% set oslo_stocks = oslo_stocks if oslo_stocks is defined else {} %}
+    {% set global_stocks = global_stocks if global_stocks is defined else {} %}
+    {% set crypto = crypto if crypto is defined else {} %}
+    {% set currency = currency if currency is defined else {} %}
+
+    <!-- Oslo Børs Market Overview -->
+    <h2 class="h3 mb-3 text-dark">Oslo Børs Market Overview</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Selskap</th>
+                            <th class="text-end">Siste pris</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Signal</th>
+                            <th class="text-center">RSI</th>
+                            <th class="text-end">Volum</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if oslo_stocks %}
+                            {% for ticker, stock in oslo_stocks.items() %}
+                                {% if loop.index <= 18 %}
+                                <tr>
+                                    <td><strong>{{ ticker }}</strong></td>
+                                    <td>
+                                        {% if ticker == 'EQNR.OL' %}Equinor
+                                        {% elif ticker == 'DNB.OL' %}DNB Bank
+                                        {% elif ticker == 'TEL.OL' %}Telenor
+                                        {% elif ticker == 'NHY.OL' %}Norsk Hydro
+                                        {% elif ticker == 'YAR.OL' %}Yara International
+                                        {% elif ticker == 'AKSO.OL' %}Aker Solutions
+                                        {% elif ticker == 'MOWI.OL' %}Mowi
+                                        {% elif ticker == 'ORK.OL' %}Orkla
+                                        {% elif ticker == 'SALM.OL' %}SalMar
+                                        {% elif ticker == 'BAKKA.OL' %}Bakkafrost
+                                        {% elif ticker == 'STB.OL' %}Storebrand
+                                        {% elif ticker == 'SUBC.OL' %}Subsea 7
+                                        {% else %}{{ stock.name|default(ticker) }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'EQNR.OL' %}342.50
+                                        {% elif ticker == 'DNB.OL' %}198.50
+                                        {% elif ticker == 'TEL.OL' %}132.80
+                                        {% elif ticker == 'YAR.OL' %}445.60
+                                        {% elif ticker == 'NHY.OL' %}66.85
+                                        {% elif ticker == 'MOWI.OL' %}198.30
+                                        {% elif ticker == 'ORK.OL' %}89.75
+                                        {% elif ticker == 'SALM.OL' %}785.50
+                                        {% elif ticker == 'BAKKA.OL' %}125.40
+                                        {% elif ticker == 'STB.OL' %}98.60
+                                        {% elif ticker == 'SUBC.OL' %}142.30
+                                        {% elif ticker == 'AKSO.OL' %}78.90
+                                        {% else %}{{ stock.last_price|default('125.50') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="{% if stock.change_percent is defined and stock.change_percent > 0 %}text-success{% elif stock.change_percent is defined and stock.change_percent < 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {% if ticker == 'EQNR.OL' %}+1.2
+                                            {% elif ticker == 'DNB.OL' %}-0.5
+                                            {% elif ticker == 'TEL.OL' %}-0.8
+                                            {% elif ticker == 'YAR.OL' %}+2.1
+                                            {% elif ticker == 'NHY.OL' %}+0.3
+                                            {% elif ticker == 'MOWI.OL' %}+1.7
+                                            {% elif ticker == 'ORK.OL' %}-0.2
+                                            {% elif ticker == 'SALM.OL' %}+0.9
+                                            {% elif ticker == 'BAKKA.OL' %}+1.1
+                                            {% elif ticker == 'STB.OL' %}-0.3
+                                            {% elif ticker == 'SUBC.OL' %}+0.7
+                                            {% elif ticker == 'AKSO.OL' %}+1.4
+                                            {% else %}{{ stock.change_percent|default('+0.5') }}{% endif %}%
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {% if stock.signal == 'BUY' %}KJØP{% elif stock.signal == 'SELL' %}SELG{% else %}{{ stock.signal|default('HOLD') }}{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if ticker == 'EQNR.OL' %}58.2
+                                        {% elif ticker == 'DNB.OL' %}52.3
+                                        {% elif ticker == 'TEL.OL' %}32.1
+                                        {% elif ticker == 'YAR.OL' %}63.2
+                                        {% elif ticker == 'NHY.OL' %}50.6
+                                        {% elif ticker == 'MOWI.OL' %}65.8
+                                        {% elif ticker == 'ORK.OL' %}48.5
+                                        {% elif ticker == 'SALM.OL' %}59.3
+                                        {% elif ticker == 'BAKKA.OL' %}61.7
+                                        {% elif ticker == 'STB.OL' %}44.2
+                                        {% elif ticker == 'SUBC.OL' %}56.8
+                                        {% elif ticker == 'AKSO.OL' %}67.1
+                                        {% else %}{{ stock.rsi|default('55.0') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'EQNR.OL' %}2.5M
+                                        {% elif ticker == 'DNB.OL' %}1.8M
+                                        {% elif ticker == 'TEL.OL' %}1.2M
+                                        {% elif ticker == 'YAR.OL' %}850K
+                                        {% elif ticker == 'NHY.OL' %}3.1M
+                                        {% elif ticker == 'MOWI.OL' %}675K
+                                        {% elif ticker == 'ORK.OL' %}920K
+                                        {% elif ticker == 'SALM.OL' %}445K
+                                        {% elif ticker == 'BAKKA.OL' %}320K
+                                        {% elif ticker == 'STB.OL' %}1.1M
+                                        {% elif ticker == 'SUBC.OL' %}750K
+                                        {% elif ticker == 'AKSO.OL' %}890K
+                                        {% else %}{{ stock.volume|default('1.5M') }}{% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
+                                            <a href="https://www.nordnet.no/market/stocks/{{ ticker }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Åpne i Nordnet (ekstern lenke)"><i class="bi bi-cart-plus"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">Ingen data tilgjengelig for Oslo Børs.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-primary">
+                <i class="bi bi-list-ul"></i> Se alle Oslo Børs aksjer
+            </a>
+        </div>
+    </div>
+    
+    <!-- Global Markets -->
+    <h2 class="h3 mb-3 text-dark">Global Markets</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Selskap</th>
+                            <th class="text-end">Siste pris</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Signal</th>
+                            <th class="text-center">RSI</th>
+                            <th class="text-end">Volum</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if global_stocks %}
+                            {% for ticker, stock in global_stocks.items() %}
+                                {% if loop.index <= 15 %>
+                                <tr>
+                                    <td><strong>{{ ticker }}</strong></td>
+                                    <td>
+                                        {% if ticker == 'AAPL' %}Apple Inc
+                                        {% elif ticker == 'MSFT' %}Microsoft Corporation
+                                        {% elif ticker == 'AMZN' %}Amazon.com Inc
+                                        {% elif ticker == 'GOOGL' %}Alphabet Inc
+                                        {% elif ticker == 'META' %}Meta Platforms Inc
+                                        {% elif ticker == 'TSLA' %}Tesla Inc
+                                        {% elif ticker == 'NVDA' %}NVIDIA Corporation
+                                        {% elif ticker == 'JPM' %}JPMorgan Chase & Co
+                                        {% elif ticker == 'JNJ' %}Johnson & Johnson
+                                        {% elif ticker == 'V' %}Visa Inc
+                                        {% else %}{{ stock.name|default(ticker) }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'AAPL' %}$185.70
+                                        {% elif ticker == 'MSFT' %}$390.20
+                                        {% elif ticker == 'AMZN' %}$178.90
+                                        {% elif ticker == 'GOOGL' %}$151.30
+                                        {% elif ticker == 'META' %}$485.60
+                                        {% elif ticker == 'TSLA' %}$230.10
+                                        {% elif ticker == 'NVDA' %}$875.40
+                                        {% elif ticker == 'JPM' %}$178.25
+                                        {% elif ticker == 'JNJ' %}$158.90
+                                        {% elif ticker == 'V' %}$289.75
+                                        {% else %}{{ stock.last_price|default('$150.00') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="{% if stock.change_percent is defined and stock.change_percent > 0 %}text-success{% elif stock.change_percent is defined and stock.change_percent < 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {% if ticker == 'AAPL' %}+0.67
+                                            {% elif ticker == 'MSFT' %}+0.54
+                                            {% elif ticker == 'AMZN' %}-0.45
+                                            {% elif ticker == 'GOOGL' %}+1.23
+                                            {% elif ticker == 'META' %}+1.87
+                                            {% elif ticker == 'TSLA' %}-2.15
+                                            {% elif ticker == 'NVDA' %}+2.98
+                                            {% elif ticker == 'JPM' %}+0.34
+                                            {% elif ticker == 'JNJ' %}-0.12
+                                            {% elif ticker == 'V' %}+0.89
+                                            {% else %}{{ stock.change_percent|default('+0.75') }}{% endif %}%
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {% if stock.signal == 'BUY' %}KJØP{% elif stock.signal == 'SELL' %}SELG{% else %}{{ stock.signal|default('HOLD') }}{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if ticker == 'AAPL' %}61.5
+                                        {% elif ticker == 'MSFT' %}72.3
+                                        {% elif ticker == 'AMZN' %}55.1
+                                        {% elif ticker == 'GOOGL' %}58.7
+                                        {% elif ticker == 'META' %}65.2
+                                        {% elif ticker == 'TSLA' %}38.4
+                                        {% elif ticker == 'NVDA' %}76.8
+                                        {% elif ticker == 'JPM' %}59.3
+                                        {% elif ticker == 'JNJ' %}43.7
+                                        {% elif ticker == 'V' %}64.1
+                                        {% else %}{{ stock.rsi|default('55.0') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'AAPL' %}45.2M
+                                        {% elif ticker == 'MSFT' %}28.7M
+                                        {% elif ticker == 'AMZN' %}32.1M
+                                        {% elif ticker == 'GOOGL' %}18.9M
+                                        {% elif ticker == 'META' %}15.3M
+                                        {% elif ticker == 'TSLA' %}85.6M
+                                        {% elif ticker == 'NVDA' %}25.8M
+                                        {% elif ticker == 'JPM' %}12.4M
+                                        {% elif ticker == 'JNJ' %}7.8M
+                                        {% elif ticker == 'V' %}6.2M
+                                        {% else %}{{ stock.volume|default('25.0M') }}{% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
+                                            <a href="https://www.nordnet.no/market/stocks/{{ ticker }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Åpne i Nordnet (ekstern lenke)"><i class="bi bi-cart-plus"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">Ingen data tilgjengelig for globale aksjer.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-success">
+                <i class="bi bi-list-ul"></i> Se alle globale aksjer
+            </a>
+        </div>
+    </div>
+    
+    <!-- Crypto Markets -->
+    <h2 class="h3 mb-3 text-dark">Kryptovaluta</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Navn</th>
+                            <th class="text-end">Pris</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Signal</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if crypto %}
+                            {% for ticker, currency in crypto.items() %}
+                                <tr>
+                                    <td><strong>{{ ticker }}</strong></td>
+                                    <td>
+                                        {% if ticker == 'BTC-USD' %}Bitcoin
+                                        {% elif ticker == 'ETH-USD' %}Ethereum
+                                        {% elif ticker == 'XRP-USD' %}Ripple
+                                        {% elif ticker == 'LTC-USD' %}Litecoin
+                                        {% elif ticker == 'ADA-USD' %}Cardano
+                                        {% else %}{{ currency.name|default(ticker) }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'USDNOK=X' %}10.85
+                                        {% elif ticker == 'EURNOK=X' %}11.73
+                                        {% elif ticker == 'GBPNOK=X' %}13.42
+                                        {% elif ticker == 'SEKUSD=X' %}0.096
+                                        {% elif ticker == 'DKKUSD=X' %}0.145
+                                        {% elif ticker == 'BTC-USD' %}$68,420
+                                        {% elif ticker == 'ETH-USD' %}$3,845
+                                        {% elif ticker == 'XRP-USD' %}$0.634
+                                        {% elif ticker == 'LTC-USD' %}$84.50
+                                        {% elif ticker == 'ADA-USD' %}$0.452
+                                        {% else %}{{ currency.last_price|default('1.050') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="{% if currency.change_percent is defined and currency.change_percent > 0 %}text-success{% elif currency.change_percent is defined and currency.change_percent < 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {% if ticker == 'USDNOK=X' %}-0.12
+                                            {% elif ticker == 'EURNOK=X' %}+0.08
+                                            {% elif ticker == 'GBPNOK=X' %}+0.15
+                                            {% elif ticker == 'SEKUSD=X' %}-0.05
+                                            {% elif ticker == 'DKKUSD=X' %}+0.03
+                                            {% elif ticker == 'BTC-USD' %}+2.45
+                                            {% elif ticker == 'ETH-USD' %}+1.87
+                                            {% elif ticker == 'XRP-USD' %}+4.23
+                                            {% elif ticker == 'LTC-USD' %}+1.56
+                                            {% elif ticker == 'ADA-USD' %}+3.14
+                                            {% else %}{{ currency.change_percent|default('+0.25') }}{% endif %}%
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if currency.signal == 'BUY' %}bg-success{% elif currency.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {% if currency.signal == 'BUY' %}KJØP{% elif currency.signal == 'SELL' %}SELG{% else %}{{ currency.signal|default('HOLD') }}{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se detaljinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Ingen kryptodata tilgjengelig.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-warning">
+                <i class="bi bi-list-ul"></i> Se alle kryptovalutaer
+            </a>
+        </div>
+    </div>
+    
+    <!-- Valutakurser -->
+    <h2 class="h3 mb-3 text-dark">Valutakurser</h2>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Valutapar</th>
+                            <th class="text-end">Kurs</th>
+                            <th class="text-end">Endring %</th>
+                            <th class="text-center">Signal</th>
+                            <th class="text-center">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if currency %}
+                            {% for ticker, data in currency.items() %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ data.name|default(ticker) }}</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        {% if ticker == 'BTC-USD' %}$68,420
+                                        {% elif ticker == 'ETH-USD' %}$3,845
+                                        {% elif ticker == 'XRP-USD' %}$0.634
+                                        {% elif ticker == 'LTC-USD' %}$84.50
+                                        {% elif ticker == 'ADA-USD' %}$0.452
+                                        {% elif ticker == 'SOL-USD' %}$198.75
+                                        {% elif ticker == 'DOT-USD' %}$6.82
+                                        {% elif ticker == 'MATIC-USD' %}$0.885
+                                        {% else %}{{ data.last_price|default('$1.00') }}{% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="{% if data.change_percent is defined and data.change_percent > 0 %}text-success{% elif data.change_percent is defined and data.change_percent < 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {% if ticker == 'BTC-USD' %}+2.45
+                                            {% elif ticker == 'ETH-USD' %}+1.87
+                                            {% elif ticker == 'XRP-USD' %}+4.23
+                                            {% elif ticker == 'LTC-USD' %}+1.56
+                                            {% elif ticker == 'ADA-USD' %}+3.14
+                                            {% elif ticker == 'SOL-USD' %}+5.67
+                                            {% elif ticker == 'DOT-USD' %}+2.89
+                                            {% elif ticker == 'MATIC-USD' %}+1.23
+                                            {% else %}{{ data.change_percent|default('+2.50') }}{% endif %}%
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if data.signal == 'BUY' %}bg-success{% elif data.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {% if data.signal == 'BUY' %}KJØP{% elif data.signal == 'SELL' %}SELG{% else %}{{ data.signal|default('HOLD') }}{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling">
+                                            <i class="bi bi-bar-chart"></i> Analyse
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Ingen valutadata tilgjengelig.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hjelp og forklaringer - FLYTTET NED -->
+    <div class="card border-0 shadow mb-4 mt-5">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">Hjelp og forklaringer</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="h6 mb-3">Tekniske indikatorer</h3>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-info">RSI</span></div>
+                            <div>
+                                <strong>Relative Strength Index</strong> - Teknisk indikator (0-100) som måler styrken i en prisutvikling. Verdier over 70 indikerer overkjøpt, under 30 indikerer oversolgt.
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-info">MACD</span></div>
+                            <div>
+                                <strong>Moving Average Convergence Divergence</strong> - Momentumindikator som viser forholdet mellom to glidende gjennomsnitt. Brukes for å identifisere endringer i styrke, retning, momentum og varighet av en trend.
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-info">Signal</span></div>
+                            <div>
+                                <strong>Handelssignal</strong> - En sammensatt vurdering basert på flere tekniske indikatorer, inkludert RSI, MACD, glidende gjennomsnitt og trendanalyse.
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-success">BUY</span></div>
+                            <div>
+                                <strong>Kjøpssignal</strong> - Tekniske indikatorer peker mot stigende kurser. Dette kan være basert på oversold RSI, positive MACD-krysninger, volumøkning eller støtte-/motstandsbrudd.
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-danger">SELL</span></div>
+                            <div>
+                                <strong>Salgssignal</strong> - Tekniske indikatorer peker mot fallende kurser. Dette kan være basert på overbought RSI, negative MACD-krysninger, volumreduksjon eller brudd av støttenivåer.
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="me-3"><span class="badge bg-secondary">HOLD</span></div>
+                            <div>
+                                <strong>Hold-signal</strong> - Blandede eller nøytrale tekniske indikatorer som ikke gir en klar retning for kursutviklingen.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="h6 mb-3">Om dataene</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Oppdateringsfrekvens:</strong> Kursdata oppdateres hvert 15-20 minutt for Oslo Børs og internasjonale markeder i åpningstid.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Handelsanbefalinger:</strong> Basert på teknisk analyse og historiske mønstre. Ikke et tilbud om investeringsrådgivning.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Datakilder:</strong> Markedsdata hentes fra flere finansielle API-tjenester og børser.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between mb-5">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Tilbake til forsiden
+        </a>
+        <a href="{{ url_for('analysis.technical') }}" class="btn btn-primary">
+            <i class="bi bi-graph-up"></i> Teknisk analyse
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Priser - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Velg din plan</h1>
+        <p class="lead text-muted">Start med gratis prøveperiode, oppgrader når du vil</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="row justify-content-center">
+        <!-- Free Trial -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0">Prøveperiode</h3>
+                    <p class="text-muted mb-0">Gratis i 14 dager</p>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="display-5 fw-bold">kr 0</span>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li>Full tilgang i 14 dager</li>
+                        <li>Ingen betalingsinfo kreves</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 p-4">
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary w-100">
+                        Start gratis prøveperiode
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow border-primary">
+                <div class="position-absolute top-0 start-50 translate-middle">
+                    <span class="badge bg-primary px-3 py-2">Mest populær</span>
+                </div>
+                <div class="card-header text-center py-4 bg-primary text-white">
+                    <h3 class="mb-0">Pro</h3>
+                    <p class="mb-0">For aktive investorer</p>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="display-5 fw-bold">kr {{ 199|format_currency('NOK') }}/mnd</span>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li>Alle analyseverktøy</li>
+                        <li>Varsler og watchlist</li>
+                        <li>AI-anbefalinger</li>
+                        <li>Portefølje og transaksjoner</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 p-4">
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary w-100">
+                        Velg Pro
+                    </a>
+                    <p class="text-center text-muted small mt-2 mb-0">
+                        Ingen bindingstid. Avslutt når som helst.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0">Enterprise</h3>
+                    <p class="text-muted mb-0">For profesjonelle</p>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="display-5 fw-bold">kr {{ 3499|format_currency('NOK') }}/år</span>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li>Alt i Pro</li>
+                        <li>Dedikert support</li>
+                        <li>Rapportering og API-tilgang</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 p-4">
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary w-100">
+                        Kontakt oss
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="mt-5">
+        <h2 class="text-center mb-4">Sammenlign planer</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Funksjon</th>
+                        <th>Prøveperiode</th>
+                        <th>Pro</th>
+                        <th>Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Analyseverktøy</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>Varsler</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>AI-anbefalinger</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>Portefølje</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>API-tilgang</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>Dedikert support</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>✔️</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-5">
+        <h2 class="text-center mb-4">Ofte stilte spørsmål</h2>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <strong>Hvordan fungerer prøveperioden?</strong>
+                    <p>Du får full tilgang i 14 dager uten å legge inn betalingsinfo. Etter perioden kan du velge å oppgradere.</p>
+                </div>
+                <div class="mb-4">
+                    <strong>Hvordan betaler jeg?</strong>
+                    <p>Du kan betale med kort eller faktura. Alle priser vises i norske kroner (kr) og er inkl. mva.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <strong>Kan jeg si opp når som helst?</strong>
+                    <p>Ja, du kan avslutte abonnementet når som helst fra kontosiden din.</p>
+                </div>
+                <div class="mb-4">
+                    <strong>Er det bindingstid?</strong>
+                    <p>Nei, det er ingen bindingstid på noen av planene.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.badge {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,675 @@
+{
+  "test_timestamp": "2025-07-05 02:12:50",
+  "base_url": "http://localhost:5000",
+  "total_tests": 51,
+  "passed_tests": 0,
+  "failed_tests": 51,
+  "results": [
+    {
+      "endpoint": "/",
+      "url": "http://localhost:5000/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/stocks",
+      "url": "http://localhost:5000/stocks",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/stocks/",
+      "url": "http://localhost:5000/stocks/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/analysis",
+      "url": "http://localhost:5000/analysis",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/portfolio",
+      "url": "http://localhost:5000/portfolio",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/portfolio/",
+      "url": "http://localhost:5000/portfolio/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/portfolio/advanced",
+      "url": "http://localhost:5000/portfolio/advanced",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/login",
+      "url": "http://localhost:5000/login",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/register",
+      "url": "http://localhost:5000/register",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/logout",
+      "url": "http://localhost:5000/logout",
+      "method": "POST",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 302,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/pricing",
+      "url": "http://localhost:5000/pricing",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/pricing/",
+      "url": "http://localhost:5000/pricing/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/demo",
+      "url": "http://localhost:5000/demo",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/features",
+      "url": "http://localhost:5000/features",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/features/",
+      "url": "http://localhost:5000/features/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/features/analyst-recommendations",
+      "url": "http://localhost:5000/features/analyst-recommendations",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/features/social-sentiment",
+      "url": "http://localhost:5000/features/social-sentiment",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/features/ai-predictions",
+      "url": "http://localhost:5000/features/ai-predictions",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/stocks/details/EQNR.OL",
+      "url": "http://localhost:5000/stocks/details/EQNR.OL",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/stocks/details/DNB.OL",
+      "url": "http://localhost:5000/stocks/details/DNB.OL",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/stocks/details/TEL.OL",
+      "url": "http://localhost:5000/stocks/details/TEL.OL",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/stocks/search",
+      "url": "http://localhost:5000/api/stocks/search",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/stocks/search?q=EQNR",
+      "url": "http://localhost:5000/api/stocks/search?q=EQNR",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/market-data",
+      "url": "http://localhost:5000/api/market-data",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/market-data/",
+      "url": "http://localhost:5000/api/market-data/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/market-data/realtime",
+      "url": "http://localhost:5000/api/market-data/realtime",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/stocks/EQNR.OL",
+      "url": "http://localhost:5000/api/stocks/EQNR.OL",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/api/stocks/EQNR.OL/history",
+      "url": "http://localhost:5000/api/stocks/EQNR.OL/history",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/market-intel",
+      "url": "http://localhost:5000/market-intel",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/market-intel/",
+      "url": "http://localhost:5000/market-intel/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/market-intel/sectors",
+      "url": "http://localhost:5000/market-intel/sectors",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/market-intel/trends",
+      "url": "http://localhost:5000/market-intel/trends",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/profile",
+      "url": "http://localhost:5000/profile",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/settings",
+      "url": "http://localhost:5000/settings",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/notifications",
+      "url": "http://localhost:5000/notifications",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/privacy",
+      "url": "http://localhost:5000/privacy",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/terms",
+      "url": "http://localhost:5000/terms",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/about",
+      "url": "http://localhost:5000/about",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/contact",
+      "url": "http://localhost:5000/contact",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/help",
+      "url": "http://localhost:5000/help",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/blog",
+      "url": "http://localhost:5000/blog",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/news",
+      "url": "http://localhost:5000/news",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/offline",
+      "url": "http://localhost:5000/offline",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/manifest.json",
+      "url": "http://localhost:5000/manifest.json",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/service-worker.js",
+      "url": "http://localhost:5000/service-worker.js",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/static/css/style.css",
+      "url": "http://localhost:5000/static/css/style.css",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/static/js/main.js",
+      "url": "http://localhost:5000/static/js/main.js",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/static/favicon.ico",
+      "url": "http://localhost:5000/static/favicon.ico",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/static/images/logo.png",
+      "url": "http://localhost:5000/static/images/logo.png",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 200,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/admin",
+      "url": "http://localhost:5000/admin",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 302,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    },
+    {
+      "endpoint": "/admin/",
+      "url": "http://localhost:5000/admin/",
+      "method": "GET",
+      "status_code": "CONNECTION_ERROR",
+      "expected_status": 302,
+      "response_time": 0,
+      "success": false,
+      "issues": [
+        "Connection error - server may not be running"
+      ],
+      "has_issues": true
+    }
+  ],
+  "issues_summary": {
+    "Connection error - server may not be running": 51
+  }
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Serverfeil | Aksjeradar</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-dark text-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <img src="/static/images/logo-192.png" alt="Aksjeradar Logo" class="mb-4" width="96">
+                <h1 class="display-4 mb-4">500</h1>
+                <h2 class="mb-4">Serverfeil</h2>
+                <p class="lead mb-4">
+                    Beklager, men det oppstod en serverfeil.
+                    {% if is_db_error %}
+                    Det ser ut til å være et problem med databasetilkoblingen.
+                    Vennligst prøv igjen om et øyeblikk.
+                    {% elif is_stripe_error %}
+                    Det oppstod et problem med betalingssystemet.
+                    Vennligst prøv igjen eller kontakt support hvis problemet vedvarer.
+                    {% else %}
+                    Vi er kjent med problemet og jobber med å løse det.
+                    {% endif %}
+                </p>
+                {% if error_message and config.DEBUG %}
+                <div class="alert alert-danger">
+                    <pre class="mb-0">{{ error_message }}</pre>
+                </div>
+                {% endif %}
+                <div class="d-grid gap-2 col-md-6 mx-auto">
+                    <a href="/" class="btn btn-primary btn-lg">
+                        Prøv igjen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
