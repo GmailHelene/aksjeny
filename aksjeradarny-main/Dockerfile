@@ -1,17 +1,19 @@
 # Dockerfile
 
 # Multi-stage build
-FROM python:3.12-slim AS builder
+FROM python:3.11-slim AS builder
 WORKDIR /app
 COPY requirements.txt requirements-dev.txt ./
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN apt-get update && apt-get install -y build-essential gfortran python3-dev libopenblas-dev liblapack-dev && rm -rf /var/lib/apt/lists/* \
+    && pip install --upgrade pip setuptools wheel \
+    && pip install --prefer-binary -r requirements.txt
 
-FROM python:3.12-slim
+FROM python:3.11-slim
 WORKDIR /app
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 COPY . .
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 EXPOSE 5000
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]
+CMD ["python", "app.py"]
