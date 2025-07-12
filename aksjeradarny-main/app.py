@@ -1,6 +1,7 @@
 from flask import Flask
+from __init__ import create_app
 
-app = Flask(__name__)
+app = create_app()
 
 @app.route("/")
 def home():
@@ -10,42 +11,6 @@ def home():
 def login():
     return "", 200
 
-# Stub endpoints for testing access
-@app.route("/analysis")
-def analysis():
-    return "", 200
-
-@app.route("/portfolio")
-def portfolio():
-    return "", 200
-
-@app.route("/portfolio/advanced")
-def portfolio_advanced():
-    return "", 200
-
-@app.route("/features/analyst-recommendations")
-def analyst_recommendations():
-    return "", 200
-
-@app.route("/features/social-sentiment")
-def social_sentiment():
-    return "", 200
-
-@app.route("/features/ai-predictions")
-def ai_predictions():
-    return "", 200
-
-@app.route("/market-intel")
-def market_intel():
-    return "", 200
-
-@app.route("/profile")
-def profile():
-    return "", 200
-
-@app.route("/notifications")
-def notifications():
-    return "", 200
-
+# Entry point
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -14,61 +14,48 @@ A comprehensive web application for analyzing stocks, cryptocurrencies, and curr
 - Watchlist functionality
 - PWA support (works offline, installable)
 
-## Setup and Installation
-
-1. Clone the repository
-2. Install dependencies:
+## Installation
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/yourorg/aksjeradarny.git
+   cd aksjeradarny-main
    ```
+2. Create and activate virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+3. Install production dependencies:
+   ```bash
    pip install -r requirements.txt
    ```
-3. Set up environment variables (optional):
-   - Create a `.env` file in the root directory
-   - Add your API keys and configurations
-
-4. Initialize the database:
-   ```
-   flask db init
-   flask db migrate -m "Initial migration"
-   flask db upgrade
+4. Install development dependencies (optional):
+   ```bash
+   pip install -r requirements-dev.txt
    ```
 
-5. Run the application:
-   ```
-   python run.py
-   ```
+## Environment Variables
+Create a `.env` file in the project root with:
+```
+FLASK_APP=app.py
+FLASK_ENV=development
+DATABASE_URL=postgresql://user:pass@localhost/dbname
+STRIPE_API_KEY=your_key_here
+...
+```
+
+## Running the App
+```bash
+flask run
+```
+or
+```bash
+python app.py
+```
 
 ## Testing
-
-The application includes several test scripts to verify functionality:
-
-### Endpoint Testing
-
-This tests all available endpoints and routes in the application:
-
-```
-python test_endpoints.py
-```
-
-or use the batch file for a complete test suite:
-
-```
-run_tests.bat
-```
-
-### PWA Compliance Testing
-
-Check if your PWA implementation is complete and correct:
-
-```
-python test_pwa.py
-```
-
-### Services Testing
-
-Test the data and analysis services functionality:
-
-```
-python test_services.py
+```bash
+pytest
 ```
 
 ## Deployment
