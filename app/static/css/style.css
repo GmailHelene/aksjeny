@@ -951,23 +951,18 @@ textarea::placeholder {
 
 /* Enhanced PWA Install Banner Styles */
 #pwa-install-banner {
-    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: #f8f9fa; /* Light background */
+    color: #212529; /* Dark text */
 }
 
 #pwa-install-banner .btn-light {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border: none;
-    color: #0d6efd;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    background-color: #007bff; /* Blue button */
+    color: #ffffff; /* White text */
 }
 
 #pwa-install-banner .btn-light:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background-color: #0056b3; /* Darker blue on hover */
+    color: #ffffff; /* White text */
 }
 
 /* PWA Install Button in Navbar */

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from .config import config
+from app.config import config
 from .extensions import db, login_manager, mail
 from flask_wtf.csrf import CSRFProtect, CSRFError
 import os
@@ -153,6 +153,15 @@ def register_blueprints(app):
             app.logger.error(f"Error registering {blueprint_name}: {e}")
     
     app.logger.info(f"✅ Registered {len(blueprints_registered)} blueprints: {', '.join(blueprints_registered)}")
+    
+    # Register the realtime_api blueprint
+    try:
+        from .routes.realtime_api import realtime_api
+        app.register_blueprint(realtime_api)
+        blueprints_registered.append('realtime_api')
+        app.logger.info("✅ Registered realtime_api blueprint")
+    except ImportError as e:
+        app.logger.warning(f"Could not import realtime_api blueprint: {e}")
 
 def setup_production_database(app):
     """Setup database for production with proper error handling"""

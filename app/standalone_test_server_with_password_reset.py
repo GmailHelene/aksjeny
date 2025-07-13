@@ -136,9 +136,14 @@ def ai_explained():
         ]
     })
 
-@app.route('/pricing')
-@app.route('/pricing/')
+@app.route('/pricing', methods=['GET', 'POST'])
 def pricing():
+    if request.method == 'POST':
+        return jsonify({
+            'status': 'OK',
+            'message': 'Pricing POST fungerer!',
+            'note': 'Dette er en test-implementasjon'
+        })
     return jsonify({
         'status': 'OK',
         'page': 'pricing',

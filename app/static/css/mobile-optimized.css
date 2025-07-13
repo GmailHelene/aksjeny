@@ -270,6 +270,8 @@
         margin: 0;
         border-radius: 0;
         padding: 1rem 0.5rem;
+        background-color: #f8f9fa; /* Light background */
+        color: #212529; /* Dark text */
     }
     
     #pwa-install-banner .container {
@@ -288,6 +290,8 @@
     #pwa-install-banner .btn {
         font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
+        background-color: #007bff; /* Blue button */
+        color: #ffffff; /* White text */
     }
     
     /* Loading states mobile optimization */

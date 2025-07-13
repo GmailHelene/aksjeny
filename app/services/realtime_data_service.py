@@ -228,23 +228,27 @@ class RealTimeDataService:
     
     def _get_category_summary(self, category: str) -> Dict[str, Any]:
         """Get summary for a specific category"""
-        category_data = {k: v for k, v in self.cache.items() if k.startswith(f"{category}_")}
-        
-        if not category_data:
-            return {'status': 'no_data'}
-        
-        prices = [data['current_price'] for data in category_data.values()]
-        changes = [data['change_percent'] for data in category_data.values()]
-        
-        return {
-            'total_stocks': len(category_data),
-            'avg_change': sum(changes) / len(changes) if changes else 0,
-            'positive_count': len([c for c in changes if c > 0]),
-            'negative_count': len([c for c in changes if c < 0]),
-            'neutral_count': len([c for c in changes if c == 0]),
-            'last_updated': max([data['last_updated'] for data in category_data.values()]),
-            'status': 'active'
-        }
+        try:
+            category_data = {k: v for k, v in self.cache.items() if k.startswith(f"{category}_")}
+            
+            if not category_data:
+                return {'status': 'no_data'}
+            
+            prices = [data['current_price'] for data in category_data.values()]
+            changes = [data['change_percent'] for data in category_data.values()]
+            
+            return {
+                'total_stocks': len(category_data),
+                'avg_change': sum(changes) / len(changes) if changes else 0,
+                'positive_count': len([c for c in changes if c > 0]),
+                'negative_count': len([c for c in changes if c < 0]),
+                'neutral_count': len([c for c in changes if c == 0]),
+                'last_updated': max([data['last_updated'] for data in category_data.values()]),
+                'status': 'active'
+            }
+        except Exception as e:
+            logger.error(f"Error fetching category summary for {category}: {e}")
+            return {'error': f"Failed to fetch data for {category}"}
     
     def get_trending_stocks(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get trending stocks based on volume and price movements"""

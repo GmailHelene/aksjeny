@@ -61,7 +61,11 @@
             // Special handling for enhanced-realtime.js
             if (scriptName === 'enhanced-realtime.js') {
                 // Ensure global variable is available
-                window.EnhancedRealTimeService = window.EnhancedRealTimeService || window.enhancedRealTime?.constructor;
+                if (!window.EnhancedRealTimeService) {
+                    window.EnhancedRealTimeService = window.enhancedRealTime?.constructor || function() {
+                        console.warn('EnhancedRealTimeService is not available');
+                    };
+                }
             }
             
             // Load next script
