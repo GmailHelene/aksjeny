@@ -1,3 +1,13 @@
 2025-07-13 03:30:22,947 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
 2025-07-13 03:31:47,817 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
 2025-07-13 03:32:33,241 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 04:12:18,419 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 04:12:18,439 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5005
+ * Running on http://10.0.0.73:5005
+2025-07-13 04:12:18,439 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-13 04:12:18,440 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 04:12:19,788 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 04:12:19,804 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 04:12:19,805 - werkzeug - INFO -  * Debugger PIN: 258-782-411
