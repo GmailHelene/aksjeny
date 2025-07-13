@@ -303,7 +303,7 @@ class CacheServiceV2:
             self.redis_client = None
             self._memory_cache = {}
     
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str, max_age_minutes: int = 5) -> Optional[Any]:
         """Get value from cache"""
         if self.redis_client:
             try:
