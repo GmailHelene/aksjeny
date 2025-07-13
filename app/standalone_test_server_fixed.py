@@ -5,31 +5,53 @@ Standalone test server for aksjeradar appen - Oppdatert med Stripe endepunkter o
 import os
 import sys
 import uuid
+import re
+import json
+import logging
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-import json
-import logging
-import hmac
-import hashlib
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import logging.handlers
+from flask_mail import Mail, Message
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 # Definerer porten som en variabel for enklere endring
-PORT = 5005  # Endret til en annen port for å unngå konflikter
+PORT = 5006  # Endret til en annen port for å unngå konflikter
 
 # Stripe configuration
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_your_stripe_test_key')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', 'whsec_your_webhook_secret')
 DOMAIN_URL = os.environ.get('DOMAIN_URL', f'http://localhost:{PORT}')
 
-# Configure logging
+# Konfigurasjon for sikker logging
+LOG_DIR = '/var/log/aksjeradar'
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+# Sett opp logging med rotasjon og sikker lagring
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('aksjeradar_payment.log'),
+        logging.handlers.RotatingFileHandler(
+            f'{LOG_DIR}/aksjeradar.log',
+            maxBytes=10485760,  # 10MB
+            backupCount=10,
+            encoding='utf-8'
+        ),
+        logging.handlers.RotatingFileHandler(
+            f'{LOG_DIR}/aksjeradar_error.log',
+            maxBytes=10485760,
+            backupCount=10,
+            encoding='utf-8',
+            level=logging.ERROR
+        ),
         logging.StreamHandler()
     ]
 )
@@ -37,16 +59,50 @@ logger = logging.getLogger('aksjeradar')
 
 # Create Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'development-secret-key-change-this')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aksjeradar.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+if not app.config['SECRET_KEY']:
+    raise RuntimeError('No SECRET_KEY set in environment')
+    
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///aksjeradar.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['WTF_CSRF_ENABLED'] = True
+app.config['WTF_CSRF_CHECK_DEFAULT'] = True
+
+# E-post konfigurasjon
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@aksjeradar.trade')
 
 # Initialize extensions
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 csrf = CSRFProtect(app)
+mail = Mail(app)
+
+# Sett opp rate limiting
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
+
+# Initialiser rate limiting
+limiter.init_app(app)
+
+# Initialiser Sentry
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[FlaskIntegration()],
+        traces_sample_rate=1.0,
+        environment=os.environ.get('FLASK_ENV', 'production')
+    )
+    logger.info("Sentry initialized successfully")
 
 # Simple User model
 class User(db.Model):
@@ -74,16 +130,23 @@ class User(db.Model):
         self.password_hash = generate_password_hash(password)
         
     def has_active_subscription(self):
-        """Check if user has an active subscription that's not expired"""
+        """Check if user has an active subscription"""
+        # Exempt users alltid har tilgang
         if self.is_exempt:
             return True
-        if not self.has_subscription:
-            return False
+            
+        # Hvis brukeren har demo-tilgang
         if self.subscription_type == 'free':
-            return False
-        if not hasattr(self, 'subscription_end_date') or self.subscription_end_date is None:
-            return False
-        return self.subscription_end_date > datetime.now()
+            return True  # Demo-brukere har tilgang til demo-funksjonalitet
+            
+        # Sjekk om brukeren har et aktivt betalt abonnement
+        if self.has_subscription and self.subscription_type in ['monthly', 'yearly', 'lifetime']:
+            # For betalte abonnementer, sjekk utløpsdato
+            if not self.subscription_end_date:
+                return True  # Ingen utløpsdato betyr permanent tilgang
+            return self.subscription_end_date > datetime.now()
+            
+        return False
         
     def record_login(self):
         """Record the current time as last login"""
@@ -141,8 +204,39 @@ with app.app_context():
     db.create_all()
     print("Nye tabeller opprettet")
     
-    # Sjekk om vi trenger å legge til testbrukere
     try:
+        # Legg til spesialbrukere med exempt status
+        special_users = [
+            User(
+                username='helene721',
+                email='helene721@gmail.com',
+                is_admin=True,
+                has_subscription=True,
+                subscription_type='lifetime',
+                is_exempt=True,
+                created_at=datetime.now()
+            ),
+            User(
+                username='tonje',
+                email='tonje@example.com',
+                has_subscription=True,
+                subscription_type='lifetime',
+                is_exempt=True,
+                created_at=datetime.now()
+            ),
+            User(
+                username='eirik',
+                email='eirik@example.com',
+                has_subscription=True,
+                subscription_type='lifetime',
+                is_exempt=True,
+                created_at=datetime.now()
+            )
+        ]
+        for user in special_users:
+            user.set_password('ditt_valgte_passord')  # Sett passord for hver bruker
+            db.session.add(user)
+        
         # Legg til en admin-bruker
         admin = User(
             username='admin',
@@ -253,14 +347,51 @@ def index():
 
 @app.route('/demo')
 def demo():
+    """Demo-side med dynamisk innhold basert på brukerens situasjon"""
+    source = request.args.get('source', '')
+    message = 'Velkommen til Aksjeradar Demo!'
+    
+    if source == 'trial_expired' and current_user.is_authenticated:
+        return redirect(url_for('subscription'))
+    elif source == 'trial_expired':
+        message = 'For å få full tilgang til Aksjeradar, vennligst logg inn eller opprett en konto.'
+    
     return jsonify({
         'status': 'OK',
         'page': 'demo',
-        'message': 'Demo-side fungerer!',
+        'message': message,
+        'user_status': {
+            'is_logged_in': current_user.is_authenticated,
+            'has_account': current_user.is_authenticated
+        },
         'demo_content': {
-            'trial_period': '15 minutter',
-            'features': ['Grunnleggende aksjedata', 'Tekniske indikatorer', 'Markedsoversikt'],
-            'limitations': ['Begrenset historikk', 'Ikke alle funksjoner']
+            'title': 'Utforsk Aksjeradar',
+            'description': 'Prøv vår demo-versjon og se hva Aksjeradar kan gjøre for deg',
+            'features': [
+                'Sanntids aksjekurser',
+                'Grunnleggende tekniske indikatorer',
+                'Markedsoversikt',
+                'AI-drevet analyse (begrenset)'
+            ],
+            'available_tools': [
+                'Oslo Børs oversikt',
+                'Porteføljesimulator',
+                'Markedsanalyse'
+            ]
+        },
+        'call_to_action': {
+            'primary': {
+                'text': 'Opprett konto',
+                'url': '/register'
+            },
+            'secondary': {
+                'text': 'Se abonnementer',
+                'url': '/subscription'
+            },
+            'tertiary': {
+                'text': 'Logg inn',
+                'url': '/login'
+            }
         }
     })
 
@@ -352,10 +483,8 @@ def login():
         username = data.get('username', '')
         password = data.get('password', '')
         
-        # Logge innloggingsforsøk
         logger.info(f"Login attempt for username: {username}")
         
-        # Finn brukeren i databasen
         user = User.query.filter_by(username=username).first()
         
         if user and user.check_password(password):
@@ -366,30 +495,56 @@ def login():
             # Logg inn brukeren
             login_user(user)
             
-            return jsonify({
-                'status': 'OK',
-                'message': f'Velkommen tilbake, {user.username}!',
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'subscription_type': user.subscription_type,
-                    'has_active_subscription': user.has_active_subscription()
-                }
-            })
+            # Sjekk brukertype og redirect til riktig side
+            if user.is_exempt:
+                return jsonify({
+                    'status': 'OK',
+                    'message': f'Velkommen tilbake {user.username}! Du har full tilgang til Aksjeradar.',
+                    'redirect': '/dashboard',
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'is_exempt': True,
+                        'has_full_access': True
+                    }
+                })
+            elif user.has_active_subscription():
+                return jsonify({
+                    'status': 'OK',
+                    'message': f'Velkommen tilbake {user.username}!',
+                    'redirect': '/dashboard',
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'subscription_type': user.subscription_type,
+                        'has_full_access': True
+                    }
+                })
+            else:
+                return jsonify({
+                    'status': 'OK',
+                    'message': f'Velkommen {user.username}! Du har tilgang til demo-versjonen av Aksjeradar.',
+                    'redirect': '/demo',
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'subscription_type': 'demo',
+                        'has_full_access': False
+                    }
+                })
         else:
-            # Logg mislykket innloggingsforsøk
             logger.warning(f"Failed login attempt for username: {username}")
-            
             return jsonify({
                 'status': 'ERROR',
-                'message': 'Ugyldig brukernavn eller passord'
+                'message': 'Feil brukernavn eller passord. Vennligst prøv igjen eller bruk "Glemt passord" hvis du ikke husker passordet ditt.',
+                'show_forgot_password': True
             }), 401
     
-    # Vis login-siden (GET-forespørsel)
+    # GET request - vis login-siden
     return jsonify({
         'status': 'OK',
         'page': 'login',
-        'message': 'Login-side fungerer!',
+        'message': 'Logg inn på din Aksjeradar-konto',
         'form_fields': ['username', 'password'],
         'csrf_token': generate_csrf(),
         'forgot_password_link': '/forgot-password'
@@ -410,29 +565,48 @@ def register():
         if not username or not email or not password:
             return jsonify({
                 'status': 'ERROR',
-                'message': 'Alle feltene må fylles ut'
+                'message': 'Alle feltene må fylles ut',
+                'field_errors': {
+                    'username': not username,
+                    'email': not email,
+                    'password': not password
+                }
+            }), 400
+        
+        # Validere e-postformat
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return jsonify({
+                'status': 'ERROR',
+                'message': 'Ugyldig e-postformat',
+                'field_errors': {'email': True}
             }), 400
         
         # Sjekk om brukeren allerede eksisterer
         if User.query.filter_by(username=username).first():
             return jsonify({
                 'status': 'ERROR',
-                'message': 'Brukernavnet er allerede i bruk'
+                'message': f'Brukernavnet "{username}" er allerede i bruk. Vennligst velg et annet brukernavn eller logg inn hvis dette er din konto.',
+                'field_errors': {'username': True},
+                'suggest_login': True
             }), 400
         
         # Sjekk om e-posten allerede er registrert
-        if User.query.filter_by(email=email).first():
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
             return jsonify({
-                'status': 'ERROR',
-                'message': 'E-postadressen er allerede registrert'
-            }), 400
+                'status': 'INFO',
+                'message': f'E-postadressen {email} er allerede registrert. Vennligst logg inn med din eksisterende konto.',
+                'redirect': '/login',
+                'email': email,
+                'suggest_login': True
+            }), 302
         
         # Opprett ny bruker
         user = User(
             username=username,
             email=email,
             has_subscription=True,
-            subscription_type='free',
+            subscription_type='demo',  # Starter med demo-tilgang
             created_at=datetime.now()
         )
         user.set_password(password)
@@ -446,19 +620,20 @@ def register():
         
         return jsonify({
             'status': 'OK',
-            'message': f'Velkommen, {user.username}! Din konto er nå opprettet.',
+            'message': f'Velkommen {user.username}! Din konto er opprettet og du er nå logget inn. Du har tilgang til demo-versjonen av Aksjeradar.',
             'user': {
                 'id': user.id,
                 'username': user.username,
-                'subscription_type': user.subscription_type
-            }
+                'subscription_type': 'demo'
+            },
+            'redirect': '/demo'
         })
     
-    # Vis registreringssiden (GET-forespørsel)
+    # GET request - vis registreringssiden
     return jsonify({
         'status': 'OK',
         'page': 'register',
-        'message': 'Registreringssiden fungerer!',
+        'message': 'Opprett en ny konto hos Aksjeradar',
         'form_fields': ['username', 'email', 'password', 'confirm_password'],
         'csrf_token': generate_csrf()
     })
@@ -579,30 +754,86 @@ def reset_password(token):
         }), 400
 
 @app.route('/portfolio')
+@login_required
 def portfolio():
+    if not current_user.has_active_subscription():
+        return jsonify({
+            'status': 'ERROR',
+            'message': 'Du trenger et aktivt abonnement for å se porteføljen din',
+            'redirect': '/pricing'
+        }), 403
+    
     return jsonify({
         'status': 'OK',
         'page': 'portfolio',
         'message': 'Portfolio-side fungerer!',
-        'note': 'Krever innlogging i produksjon'
+        'portfolio_data': {
+            'total_value': 150000,
+            'total_return': 12.5,
+            'holdings': [
+                {'symbol': 'EQNR.OL', 'shares': 100, 'value': 25000},
+                {'symbol': 'NHY.OL', 'shares': 500, 'value': 35000},
+                {'symbol': 'DNB.OL', 'shares': 200, 'value': 40000}
+            ]
+        }
     })
 
 @app.route('/analysis')
+@login_required
 def analysis():
+    if not current_user.has_active_subscription():
+        return jsonify({
+            'status': 'ERROR',
+            'message': 'Du trenger et aktivt abonnement for å se analysene',
+            'redirect': '/pricing'
+        }), 403
+    
     return jsonify({
         'status': 'OK',
         'page': 'analysis',
         'message': 'Analyse-side fungerer!',
-        'analysis_types': ['Teknisk analyse', 'Fundamental analyse', 'AI-prediksjoner']
+        'analysis_types': ['Teknisk analyse', 'Fundamental analyse', 'AI-prediksjoner'],
+        'premium_features': [
+            'Avanserte tekniske indikatorer',
+            'Maskinlæringsbaserte prisprediksjoner',
+            'Sentiment-analyse fra nyheter',
+            'Porteføljeoptimalisering'
+        ]
     })
 
 @app.route('/stocks')
+@login_required
 def stocks():
+    # Sjekk abonnementsstatus og tilpass innholdet
+    if current_user.has_active_subscription():
+        stock_data = {
+            'EQNR.OL': {
+                'price': 350.50,
+                'change': 2.5,
+                'volume': 1500000,
+                'analysis': 'Kjøp',
+                'ai_prediction': 'Positiv trend forventet'
+            },
+            'NHY.OL': {
+                'price': 70.25,
+                'change': -0.8,
+                'volume': 2100000,
+                'analysis': 'Hold',
+                'ai_prediction': 'Stabil utvikling'
+            }
+        }
+    else:
+        return jsonify({
+            'status': 'ERROR',
+            'message': 'Du trenger et aktivt abonnement for å se detaljert aksjedata',
+            'redirect': '/pricing'
+        }), 403
+    
     return jsonify({
         'status': 'OK',
         'page': 'stocks',
         'message': 'Aksjer-side fungerer!',
-        'sample_stocks': ['EQNR.OL', 'NHY.OL', 'MOWI.OL', 'TEL.OL']
+        'stocks': stock_data
     })
 
 @app.route('/api/health')
@@ -1020,11 +1251,8 @@ def stripe_success():
     
     try:
         if not session_id:
-            logger.warning("Success endpoint called without session_id")
-            return jsonify({
-                'status': 'ERROR',
-                'message': 'Manglende session_id parameter'
-            }), 400
+            logger.error("No session ID provided in success callback")
+            return redirect(url_for('index'))
         
         # I en virkelig implementasjon ville vi hentet sesjonen fra Stripe
         # session = stripe.checkout.Session.retrieve(session_id)
@@ -1040,42 +1268,23 @@ def stripe_success():
         if current_user.is_authenticated:
             current_user.has_subscription = True
             current_user.subscription_type = subscription_type
-            
-            # Sett abonnementsdatoer
             current_user.subscription_start_date = datetime.now()
-            if subscription_type == 'monthly':
-                current_user.subscription_end_date = datetime.now() + timedelta(days=30)
-            elif subscription_type == 'yearly':
-                current_user.subscription_end_date = datetime.now() + timedelta(days=365)
-            
+            current_user.subscription_end_date = datetime.now() + timedelta(days=365 if subscription_type == 'yearly' else 30)
             db.session.commit()
             
-            logger.info(f"Updated subscription for user {current_user.username} to {subscription_type}")
+            flash('Takk for kjøpet! Ditt abonnement er nå aktivt.', 'success')
+            return redirect(url_for('portfolio'))
         else:
-            logger.warning("Success payment for non-logged in user with session ID: {session_id}")
-        
+            flash('Betaling mottatt, men du må logge inn for å aktivere abonnementet.', 'warning')
+            return redirect(url_for('login'))
+            
         # Logg vellykket betaling
         logger.info(f"Payment success for session {session_id}, type: {subscription_type}")
-        
-        # For API-testing, returner JSON-respons
-        return jsonify({
-            'status': 'OK',
-            'message': 'Betaling vellykket! Ditt abonnement er nå aktivert.',
-            'session_id': session_id,
-            'subscription': {
-                'active': True,
-                'type': subscription_type,
-                'start_date': datetime.now().isoformat(),
-                'end_date': (datetime.now() + timedelta(days=30 if subscription_type == 'monthly' else 365)).isoformat()
-            },
-            'redirect_to': '/dashboard'
-        })
+
     except Exception as e:
-        logger.error(f"Error processing success redirect: {str(e)}")
-        return jsonify({
-            'error': str(e),
-            'status': 'ERROR'
-        }), 500
+        logger.error(f"Error processing success callback: {str(e)}")
+        flash('Det oppstod en feil ved behandling av betalingen. Kontakt support hvis problemet vedvarer.', 'error')
+        return redirect(url_for('index'))
 
 @app.route('/stripe/cancel')
 def stripe_cancel():
@@ -1083,84 +1292,80 @@ def stripe_cancel():
     session_id = request.args.get('session_id', '')
     
     try:
-        if not session_id:
-            logger.warning("Cancel endpoint called without session_id")
-        else:
-            logger.info(f"Payment cancelled by user for session {session_id}")
-        
-        # Logg avbrutt betaling
-        if current_user.is_authenticated:
-            logger.info(f"Payment cancelled for user: {current_user.username}")
-            user_message = f"Hei {current_user.username}, din betaling ble avbrutt. Du kan prøve igjen når du ønsker."
-        else:
-            user_message = "Betalingen ble avbrutt. Du kan prøve igjen når du ønsker."
-        
-        # For API-testing, returner JSON-respons
-        return jsonify({
-            'status': 'OK',
-            'message': user_message,
-            'session_id': session_id,
-            'subscription_active': False,
-            'redirect_to': '/pricing',
-            'pricing_plans_url': '/api/subscription/plans'
-        })
+        logger.info(f"Payment cancelled for session {session_id}")
+        flash('Betalingen ble avbrutt. Du kan prøve igjen når du vil.', 'info')
+        return redirect(url_for('pricing'))
+
     except Exception as e:
-        logger.error(f"Error processing cancel redirect: {str(e)}")
-        return jsonify({
-            'error': str(e),
-            'status': 'ERROR'
-        }), 500
+        logger.error(f"Error processing cancel callback: {str(e)}")
+        return redirect(url_for('index'))
 
 @app.route('/stripe/webhook', methods=['POST'])
 @csrf.exempt  # Exempting CSRF for webhook endpoints
 def stripe_webhook():
     """Handle Stripe webhook events"""
-    payload = request.get_data(as_text=True)
-    sig_header = request.headers.get('Stripe-Signature', '')
-    event_type = request.headers.get('Stripe-Event-Type', 'unknown')
+    payload = request.get_data()
+    sig_header = request.headers.get('Stripe-Signature')
     
-    # Log the webhook event
-    logger.info(f"Received webhook: {event_type}")
-    
-    # Verify webhook signature (in a real implementation)
-    # This prevents fraudulent webhook calls
     try:
-        # In production, you would verify the signature like this:
+        # Verifiser webhook-signaturen
+        if not sig_header:
+            logger.error("No Stripe signature in webhook request")
+            return jsonify({'status': 'ERROR', 'message': 'No signature'}), 400
+            
+        # I produksjon ville vi verifisert signaturen slik:
         # event = stripe.Webhook.construct_event(
         #     payload, sig_header, STRIPE_WEBHOOK_SECRET
         # )
         
-        # For testing purposes, simulate signature verification
-        is_valid = verify_webhook_signature(payload, sig_header, STRIPE_WEBHOOK_SECRET)
-        if not is_valid:
-            logger.warning("Invalid webhook signature")
-            return jsonify({'error': 'Invalid signature'}), 400
+        # For testing, parse bare JSON
+        event_json = json.loads(payload)
+        event_type = event_json['type']
         
-        # Handle different event types
+        # Håndter ulike event typer
         if event_type == 'checkout.session.completed':
-            # A successful payment
-            # In real implementation, update user's subscription status
-            logger.info("Checkout session completed")
-        elif event_type == 'customer.subscription.updated':
-            # Subscription was updated
-            logger.info("Subscription updated")
+            session = event_json['data']['object']
+            customer_id = session.get('customer')
+            subscription_id = session.get('subscription')
+            
+            # Finn og oppdater bruker
+            user = User.query.filter_by(customer_id=customer_id).first()
+            if user:
+                user.has_subscription = True
+                user.subscription_type = 'monthly'  # Eller 'yearly' basert på checkout session
+                user.subscription_start_date = datetime.now()
+                user.subscription_end_date = datetime.now() + timedelta(days=30)  # Eller 365 for årlig
+                db.session.commit()
+                logger.info(f"Subscription activated for user {user.username}")
+                
         elif event_type == 'customer.subscription.deleted':
-            # Subscription was cancelled
-            logger.info("Subscription deleted")
+            subscription = event_json['data']['object']
+            customer_id = subscription.get('customer')
+            
+            # Finn og oppdater bruker
+            user = User.query.filter_by(customer_id=customer_id).first()
+            if user:
+                user.has_subscription = False
+                user.subscription_type = 'free'
+                db.session.commit()
+                logger.info(f"Subscription cancelled for user {user.username}")
+                
+        elif event_type == 'invoice.payment_failed':
+            invoice = event_json['data']['object']
+            customer_id = invoice.get('customer')
+            
+            # Finn bruker og øk failed_payments teller
+            user = User.query.filter_by(customer_id=customer_id).first()
+            if user:
+                user.failed_payments += 1
+                db.session.commit()
+                logger.warning(f"Payment failed for user {user.username}")
         
-        return jsonify({
-            'status': 'OK',
-            'message': f'Webhook processed: {event_type}',
-            'received_at': datetime.utcnow().isoformat(),
-            'test_mode': True
-        })
+        return jsonify({'status': 'OK'}), 200
         
     except Exception as e:
         logger.error(f"Error processing webhook: {str(e)}")
-        return jsonify({
-            'error': str(e),
-            'status': 'ERROR'
-        }), 400
+        return jsonify({'status': 'ERROR', 'message': str(e)}), 400
 
 def verify_webhook_signature(payload, signature, secret):
     """
@@ -1173,69 +1378,185 @@ def verify_webhook_signature(payload, signature, secret):
     if not signature or not secret:
         return False
         
-    # Simple signature check for testing
-    timestamp = int(datetime.utcnow().timestamp())
-    signed_payload = f"{timestamp}.{payload}"
+    # I testmodus, godta alle signaturer
+    if 'test' in secret:
+        return True
+        
+    # I produksjon ville vi gjort en skikkelig validering
+    # return stripe.WebhookSignature.verify_header(
+    #     payload,
+    #     signature,
+    #     secret,
+    #     tolerance=300  # 5 minutter toleranse
+    # )
     
-    # Create a signature using the secret (simplified version for testing)
-    computed_signature = hmac.new(
-        secret.encode('utf-8'),
-        signed_payload.encode('utf-8'),
-        hashlib.sha256
-    ).hexdigest()
-    
-    # In test mode, accept any signature
-    return True
+    return True  # For testing
 
 # Error handlers
 @app.errorhandler(404)
-def not_found(error):
+def not_found_error(error):
     return jsonify({
         'status': 'ERROR',
         'code': 404,
-        'message': 'Endepunkt ikke funnet',
-        'available_endpoints': [
-            '/', '/demo', '/ai-explained', '/pricing', '/login', '/register',
-            '/forgot-password', '/reset-password/<token>',
-            '/portfolio', '/analysis', '/stocks', '/api/health', '/api/version',
-            '/api/subscription/status', '/api/subscription/plans',
-            '/stripe/create-checkout-session', '/create-checkout-session',
-            '/stripe/success', '/stripe/cancel', '/stripe/webhook'
-        ]
+        'message': 'Den forespurte ressursen ble ikke funnet',
+        'error': str(error)
     }), 404
 
 @app.errorhandler(500)
 def internal_error(error):
+    db.session.rollback()  # Rollback database session in case of error
+    logger.error(f"Internal server error: {str(error)}")
     return jsonify({
         'status': 'ERROR',
         'code': 500,
-        'message': 'Intern serverfeil',
-        'note': 'Sjekk server-loggene for detaljer'
+        'message': 'Det oppstod en intern serverfeil',
+        'error': str(error)
     }), 500
 
-if __name__ == '__main__':
-    print(f"🚀 Starter Aksjeradar Test Server på http://localhost:{PORT}")
-    print("📋 Tilgjengelige endepunkter:")
-    print("   - / (hovedside)")
-    print("   - /demo (demo-side)")
-    print("   - /ai-explained (AI forklaring)")
-    print("   - /pricing (priser)")
-    print("   - /login (innlogging)")
-    print("   - /register (registrering)")
-    print("   - /forgot-password (glemt passord)")
-    print("   - /reset-password/<token> (tilbakestill passord)")
-    print("   - /portfolio (portefølje)")
-    print("   - /analysis (analyse)")
-    print("   - /stocks (aksjer)")
-    print("   - /api/health (helsesjekk)")
-    print("   - /api/version (versjon)")
-    print("   - /logout (utlogging)")
-    print("   - /stripe/create-checkout-session (Stripe checkout)")
-    print("   - /create-checkout-session (Alternativ Stripe checkout)")
-    print("   - /stripe/success (Betaling vellykket)")
-    print("   - /stripe/cancel (Betaling avbrutt)")
-    print("   - /stripe/webhook (Stripe webhook)")
-    print("\n💡 Dette er en test-server for endepunkt-testing")
-    print("   Alle endepunkter returnerer JSON-responser")
+# Spesifikke rate limits for sensitive endepunkter
+@limiter.limit("5 per minute")
+@app.route('/login', methods=['POST'])
+def login_endpoint():
+    return login()
+
+@limiter.limit("3 per minute")
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password_endpoint():
+    return forgot_password()
+
+@limiter.limit("3 per minute")
+@app.route('/register', methods=['POST'])
+def register_endpoint():
+    return register()
+
+def send_email(to, subject, template):
+    """
+    Send e-post med gitt mal
+    """
+    try:
+        msg = Message(
+            subject,
+            recipients=[to],
+            html=template
+        )
+        mail.send(msg)
+        logger.info(f"Email sent successfully to {to}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {to}: {str(e)}")
+        return False
+
+def send_password_reset_email(user):
+    """
+    Send e-post med lenke for å tilbakestille passord
+    """
+    token = user.generate_reset_token()
+    reset_url = f"{DOMAIN_URL}/reset-password/{token}"
     
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    template = f"""
+    <h1>Tilbakestill ditt passord</h1>
+    <p>Hei {user.username},</p>
+    <p>Du har bedt om å tilbakestille passordet ditt. Klikk på lenken under for å sette et nytt passord:</p>
+    <p><a href="{reset_url}">{reset_url}</a></p>
+    <p>Denne lenken er gyldig i 24 timer.</p>
+    <p>Hvis du ikke ba om dette, kan du ignorere denne e-posten.</p>
+    """
+    
+    return send_email(user.email, "Tilbakestill ditt Aksjeradar-passord", template)
+
+def send_subscription_confirmation_email(user, subscription_type):
+    """
+    Send bekreftelse på nytt abonnement
+    """
+    template = f"""
+    <h1>Takk for ditt kjøp!</h1>
+    <p>Hei {user.username},</p>
+    <p>Ditt {subscription_type} abonnement er nå aktivert.</p>
+    <p>Du har nå tilgang til alle premium-funksjoner.</p>
+    <p>Logg inn på <a href="{DOMAIN_URL}">{DOMAIN_URL}</a> for å komme i gang.</p>
+    """
+    
+    return send_email(user.email, "Velkommen til Aksjeradar Premium!", template)
+
+def validate_email(email):
+    """
+    Valider e-postadresse format og domene
+    """
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return False
+        
+    # I produksjon bør vi også sjekke om domenet eksisterer
+    # og potensielt sende en verifiserings-e-post
+    return True
+
+@app.route('/subscription')
+@app.route('/subscriptions')
+def subscription():
+    """Viser abonnementsplaner med detaljert informasjon"""
+    return jsonify({
+        'status': 'OK',
+        'page': 'subscription',
+        'title': 'Velg ditt abonnement',
+        'description': 'Få tilgang til Norges mest avanserte aksjeanalyse-plattform',
+        'plans': [
+            {
+                'name': 'Basic',
+                'price': '199 kr/mnd',
+                'description': 'Perfekt for nybegynnere',
+                'features': [
+                    'Grunnleggende teknisk analyse',
+                    'Porteføljetracking',
+                    'Daglige markedsoppdateringer',
+                    '5 AI-analyser per dag',
+                    'E-post support'
+                ],
+                'cta': 'Velg Basic',
+                'most_popular': False
+            },
+            {
+                'name': 'Pro',
+                'price': '399 kr/mnd',
+                'description': 'For aktive investorer',
+                'features': [
+                    'Alt i Basic',
+                    'Ubegrensede AI-analyser',
+                    'Avansert porteføljeanalyse',
+                    'Realtime data',
+                    'Prioritert support',
+                    'API-tilgang'
+                ],
+                'cta': 'Velg Pro',
+                'most_popular': True
+            },
+            {
+                'name': 'Pro Årlig',
+                'price': '3499 kr/år',
+                'description': 'Beste verdi - Spar 27%',
+                'features': [
+                    'Alt i Pro',
+                    'To ekstra måneder gratis',
+                    'Eksklusiv tilgang til webinarer',
+                    'Personlig rådgiver',
+                    'Tidlig tilgang til nye funksjoner'
+                ],
+                'cta': 'Velg Pro Årlig',
+                'savings': '1289 kr i året',
+                'most_popular': False
+            }
+        ],
+        'faq': [
+            {
+                'question': 'Kan jeg bytte abonnement senere?',
+                'answer': 'Ja, du kan oppgradere eller nedgradere når som helst.'
+            },
+            {
+                'question': 'Er det bindingstid?',
+                'answer': 'Nei, du kan si opp når som helst.'
+            },
+            {
+                'question': 'Hvordan fungerer faktureringen?',
+                'answer': 'Du blir fakturert månedlig eller årlig, avhengig av planen du velger.'
+            }
+        ],
+        'guarantee': 'Fornøyd-garanti - Prøv risikofritt i 30 dager'
+    })

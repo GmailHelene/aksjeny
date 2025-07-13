@@ -192,41 +192,6 @@ def list_crypto():
         flash("Kunne ikke hente kryptovalutadata. Vennligst prøv igjen senere.", "error")
         return render_template('stocks/crypto.html', stocks={}, title="Kryptovaluta", market_type="crypto")
 
-@stocks.route('/list/currency')
-@access_required
-def list_currency():
-    """Show currency exchange rates"""
-    try:
-        # Get and normalize base currency
-        base_currency = request.args.get('base', 'NOK').upper()
-        if not base_currency or len(base_currency) != 3:
-            base_currency = 'NOK'
-        
-        # Get currency data
-        currencies = DataService.get_currency_overview(base=base_currency)
-        
-        # Ensure we always have a dictionary
-        if not isinstance(currencies, dict):
-            currencies = {}
-        
-        # Render template with the data and explicit error state
-        return render_template(
-            'stocks/currency.html',
-            currencies=currencies,
-            base_currency=base_currency,
-            error=None if currencies else "Kunne ikke hente valutakurser for øyeblikket.",
-            title="Valutakurser"
-        )
-    except Exception as e:
-        current_app.logger.error(f"Error in currency_list: {str(e)}")
-        # Return template with error state
-        return render_template(
-            'stocks/currency.html',
-            currencies={},
-            base_currency=base_currency if base_currency else 'NOK',
-            error="En feil oppstod ved henting av valutakurser. Vennligst prøv igjen senere.",
-            title="Valutakurser"
-        )
 
 @stocks.route('/api/stock/<ticker>')
 @access_required

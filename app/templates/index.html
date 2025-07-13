@@ -67,7 +67,7 @@
     </div>
     <div class="mt-4">
         <p class="text-muted">Har du allerede abonnement? <a href="{{ url_for('main.login') }}">Logg inn her</a></p>
-        <p class="small text-muted">Spørsmål? <a href="{{ url_for('main.contact') }}">Kontakt oss</a></p>
+        <p class="small text-muted">Spørsmål? <a href="mailto:support@aksjeradar.no">Kontakt oss</a></p>
     </div>
 </div>
 {% else %}
@@ -444,7 +444,7 @@
                                 <span class="negative-count">2</span> ↓
                             </span>
                         </div>
-                        <a href="{{ url_for('main.currency') }}" class="btn btn-sm btn-outline-info mt-2">Se valutakurser</a>
+                        <a href="{{ url_for('stocks.list_currency') }}" class="btn btn-sm btn-outline-info mt-2">Se valutakurser</a>
                     </div>
                 </div>
             </div>
@@ -1101,7 +1101,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="text-center">
-                            <a href="{{ url_for('main.currency') }}" class="btn btn-sm btn-outline-info">Se alle kurser</a>
+                            <a href="{{ url_for('stocks.list_currency') }}" class="btn btn-sm btn-outline-info">Se alle kurser</a>
                         </div>
                     </div>
                 </div>

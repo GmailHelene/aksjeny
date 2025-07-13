@@ -1280,6 +1280,79 @@ class DataService:
             return 'HOLD'
     
     @staticmethod
+    def get_indices():
+        """Get market indices with fallback data"""
+        try:
+            # Return fallback indices data
+            return [
+                {'name': 'OSEBX', 'value': 1245.67, 'change': 12.34, 'change_percent': 1.00},
+                {'name': 'S&P 500', 'value': 4567.89, 'change': -23.45, 'change_percent': -0.51},
+                {'name': 'NASDAQ', 'value': 14123.45, 'change': 89.12, 'change_percent': 0.63},
+                {'name': 'DAX', 'value': 15678.90, 'change': -45.67, 'change_percent': -0.29}
+            ]
+        except Exception as e:
+            print(f"Error getting indices: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_most_active_stocks():
+        """Get most active stocks with fallback data"""
+        try:
+            return [
+                {'ticker': 'EQNR.OL', 'name': 'Equinor', 'volume': 1234567, 'price': 275.50, 'change': 2.50},
+                {'ticker': 'DNB.OL', 'name': 'DNB Bank', 'volume': 987654, 'price': 180.25, 'change': -1.75},
+                {'ticker': 'TEL.OL', 'name': 'Telenor', 'volume': 765432, 'price': 120.80, 'change': 0.80},
+                {'ticker': 'MOWI.OL', 'name': 'Mowi', 'volume': 654321, 'price': 195.60, 'change': 3.20}
+            ]
+        except Exception as e:
+            print(f"Error getting most active stocks: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_stock_gainers():
+        """Get stock gainers with fallback data"""
+        try:
+            return [
+                {'ticker': 'NEL.OL', 'name': 'Nel', 'price': 12.45, 'change': 1.23, 'change_percent': 10.97},
+                {'ticker': 'REC.OL', 'name': 'REC Silicon', 'price': 8.67, 'change': 0.78, 'change_percent': 9.89},
+                {'ticker': 'SCANA.OL', 'name': 'Scana', 'price': 45.32, 'change': 3.45, 'change_percent': 8.24},
+                {'ticker': 'THIN.OL', 'name': 'Thin Film', 'price': 23.56, 'change': 1.67, 'change_percent': 7.63}
+            ]
+        except Exception as e:
+            print(f"Error getting stock gainers: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_stock_losers():
+        """Get stock losers with fallback data"""
+        try:
+            return [
+                {'ticker': 'FRONTLINE.OL', 'name': 'Frontline', 'price': 78.90, 'change': -7.89, 'change_percent': -9.09},
+                {'ticker': 'GOGL.OL', 'name': 'Golden Ocean', 'price': 56.34, 'change': -4.56, 'change_percent': -7.49},
+                {'ticker': 'MPCC.OL', 'name': 'MPC Container', 'price': 34.21, 'change': -2.34, 'change_percent': -6.41},
+                {'ticker': 'BAKKA.OL', 'name': 'Bakkavor', 'price': 12.89, 'change': -0.87, 'change_percent': -6.32}
+            ]
+        except Exception as e:
+            print(f"Error getting stock losers: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_sectors_performance():
+        """Get sectors performance with fallback data"""
+        try:
+            return [
+                {'name': 'Energi', 'change_percent': 2.34, 'count': 15},
+                {'name': 'Finans', 'change_percent': -1.23, 'count': 8},
+                {'name': 'Teknologi', 'change_percent': 3.45, 'count': 12},
+                {'name': 'Helse', 'change_percent': 1.67, 'count': 6},
+                {'name': 'Industri', 'change_percent': -0.89, 'count': 10},
+                {'name': 'Forbruksvarer', 'change_percent': 0.56, 'count': 9}
+            ]
+        except Exception as e:
+            print(f"Error getting sectors performance: {str(e)}")
+            return []
+
+    @staticmethod
     def get_oslo_bors_overview():
         """Get overview of Oslo Børs stocks with fallback data"""
         try:
@@ -1288,7 +1361,7 @@ class DataService:
         except Exception as e:
             print(f"Error getting Oslo Børs overview: {str(e)}")
             return FALLBACK_OSLO_DATA.copy()
-    
+
     @staticmethod
     def get_global_stocks_overview():
         """Get overview of global stocks with fallback data"""

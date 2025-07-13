@@ -72,6 +72,7 @@ def get_pytz():
     except ImportError:
         current_app.logger.warning("pytz not available - import failed")
         return None
+
 main = Blueprint('main', __name__)
 
 EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com'}
@@ -148,32 +149,15 @@ def on_register(state):
         
         # Set Stripe API key with safe fallback
         stripe_key = state.app.config.get('STRIPE_SECRET_KEY', 'sk_test_fallback_key')
-        stripe.api_key = stripe_key
-        
-        # Only test connection in real production and if the key looks valid
-        if (state.app.config.get('IS_REAL_PRODUCTION') and 
-            stripe_key and 
-            (stripe_key.startswith('sk_live') or stripe_key.startswith('sk_test_'))):
-            try:
-                # Test the connection by making a simple API call in background
-                import threading
-                def test_stripe():
-                    try:
-                        stripe.Price.list(limit=1)
-                        state.app.logger.info('Stripe connection validated successfully')
-                    except Exception as e:
-                        state.app.logger.warning(f'Stripe connection test failed: {e}')
-                
-                # Run test in background thread to avoid blocking startup
-                threading.Thread(target=test_stripe, daemon=True).start()
-            except Exception as e:
-                state.app.logger.warning(f'Could not start Stripe validation thread: {e}')
-        
-        state.app.logger.info('Stripe initialized (development mode)')
-        
+        if stripe_key:
+            stripe.api_key = stripe_key
+            state.app.logger.info('✅ Stripe initialized successfully')
+        else:
+            state.app.logger.warning('⚠️ Stripe not configured (key missing)')
+    except ImportError:
+        state.app.logger.warning('⚠️ Stripe initialization skipped (module not available)')
     except Exception as e:
-        state.app.logger.warning(f'Stripe initialization failed (non-critical): {str(e)}')
-        # Don't raise - allow app to continue without Stripe
+        state.app.logger.warning(f'⚠️ Stripe initialization failed: {e}')
 
 @main.before_app_request
 def restrict_non_subscribed_users():
@@ -319,90 +303,108 @@ def index():
         if pytz:
             oslo_tz = pytz.timezone('Europe/Oslo')
             now_oslo = datetime.now(oslo_tz)
+            
+            # Set market hours in Oslo time
+            market_open = dt_time(9, 0)  # 09:00
+            market_close = dt_time(16, 30)  # 16:30
+            
+            # Check if market is currently open
+            current_time = now_oslo.time()
+            is_weekday = now_oslo.weekday() < 5  # Monday = 0, Sunday = 6
+            market_is_open = is_weekday and market_open <= current_time <= market_close
+            
+            # Format next opening/closing time
+            if market_is_open:
+                next_event_time = now_oslo.replace(
+                    hour=market_close.hour,
+                    minute=market_close.minute,
+                    second=0
+                ).strftime('%H:%M')
+            else:
+                if current_time > market_close:  # After closing
+                    next_date = now_oslo + timedelta(days=1)
+                    while next_date.weekday() >= 5:  # Skip weekend
+                        next_date += timedelta(days=1)
+                    next_event_time = next_date.replace(
+                        hour=market_open.hour,
+                        minute=market_open.minute,
+                        second=0
+                    ).strftime('%H:%M')
+                else:  # Before opening
+                    next_event_time = now_oslo.replace(
+                        hour=market_open.hour,
+                        minute=market_open.minute,
+                        second=0
+                    ).strftime('%H:%M')
         else:
-            now_oslo = datetime.now()  # Use local time as fallback
-        # Oslo Børs: 09:00-16:30 CET/CEST, man-fre
-        is_oslo_open = now_oslo.weekday() < 5 and dt_time(9, 0) <= now_oslo.time() <= dt_time(16, 30)
-        oslo_status = 'ÅPEN' if is_oslo_open else 'STENGT'
-        oslo_open = '09:00'
-        oslo_close = '16:30'
-        # NYSE: 15:30-22:00 norsk tid (09:30-16:00 ET)
-        nyse_open = '15:30'
-        nyse_close = '22:00'
-        is_nyse_open = now_oslo.weekday() < 5 and dt_time(15, 30) <= now_oslo.time() <= dt_time(22, 0)
-        nyse_status = 'ÅPEN' if is_nyse_open else 'STENGT'
+            # Fallback if pytz not available
+            market_is_open = True  # Default to open
+            next_event_time = "16:30"  # Default closing time
+            
     except Exception as e:
-        current_app.logger.error(f"Error with timezone handling: {e}")
-        # Fallback to basic status
-        now_oslo = datetime.now()
-        oslo_status = 'STENGT'
-        oslo_open = '09:00'
-        oslo_close = '16:30'
-        nyse_status = 'STENGT'
-        nyse_open = '15:30'
-        nyse_close = '22:00'
-        is_oslo_open = False
-        is_nyse_open = False
+        current_app.logger.error(f"Error determining market status: {e}")
+        # Fallback values
+        market_is_open = True
+        next_event_time = "16:30"
+    
+    # Get DataService
+    data_service = get_data_service()()
+    
     try:
-        # Lazy import DataService only when needed
-        DataService = get_data_service()
-        oslo_stocks = DataService.get_oslo_bors_overview() or {}
-        global_stocks = DataService.get_global_stocks_overview() or {}
-        crypto = DataService.get_crypto_overview() or {}
-        currency = DataService.get_currency_overview() or {}
-        # Finn siste oppdateringstidspunkt fra en av datakildene (faller tilbake til nå hvis ikke mulig)
-        last_updated = None
-        if hasattr(oslo_stocks, 'get') and oslo_stocks:
-            for stock in oslo_stocks.values():
-                if 'last_update' in stock:
-                    last_updated = stock['last_update']
-                    break
-        if not last_updated:
-            last_updated = now_oslo.strftime('%d.%m.%Y %H:%M')
+        # Get the indices
+        indices = data_service.get_indices()
+        
+        # Get crypto data
+        crypto_data = data_service.get_crypto_overview()
+        
+        # Get currency data
+        currency_data = data_service.get_currency_overview()
+        
+        # Get most active stocks
+        most_active = data_service.get_most_active_stocks()
+        
+        # Get stock gainers and losers
+        gainers = data_service.get_stock_gainers()
+        losers = data_service.get_stock_losers()
+        
+        # Get sectors performance
+        sectors = data_service.get_sectors_performance()
+        
+        # Get Oslo Børs stocks
+        oslo_stocks = data_service.get_oslo_bors_overview()
+        
+        # Get global stocks
+        global_stocks = data_service.get_global_stocks_overview()
+        
     except Exception as e:
-        current_app.logger.error(f"Error fetching market data: {str(e)}")
-        oslo_stocks = {
-            'EQNR.OL': {'name': 'Equinor ASA', 'last_price': 342.55, 'change': 2.30, 'change_percent': 0.68, 'volume': 3200000, 'signal': 'BUY', 'last_update': now_oslo.strftime('%d.%m.%Y %H:%M')},
-            'DNB.OL': {'name': 'DNB Bank ASA', 'last_price': 212.80, 'change': -1.20, 'change_percent': -0.56, 'volume': 1500000, 'signal': 'HOLD', 'last_update': now_oslo.strftime('%d.%m.%Y %H:%M')},
-            'TEL.OL': {'name': 'Telenor ASA', 'last_price': 125.90, 'change': -2.10, 'change_percent': -1.64, 'volume': 1200000, 'signal': 'SELL', 'last_update': now_oslo.strftime('%d.%m.%Y %H:%M')},
-            'YAR.OL': {'name': 'Yara International', 'last_price': 456.20, 'change': 3.80, 'change_percent': 0.84, 'volume': 800000, 'signal': 'BUY', 'last_update': now_oslo.strftime('%d.%m.%Y %H:%M')},
-            'NHY.OL': {'name': 'Norsk Hydro ASA', 'last_price': 67.85, 'change': 0.95, 'change_percent': 1.42, 'volume': 2100000, 'signal': 'BUY', 'last_update': now_oslo.strftime('%d.%m.%Y %H:%M')}
-        }
-        global_stocks = {
-            'AAPL': {'name': 'Apple Inc.', 'last_price': 185.70, 'change': 1.23, 'change_percent': 0.67, 'volume': 1000000, 'signal': 'BUY'},
-            'MSFT': {'name': 'Microsoft Corp.', 'last_price': 390.20, 'change': 2.10, 'change_percent': 0.54, 'volume': 900000, 'signal': 'BUY'},
-            'AMZN': {'name': 'Amazon.com', 'last_price': 178.90, 'change': -0.80, 'change_percent': -0.45, 'volume': 800000, 'signal': 'HOLD'},
-            'GOOGL': {'name': 'Alphabet Inc.', 'last_price': 2850.10, 'change': 5.60, 'change_percent': 0.20, 'volume': 700000, 'signal': 'HOLD'},
-            'TSLA': {'name': 'Tesla Inc.', 'last_price': 230.10, 'change': -3.50, 'change_percent': -1.50, 'volume': 1200000, 'signal': 'SELL'}
-        }
-        crypto = {
-            'BTC-USD': {'name': 'Bitcoin', 'last_price': 65432.10, 'change': 1200, 'change_percent': 1.87, 'volume': 10000, 'signal': 'BUY'},
-            'ETH-USD': {'name': 'Ethereum', 'last_price': 3456.78, 'change': 56.78, 'change_percent': 1.67, 'volume': 8000, 'signal': 'BUY'}
-        }
-        currency = {
-            'USD': {'symbol': 'USD', 'name': 'USD/NOK', 'rate': 10.45, 'change': -0.15, 'change_percent': -1.42, 'last_updated': now_oslo.strftime('%d.%m.%Y %H:%M')}
-        }
-        last_updated = now_oslo.strftime('%d.%m.%Y %H:%M')
-    # Since @access_required ensures only users with valid access reach this point,
-    # we no longer need to check for restricted access or show trial banners.
-    # All users reaching this endpoint have valid access (exempt, subscription, or active trial)
-    restricted = False 
-    show_banner = False
+        current_app.logger.error(f"Error fetching market data: {e}")
+        flash("Det oppstod et problem med å hente markedsdataene. Vennligst prøv igjen senere.", "error")
+        
+        # Set fallback values
+        indices = []
+        crypto_data = []
+        currency_data = []
+        most_active = []
+        gainers = []
+        losers = []
+        sectors = []
+        oslo_stocks = {}
+        global_stocks = {}
+    
     return render_template('index.html',
-                         oslo_stocks=oslo_stocks,
-                         global_stocks=global_stocks,
-                         crypto=crypto,
-                         currency=currency,
-                         datetime=datetime,
-                         oslo_status=oslo_status,
-                         oslo_open=oslo_open,
-                         oslo_close=oslo_close,
-                         nyse_status=nyse_status,
-                         nyse_open=nyse_open,
-                         nyse_close=nyse_close,
-                         last_updated=last_updated,
-                         restricted=restricted,
-                         show_banner=show_banner)
+        indices=indices,
+        crypto=crypto_data,
+        currency=currency_data,
+        most_active=most_active,
+        gainers=gainers,
+        losers=losers,
+        sectors=sectors,
+        oslo_stocks=oslo_stocks,
+        global_stocks=global_stocks,
+        market_is_open=market_is_open,
+        next_event_time=next_event_time,
+        is_demo=is_demo_user(),
+        trial_active=is_trial_active())
 
 @main.route('/demo')
 def demo():
@@ -550,7 +552,8 @@ def logout():
         for domain in domains_to_try:
             try:
                 response.set_cookie(cookie_name, '', expires=0, max_age=0, domain=domain, path='/', secure=False, httponly=True, samesite='Lax')
-                response.set_cookie(cookie_name, '', expires=0, max_age=0, domain=domain, path='/', secure=True, httponly=True, samesite='None')
+                response.set_cookie(cookie_name, '', expires=0, max_age=0, domain=domain, path='/', secure=True, httponly=True, samesite='None'
+                )
             except:
                 pass
     
@@ -735,91 +738,72 @@ def terms():
         'content': 'Vilkår for bruk av Aksjeradar'
     })
 
-# Premium features that require subscription after trial
-PREMIUM_ENDPOINTS = {
-    # Stocks endpoints
-    'stocks.details',
-    'stocks.list_stocks',
-    'stocks.list_oslo',
-    'stocks.global_list',
-    'stocks.list_crypto',
-    'stocks.list_currency',
-    'stocks.compare',
-    'stocks.list_stocks_by_category',
-    
-    # Analysis endpoints
-    'analysis.ai',
-    'analysis.technical',
-    'analysis.recommendation',
-    'analysis.prediction',
-    'analysis.market_overview',
-    
-    # Portfolio endpoints
-    'portfolio.index',
-    'portfolio.create_portfolio',
-    'portfolio.view_portfolio',
-    'portfolio.edit_stock',
-    'portfolio.remove_stock',
-    'portfolio.add_stock_to_portfolio',
-    'portfolio.remove_stock_from_portfolio',
-    'portfolio.watchlist',
-    'portfolio.stock_tips',
-    'portfolio.transactions',
-    'portfolio.add_stock',
-    'portfolio.overview'
-}
+# Add missing utility functions for password reset
+def generate_reset_token(user):
+    """Generate a secure reset token for password reset"""
+    s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return s.dumps(user.email, salt='password-reset-salt')
 
-def url_is_safe(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-def init_stripe():
-    """Non-blocking Stripe initialization"""
+def verify_reset_token(token, expires_sec=3600):
+    """Verify reset token and return user if valid"""
+    s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        stripe = get_stripe()
-        if current_app.config.get('STRIPE_SECRET_KEY'):
-            stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
-            current_app.logger.info('Stripe initialized successfully')
-        else:
-            current_app.logger.warning('Stripe not configured - using fallback mode')
-    except Exception as e:
-        current_app.logger.error(f'Stripe initialization failed: {str(e)}')
-        # Don't raise - allow app to continue without Stripe
+        email = s.loads(token, salt='password-reset-salt', max_age=expires_sec)
+    except Exception:
+        return None
+    User = get_user_model()
+    return User.query.filter_by(email=email).first()
 
-# Initialize Stripe when the blueprint is registered
-@main.record_once
-def on_register(state):
-    """Initialize Stripe when blueprint is registered - non-blocking"""
-    try:
-        # Import stripe only when needed and safely
-        stripe = __import__('stripe')
+@main.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """Handle forgot password requests"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
         
-        # Set Stripe API key with safe fallback
-        stripe_key = state.app.config.get('STRIPE_SECRET_KEY', 'sk_test_fallback_key')
-        stripe.api_key = stripe_key
-        
-        # Only test connection in real production and if the key looks valid
-        if (state.app.config.get('IS_REAL_PRODUCTION') and 
-            stripe_key and 
-            (stripe_key.startswith('sk_live') or stripe_key.startswith('sk_test_'))):
+    # Lazy import forms and models
+    LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm = get_forms()
+    User = get_user_model()
+    
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User.query.filter_by(email=email).first()
+        if user:
+            token = generate_reset_token(user)
+            reset_url = url_for('main.reset_password', token=token, _external=True)
+            msg = Message('Tilbakestill passord for Aksjeradar',
+                          recipients=[user.email])
+            msg.body = f'Klikk på denne lenken for å tilbakestille passordet ditt:\n{reset_url}\n\nHvis du ikke ba om dette, kan du se bort fra denne e-posten.'
             try:
-                # Test the connection by making a simple API call in background
-                import threading
-                def test_stripe():
-                    try:
-                        stripe.Price.list(limit=1)
-                        state.app.logger.info('Stripe connection validated successfully')
-                    except Exception as e:
-                        state.app.logger.warning(f'Stripe connection test failed: {e}')
-                
-                # Run test in background thread to avoid blocking startup
-                threading.Thread(target=test_stripe, daemon=True).start()
+                mail.send(msg)
+                flash('En e-post med instruksjoner for tilbakestilling av passord er sendt.', 'info')
             except Exception as e:
-                state.app.logger.warning(f'Could not start Stripe validation thread: {e}')
+                current_app.logger.error(f"Feil ved sending av e-post: {str(e)}")
+                flash('E-post kunne ikke sendes. Prøv igjen senere.', 'danger')
+        else:
+            # For security, always show success message
+            flash('En e-post med instruksjoner for tilbakestilling av passord er sendt.', 'info')
+        return redirect(url_for('main.forgot_password'))
+    return render_template('forgot_password.html', form=form)
+
+@main.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """Handle password reset with token"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
         
-        state.app.logger.info('Stripe initialized (development mode)')
-        
-    except Exception as e:
-        state.app.logger.warning(f'Stripe initialization failed (non-critical): {str(e)}')
-        # Don't raise - allow app to continue without Stripe
+    # Lazy import forms
+    LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm = get_forms()
+    
+    user = verify_reset_token(token)
+    form = ResetPasswordForm()
+    if not user:
+        flash('Ugyldig eller utløpt lenke for tilbakestilling av passord.', 'danger')
+        return redirect(url_for('main.forgot_password'))
+    if form.validate_on_submit():
+        password = form.password.data
+        user.set_password(password)
+        db.session.commit()
+        flash('Passordet er oppdatert. Du kan nå logge inn.', 'success')
+        return redirect(url_for('main.login'))
+    return render_template('reset_password.html', form=form, token=token)

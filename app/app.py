@@ -5,8 +5,8 @@ import sys
 # Add the current directory to sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Import create_app from the current directory's __init__.py
-from __init__ import create_app
+# Import create_app from the parent directory's __init__.py
+from app import create_app
 
 app = create_app('development')
 

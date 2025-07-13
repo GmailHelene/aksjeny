@@ -176,3 +176,116 @@
 2025-07-13 04:29:45,133 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
 2025-07-13 04:29:45,147 - werkzeug - WARNING -  * Debugger is active!
 2025-07-13 04:29:45,148 - werkzeug - INFO -  * Debugger PIN: 258-782-411
+2025-07-13 12:17:04,805 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:17:04,820 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5005
+ * Running on http://10.0.0.65:5005
+2025-07-13 12:17:04,820 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-13 12:17:04,821 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:17:06,027 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:17:06,042 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:17:06,042 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:19:12,056 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:19:12,095 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:19:13,310 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:19:13,324 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:19:13,325 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:20:23,492 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:21:43,531 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:21:43,571 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:21:44,847 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:21:44,861 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:21:44,862 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:21:59,649 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:21:59,664 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5006
+ * Running on http://10.0.0.65:5006
+2025-07-13 12:21:59,664 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-13 12:21:59,664 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:22:00,875 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:22:00,890 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:22:00,890 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:23:14,490 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:23:14,534 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:23:14,578 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:23:14,626 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:23:15,743 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:23:15,757 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:23:15,758 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:23:15,844 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$wtLhu8ouAjNyyTPm$1ba4c811729ef8da7e1f6efe9834ca88961c2957e408175a215cfeba85b96e3d', '2025-07-13 12:23:14.963751', 1, 'lifetime', '2025-07-13 12:23:14.963743', '2125-06-19 12:23:14.963746', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:23:15,858 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:23:15,858 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:23:36,939 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:23:36,984 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:23:37,038 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:23:37,092 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:23:38,194 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:23:38,209 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:23:38,209 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:23:38,309 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$ubS8uFvXVI3gNMKf$c73a61c321b4e409bffdc2741da321145006ca580095d332f32bd05875f23177', '2025-07-13 12:23:37.444471', 1, 'lifetime', '2025-07-13 12:23:37.444464', '2125-06-19 12:23:37.444467', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:23:38,323 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:23:38,323 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:27:53,253 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:27:53,296 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:27:53,359 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:27:53,408 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:27:54,511 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:27:54,525 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:27:54,526 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:27:54,613 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$O0NA6gFSTeNbcrKb$3a1d40f1946b33d1f44e8f5d0b80dd31c7e4d2415c4fa535fd672784eb9e583d', '2025-07-13 12:27:53.746867', 1, 'lifetime', '2025-07-13 12:27:53.746859', '2125-06-19 12:27:53.746862', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:27:54,626 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:27:54,627 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:28:50,995 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:28:51,042 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:28:51,095 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:28:51,138 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:28:52,240 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:28:52,254 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:28:52,254 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:28:52,344 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$f5SUiHEkDh47oqkB$106bda21388330e3d893d63c2bf04b728e91937fc3239b2cb99cf03c0e102277', '2025-07-13 12:28:51.477934', 1, 'lifetime', '2025-07-13 12:28:51.477926', '2125-06-19 12:28:51.477929', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:28:52,359 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:28:52,359 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:29:04,367 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:29:04,411 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:29:04,470 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:29:04,526 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:29:05,657 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:29:05,673 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:29:05,673 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:29:05,742 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$w7D4E2MikYrw2IJM$d4b63f3e4917d3447e579148d531037a5fd784d161c1b162ae7b9a0545c02146', '2025-07-13 12:29:04.858739', 1, 'lifetime', '2025-07-13 12:29:04.858732', '2125-06-19 12:29:04.858735', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:29:05,756 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:29:05,756 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:29:56,095 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:29:56,144 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:29:56,165 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:29:56,212 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:29:57,343 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 12:29:57,359 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:29:57,359 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:29:57,444 - aksjeradar - ERROR - Error creating test users: (sqlite3.IntegrityError) UNIQUE constraint failed: user.email
+[SQL: INSERT INTO user (username, email, password_hash, created_at, has_subscription, subscription_type, subscription_start_date, subscription_end_date, last_login, is_admin, is_exempt, failed_payments, customer_id, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('admin', 'admin@aksjeradar.trade', 'pbkdf2:sha256:600000$s8B2QBwUul5JlCmJ$257fe70c6f1efc73ad4ae950a8d2a98e6dd2aa4da77e26fe8f062f9dcabe31af', '2025-07-13 12:29:56.557542', 1, 'lifetime', '2025-07-13 12:29:56.557533', '2125-06-19 12:29:56.557536', None, 1, 1, 0, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-07-13 12:29:57,458 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 12:29:57,458 - werkzeug - INFO -  * Debugger PIN: 621-702-974
+2025-07-13 12:31:54,413 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:31:54,461 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 12:31:55,326 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_fixed.py', reloading
+2025-07-13 12:31:55,373 - werkzeug - INFO -  * Restarting with stat

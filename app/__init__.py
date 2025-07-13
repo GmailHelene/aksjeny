@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g
 from app.config import config
 from .extensions import db, login_manager, mail
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -115,10 +115,12 @@ def register_blueprints(app):
         from .routes.main import main
         app.register_blueprint(main)
         blueprints_registered.append('main')
+        
         # Explicitly import and register portfolio blueprint
         from .routes.portfolio import portfolio
-        app.register_blueprint(portfolio)
+        app.register_blueprint(portfolio, url_prefix='/portfolio')
         blueprints_registered.append('portfolio')
+        
         # Register Stripe blueprint
         try:
             from .routes.stripe_routes import stripe_bp
@@ -131,34 +133,34 @@ def register_blueprints(app):
         app.logger.error(f"Failed to import main or portfolio blueprint: {e}")
         raise
     
-    # Other blueprints with error handling
+    # Other blueprints with fixed import paths
     blueprint_configs = [
-        ('.routes.stocks', 'stocks', '/stocks'),
-        ('.routes.api', 'api', None),
-        ('.routes.blog', 'blog', '/blog'),
-        ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
-        ('.routes.pricing', 'pricing_bp', '/pricing'),
-        ('.routes.notifications', 'notifications_bp', '/notifications'),
-        ('.routes.admin', 'admin', None),
-        ('.routes.features', 'features', None),
-        ('.routes.analysis', 'analysis', None),
-        ('.routes.health', 'health', '/health'),
-        ('.routes.news', 'news_bp', '/news'),
+        ('app.routes.stocks', 'stocks', '/stocks'),
+        ('app.routes.api', 'api', None),
+        ('app.routes.analysis', 'analysis', '/analysis'),
+        ('app.routes.pricing', 'pricing_bp', '/pricing'),
+        ('app.routes.news', 'news_bp', '/news'),
+        ('app.routes.health', 'health', '/health'),
+        ('app.routes.admin', 'admin', '/admin'),
+        ('app.routes.features', 'features', '/features'),
+        ('app.routes.blog', 'blog', '/blog'),
+        ('app.routes.investment_guides', 'investment_guides', '/investment-guides'),
+        ('app.routes.notifications', 'notifications_bp', '/notifications'),
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:
         try:
             module = __import__(module_path, fromlist=[blueprint_name])
             blueprint = getattr(module, blueprint_name)
-            
-            if url_prefix:
+            # Special case: stocks blueprint should be registered with no prefix (root)
+            if blueprint_name == 'stocks':
+                app.register_blueprint(blueprint)
+            elif url_prefix:
                 app.register_blueprint(blueprint, url_prefix=url_prefix)
             else:
                 app.register_blueprint(blueprint)
-            
             blueprints_registered.append(blueprint_name)
             app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
-            
         except ImportError as e:
             app.logger.warning(f"Could not import {blueprint_name}: {e}")
         except AttributeError as e:
@@ -378,6 +380,106 @@ def setup_app_handlers(app):
     def now_filter(format_string):
         """Template filter for current timestamp"""
         return datetime.now().strftime(format_string)
+    
+    # Add missing template filters
+    @app.template_filter('format_currency')
+    def format_currency(value):
+        """Format currency values"""
+        if value is None:
+            return "N/A"
+        try:
+            return f"{float(value):,.2f} kr"
+        except (ValueError, TypeError):
+            return str(value)
+    
+    @app.template_filter('format_number')
+    def format_number(value):
+        """Format numbers with thousand separators"""
+        if value is None:
+            return "N/A"
+        try:
+            return f"{float(value):,.2f}"
+        except (ValueError, TypeError):
+            return str(value)
+    
+    @app.template_filter('format_percentage')
+    def format_percentage(value):
+        """Format percentage values"""
+        if value is None:
+            return "N/A"
+        try:
+            return f"{float(value):.2f}%"
+        except (ValueError, TypeError):
+            return str(value)
+    
+    @app.template_filter('format_date')
+    def format_date(value, format='%d.%m.%Y'):
+        """Format date values"""
+        if value is None:
+            return "N/A"
+        try:
+            if isinstance(value, str):
+                # Try to parse string dates
+                from datetime import datetime
+                value = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            return value.strftime(format)
+        except (ValueError, TypeError, AttributeError):
+            return str(value)
+    
+    @app.template_filter('format_large_number')
+    def format_large_number(value):
+        """Format large numbers with K/M/B suffixes"""
+        if value is None:
+            return "N/A"
+        try:
+            value = float(value)
+            if value >= 1_000_000_000:
+                return f"{value/1_000_000_000:.1f}B"
+            elif value >= 1_000_000:
+                return f"{value/1_000_000:.1f}M"
+            elif value >= 1_000:
+                return f"{value/1_000:.1f}K"
+            else:
+                return f"{value:.0f}"
+        except (ValueError, TypeError):
+            return str(value)
+    
+    @app.template_filter('capitalize_first')
+    def capitalize_first(value):
+        """Capitalize first letter of string"""
+        if not value:
+            return ""
+        return str(value).capitalize()
+    
+    @app.template_filter('truncate_words')
+    def truncate_words(value, length=50):
+        """Truncate text to specified number of characters"""
+        if not value:
+            return ""
+        value = str(value)
+        return value[:length] + "..." if len(value) > length else value
+    
+    # Add template context processors
+    @app.context_processor
+    def inject_common_vars():
+        """Inject common variables into all templates"""
+        return {
+            'current_time': int(time.time()),
+            'current_year': datetime.now().year,
+            'current_date': datetime.now().strftime('%Y-%m-%d'),
+            'current_language': 'no',
+            'app_name': 'Aksjeradar',
+            'app_version': '1.0.0'
+        }
+    
+    @app.context_processor
+    def inject_request_vars():
+        """Inject request-specific variables"""
+        return {
+            'request': request,
+            'url_for': url_for,
+            'get_flashed_messages': get_flashed_messages
+        }
     
     # Add error handlers
     @app.errorhandler(404)

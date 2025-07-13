@@ -1,3 +1,9 @@
 {
-  "github.copilot.selectedCompletionModel": "4.1 beast mode"
+  "github.copilot.selectedCompletionModel": "4.1 beast mode",
+  "git.ignoreLimitWarning": true,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.enable": {
+    "markdown": true,
+    "scminput": true
+  }
 }
