@@ -1,0 +1,48 @@
+Aksjeradar Test Report
+=====================
+
+Date: 2025-07-13 01:56:08
+Base URL: http://localhost:5000
+Duration: 0:00:00.060751
+
+Summary:
+- Passed: 4
+- Failed: 34
+- Warnings: 5
+- Skipped: 0
+
+Failed tests:
+  - About Page
+  - Contact Page
+  - FAQ Page
+  - Terms Page
+  - Privacy Page
+  - Extract CSRF token
+  - Extract CSRF token
+  - Get password reset page
+  - Logout
+  - Pricing Page Content
+  - Subscription Page
+  - Graham Analysis Page
+  - Buffett Analysis Page
+  - AI API Endpoint for AAPL
+  - Extract CSRF token
+  - Extract CSRF token
+  - Portfolio Test
+  - Extract CSRF token
+  - Watchlist Test
+  - Basic Search
+  - Logout
+  - Extract CSRF token
+  - Free User Access
+  - Logout
+  - Extract CSRF token
+  - Admin Access
+  - Logout
+  - Stock Data API
+  - Market Data API
+  - News API
+  - Extract CSRF token
+  - Extract CSRF token
+  - Payment Flow
+  - Logout

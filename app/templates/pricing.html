@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Priser - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Velg din plan</h1>
+        <p class="lead text-muted">Start gratis, oppgrader når du vil</p>
+        
+        <!-- Tydelig forklaring av abonnementsmodellen -->
+        <div class="alert alert-info col-md-8 mx-auto mt-3">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <strong>Alle abonnement gir full tilgang til alle funksjoner</strong> - velg bare den betalingsperioden som passer deg best.
+        </div>
+    </div>
+    
+    <div class="row justify-content-center g-4">
+        <!-- Basic Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white text-center py-4">
+                    <h3 class="mb-0">Månedlig</h3>
+                    <div class="display-4 fw-bold my-3">
+                        kr 199
+                        <span class="fs-6 fw-normal text-muted">/måned</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Full tilgang til alle funksjoner
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Ubegrensede AI-analyser
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Avansert porteføljeanalyse
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Teknisk analyse
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            API-tilgang
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Ingen bindingstid
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 p-4">
+                    <div class="d-grid">
+                        <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-primary btn-lg">
+                            Velg Månedlig
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pro Plan (renamed to Årlig Plan) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow border-primary">
+                <div class="position-absolute top-0 start-50 translate-middle">
+                    <span class="badge bg-primary px-3 py-2">Mest populær</span>
+                </div>
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">Årlig</h3>
+                    <div class="display-4 fw-bold my-3">
+                        kr 3499
+                        <span class="fs-6 fw-normal">/år</span>
+                    </div>
+                    <span class="badge bg-success">Spar 27%</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Alt som i månedlig</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Spar 1289 kr per år</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Prioritert kundesupport
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Eksklusive webinarer
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Beta-tilgang til nye funksjoner
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Kun 291 kr/måned
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 p-4">
+                    <div class="d-grid">
+                        <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-lg">
+                            Velg Årlig (Spar 27%)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monthly Pro (rennamed to Halvårlig) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white text-center py-4">
+                    <h3 class="mb-0">Halvårlig</h3>
+                    <div class="display-4 fw-bold my-3">
+                        kr 1999
+                        <span class="fs-6 fw-normal text-muted">/halvår</span>
+                    </div>
+                    <span class="badge bg-success">Spar 16%</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Alt som i månedlig</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Spar 195 kr halvåret</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Prioritert kundesupport
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Fleksibel løsning
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Tilgang til alle funksjoner
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Kun 333 kr/måned
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 p-4">
+                    <div class="d-grid">
+                        <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-primary btn-lg">
+                            Velg Halvårlig
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-5">
+        <p class="text-muted">
+            <i class="bi bi-shield-check me-2"></i>
+            Trygg betaling med Stripe • Avbryt når som helst
+        </p>
+    </div>
+</div>
+{% endblock %}

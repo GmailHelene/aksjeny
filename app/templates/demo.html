@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% block title %}Gratis Demo - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Hero Banner -->
+    <div class="demo-hero mb-5 text-center py-5 rounded">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h1 class="display-4 mb-4 text-white">Opplev Aksjeradar</h1>
+                <p class="lead text-white mb-4">Se hvordan Norges mest avanserte aksjeanalyseplattform kan transformere din investering</p>
+                <div class="mt-4 mb-3">
+                    <a href="/register" class="btn btn-light btn-lg me-3 shadow-sm">Registrer deg gratis</a>
+                    <a href="/login" class="btn btn-outline-light btn-lg">Logg inn</a>
+                </div>
+                <div class="demo-counter mt-4">
+                    <span class="badge bg-light text-dark px-3 py-2 fs-6">
+                        <i class="bi bi-clock"></i> Din gratis demo varer i 10 minutter
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Features -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-6">Hva får du med et abonnement?</h2>
+            <p class="lead text-muted">Full tilgang til alle verktøy for å ta bedre investeringsbeslutninger</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon text-center mb-3">
+                    <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+                </div>
+                <h4 class="text-center">AI-drevet Aksjeanalyse</h4>
+                <p class="text-muted">Få avanserte analyser basert på AI-algoritmer som konstant overvåker markedet</p>
+                <div class="demo-preview">
+                    <img src="https://placehold.co/600x300/e9ecef/495057?text=AI+Analyse+Demo" class="img-fluid rounded shadow-sm" alt="AI Analyse">
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon text-center mb-3">
+                    <i class="bi bi-bar-chart-line fs-1 text-success"></i>
+                </div>
+                <h4 class="text-center">Teknisk Analyse</h4>
+                <p class="text-muted">Avanserte tekniske indikatorer, mønstergjenkjenning og automatiske signaler</p>
+                <div class="demo-preview">
+                    <img src="https://placehold.co/600x300/e9ecef/495057?text=Teknisk+Analyse+Demo" class="img-fluid rounded shadow-sm" alt="Teknisk Analyse">
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon text-center mb-3">
+                    <i class="bi bi-briefcase fs-1 text-info"></i>
+                </div>
+                <h4 class="text-center">Porteføljestyring</h4>
+                <p class="text-muted">Spor og optimaliser din portefølje med avanserte analyser og visualiseringer</p>
+                <div class="demo-preview">
+                    <img src="https://placehold.co/600x300/e9ecef/495057?text=Portefølje+Demo" class="img-fluid rounded shadow-sm" alt="Portefølje">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Demo Preview -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-eye"></i> Live Demo: Analyse</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Prøv Graham-analyse av aksjer</h4>
+                            <p>Benjamin Graham's verdisøkende analysemodell hjelper deg å finne underprisede aksjer med potensial for langsiktig vekst.</p>
+                            
+                            <div class="demo-interactive mb-4">
+                                <div class="input-group mb-3">
+                                    <select class="form-select" id="demoStockSelect">
+                                        <option value="">-- Velg aksje for demo --</option>
+                                        <option value="EQNR.OL">Equinor (EQNR.OL)</option>
+                                        <option value="AAPL">Apple (AAPL)</option>
+                                        <option value="MSFT">Microsoft (MSFT)</option>
+                                        <option value="TSLA">Tesla (TSLA)</option>
+                                    </select>
+                                    <button class="btn btn-primary" id="analyzeBtn">Analyser</button>
+                                </div>
+                            </div>
+                            
+                            <div class="demo-results">
+                                <div class="alert alert-info">
+                                    <p class="mb-0"><i class="bi bi-info-circle"></i> Velg en aksje over for å se en demonstrasjon av Graham-analysen</p>
+                                </div>
+                                
+                                <div id="demoAnalysisResult" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card bg-light mb-3">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title">Nåværende Pris</h5>
+                                                    <h3 class="text-primary mb-0" id="demoCurrentPrice">$150.25</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light mb-3">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title">Graham Verdi</h5>
+                                                    <h3 class="text-info mb-0" id="demoGrahamValue">$165.80</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light mb-3">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title">Sikkerhetsmargin</h5>
+                                                    <h3 class="text-success mb-0" id="demoSafetyMargin">10.3%</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress mb-3" style="height: 25px;">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 75%" id="demoProgressBar">
+                                            <span id="demoGrahamScore">75/100</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert alert-success" id="demoRecommendation">
+                                        <h5 class="alert-heading">Anbefaling: KJØP</h5>
+                                        <p class="mb-0">Denne aksjen handles under sin estimerte indre verdi og møter Graham's kriterier for en god investering.</p>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <p class="text-muted">Dette er en demo. Registrer deg for full analyse!</p>
+                                        <a href="/register" class="btn btn-primary">Få full tilgang</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Andre Analyser</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <i class="bi bi-graph-up text-primary me-2"></i> Warren Buffett Analyse
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-cpu text-success me-2"></i> AI Prediksjon
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-activity text-info me-2"></i> Teknisk Analyse
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-arrow-down-circle text-danger me-2"></i> Short-Analyse
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-currency-exchange text-warning me-2"></i> Utbytteanalyse
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Bottom CTA -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cta-section text-center">
+                <h2 class="text-white mb-3">Klar til å ta din investering til neste nivå?</h2>
+                <p class="text-white-50 mb-4">Få full tilgang til alle våre profesjonelle analyseverktøy</p>
+                <div class="mb-4">
+                    <a href="/register" class="btn btn-light btn-lg me-3">Registrer deg nå</a>
+                    <a href="/pricing" class="btn btn-outline-light btn-lg">Se abonnementer</a>
+                </div>
+                <p class="small text-white-50">Ingen kredittkort nødvendig for registrering</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.demo-hero {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.feature-card {
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.demo-preview {
+    margin-top: 1.5rem;
+}
+
+.demo-interactive {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+</style>
+
+<script>
+// Demo interactive functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const stockSelect = document.getElementById('demoStockSelect');
+    const results = document.getElementById('demoAnalysisResult');
+    
+    analyzeBtn.addEventListener('click', function() {
+        const selectedStock = stockSelect.value;
+        if (!selectedStock) {
+            alert('Vennligst velg en aksje først');
+            return;
+        }
+        
+        // Show loading state
+        analyzeBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyserer...';
+        analyzeBtn.disabled = true;
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            // Show results
+            results.style.display = 'block';
+            
+            // Update demo data based on selected stock
+            const demoData = {
+                'EQNR.OL': {
+                    price: 'kr 287,50',
+                    grahamValue: 'kr 320,15',
+                    margin: '11,4%',
+                    score: 82,
+                    recommendation: 'KJØP'
+                },
+                'AAPL': {
+                    price: '$179.25',
+                    grahamValue: '$189.65',
+                    margin: '5.8%',
+                    score: 75,
+                    recommendation: 'HOLD'
+                },
+                'MSFT': {
+                    price: '$357.80',
+                    grahamValue: '$392.15',
+                    margin: '9.6%',
+                    score: 80,
+                    recommendation: 'KJØP'
+                },
+                'TSLA': {
+                    price: '$245.20',
+                    grahamValue: '$187.90',
+                    margin: '-23.4%',
+                    score: 45,
+                    recommendation: 'SELG'
+                }
+            };
+            
+            const data = demoData[selectedStock];
+            
+            // Update UI with demo data
+            document.getElementById('demoCurrentPrice').textContent = data.price;
+            document.getElementById('demoGrahamValue').textContent = data.grahamValue;
+            document.getElementById('demoSafetyMargin').textContent = data.margin;
+            document.getElementById('demoGrahamScore').textContent = data.score + '/100';
+            document.getElementById('demoProgressBar').style.width = data.score + '%';
+            
+            // Update recommendation
+            const recommendationEl = document.getElementById('demoRecommendation');
+            recommendationEl.querySelector('h5').textContent = 'Anbefaling: ' + data.recommendation;
+            
+            if (data.recommendation === 'KJØP') {
+                recommendationEl.className = 'alert alert-success';
+                recommendationEl.querySelector('p').textContent = 'Denne aksjen handles under sin estimerte indre verdi og møter Graham\'s kriterier for en god investering.';
+            } else if (data.recommendation === 'HOLD') {
+                recommendationEl.className = 'alert alert-warning';
+                recommendationEl.querySelector('p').textContent = 'Denne aksjen er rettferdig priset i forhold til sin estimerte indre verdi.';
+            } else {
+                recommendationEl.className = 'alert alert-danger';
+                recommendationEl.querySelector('p').textContent = 'Denne aksjen handles over sin estimerte indre verdi og møter ikke Graham\'s kriterier.';
+            }
+            
+            // Reset button
+            analyzeBtn.innerHTML = 'Analyser';
+            analyzeBtn.disabled = false;
+        }, 1500);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-07-13T01:56:08.393007",
+  "base_url": "http://localhost:5000",
+  "results": {
+    "success": [
+      {
+        "endpoint": "/",
+        "status": 200
+      }
+    ],
+    "redirect": [],
+    "client_error": [],
+    "server_error": [],
+    "other": []
+  }
+}

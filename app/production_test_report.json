@@ -1,0 +1,1405 @@
+{
+  "summary": {
+    "totalTests": 21,
+    "passedTests": 21,
+    "failedTests": 0,
+    "successRate": 100,
+    "avgResponseTime": 3.142857142857143,
+    "overallTime": 2170,
+    "timestamp": "2025-07-13T00:53:25.087Z"
+  },
+  "results": [
+    {
+      "endpoint": "Hovedside",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 15,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "authenticated": false,
+          "features": [
+            "Sanntids aksjedata",
+            "AI-drevet analyse",
+            "Porteføljehåndtering",
+            "Markedsintelligens",
+            "Teknisk analyse",
+            "Prediktive modeller"
+          ],
+          "message": "Velkommen til Aksjeradar - Din digitale finansassistent",
+          "service": "Aksjeradar",
+          "status": "OK",
+          "timestamp": "2025-07-13T00:53:22.926849",
+          "version": "1.0.0"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:22.929Z"
+    },
+    {
+      "endpoint": "Demo side",
+      "method": "GET",
+      "path": "/demo",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 4,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "demo_features": {
+            "included": [
+              "Grunnleggende aksjedata",
+              "Tekniske indikatorer",
+              "Markedsoversikt for Oslo Børs",
+              "AI-score for utvalgte aksjer"
+            ],
+            "limitations": [
+              "Begrenset historikk",
+              "Ikke alle analysetyper",
+              "Ingen porteføljelagring"
+            ],
+            "trial_period": "15 minutter gratis"
+          },
+          "message": "Velkommen til Aksjeradar Demo!",
+          "page": "demo",
+          "status": "OK",
+          "upgrade_info": {
+            "annual_savings": "27% ved årlig betaling",
+            "basic_plan": "199 kr/mnd",
+            "pro_plan": "399 kr/mnd"
+          }
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.033Z"
+    },
+    {
+      "endpoint": "AI forklart",
+      "method": "GET",
+      "path": "/ai-explained",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "accuracy": "85% prediksjonsnøyaktighet på 30-dagers horisont",
+          "ai_capabilities": {
+            "machine_learning": "Avanserte ML-algoritmer for aksjeanalyse",
+            "pattern_recognition": "Automatisk gjenkjenning av tekniske mønstre",
+            "portfolio_optimization": "Intelligent porteføljeoptimalisering",
+            "predictive_models": "Prediktive modeller basert på historiske data",
+            "risk_assessment": "AI-basert risikovurdering",
+            "sentiment_analysis": "Analyse av markedssentiment fra nyheter og sosiale medier"
+          },
+          "data_sources": [
+            "Yahoo Finance",
+            "Morningstar",
+            "Reuters",
+            "Bloomberg API"
+          ],
+          "message": "Forstå hvordan AI driver Aksjeradar",
+          "page": "ai-explained",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.136Z"
+    },
+    {
+      "endpoint": "Prising (med slash)",
+      "method": "GET",
+      "path": "/pricing",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "guarantee": "30 dager pengene tilbake garanti",
+          "message": "Velg din Aksjeradar-plan",
+          "page": "pricing",
+          "plans": {
+            "basic": {
+              "features": [
+                "Grunnleggende aksjeanalyse",
+                "Portefølje tracking",
+                "Markedsoversikt",
+                "E-post varsler",
+                "Mobil app"
+              ],
+              "name": "Basic",
+              "price": "199 kr/mnd"
+            },
+            "pro": {
+              "features": [
+                "Alt i Basic",
+                "AI-anbefalinger",
+                "Avansert teknisk analyse",
+                "Sanntids varsler",
+                "Premium markedsdata",
+                "Backtesting",
+                "API tilgang"
+              ],
+              "name": "Pro",
+              "price": "399 kr/mnd"
+            },
+            "pro_annual": {
+              "features": [
+                "Alt i Pro",
+                "2 måneder gratis",
+                "Prioritert kundesupport",
+                "Eksklusive markedsrapporter"
+              ],
+              "name": "Pro Årlig",
+              "price": "3499 kr/år",
+              "savings": "Spar 27%"
+            }
+          },
+          "status": "OK",
+          "trial": "15 minutter gratis prøving"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.240Z"
+    },
+    {
+      "endpoint": "Prising (uten slash)",
+      "method": "GET",
+      "path": "/pricing/",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "guarantee": "30 dager pengene tilbake garanti",
+          "message": "Velg din Aksjeradar-plan",
+          "page": "pricing",
+          "plans": {
+            "basic": {
+              "features": [
+                "Grunnleggende aksjeanalyse",
+                "Portefølje tracking",
+                "Markedsoversikt",
+                "E-post varsler",
+                "Mobil app"
+              ],
+              "name": "Basic",
+              "price": "199 kr/mnd"
+            },
+            "pro": {
+              "features": [
+                "Alt i Basic",
+                "AI-anbefalinger",
+                "Avansert teknisk analyse",
+                "Sanntids varsler",
+                "Premium markedsdata",
+                "Backtesting",
+                "API tilgang"
+              ],
+              "name": "Pro",
+              "price": "399 kr/mnd"
+            },
+            "pro_annual": {
+              "features": [
+                "Alt i Pro",
+                "2 måneder gratis",
+                "Prioritert kundesupport",
+                "Eksklusive markedsrapporter"
+              ],
+              "name": "Pro Årlig",
+              "price": "3499 kr/år",
+              "savings": "Spar 27%"
+            }
+          },
+          "status": "OK",
+          "trial": "15 minutter gratis prøving"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.342Z"
+    },
+    {
+      "endpoint": "Login GET",
+      "method": "GET",
+      "path": "/login",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "features": [
+            "Sikker innlogging",
+            "Husk meg funksjon",
+            "Passordreset"
+          ],
+          "form_fields": [
+            "username",
+            "password"
+          ],
+          "message": "Logg inn på Aksjeradar",
+          "page": "login",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.445Z"
+    },
+    {
+      "endpoint": "Login POST",
+      "method": "POST",
+      "path": "/login",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "message": "Login POST mottatt",
+          "note": "Dette er en demo-implementasjon",
+          "redirect": "/",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.547Z"
+    },
+    {
+      "endpoint": "Register GET",
+      "method": "GET",
+      "path": "/register",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "benefits": [
+            "15 minutter gratis prøving",
+            "Ingen binding",
+            "Full tilgang til demo"
+          ],
+          "form_fields": [
+            "username",
+            "email",
+            "password",
+            "confirm_password"
+          ],
+          "message": "Opprett Aksjeradar-konto",
+          "page": "register",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.650Z"
+    },
+    {
+      "endpoint": "Register POST",
+      "method": "POST",
+      "path": "/register",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 4,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "message": "Registrering POST mottatt",
+          "note": "Dette er en demo-implementasjon",
+          "received_data": {
+            "email": "test@test.com",
+            "username": "test"
+          },
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.754Z"
+    },
+    {
+      "endpoint": "Logout",
+      "method": "GET",
+      "path": "/logout",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "message": "Utlogget fra Aksjeradar",
+          "redirect": "/",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.857Z"
+    },
+    {
+      "endpoint": "Portfolio",
+      "method": "GET",
+      "path": "/portfolio",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "features": [
+            "Oversikt over alle investeringer",
+            "Ytelsesanalyse",
+            "Diversifiseringsanalyse",
+            "Automatiske anbefalinger",
+            "Risikostyring"
+          ],
+          "message": "Din portefølje i Aksjeradar",
+          "note": "Krever innlogging i produksjon",
+          "page": "portfolio",
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:23.960Z"
+    },
+    {
+      "endpoint": "Analyse",
+      "method": "GET",
+      "path": "/analysis",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "analysis_types": [
+            "Teknisk analyse",
+            "Fundamental analyse",
+            "AI-prediksjoner",
+            "Sentiment analyse",
+            "Markedsanalyse"
+          ],
+          "message": "Aksjeanalyse med AI",
+          "page": "analysis",
+          "status": "OK",
+          "tools": [
+            "Diagrammer",
+            "Indikatorer",
+            "Prognoser",
+            "Sammenligning"
+          ]
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.062Z"
+    },
+    {
+      "endpoint": "Aksjer",
+      "method": "GET",
+      "path": "/stocks",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "markets": [
+            "Oslo Børs (OSE)",
+            "Euronext Growth",
+            "NASDAQ",
+            "NYSE",
+            "DAX",
+            "FTSE 100"
+          ],
+          "message": "Alle aksjer på Oslo Børs og internasjonalt",
+          "page": "stocks",
+          "sample_stocks": [
+            {
+              "market": "Oslo Børs",
+              "name": "Equinor ASA",
+              "symbol": "EQNR.OL"
+            },
+            {
+              "market": "Oslo Børs",
+              "name": "Norsk Hydro ASA",
+              "symbol": "NHY.OL"
+            },
+            {
+              "market": "Oslo Børs",
+              "name": "Mowi ASA",
+              "symbol": "MOWI.OL"
+            },
+            {
+              "market": "Oslo Børs",
+              "name": "Telenor ASA",
+              "symbol": "TEL.OL"
+            }
+          ],
+          "status": "OK"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.164Z"
+    },
+    {
+      "endpoint": "Health API",
+      "method": "GET",
+      "path": "/api/health",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "database": "connected",
+          "environment": "production",
+          "service": "aksjeradar",
+          "status": "healthy",
+          "timestamp": "2025-07-13T00:53:24.266748",
+          "uptime": "N/A",
+          "version": "1.0.0"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.267Z"
+    },
+    {
+      "endpoint": "Version API",
+      "method": "GET",
+      "path": "/api/version",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": false,
+        "jsonData": {
+          "build": "release",
+          "deployment": "aksjeradar.trade ready",
+          "flask_version": "Flask 2.0+",
+          "python_version": "3.12.1 (main, May 30 2025, 12:50:35) [GCC 13.3.0]",
+          "service": "aksjeradar-production",
+          "version": "1.0.0"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.370Z"
+    },
+    {
+      "endpoint": "Search API (tom)",
+      "method": "GET",
+      "path": "/api/search",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "query": "",
+          "results": [],
+          "status": "OK",
+          "total": 0
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.471Z"
+    },
+    {
+      "endpoint": "Search API (med query)",
+      "method": "GET",
+      "path": "/api/search?q=equinor",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "query": "equinor",
+          "results": [
+            {
+              "market": "Oslo Børs",
+              "name": "Equinor ASA",
+              "symbol": "EQNR.OL"
+            },
+            {
+              "market": "Oslo Børs",
+              "name": "Norsk Hydro ASA",
+              "symbol": "NHY.OL"
+            }
+          ],
+          "status": "OK",
+          "total": 2
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.574Z"
+    },
+    {
+      "endpoint": "PWA Manifest",
+      "method": "GET",
+      "path": "/manifest.json",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": false,
+        "jsonData": {
+          "background_color": "#ffffff",
+          "description": "Din digitale finansassistent",
+          "display": "standalone",
+          "icons": [
+            {
+              "sizes": "192x192",
+              "src": "/static/icons/icon-192.png",
+              "type": "image/png"
+            },
+            {
+              "sizes": "512x512",
+              "src": "/static/icons/icon-512.png",
+              "type": "image/png"
+            }
+          ],
+          "name": "Aksjeradar",
+          "short_name": "Aksjeradar",
+          "start_url": "/",
+          "theme_color": "#1a365d"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.676Z"
+    },
+    {
+      "endpoint": "Service Worker",
+      "method": "GET",
+      "path": "/service-worker.js",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": false,
+        "hasValidStructure": true
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.779Z"
+    },
+    {
+      "endpoint": "404 Error Handler",
+      "method": "GET",
+      "path": "/invalid-endpoint",
+      "expectedStatus": 404,
+      "actualStatus": 404,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "available_endpoints": [
+            "/",
+            "/demo",
+            "/ai-explained",
+            "/pricing",
+            "/login",
+            "/register",
+            "/portfolio",
+            "/analysis",
+            "/stocks",
+            "/api/health",
+            "/api/version",
+            "/manifest.json",
+            "/service-worker.js"
+          ],
+          "code": 404,
+          "message": "Endepunkt ikke funnet",
+          "status": "ERROR",
+          "suggestion": "Sjekk URL eller bruk søkefunksjonen"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.881Z"
+    },
+    {
+      "endpoint": "Login POST (ugyldig)",
+      "method": "POST",
+      "path": "/login",
+      "expectedStatus": 400,
+      "actualStatus": 400,
+      "responseTime": 2,
+      "validation": {
+        "statusMatch": true,
+        "hasContent": true,
+        "isJson": true,
+        "hasValidStructure": true,
+        "jsonData": {
+          "message": "Brukernavn og passord er påkrevd",
+          "status": "ERROR"
+        }
+      },
+      "success": true,
+      "timestamp": "2025-07-13T00:53:24.984Z"
+    }
+  ],
+  "groupedResults": {
+    "core": [
+      {
+        "endpoint": "Hovedside",
+        "method": "GET",
+        "path": "/",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 15,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "authenticated": false,
+            "features": [
+              "Sanntids aksjedata",
+              "AI-drevet analyse",
+              "Porteføljehåndtering",
+              "Markedsintelligens",
+              "Teknisk analyse",
+              "Prediktive modeller"
+            ],
+            "message": "Velkommen til Aksjeradar - Din digitale finansassistent",
+            "service": "Aksjeradar",
+            "status": "OK",
+            "timestamp": "2025-07-13T00:53:22.926849",
+            "version": "1.0.0"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:22.929Z"
+      },
+      {
+        "endpoint": "Demo side",
+        "method": "GET",
+        "path": "/demo",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 4,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "demo_features": {
+              "included": [
+                "Grunnleggende aksjedata",
+                "Tekniske indikatorer",
+                "Markedsoversikt for Oslo Børs",
+                "AI-score for utvalgte aksjer"
+              ],
+              "limitations": [
+                "Begrenset historikk",
+                "Ikke alle analysetyper",
+                "Ingen porteføljelagring"
+              ],
+              "trial_period": "15 minutter gratis"
+            },
+            "message": "Velkommen til Aksjeradar Demo!",
+            "page": "demo",
+            "status": "OK",
+            "upgrade_info": {
+              "annual_savings": "27% ved årlig betaling",
+              "basic_plan": "199 kr/mnd",
+              "pro_plan": "399 kr/mnd"
+            }
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.033Z"
+      },
+      {
+        "endpoint": "AI forklart",
+        "method": "GET",
+        "path": "/ai-explained",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "accuracy": "85% prediksjonsnøyaktighet på 30-dagers horisont",
+            "ai_capabilities": {
+              "machine_learning": "Avanserte ML-algoritmer for aksjeanalyse",
+              "pattern_recognition": "Automatisk gjenkjenning av tekniske mønstre",
+              "portfolio_optimization": "Intelligent porteføljeoptimalisering",
+              "predictive_models": "Prediktive modeller basert på historiske data",
+              "risk_assessment": "AI-basert risikovurdering",
+              "sentiment_analysis": "Analyse av markedssentiment fra nyheter og sosiale medier"
+            },
+            "data_sources": [
+              "Yahoo Finance",
+              "Morningstar",
+              "Reuters",
+              "Bloomberg API"
+            ],
+            "message": "Forstå hvordan AI driver Aksjeradar",
+            "page": "ai-explained",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.136Z"
+      },
+      {
+        "endpoint": "Prising (med slash)",
+        "method": "GET",
+        "path": "/pricing",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "guarantee": "30 dager pengene tilbake garanti",
+            "message": "Velg din Aksjeradar-plan",
+            "page": "pricing",
+            "plans": {
+              "basic": {
+                "features": [
+                  "Grunnleggende aksjeanalyse",
+                  "Portefølje tracking",
+                  "Markedsoversikt",
+                  "E-post varsler",
+                  "Mobil app"
+                ],
+                "name": "Basic",
+                "price": "199 kr/mnd"
+              },
+              "pro": {
+                "features": [
+                  "Alt i Basic",
+                  "AI-anbefalinger",
+                  "Avansert teknisk analyse",
+                  "Sanntids varsler",
+                  "Premium markedsdata",
+                  "Backtesting",
+                  "API tilgang"
+                ],
+                "name": "Pro",
+                "price": "399 kr/mnd"
+              },
+              "pro_annual": {
+                "features": [
+                  "Alt i Pro",
+                  "2 måneder gratis",
+                  "Prioritert kundesupport",
+                  "Eksklusive markedsrapporter"
+                ],
+                "name": "Pro Årlig",
+                "price": "3499 kr/år",
+                "savings": "Spar 27%"
+              }
+            },
+            "status": "OK",
+            "trial": "15 minutter gratis prøving"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.240Z"
+      },
+      {
+        "endpoint": "Prising (uten slash)",
+        "method": "GET",
+        "path": "/pricing/",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "guarantee": "30 dager pengene tilbake garanti",
+            "message": "Velg din Aksjeradar-plan",
+            "page": "pricing",
+            "plans": {
+              "basic": {
+                "features": [
+                  "Grunnleggende aksjeanalyse",
+                  "Portefølje tracking",
+                  "Markedsoversikt",
+                  "E-post varsler",
+                  "Mobil app"
+                ],
+                "name": "Basic",
+                "price": "199 kr/mnd"
+              },
+              "pro": {
+                "features": [
+                  "Alt i Basic",
+                  "AI-anbefalinger",
+                  "Avansert teknisk analyse",
+                  "Sanntids varsler",
+                  "Premium markedsdata",
+                  "Backtesting",
+                  "API tilgang"
+                ],
+                "name": "Pro",
+                "price": "399 kr/mnd"
+              },
+              "pro_annual": {
+                "features": [
+                  "Alt i Pro",
+                  "2 måneder gratis",
+                  "Prioritert kundesupport",
+                  "Eksklusive markedsrapporter"
+                ],
+                "name": "Pro Årlig",
+                "price": "3499 kr/år",
+                "savings": "Spar 27%"
+              }
+            },
+            "status": "OK",
+            "trial": "15 minutter gratis prøving"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.342Z"
+      }
+    ],
+    "auth": [
+      {
+        "endpoint": "Login GET",
+        "method": "GET",
+        "path": "/login",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "features": [
+              "Sikker innlogging",
+              "Husk meg funksjon",
+              "Passordreset"
+            ],
+            "form_fields": [
+              "username",
+              "password"
+            ],
+            "message": "Logg inn på Aksjeradar",
+            "page": "login",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.445Z"
+      },
+      {
+        "endpoint": "Login POST",
+        "method": "POST",
+        "path": "/login",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "message": "Login POST mottatt",
+            "note": "Dette er en demo-implementasjon",
+            "redirect": "/",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.547Z"
+      },
+      {
+        "endpoint": "Register GET",
+        "method": "GET",
+        "path": "/register",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "benefits": [
+              "15 minutter gratis prøving",
+              "Ingen binding",
+              "Full tilgang til demo"
+            ],
+            "form_fields": [
+              "username",
+              "email",
+              "password",
+              "confirm_password"
+            ],
+            "message": "Opprett Aksjeradar-konto",
+            "page": "register",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.650Z"
+      },
+      {
+        "endpoint": "Register POST",
+        "method": "POST",
+        "path": "/register",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 4,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "message": "Registrering POST mottatt",
+            "note": "Dette er en demo-implementasjon",
+            "received_data": {
+              "email": "test@test.com",
+              "username": "test"
+            },
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.754Z"
+      },
+      {
+        "endpoint": "Logout",
+        "method": "GET",
+        "path": "/logout",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "message": "Utlogget fra Aksjeradar",
+            "redirect": "/",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.857Z"
+      },
+      {
+        "endpoint": "Login POST (ugyldig)",
+        "method": "POST",
+        "path": "/login",
+        "expectedStatus": 400,
+        "actualStatus": 400,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "message": "Brukernavn og passord er påkrevd",
+            "status": "ERROR"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.984Z"
+      }
+    ],
+    "features": [
+      {
+        "endpoint": "Portfolio",
+        "method": "GET",
+        "path": "/portfolio",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "features": [
+              "Oversikt over alle investeringer",
+              "Ytelsesanalyse",
+              "Diversifiseringsanalyse",
+              "Automatiske anbefalinger",
+              "Risikostyring"
+            ],
+            "message": "Din portefølje i Aksjeradar",
+            "note": "Krever innlogging i produksjon",
+            "page": "portfolio",
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:23.960Z"
+      },
+      {
+        "endpoint": "Analyse",
+        "method": "GET",
+        "path": "/analysis",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "analysis_types": [
+              "Teknisk analyse",
+              "Fundamental analyse",
+              "AI-prediksjoner",
+              "Sentiment analyse",
+              "Markedsanalyse"
+            ],
+            "message": "Aksjeanalyse med AI",
+            "page": "analysis",
+            "status": "OK",
+            "tools": [
+              "Diagrammer",
+              "Indikatorer",
+              "Prognoser",
+              "Sammenligning"
+            ]
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.062Z"
+      },
+      {
+        "endpoint": "Aksjer",
+        "method": "GET",
+        "path": "/stocks",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "markets": [
+              "Oslo Børs (OSE)",
+              "Euronext Growth",
+              "NASDAQ",
+              "NYSE",
+              "DAX",
+              "FTSE 100"
+            ],
+            "message": "Alle aksjer på Oslo Børs og internasjonalt",
+            "page": "stocks",
+            "sample_stocks": [
+              {
+                "market": "Oslo Børs",
+                "name": "Equinor ASA",
+                "symbol": "EQNR.OL"
+              },
+              {
+                "market": "Oslo Børs",
+                "name": "Norsk Hydro ASA",
+                "symbol": "NHY.OL"
+              },
+              {
+                "market": "Oslo Børs",
+                "name": "Mowi ASA",
+                "symbol": "MOWI.OL"
+              },
+              {
+                "market": "Oslo Børs",
+                "name": "Telenor ASA",
+                "symbol": "TEL.OL"
+              }
+            ],
+            "status": "OK"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.164Z"
+      }
+    ],
+    "api": [
+      {
+        "endpoint": "Health API",
+        "method": "GET",
+        "path": "/api/health",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "database": "connected",
+            "environment": "production",
+            "service": "aksjeradar",
+            "status": "healthy",
+            "timestamp": "2025-07-13T00:53:24.266748",
+            "uptime": "N/A",
+            "version": "1.0.0"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.267Z"
+      },
+      {
+        "endpoint": "Version API",
+        "method": "GET",
+        "path": "/api/version",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": false,
+          "jsonData": {
+            "build": "release",
+            "deployment": "aksjeradar.trade ready",
+            "flask_version": "Flask 2.0+",
+            "python_version": "3.12.1 (main, May 30 2025, 12:50:35) [GCC 13.3.0]",
+            "service": "aksjeradar-production",
+            "version": "1.0.0"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.370Z"
+      },
+      {
+        "endpoint": "Search API (tom)",
+        "method": "GET",
+        "path": "/api/search",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "query": "",
+            "results": [],
+            "status": "OK",
+            "total": 0
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.471Z"
+      },
+      {
+        "endpoint": "Search API (med query)",
+        "method": "GET",
+        "path": "/api/search?q=equinor",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "query": "equinor",
+            "results": [
+              {
+                "market": "Oslo Børs",
+                "name": "Equinor ASA",
+                "symbol": "EQNR.OL"
+              },
+              {
+                "market": "Oslo Børs",
+                "name": "Norsk Hydro ASA",
+                "symbol": "NHY.OL"
+              }
+            ],
+            "status": "OK",
+            "total": 2
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.574Z"
+      }
+    ],
+    "pwa": [
+      {
+        "endpoint": "PWA Manifest",
+        "method": "GET",
+        "path": "/manifest.json",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": false,
+          "jsonData": {
+            "background_color": "#ffffff",
+            "description": "Din digitale finansassistent",
+            "display": "standalone",
+            "icons": [
+              {
+                "sizes": "192x192",
+                "src": "/static/icons/icon-192.png",
+                "type": "image/png"
+              },
+              {
+                "sizes": "512x512",
+                "src": "/static/icons/icon-512.png",
+                "type": "image/png"
+              }
+            ],
+            "name": "Aksjeradar",
+            "short_name": "Aksjeradar",
+            "start_url": "/",
+            "theme_color": "#1a365d"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.676Z"
+      },
+      {
+        "endpoint": "Service Worker",
+        "method": "GET",
+        "path": "/service-worker.js",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": false,
+          "hasValidStructure": true
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.779Z"
+      }
+    ],
+    "errors": [
+      {
+        "endpoint": "404 Error Handler",
+        "method": "GET",
+        "path": "/invalid-endpoint",
+        "expectedStatus": 404,
+        "actualStatus": 404,
+        "responseTime": 2,
+        "validation": {
+          "statusMatch": true,
+          "hasContent": true,
+          "isJson": true,
+          "hasValidStructure": true,
+          "jsonData": {
+            "available_endpoints": [
+              "/",
+              "/demo",
+              "/ai-explained",
+              "/pricing",
+              "/login",
+              "/register",
+              "/portfolio",
+              "/analysis",
+              "/stocks",
+              "/api/health",
+              "/api/version",
+              "/manifest.json",
+              "/service-worker.js"
+            ],
+            "code": 404,
+            "message": "Endepunkt ikke funnet",
+            "status": "ERROR",
+            "suggestion": "Sjekk URL eller bruk søkefunksjonen"
+          }
+        },
+        "success": true,
+        "timestamp": "2025-07-13T00:53:24.881Z"
+      }
+    ]
+  },
+  "productionReadiness": {
+    "criticalEndpoints": 1,
+    "performanceScore": "Excellent",
+    "reliabilityScore": 100,
+    "recommendation": "DEPLOY"
+  }
+}

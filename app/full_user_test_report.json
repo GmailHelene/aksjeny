@@ -1,0 +1,1100 @@
+{
+  "summary": {
+    "totalTests": 45,
+    "passedTests": 32,
+    "failedTests": 13,
+    "successRate": 71.11111111111111,
+    "avgResponseTime": 15.511111111111111,
+    "overallTime": 2515,
+    "timestamp": "2025-07-13T01:03:48.265Z"
+  },
+  "results": [
+    {
+      "endpoint": "Hovedside (Anonymous)",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 13,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:45.761Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Demo (Anonymous)",
+      "method": "GET",
+      "path": "/demo",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 4,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:45.815Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "AI Explained (Anonymous)",
+      "method": "GET",
+      "path": "/ai-explained",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:45.866Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Pricing (Anonymous)",
+      "method": "GET",
+      "path": "/pricing",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:45.919Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Login Page (Anonymous)",
+      "method": "GET",
+      "path": "/login",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:45.972Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Register Page (Anonymous)",
+      "method": "GET",
+      "path": "/register",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.024Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Health API (Anonymous)",
+      "method": "GET",
+      "path": "/api/health",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.077Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Version API (Anonymous)",
+      "method": "GET",
+      "path": "/api/version",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.131Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Search API (Anonymous)",
+      "method": "GET",
+      "path": "/api/search",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.185Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "PWA Manifest (Anonymous)",
+      "method": "GET",
+      "path": "/manifest.json",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.238Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Service Worker (Anonymous)",
+      "method": "GET",
+      "path": "/service-worker.js",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 1,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.290Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Dashboard (Anonymous)",
+      "method": "GET",
+      "path": "/premium/dashboard",
+      "expectedStatus": 401,
+      "actualStatus": 302,
+      "responseTime": 2,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:46.343Z",
+      "sessionCookies": [
+        "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "AI Predictions (Anonymous)",
+      "method": "GET",
+      "path": "/premium/ai-predictions",
+      "expectedStatus": 401,
+      "actualStatus": 302,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:46.396Z",
+      "sessionCookies": [
+        "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Advanced Charts (Anonymous)",
+      "method": "GET",
+      "path": "/premium/advanced-charts",
+      "expectedStatus": 401,
+      "actualStatus": 302,
+      "responseTime": 2,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:46.448Z",
+      "sessionCookies": [
+        "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Premium Alerts (Anonymous)",
+      "method": "GET",
+      "path": "/api/premium/alerts",
+      "expectedStatus": 401,
+      "actualStatus": 302,
+      "responseTime": 2,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:46.501Z",
+      "sessionCookies": [
+        "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Create Basic User",
+      "method": "POST",
+      "path": "/test/create-premium-user",
+      "expectedStatus": 200,
+      "actualStatus": 400,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:46.555Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Login Basic User",
+      "method": "POST",
+      "path": "/test/login-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 190,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.745Z",
+      "sessionCookies": [
+        "remember_token=1|0572c13faf1814d15e06e5db8cde3176b0022fa25d6e74c1cf4d2aa0cf4c37456eca12addb314f739c75bc1c0a55b62c43c4c8e7eceadd5848d3c0268d767943; Expires=Mon, 13 Jul 2026 01:03:46 GMT; HttpOnly; Path=/",
+        "session=.eJwlzjEOwzAIQNG7MHfAxmDIZSJsg9o1aaaqd2-k6q9_eB_Y84jzCdv7uOIB-2vBBmQ1MGkY1VWmyuIiracwZRb2MdHJW677QpuUg0wNXVZf2u6EekFFT29BhiQxrarVHLPZYgkjFfQus7XkGl2cZ8ccGslmCDfkOuP4awp8f4s0LqM.aHMF8g.GlcTo1M7yDMZXJxLaLd2A_pfqMA; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Current User Info (Basic)",
+      "method": "GET",
+      "path": "/test/current-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.748Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Dashboard (Basic)",
+      "method": "GET",
+      "path": "/premium/dashboard",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.750Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "AI Predictions (Basic)",
+      "method": "GET",
+      "path": "/premium/ai-predictions",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.804Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Advanced Charts (Basic)",
+      "method": "GET",
+      "path": "/premium/advanced-charts",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.857Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Portfolio Optimizer (Basic)",
+      "method": "GET",
+      "path": "/premium/portfolio-optimizer",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.911Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Alerts (Basic)",
+      "method": "GET",
+      "path": "/api/premium/alerts",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:46.964Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Real-time Data (Basic)",
+      "method": "GET",
+      "path": "/api/premium/realtime/EQNR.OL",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.017Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Backtesting (Basic)",
+      "method": "POST",
+      "path": "/api/premium/backtesting",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.071Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Create Pro User",
+      "method": "POST",
+      "path": "/test/create-premium-user",
+      "expectedStatus": 200,
+      "actualStatus": 400,
+      "responseTime": 2,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:47.124Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Login Pro User",
+      "method": "POST",
+      "path": "/test/login-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 186,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.310Z",
+      "sessionCookies": [
+        "remember_token=2|f98ab7f7b20083e8122e7a8fe2e91458f6fbf3fb013aedf4e6568216953fb6f802605b3b9042110e09a1ada042e97b1f50eb53bfcdbc9350d45702e9a3bd7bc3; Expires=Mon, 13 Jul 2026 01:03:47 GMT; HttpOnly; Path=/",
+        "session=.eJwlzj0OwjAMQOG7ZGZw4tiJe5nK8Y9gbemEuDuV0Fvf8H3Knkecz7K9jyseZX952QpKC0hcgs2rTXaq3EcyYWYlXQaK2tPvC8QwF8oUUPbhs98xjgoTNLUHCiCHSZvSclkXJw7ByaCDrfekFoOVbECuGUkiUG7Idcbx17Ty_QGLNy6k.aHMF8w.VATh4bIFvTEVzbHRYVfdoDS-iF8; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Current User Info (Pro)",
+      "method": "GET",
+      "path": "/test/current-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.313Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Dashboard (Pro)",
+      "method": "GET",
+      "path": "/premium/dashboard",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.315Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "AI Predictions (Pro)",
+      "method": "GET",
+      "path": "/premium/ai-predictions",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.368Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Advanced Charts (Pro)",
+      "method": "GET",
+      "path": "/premium/advanced-charts",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.420Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Portfolio Optimizer (Pro)",
+      "method": "GET",
+      "path": "/premium/portfolio-optimizer",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.473Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Alerts (Pro)",
+      "method": "GET",
+      "path": "/api/premium/alerts",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.527Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Real-time Data (Pro)",
+      "method": "GET",
+      "path": "/api/premium/realtime/EQNR.OL",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.580Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Backtesting (Pro)",
+      "method": "POST",
+      "path": "/api/premium/backtesting",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.634Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Create Free User",
+      "method": "POST",
+      "path": "/test/create-premium-user",
+      "expectedStatus": 200,
+      "actualStatus": 400,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:47.688Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Login Free User",
+      "method": "POST",
+      "path": "/test/login-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 202,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.890Z",
+      "sessionCookies": [
+        "remember_token=3|f256a736c0b0fbd2e8121f70fd096ecc31c68d3a13343e46e8ab67ea334ac6442b7b8fd96ec59cd83518728ac9d23e06e56b0847ecec0fca5f94a00202c142d9; Expires=Mon, 13 Jul 2026 01:03:47 GMT; HttpOnly; Path=/",
+        "session=.eJwtzjsSwjAMANG7uKaQLUu2cpmMrM9Am5CK4e6kYLbd4n3Knkecz7K9jyseZX952QpKC0hcgs2rTXaq3EcyYWYlXQaK2tPvC8QwF8oUUPbhs98xjgoTNLUHCiCHSZvSclkXJw7ByaCDrfekFoOVbECuGUkiUG7Idcbx15TvD4s6LqU.aHMF8w.KoYimmJtTluJ4WI9tC_Hpe0xoX8; HttpOnly; Path=/"
+      ]
+    },
+    {
+      "endpoint": "Current User Info (Free)",
+      "method": "GET",
+      "path": "/test/current-user",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:47.893Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Dashboard (Free)",
+      "method": "GET",
+      "path": "/premium/dashboard",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 2,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:47.895Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "AI Predictions (Free)",
+      "method": "GET",
+      "path": "/premium/ai-predictions",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:47.948Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Advanced Charts (Free)",
+      "method": "GET",
+      "path": "/premium/advanced-charts",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:48.001Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Portfolio Optimizer (Free)",
+      "method": "GET",
+      "path": "/premium/portfolio-optimizer",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:48.054Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Premium Alerts (Free)",
+      "method": "GET",
+      "path": "/api/premium/alerts",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:48.107Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Real-time Data (Free)",
+      "method": "GET",
+      "path": "/api/premium/realtime/EQNR.OL",
+      "expectedStatus": 403,
+      "actualStatus": 200,
+      "responseTime": 3,
+      "success": false,
+      "timestamp": "2025-07-13T01:03:48.160Z",
+      "sessionCookies": []
+    },
+    {
+      "endpoint": "Backtesting (Free)",
+      "method": "POST",
+      "path": "/api/premium/backtesting",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "responseTime": 3,
+      "success": true,
+      "timestamp": "2025-07-13T01:03:48.214Z",
+      "sessionCookies": []
+    }
+  ],
+  "groupedResults": {
+    "anonymous": [
+      {
+        "endpoint": "Hovedside (Anonymous)",
+        "method": "GET",
+        "path": "/",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 13,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.761Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Demo (Anonymous)",
+        "method": "GET",
+        "path": "/demo",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 4,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.815Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "AI Explained (Anonymous)",
+        "method": "GET",
+        "path": "/ai-explained",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.866Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Pricing (Anonymous)",
+        "method": "GET",
+        "path": "/pricing",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.919Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Login Page (Anonymous)",
+        "method": "GET",
+        "path": "/login",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.972Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Register Page (Anonymous)",
+        "method": "GET",
+        "path": "/register",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.024Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Health API (Anonymous)",
+        "method": "GET",
+        "path": "/api/health",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.077Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Version API (Anonymous)",
+        "method": "GET",
+        "path": "/api/version",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.131Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Search API (Anonymous)",
+        "method": "GET",
+        "path": "/api/search",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.185Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "PWA Manifest (Anonymous)",
+        "method": "GET",
+        "path": "/manifest.json",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.238Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Service Worker (Anonymous)",
+        "method": "GET",
+        "path": "/service-worker.js",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 1,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.290Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Dashboard (Anonymous)",
+        "method": "GET",
+        "path": "/premium/dashboard",
+        "expectedStatus": 401,
+        "actualStatus": 302,
+        "responseTime": 2,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:46.343Z",
+        "sessionCookies": [
+          "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "AI Predictions (Anonymous)",
+        "method": "GET",
+        "path": "/premium/ai-predictions",
+        "expectedStatus": 401,
+        "actualStatus": 302,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:46.396Z",
+        "sessionCookies": [
+          "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "Advanced Charts (Anonymous)",
+        "method": "GET",
+        "path": "/premium/advanced-charts",
+        "expectedStatus": 401,
+        "actualStatus": 302,
+        "responseTime": 2,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:46.448Z",
+        "sessionCookies": [
+          "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "Premium Alerts (Anonymous)",
+        "method": "GET",
+        "path": "/api/premium/alerts",
+        "expectedStatus": 401,
+        "actualStatus": 302,
+        "responseTime": 2,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:46.501Z",
+        "sessionCookies": [
+          "session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aHMF8g.7sWuhB2biH-d4652hzqibYf5paE; HttpOnly; Path=/"
+        ]
+      }
+    ],
+    "basic": [
+      {
+        "endpoint": "Current User Info (Basic)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.748Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Dashboard (Basic)",
+        "method": "GET",
+        "path": "/premium/dashboard",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.750Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "AI Predictions (Basic)",
+        "method": "GET",
+        "path": "/premium/ai-predictions",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.804Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Advanced Charts (Basic)",
+        "method": "GET",
+        "path": "/premium/advanced-charts",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.857Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Portfolio Optimizer (Basic)",
+        "method": "GET",
+        "path": "/premium/portfolio-optimizer",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.911Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Alerts (Basic)",
+        "method": "GET",
+        "path": "/api/premium/alerts",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.964Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Real-time Data (Basic)",
+        "method": "GET",
+        "path": "/api/premium/realtime/EQNR.OL",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.017Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Backtesting (Basic)",
+        "method": "POST",
+        "path": "/api/premium/backtesting",
+        "expectedStatus": 403,
+        "actualStatus": 403,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.071Z",
+        "sessionCookies": []
+      }
+    ],
+    "pro": [
+      {
+        "endpoint": "Current User Info (Pro)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.313Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Dashboard (Pro)",
+        "method": "GET",
+        "path": "/premium/dashboard",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.315Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "AI Predictions (Pro)",
+        "method": "GET",
+        "path": "/premium/ai-predictions",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.368Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Advanced Charts (Pro)",
+        "method": "GET",
+        "path": "/premium/advanced-charts",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.420Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Portfolio Optimizer (Pro)",
+        "method": "GET",
+        "path": "/premium/portfolio-optimizer",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.473Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Alerts (Pro)",
+        "method": "GET",
+        "path": "/api/premium/alerts",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.527Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Real-time Data (Pro)",
+        "method": "GET",
+        "path": "/api/premium/realtime/EQNR.OL",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.580Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Backtesting (Pro)",
+        "method": "POST",
+        "path": "/api/premium/backtesting",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.634Z",
+        "sessionCookies": []
+      }
+    ],
+    "free": [
+      {
+        "endpoint": "Current User Info (Free)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.893Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Dashboard (Free)",
+        "method": "GET",
+        "path": "/premium/dashboard",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:47.895Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "AI Predictions (Free)",
+        "method": "GET",
+        "path": "/premium/ai-predictions",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:47.948Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Advanced Charts (Free)",
+        "method": "GET",
+        "path": "/premium/advanced-charts",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:48.001Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Portfolio Optimizer (Free)",
+        "method": "GET",
+        "path": "/premium/portfolio-optimizer",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:48.054Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Premium Alerts (Free)",
+        "method": "GET",
+        "path": "/api/premium/alerts",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:48.107Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Real-time Data (Free)",
+        "method": "GET",
+        "path": "/api/premium/realtime/EQNR.OL",
+        "expectedStatus": 403,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:48.160Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Backtesting (Free)",
+        "method": "POST",
+        "path": "/api/premium/backtesting",
+        "expectedStatus": 403,
+        "actualStatus": 403,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:48.214Z",
+        "sessionCookies": []
+      }
+    ],
+    "system": [
+      {
+        "endpoint": "Login Page (Anonymous)",
+        "method": "GET",
+        "path": "/login",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:45.972Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Create Basic User",
+        "method": "POST",
+        "path": "/test/create-premium-user",
+        "expectedStatus": 200,
+        "actualStatus": 400,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:46.555Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Login Basic User",
+        "method": "POST",
+        "path": "/test/login-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 190,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.745Z",
+        "sessionCookies": [
+          "remember_token=1|0572c13faf1814d15e06e5db8cde3176b0022fa25d6e74c1cf4d2aa0cf4c37456eca12addb314f739c75bc1c0a55b62c43c4c8e7eceadd5848d3c0268d767943; Expires=Mon, 13 Jul 2026 01:03:46 GMT; HttpOnly; Path=/",
+          "session=.eJwlzjEOwzAIQNG7MHfAxmDIZSJsg9o1aaaqd2-k6q9_eB_Y84jzCdv7uOIB-2vBBmQ1MGkY1VWmyuIiracwZRb2MdHJW677QpuUg0wNXVZf2u6EekFFT29BhiQxrarVHLPZYgkjFfQus7XkGl2cZ8ccGslmCDfkOuP4awp8f4s0LqM.aHMF8g.GlcTo1M7yDMZXJxLaLd2A_pfqMA; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "Current User Info (Basic)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 2,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:46.748Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Create Pro User",
+        "method": "POST",
+        "path": "/test/create-premium-user",
+        "expectedStatus": 200,
+        "actualStatus": 400,
+        "responseTime": 2,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:47.124Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Login Pro User",
+        "method": "POST",
+        "path": "/test/login-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 186,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.310Z",
+        "sessionCookies": [
+          "remember_token=2|f98ab7f7b20083e8122e7a8fe2e91458f6fbf3fb013aedf4e6568216953fb6f802605b3b9042110e09a1ada042e97b1f50eb53bfcdbc9350d45702e9a3bd7bc3; Expires=Mon, 13 Jul 2026 01:03:47 GMT; HttpOnly; Path=/",
+          "session=.eJwlzj0OwjAMQOG7ZGZw4tiJe5nK8Y9gbemEuDuV0Fvf8H3Knkecz7K9jyseZX952QpKC0hcgs2rTXaq3EcyYWYlXQaK2tPvC8QwF8oUUPbhs98xjgoTNLUHCiCHSZvSclkXJw7ByaCDrfekFoOVbECuGUkiUG7Idcbx17Ty_QGLNy6k.aHMF8w.VATh4bIFvTEVzbHRYVfdoDS-iF8; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "Current User Info (Pro)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.313Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Create Free User",
+        "method": "POST",
+        "path": "/test/create-premium-user",
+        "expectedStatus": 200,
+        "actualStatus": 400,
+        "responseTime": 3,
+        "success": false,
+        "timestamp": "2025-07-13T01:03:47.688Z",
+        "sessionCookies": []
+      },
+      {
+        "endpoint": "Login Free User",
+        "method": "POST",
+        "path": "/test/login-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 202,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.890Z",
+        "sessionCookies": [
+          "remember_token=3|f256a736c0b0fbd2e8121f70fd096ecc31c68d3a13343e46e8ab67ea334ac6442b7b8fd96ec59cd83518728ac9d23e06e56b0847ecec0fca5f94a00202c142d9; Expires=Mon, 13 Jul 2026 01:03:47 GMT; HttpOnly; Path=/",
+          "session=.eJwtzjsSwjAMANG7uKaQLUu2cpmMrM9Am5CK4e6kYLbd4n3Knkecz7K9jyseZX952QpKC0hcgs2rTXaq3EcyYWYlXQaK2tPvC8QwF8oUUPbhs98xjgoTNLUHCiCHSZvSclkXJw7ByaCDrfekFoOVbECuGUkiUG7Idcbx15TvD4s6LqU.aHMF8w.KoYimmJtTluJ4WI9tC_Hpe0xoX8; HttpOnly; Path=/"
+        ]
+      },
+      {
+        "endpoint": "Current User Info (Free)",
+        "method": "GET",
+        "path": "/test/current-user",
+        "expectedStatus": 200,
+        "actualStatus": 200,
+        "responseTime": 3,
+        "success": true,
+        "timestamp": "2025-07-13T01:03:47.893Z",
+        "sessionCookies": []
+      }
+    ]
+  },
+  "securityAssessment": {
+    "anonymous_blocked": 0,
+    "free_blocked": 0,
+    "basic_access": 2,
+    "pro_access": 2,
+    "pro_exclusive": 1
+  }
+}

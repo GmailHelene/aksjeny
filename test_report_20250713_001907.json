@@ -1,0 +1,758 @@
+{
+  "syntax_check": [
+    {
+      "file": "/workspaces/aksjeny/comprehensive_test_suite.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/static_endpoint_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/api.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/session_security_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/deployment_check.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/auth.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/extensions.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/web_migration.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/admin.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/complete_system_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/remaining_issues_audit.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/ultra_minimal_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/login_instructions.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/styling_fixes_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/gdpr_cleanup.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/stocks.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/admin_set_password.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/user.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/analysis.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/wsgi.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/simple_test_server.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/add_tonje_user.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/create_test_users.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/tasks.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/production_fix.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/requirements_check.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/pricing.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/subscription_contrast_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/setup_exempt_users.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/gunicorn.conf.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/portfolio.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/endpoint_details.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/aksjeradar_unauthorized.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/manual_db_setup.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/local_template_check.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/cache_verification.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/direct_route_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/treningskode.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/manage_users.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/create_missing_users.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/migrate_database.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/monitor_enhanced_rate_limiting.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/news.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/user_questions_answered.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/main.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/production_status_dashboard.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/migrate_production.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/railway_migration.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/data_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/inspect_routes.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/completion_report.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/sikre_eirik.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/app.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/update_exempt_passwords.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/create_exempt_user_final.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/create_database.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/standalone_test_server.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/forms.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/config.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/optimized_startup_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/ensure_exempt_users.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/management.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/add_tonje_simple.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/verifiser_brukere.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/init_production_db.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/basic_test.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/norwegian_formatter.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/filters.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/i18n_complete.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/error_handlers.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/i18n_simple.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/i18n.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/redis_cache.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/subscription.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/error_handler.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/utils/access_control.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/tests/test_frontend_urls_access.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/tests/test_all_endpoints_access.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/tests/test_endpoints.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/tests/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/api.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/seo_content.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/admin.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/stocks.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/analysis.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/portfolio_advanced.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/external_data.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/investment_guides.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/pricing.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/websocket.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/market_intel.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/portfolio.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/resources.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/search_results.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/features.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/notifications.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/search.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/additional.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/social_sentiment.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/news.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/blog.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/health.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/market_data.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/main.py",
+      "status": "FAIL",
+      "error": "  File \"/workspaces/aksjeny/app/routes/main.py\", line 3475\n    \"\"\"Track trial\n    ^\nSyntaxError: unterminated triple-quoted string literal (detected at line 3475)\n"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/backtest.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/stripe_routes.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/realtime_api.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/routes/watchlist_advanced.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/ai_predictions.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/realtime_data_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/news_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/portfolio_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/yahoo_finance_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/external_data.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/rate_limiter.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/simple_cache.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/alert_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/referral_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/ai_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/security_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/buffett_analysis_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/integrations.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/analysis_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/cache_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/performance_monitor.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/data_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/export_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/notification_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/external_apis.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/websocket_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/graham_analysis_service.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/services/usage_tracker.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/backup_columns.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/user.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/portfolio.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/stock.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/notifications.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/trial_session.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/referral.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/__init__.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/watchlist.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/models/tip.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/archive/migrations_old/env.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/archive/migrations_old/versions/add_notifications_simple.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/archive/migrations_old/versions/7b5cf0d46cce_add_notification_models_and_tables.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/archive/migrations_old/versions/3742b3f9b902_add_updated_at_to_watchlists.py",
+      "status": "PASS"
+    },
+    {
+      "file": "/workspaces/aksjeny/app/archive/migrations_old/versions/497c478a5628_add_tip_type_and_confidence_to_stock_.py",
+      "status": "PASS"
+    }
+  ],
+  "import_check": [
+    {
+      "module": "app",
+      "status": "PASS"
+    },
+    {
+      "module": "app.models",
+      "status": "PASS"
+    },
+    {
+      "module": "app.routes.main",
+      "status": "PASS"
+    },
+    {
+      "module": "app.routes.portfolio",
+      "status": "PASS"
+    },
+    {
+      "module": "app.services.data_service",
+      "status": "PASS"
+    },
+    {
+      "module": "app.utils.access_control",
+      "status": "PASS"
+    }
+  ],
+  "endpoint_check": [
+    {
+      "endpoint": "/",
+      "name": "Homepage",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/demo",
+      "name": "Demo page",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/ai-explained",
+      "name": "AI Explained",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/pricing",
+      "name": "Pricing",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/pricing/",
+      "name": "Pricing (trailing slash)",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/login",
+      "name": "Login page",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/register",
+      "name": "Register page",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/logout",
+      "name": "Logout",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/portfolio",
+      "name": "Portfolio",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/portfolio/",
+      "name": "Portfolio (trailing slash)",
+      "status_code": 404,
+      "result": "FAIL"
+    },
+    {
+      "endpoint": "/analysis",
+      "name": "Analysis",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/stocks",
+      "name": "Stocks",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/stocks/",
+      "name": "Stocks (trailing slash)",
+      "status_code": 404,
+      "result": "FAIL"
+    },
+    {
+      "endpoint": "/api/health",
+      "name": "Health check",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/api/version",
+      "name": "Version info",
+      "status_code": 200,
+      "result": "PASS"
+    },
+    {
+      "endpoint": "/subscription",
+      "name": "Subscription",
+      "status_code": 404,
+      "result": "FAIL"
+    },
+    {
+      "endpoint": "/profile",
+      "name": "Profile",
+      "status_code": 404,
+      "result": "FAIL"
+    },
+    {
+      "endpoint": "/privacy",
+      "name": "Privacy policy",
+      "status_code": 404,
+      "result": "FAIL"
+    },
+    {
+      "endpoint": "/terms",
+      "name": "Terms of service",
+      "status_code": 404,
+      "result": "FAIL"
+    }
+  ],
+  "frontend_check": {
+    "template_count": 113,
+    "static_count": 52,
+    "missing_templates": [],
+    "critical_templates_ok": true
+  },
+  "summary": {}
+}

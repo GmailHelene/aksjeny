@@ -1,0 +1,16 @@
+2025-07-13 01:49:19,814 - WARNING - Could not import app modules: No module named 'app.extensions'; 'app' is not a package. Will continue in external testing mode.
+2025-07-13 01:49:19,815 - INFO - Crawling: /
+2025-07-13 01:49:19,818 - INFO - Found 1 endpoints through crawling
+2025-07-13 01:49:19,869 - INFO - Testing: /
+2025-07-13 01:49:34,480 - WARNING - Could not import app modules: No module named 'app.extensions'; 'app' is not a package. Will continue in external testing mode.
+2025-07-13 01:49:34,481 - INFO - Crawling: /
+2025-07-13 01:49:34,484 - INFO - Found 1 endpoints through crawling
+2025-07-13 01:49:34,539 - INFO - Testing: /
+2025-07-13 01:55:38,412 - WARNING - Could not import app modules: cannot import name 'create_app' from partially initialized module 'app' (most likely due to a circular import) (/workspaces/aksjeny/app/app.py). Will continue in external testing mode.
+2025-07-13 01:55:38,413 - INFO - Crawling: /
+2025-07-13 01:55:38,418 - INFO - Found 1 endpoints through crawling
+2025-07-13 01:55:38,482 - INFO - Testing: /
+2025-07-13 01:56:08,331 - WARNING - Could not import app modules: cannot import name 'create_app' from partially initialized module 'app' (most likely due to a circular import) (/workspaces/aksjeny/app/app.py). Will continue in external testing mode.
+2025-07-13 01:56:08,332 - INFO - Crawling: /
+2025-07-13 01:56:08,336 - INFO - Found 1 endpoints through crawling
+2025-07-13 01:56:08,391 - INFO - Testing: /

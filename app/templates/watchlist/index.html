@@ -1,0 +1,571 @@
+{% extends "base.html" %}
+
+{% block title %}Watchlist & Varsler - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1">👁️ Smart Watchlist & AI-Varsler</h1>
+                    <p class="text-muted">Følg dine favorittaksjer med intelligente varsler og ukentlige AI-rapporter</p>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+                        <i class="bi bi-plus-circle"></i> Ny Watchlist
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="generateWeeklyReport()">
+                        <i class="bi bi-file-earmark-text"></i> Ukentlig Rapport
+                    </button>
+                    <button type="button" class="btn btn-outline-info" href="/watchlist/settings">
+                        <i class="bi bi-gear"></i> Innstillinger
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Alerts -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">🚨 Aktive Varsler</h5>
+                </div>
+                <div class="card-body">
+                    <div id="active-alerts">
+                        <div class="text-center text-muted">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Laster varsler...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Watchlists Overview -->
+    <div class="row mb-4">
+        {% if watchlists %}
+            {% for watchlist in watchlists %}
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0">📋 {{ watchlist.name }}</h5>
+                            <small class="text-muted">{{ watchlist.items|length }} aksjer</small>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('watchlist.view_watchlist', id=watchlist.id) }}">Vis detaljer</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="editWatchlist({{ watchlist.id }})">Rediger</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteWatchlist({{ watchlist.id }})">Slett</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if watchlist.description %}
+                        <p class="card-text text-muted">{{ watchlist.description }}</p>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Opprettet:</small><br>
+                                <small>{{ watchlist.created_at.strftime('%d.%m.%Y') if watchlist.created_at else 'N/A' }}</small>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Sist oppdatert:</small><br>
+                                <small>{{ watchlist.updated_at.strftime('%d.%m.%Y') if watchlist.updated_at else 'N/A' }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Varslingsinnstillinger -->
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small">Varsler aktivert:</span>
+                                <div>
+                                    {% if watchlist.price_alerts_enabled %}
+                                    <span class="badge bg-success">Pris</span>
+                                    {% endif %}
+                                    {% if watchlist.technical_alerts_enabled %}
+                                    <span class="badge bg-info">Teknisk</span>
+                                    {% endif %}
+                                    {% if watchlist.weekly_report_enabled %}
+                                    <span class="badge bg-primary">Ukentlig</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('watchlist.view_watchlist', id=watchlist.id) }}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-eye"></i> Vis detaljer
+                            </a>
+                            <button class="btn btn-outline-info btn-sm" onclick="getWatchlistAlerts({{ watchlist.id }})">
+                                <i class="bi bi-bell"></i> Sjekk varsler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-list-ul fs-1 text-muted mb-3"></i>
+                        <h5 class="text-muted">Ingen watchlists ennå</h5>
+                        <p class="text-muted">Opprett din første watchlist for å følge favorittaksjene dine med intelligente varsler.</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+                            <i class="bi bi-plus-circle"></i> Opprett første watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- AI Insights -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🤖 AI-Innsikt og Markedstrender</h5>
+                </div>
+                <div class="card-body">
+                    <div id="ai-insights">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-lightbulb fs-2 mb-3"></i>
+                            <p>AI-innsikt vil vises her basert på dine watchlists</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Overview -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">📊 Watchlist Ytelse</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="performanceChart" width="800" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Watchlist Modal -->
+<div class="modal fade" id="createWatchlistModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📋 Opprett Ny Watchlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('watchlist.create_watchlist') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="watchlistName" class="form-label">Navn på watchlist</label>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="text" class="form-control" id="watchlistName" name="name" required placeholder="F.eks. Mine top-picks">
+                    </div>
+                    <div class="mb-3">
+                        <label for="watchlistDescription" class="form-label">Beskrivelse (valgfritt)</label>
+                        <textarea class="form-control" id="watchlistDescription" name="description" rows="3" placeholder="Beskriv strategien eller temaet for denne watchlist..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Varslingsinnstillinger</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="priceAlerts" name="price_alerts_enabled" checked>
+                            <label class="form-check-label" for="priceAlerts">
+                                Prisvarsler (store bevegelser)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="technicalAlerts" name="technical_alerts_enabled" checked>
+                            <label class="form-check-label" for="technicalAlerts">
+                                Tekniske varsler (RSI, MACD, etc.)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="weeklyReport" name="weekly_report_enabled" checked>
+                            <label class="form-check-label" for="weeklyReport">
+                                Ukentlig AI-rapport via e-post
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Opprett Watchlist
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Weekly Report Modal -->
+<div class="modal fade" id="weeklyReportModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📊 Ukentlig AI-Rapport</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="weekly-report-content">
+                    <!-- Dynamisk innhold -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.alert-item {
+    border-left: 4px solid;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.alert-item.high {
+    border-left-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.alert-item.medium {
+    border-left-color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.alert-item.low {
+    border-left-color: #0dcaf0;
+    background-color: rgba(13, 202, 240, 0.1);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+.insight-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.insight-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let performanceChart = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeChart();
+    loadActiveAlerts();
+    loadAIInsights();
+});
+
+function initializeChart() {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Watchlist Ytelse - Siste 30 dager'
+                },
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Prosent endring (%)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function loadActiveAlerts() {
+    try {
+        const alertsContainer = document.getElementById('active-alerts');
+        
+        // Simuler henting av varsler (erstatt med ekte API-kall)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const sampleAlerts = [
+            {
+                type: 'price_change',
+                severity: 'high',
+                symbol: 'AAPL',
+                title: 'AAPL - Stor prisendring',
+                message: 'Prisen har økt 5.2% til $175.50',
+                action: 'Vurder å ta gevinst eller sett trailing stop',
+                time: '2 minutter siden'
+            },
+            {
+                type: 'rsi_oversold',
+                severity: 'medium', 
+                symbol: 'TSLA',
+                title: 'TSLA - Oversolgt',
+                message: 'RSI på 28.5 indikerer oversolgt tilstand',
+                action: 'Potensielt kjøpsmulighet hvis fundamentals er sterke',
+                time: '15 minutter siden'
+            }
+        ];
+        
+        if (sampleAlerts.length === 0) {
+            alertsContainer.innerHTML = `
+                <div class="text-center text-success">
+                    <i class="bi bi-check-circle fs-2"></i>
+                    <p class="mt-2">Ingen aktive varsler akkurat nå</p>
+                </div>
+            `;
+        } else {
+            const alertsHtml = sampleAlerts.map(alert => `
+                <div class="alert-item ${alert.severity}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-1">
+                                <strong class="me-2">${alert.title}</strong>
+                                <span class="badge bg-${alert.severity === 'high' ? 'danger' : alert.severity === 'medium' ? 'warning' : 'info'}">${alert.severity}</span>
+                            </div>
+                            <p class="mb-1">${alert.message}</p>
+                            <small class="text-muted"><strong>Handling:</strong> ${alert.action}</small>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">${alert.time}</small>
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="viewStock('${alert.symbol}')">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="dismissAlert(this)">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            alertsContainer.innerHTML = alertsHtml;
+        }
+        
+    } catch (error) {
+        console.error('Feil ved lasting av varsler:', error);
+        document.getElementById('active-alerts').innerHTML = `
+            <div class="text-center text-danger">
+                <i class="bi bi-exclamation-triangle"></i>
+                <p class="mt-2">Kunne ikke laste varsler</p>
+            </div>
+        `;
+    }
+}
+
+async function loadAIInsights() {
+    try {
+        // Simuler AI-innsikt
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        const insights = [
+            {
+                type: 'market_trend',
+                title: 'Markedstrend',
+                message: 'Teknologiaksjer viser styrke denne uken med gjennomsnittlig oppgang på 3.2%.',
+                confidence: 85
+            },
+            {
+                type: 'recommendation',
+                title: 'AI-anbefaling',
+                message: 'Basert på dine watchlists anbefaler AI å følge med på energisektoren de neste dagene.',
+                confidence: 72
+            },
+            {
+                type: 'risk_warning',
+                title: 'Risikovarsel',
+                message: 'Økt volatilitet forventet i markedet neste uke grunnet makroøkonomiske data.',
+                confidence: 91
+            }
+        ];
+        
+        const insightsHtml = insights.map(insight => `
+            <div class="insight-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="mb-0">${insight.title}</h6>
+                    <span class="badge bg-primary">${insight.confidence}% sikkerhet</span>
+                </div>
+                <p class="mb-0">${insight.message}</p>
+            </div>
+        `).join('');
+        
+        document.getElementById('ai-insights').innerHTML = insightsHtml;
+        
+    } catch (error) {
+        console.error('Feil ved lasting av AI-innsikt:', error);
+    }
+}
+
+async function getWatchlistAlerts(watchlistId) {
+    try {
+        showLoading(`Henter varsler for watchlist ${watchlistId}...`);
+        
+        const response = await fetch(`/watchlist/api/alerts/${watchlistId}`, {
+            headers: {
+                'X-CSRFToken': getCSRFToken()
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`Fant ${data.count} aktive varsler for denne watchlist.`);
+            // Oppdater varsler-seksjonen
+            loadActiveAlerts();
+        } else {
+            throw new Error(data.error || 'Feil ved henting av varsler');
+        }
+        
+    } catch (error) {
+        alert('Feil: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+async function generateWeeklyReport() {
+    try {
+        showLoading('Genererer ukentlig AI-rapport...');
+        
+        // Simuler rapport-generering
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const reportHtml = `
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h3>+5.2%</h3>
+                            <p class="mb-0">Beste ytelse denne uken</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3>12/15</h3>
+                            <p class="mb-0">Aksjer med positiv trend</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3>3</h3>
+                            <p class="mb-0">AI-anbefalinger</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h6>📊 Ukesammendrag</h6>
+                <p>Dine watchlists har prestert godt denne uken med en gjennomsnittlig oppgang på 2.1%. AI-en har identifisert flere interessante muligheter...</p>
+                
+                <h6>🎯 AI-anbefalinger</h6>
+                <ul>
+                    <li><strong>AAPL:</strong> Sterke tekniske signaler, vurder økt posisjon</li>
+                    <li><strong>MSFT:</strong> Nær støtte, god kjøpsmulighet</li>
+                    <li><strong>GOOGL:</strong> Momentum bygger seg opp, følg med</li>
+                </ul>
+            </div>
+        `;
+        
+        document.getElementById('weekly-report-content').innerHTML = reportHtml;
+        
+        const modal = new bootstrap.Modal(document.getElementById('weeklyReportModal'));
+        modal.show();
+        
+    } catch (error) {
+        alert('Feil ved generering av rapport: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+function viewStock(symbol) {
+    window.open(`/stocks/details/${symbol}`, '_blank');
+}
+
+function dismissAlert(button) {
+    const alertItem = button.closest('.alert-item');
+    alertItem.style.transition = 'all 0.3s ease';
+    alertItem.style.opacity = '0';
+    alertItem.style.transform = 'translateX(100%)';
+    
+    setTimeout(() => {
+        alertItem.remove();
+    }, 300);
+}
+
+function editWatchlist(id) {
+    // Implementer redigering av watchlist
+    alert(`Redigering av watchlist ${id} kommer snart!`);
+}
+
+function deleteWatchlist(id) {
+    if (confirm('Er du sikker på at du vil slette denne watchlist?')) {
+        // Implementer sletting
+        alert(`Sletting av watchlist ${id} kommer snart!`);
+    }
+}
+
+function showLoading(message) {
+    console.log('Loading:', message);
+    // Implementer loading UI
+}
+
+function hideLoading() {
+    console.log('Loading complete');
+}
+
+function getCSRFToken() {
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+}
+</script>
+{% endblock %}

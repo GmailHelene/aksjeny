@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+
+{% block title %}Abonnement | Aksjeradar{% endblock %}
+
+{% block styles %}
+<style>
+/* Pricing page specific styles */
+.pricing-hero {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    /* Ensure text has good contrast */
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.pricing-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.pricing-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.pricing-hero h1,
+.pricing-hero p,
+.pricing-hero .lead {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.pricing-hero .badge {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.pricing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.pricing-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    background: #ffffff;
+    /* Ensure pricing card text is dark on white background */
+    color: #212529;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.pricing-card.featured {
+    border: 3px solid #0d6efd;
+    transform: scale(1.05);
+    position: relative;
+    z-index: 10;
+}
+
+.pricing-card.featured .card-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.price-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+}
+
+.feature-list li i {
+    color: #28a745;
+    margin-right: 0.5rem;
+}
+
+.discount-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #dc3545;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .pricing-card.featured {
+        transform: none;
+        margin-bottom: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="pricing-hero py-5 text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Velg ditt abonnement</h1>
+                <p class="lead mb-4">Få tilgang til Norges mest avanserte aksjeplattform og AI-drevne analyser</p>
+                <div class="d-flex justify-content-center align-items-center mb-4">
+                    <span class="badge bg-dark text-white fs-6 px-3 py-2">
+                        <i class="bi bi-shield-check me-2"></i>30 dagers pengene tilbake garanti
+                    </span>
+                </div>
+                <!-- Tydelig forklaring av abonnementsmodellen -->
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <strong>Alle abonnement gir full tilgang til alle funksjoner</strong> - velg bare den betalingsperioden som passer deg best.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pricing-container py-5">
+    <div class="container">
+    {% if trial_remaining %}
+        <div class="alert alert-info text-center mb-5">
+            <h5><i class="bi bi-clock me-2"></i>Du har {{ trial_remaining }} dager igjen av din prøveperiode.</h5>
+        </div>
+    {% endif %}
+    
+    <!-- Referral Discount Banner -->
+    {% if current_user.is_authenticated and current_user.has_referral_discount() %}
+    <div class="alert alert-success border-0 shadow-sm mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4 class="alert-heading mb-2">
+                    <i class="bi bi-gift-fill"></i> Gratulerer! Du har rabatt tilgjengelig!
+                </h4>
+                <p class="mb-2">
+                    Du har <strong>20% rabatt</strong> på årlig abonnement takket være dine vellykkede referrals.
+                    Pris blir kun <strong class="text-success">2799 kr</strong> i stedet for 3499 kr!
+                </p>
+                <small class="text-muted">
+                    <i class="bi bi-clock"></i> Rabatten utløper om {{ current_user.get_available_referral_discounts()[0].expires_at.strftime('%d.%m.%Y') if current_user.get_available_referral_discounts() else 'ett år' }}
+                </small>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="badge bg-success fs-6 p-3">
+                    <i class="bi bi-percent"></i> 20% RABATT<br>
+                    <small>Kun på årlig abonnement</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif current_user.is_authenticated %}
+    <div class="alert alert-info border-0 mb-5 text-center">
+        <h5 class="mb-2">
+            <i class="bi bi-people"></i> Vil du spare penger?
+        </h5>
+        <p class="mb-3">
+            Inviter venner og få <strong>20% rabatt</strong> på årlig abonnement for hver venn som tegner abonnement!
+        </p>
+        <a href="{{ url_for('main.referrals') }}" class="btn btn-info">
+            <i class="bi bi-share"></i> Referér venner
+        </a>
+    </div>
+    {% endif %}
+    
+    <!-- Pricing Cards -->
+    <div class="row justify-content-center g-4 mb-5">
+        <!-- Basic Monthly -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-2">Basic</h3>
+                    <p class="text-muted mb-0">Perfekt for nybegynnere</p>
+                </div>
+                <div class="card-body d-flex flex-column text-center p-4">
+                    <div class="mb-4">
+                        <span class="price-amount">199</span>
+                        <span class="price-period">kr/måned</span>
+                    </div>
+                    <ul class="feature-list mb-4 text-start">
+                        <li><i class="bi bi-check-circle-fill"></i> Ubegrensede aksje-analyser</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Full AI-analyse med signaler</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Avansert porteføljeanalyse</li>
+                        <li><i class="bi bi-check-circle-fill"></i> E-postvarsler og ukentlig rapport</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Watchlist inntil 50 aksjer</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Discord/Slack-integrasjon</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <form action="{{ url_for('main.create_checkout_session') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="subscription_type" value="basic">
+                            <button type="submit" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="bi bi-credit-card me-2"></i>Velg Basic
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pro Monthly - Featured -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card featured position-relative">
+                <div class="discount-badge">POPULÆR</div>
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-2 text-white">Pro</h3>
+                    <p class="text-white-50 mb-0">For seriøse investorer</p>
+                </div>
+                <div class="card-body d-flex flex-column text-center p-4">
+                    <div class="mb-4">
+                        <span class="price-amount">399</span>
+                        <span class="price-period">kr/måned</span>
+                    </div>
+                    <ul class="feature-list mb-4 text-start">
+                        <li><i class="bi bi-check-circle-fill"></i> Alt fra Basic +</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Avansert backtest og strategibygger</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Monte Carlo-simulering</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Ubegrenset watchlist</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Prioritert AI-prosessering</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Konsulent-rapporter (2/måned gratis)</li>
+                        <li><i class="bi bi-check-circle-fill"></i> API-tilgang</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <form action="{{ url_for('main.create_checkout_session') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="subscription_type" value="pro">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-credit-card me-2"></i>Velg Pro
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pro Yearly -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card position-relative">
+                <div class="discount-badge">SPAR 27%</div>
+                <div class="card-header text-center py-4 bg-success text-white">
+                    <h3 class="mb-2">Pro Årlig</h3>
+                    <p class="text-white-50 mb-0">Beste verdi</p>
+                </div>
+                <div class="card-body d-flex flex-column text-center p-4">
+                    <div class="mb-4">
+                        <span class="price-amount text-success">3499</span>
+                        <span class="price-period">kr/år</span>
+                        <div class="small text-muted">
+                            <del>4788 kr</del> - Du sparer 1289 kr
+                        </div>
+                    </div>
+                    <ul class="feature-list mb-4 text-start">
+                        <li><i class="bi bi-check-circle-fill"></i> Alt fra Pro månedlig</li>
+                        <li><i class="bi bi-check-circle-fill"></i> 27% rabatt vs månedlig</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Prioritert kundesupport</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Eksklusive webinarer</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Beta-tilgang til nye funksjoner</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Kvartalsvis markedsrapport</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <form action="{{ url_for('main.create_checkout_session') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="subscription_type" value="yearly">
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="bi bi-credit-card me-2"></i>Velg Årlig
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Pricing Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white text-center">
+                    <h3><i class="bi bi-people-fill"></i> Team-abonnement</h3>
+                    <p class="mb-0">For bedrifter og team som ønsker tilgang for flere brukere</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Spesialtilpassede løsninger for teams</h4>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Rabatter fra 3+ brukere</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Sentralisert fakturering</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Team-dashboards og deling</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Prioritert support</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Opplæring og onboarding</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Fleksible betalingsvilkår</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light p-4 rounded">
+                                <h5 class="text-primary">Fra 10% rabatt</h5>
+                                <p class="small text-muted">3-5 brukere: 10% rabatt<br>
+                                6-10 brukere: 15% rabatt<br>
+                                11+ brukere: 20% rabatt</p>
+                                <a href="{{ url_for('main.contact') }}" class="btn btn-info btn-lg">
+                                    <i class="bi bi-envelope"></i> Kontakt oss
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Vanlige spørsmål</h3>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Hva er inkludert i abonnementet?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="faqOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Abonnementet gir deg full tilgang til alle funksjoner i Aksjeradar, inkludert AI-drevet aksjeanalyse, tekniske analyser, porteføljestyring, anbefalinger og historiske data.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Kan jeg avbryte abonnementet?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Månedlig og årlig abonnement kan enkelt avbrytes når som helst. Abonnementet blir automatisk fornyet hver måned ved valg av månedlig abbonement, og hvert år ved valg av årlig abbonement. (Med mindre du har sagt opp før det har gått 1 år).
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Hvilke betalingsmetoder aksepterer dere?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Vi aksepterer alle Visa, større kredittkort, og debetkort.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Hva skjer med mine data hvis jeg avbryter abonnementet?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="faqFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Dine data vil bli lagret i 30 dager etter at abonnementet er kansellert. Du kan gjenoppta abonnementet i løpet av denne perioden for å få tilgang til dataene dine igjen.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert alert-warning mt-4">
+        <strong>Merk:</strong> Alle abonnement fornyes automatisk. Du kan når som helst si opp via Stripe eller ved å kontakte oss.
+    </div>
+    </div>
+</div>
+{% endblock %}
+
