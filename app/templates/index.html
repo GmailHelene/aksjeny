@@ -58,9 +58,8 @@
                 <li class="list-group-item">✔ Prioritert support</li>
             </ul>
             <div class="mb-3">
-                <span class="badge bg-primary fs-6 me-2">Basic: 199 kr/mnd</span>
                 <span class="badge bg-info fs-6 me-2">Pro: 399 kr/mnd</span>
-                <span class="badge bg-success fs-6">Årlig Pro: 3499 kr/år</span>
+                <span class="badge bg-success fs-6">Årlig Pro: 2999 kr/år</span>
             </div>
             <a href="{{ url_for('main.subscription') }}" class="btn btn-lg btn-primary">Se abonnement og kjøp tilgang</a>
         </div>
@@ -1007,8 +1006,8 @@
                         <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-primary btn-lg">Min portefølje</a>
                         <a href="{{ url_for('analysis.index') }}" class="btn btn-outline-light btn-lg">Analyseverktøy</a>
                     {% else %}
-                        <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">Registrer deg</a>
-                        <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg">Logg inn</a>
+                        <a href="{{ url_for('main.register') }}" class="btn btn-light btn-lg" style="color: #212529 !important; background-color: #f8f9fa !important; border-color: #f8f9fa !important; font-weight: bold;">Registrer deg</a>
+                        <a href="{{ url_for('main.login') }}" class="btn btn-light btn-lg" style="color: #212529 !important; background-color: #f8f9fa !important; border-color: #f8f9fa !important; font-weight: bold;">Logg inn</a>
                     {% endif %}
                 </div>
             </div>

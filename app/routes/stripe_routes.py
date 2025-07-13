@@ -43,10 +43,13 @@ def create_checkout_session():
 
     price_id = None
     mode = 'subscription'
-    if subscription_type == 'monthly':
+    if subscription_type == 'pro' or subscription_type == 'monthly':
         price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
     elif subscription_type == 'yearly':
         price_id = current_app.config['STRIPE_YEARLY_PRICE_ID']
+    elif subscription_type == 'basic':
+        # For backward compatibility - redirect basic to pro
+        price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
     elif subscription_type == 'lifetime':
         price_id = current_app.config['STRIPE_LIFETIME_PRICE_ID']
         mode = 'payment'
@@ -73,7 +76,7 @@ def create_checkout_session():
             }],
             mode=mode,
             success_url=request.host_url.rstrip('/') + url_for('stripe.payment_success') + '?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=request.host_url.rstrip('/') + url_for('main.subscription_plans'),
+            cancel_url=request.host_url.rstrip('/') + url_for('main.subscription'),
             metadata={
                 'user_id': current_user.id,
                 'subscription_type': subscription_type
@@ -98,7 +101,7 @@ def payment_success():
         
         # Update user's subscription status based on subscription type
         subscription_type = checkout_session.metadata.get('subscription_type')
-        if subscription_type == 'monthly':
+        if subscription_type in ['monthly', 'pro', 'basic']:
             current_user.has_subscription = True
             current_user.subscription_type = 'monthly'
             current_user.subscription_start = datetime.utcnow()

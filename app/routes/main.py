@@ -701,16 +701,7 @@ def privacy_policy():
 @main.route('/subscription/')
 def subscription():
     """Subscription page"""
-    return jsonify({
-        'status': 'OK',
-        'page': 'subscription',
-        'message': 'Abonnement-side fungerer!',
-        'plans': [
-            {'name': 'Basic', 'price': '199 kr/mnd'},
-            {'name': 'Pro', 'price': '399 kr/mnd'},
-            {'name': 'Pro Årlig', 'price': '3499 kr/år'}
-        ]
-    })
+    return render_template('subscription.html')
 
 @main.route('/profile')
 @main.route('/profile/')
