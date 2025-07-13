@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 # Import backup column handling
 try:
-    from models.backup_columns import add_missing_column_properties
+    from .backup_columns import add_missing_column_properties
     add_missing_column_properties()
 except:
     pass  # Fail silently if backup not available

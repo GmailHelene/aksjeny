@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g
-from app.config import config
+from .config import config
 from .extensions import db, login_manager, mail
 from flask_wtf.csrf import CSRFProtect, CSRFError
 import os
@@ -107,6 +107,21 @@ def create_app(config_name='default'):
         raise
 
 def register_blueprints(app):
+    # Debug: Log all registered endpoints after blueprints
+    try:
+        for rule in app.url_map.iter_rules():
+            app.logger.info(f"Endpoint: {rule.endpoint} -> {rule}")
+    except Exception as e:
+        app.logger.error(f"Error listing endpoints: {e}")
+    # Register watchlist_advanced blueprint with url_prefix='/watchlist' (after blueprints_registered is defined)
+    blueprints_registered = []
+    try:
+        from .routes.watchlist_advanced import watchlist_bp
+        app.register_blueprint(watchlist_bp, url_prefix='/watchlist')
+        blueprints_registered.append('watchlist_advanced')
+        app.logger.info("✅ Registered watchlist_advanced blueprint with /watchlist prefix")
+    except ImportError as e:
+        app.logger.warning(f"Could not import watchlist_advanced blueprint: {e}")
     """Register all blueprints"""
     blueprints_registered = []
     

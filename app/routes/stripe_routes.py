@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, request, jsonify, session, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from ..models.user import User
 from ..extensions import db
 from datetime import datetime, timedelta
@@ -35,6 +35,7 @@ def on_register(state):
         # Don't raise - allow app to start without Stripe
 
 @stripe_bp.route('/create-checkout-session', methods=['POST'])
+@login_required
 def create_checkout_session():
     """Create a Stripe checkout session for subscription purchase"""
     subscription_type = request.form.get('subscription_type')
@@ -57,15 +58,17 @@ def create_checkout_session():
         return jsonify({'error': 'Invalid subscription type'}), 400
 
     try:
+        # Ekstra defensiv sjekk for innlogget bruker
+        if not hasattr(current_user, 'id') or not hasattr(current_user, 'email'):
+            return jsonify({'error': 'Du må være innlogget for å kjøpe abonnement.'}), 401
         # Create or retrieve Stripe customer
-        if not current_user.stripe_customer_id:
+        if not getattr(current_user, 'stripe_customer_id', None):
             customer = stripe.Customer.create(
                 email=current_user.email,
                 metadata={'user_id': current_user.id}
             )
             current_user.stripe_customer_id = customer.id
             db.session.commit()
-        
         # Create checkout session
         session = stripe.checkout.Session.create(
             customer=current_user.stripe_customer_id,
@@ -82,11 +85,10 @@ def create_checkout_session():
                 'subscription_type': subscription_type
             }
         )
-        
         return jsonify({'sessionId': session.id})
     except Exception as e:
         current_app.logger.error(f'Failed to create checkout session: {str(e)}')
-        return jsonify({'error': 'Failed to create checkout session'}), 500
+        return jsonify({'error': 'Failed to opprette Stripe checkout session: ' + str(e)}), 500
 
 @stripe_bp.route('/payment/success')
 def payment_success():

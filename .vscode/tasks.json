@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Restart Flask dev server",
+			"command": "pkill -f flask || pkill -f gunicorn || true && FLASK_APP=app.main flask run --reload --port=5000",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,3 +1,4 @@
+    {% include 'cookie_banner.html' %}
 <!DOCTYPE html>
 <html lang="{{ current_language or 'no' }}">
 <head>
@@ -125,69 +126,39 @@
                             <i class="bi bi-house"></i> Hjem
                         </a>
                     </li>
-                    
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('portfolio.portfolio_index') }}">
-                                <i class="bi bi-briefcase"></i> Portefølje
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/profile"><i class="bi bi-person-circle"></i> Min profil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/watchlist"><i class="bi bi-star"></i> Favoritter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=oslo"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=global"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=crypto"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/stocks/list/currency"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-graph-up"></i> Analyse
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="analysisDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}">
-                                    <i class="bi bi-grid"></i> Analyseoversikt
-                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}"><i class="bi bi-grid"></i> Analyseoversikt</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.technical', ticker='AAPL') }}">
-                                    <i class="bi bi-graph-down"></i> Teknisk Analyse
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.ai') }}">
-                                    <i class="bi bi-robot"></i> KI-Analyse
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}">
-                                    <i class="bi bi-lightbulb"></i> Warren Buffett Analyse
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}">
-                                    <i class="bi bi-book"></i> Benjamin Graham Analyse
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}">
-                                    <i class="bi bi-arrow-down-circle"></i> Short-Analyse
-                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.technical', ticker='AAPL') }}"><i class="bi bi-graph-down"></i> Teknisk Analyse</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.ai') }}"><i class="bi bi-robot"></i> KI-Analyse</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}"><i class="bi bi-lightbulb"></i> Warren Buffett Analyse</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}"><i class="bi bi-book"></i> Benjamin Graham Analyse</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}"><i class="bi bi-arrow-down-circle"></i> Short-Analyse</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}">
-                                    <i class="bi bi-globe"></i> Markedsoversikt
-                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}"><i class="bi bi-globe"></i> Markedsoversikt</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.logout') }}">
-                                <i class="bi bi-box-arrow-right"></i> Logg ut
-                            </a>
-                        </li>
+                        {% if current_user.is_pro %}
+                            <li class="nav-item"><a class="nav-link" href="/pro-tools"><i class="bi bi-tools"></i> Pro-verktøy</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/advanced-analysis"><i class="bi bi-bar-chart-steps"></i> Avansert analyse</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Logg ut</a></li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.demo') }}">
-                                <i class="bi bi-eye"></i> Demo
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.pricing') }}">
-                                <i class="bi bi-tag"></i> Priser
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.login') }}">
-                                <i class="bi bi-box-arrow-in-right"></i> Logg inn
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary text-white ms-2" href="{{ url_for('main.register') }}">
-                                <i class="bi bi-person-plus"></i> Registrer
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.demo') }}"><i class="bi bi-eye"></i> Demo</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.pricing') }}"><i class="bi bi-tag"></i> Priser</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.login') }}"><i class="bi bi-box-arrow-in-right"></i> Logg inn</a></li>
+                        <li class="nav-item"><a class="nav-link btn btn-primary text-white ms-2" href="{{ url_for('main.register') }}"><i class="bi bi-person-plus"></i> Registrer</a></li>
                     {% endif %}
                 </ul>
             </div>

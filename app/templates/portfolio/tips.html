@@ -170,7 +170,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{{ url_for('portfolio.stock_tips_feedback', tip_id=tip.id) }}" method="post">
+          <form action="{{ url_for('portfolio.tip_feedback', tip_id=tip.id) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}"/>
             <div class="mb-3">
               <label for="feedback{{ tip.id }}" class="form-label">Din tilbakemelding:</label>

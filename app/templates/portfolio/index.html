@@ -13,7 +13,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h5 class="card-title">Total porteføljeverdi</h5>
-          <p class="display-6">{{ total_value|round(2) }} kr</p>
+          <p class="display-6">{{ (total_value|default(0))|round(2) }} kr</p>
         </div>
       </div>
     </div>
@@ -21,7 +21,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h5 class="card-title">Samlet gevinst/tap</h5>
-          <p class="display-6">{{ total_profit_loss|round(2) }} kr</p>
+          <p class="display-6">{{ (total_profit_loss|default(0))|round(2) }} kr</p>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
     <div class="card mb-4">
       <div class="card-header">
         <h2>{{ portfolio.name }}</h2>
-        <p>Total verdi: {{ total_value|round(2) }} NOK</p>
+        <p>Total verdi: {{ (total_value|default(0))|round(2) }} NOK</p>
       </div>
       <div class="card-body">
         <div class="table-responsive">

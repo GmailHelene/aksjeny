@@ -4,7 +4,8 @@
 
 {% block content %}
 
-{% if show_banner %}
+{% set exempt_emails = ['helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'] %}
+{% if show_banner and request.endpoint not in ['main.login', 'main.subscription'] and not (current_user.is_authenticated and (current_user.has_active_subscription() or current_user.email in exempt_emails)) %}
 <!-- Trial Expired Banner -->
 <div class="alert alert-warning alert-dismissible fade show m-0 rounded-0" role="alert" style="border-left: 5px solid #ffc107;">
     <div class="container">
@@ -138,12 +139,23 @@
     <div class="container">
         <h2 class="text-center mb-5">Markedsoversikt</h2>
         <div class="row g-4 mb-5">
+            <!-- Dynamiske market-cards -->
             <div class="col-md-3">
                 <div class="card h-100 market-card-oslo" data-market="oslo">
                     <div class="card-body">
-                        <h3 class="card-title">Oslo Børs</h3>
-                        <div class="placeholder-glow">
-                            <span class="placeholder col-6"></span>
+                        <h3 class="card-title">Oslo Børs
+                            {% if oslo_open %}
+                                <span class="badge bg-success ms-2">ÅPEN</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">STENGT</span>
+                            {% endif %}
+                        </h3>
+                        <div>
+                            <span class="fw-bold">OSEBX:</span>
+                            <span class="index-price">{{ oslo_stocks['EQNR.OL'].last_price if oslo_stocks and 'EQNR.OL' in oslo_stocks else 'N/A' }}</span>
+                            <span class="avg-change {% if oslo_stocks and 'EQNR.OL' in oslo_stocks and oslo_stocks['EQNR.OL'].change_percent > 0 %}text-success{% elif oslo_stocks and 'EQNR.OL' in oslo_stocks and oslo_stocks['EQNR.OL'].change_percent < 0 %}text-danger{% endif %}">
+                                {{ oslo_stocks['EQNR.OL'].change_percent if oslo_stocks and 'EQNR.OL' in oslo_stocks else '' }}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -151,9 +163,19 @@
             <div class="col-md-3">
                 <div class="card h-100 market-card-global" data-market="global">
                     <div class="card-body">
-                        <h3 class="card-title">Globale Aksjer</h3>
-                        <div class="placeholder-glow">
-                            <span class="placeholder col-6"></span>
+                        <h3 class="card-title">Globale Aksjer
+                            {% if global_open %}
+                                <span class="badge bg-success ms-2">ÅPEN</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">STENGT</span>
+                            {% endif %}
+                        </h3>
+                        <div>
+                            <span class="fw-bold">NVDA:</span>
+                            <span class="index-price">{{ global_stocks['NVDA'].last_price if global_stocks and 'NVDA' in global_stocks else 'N/A' }}</span>
+                            <span class="avg-change {% if global_stocks and 'NVDA' in global_stocks and global_stocks['NVDA'].change_percent > 0 %}text-success{% elif global_stocks and 'NVDA' in global_stocks and global_stocks['NVDA'].change_percent < 0 %}text-danger{% endif %}">
+                                {{ global_stocks['NVDA'].change_percent if global_stocks and 'NVDA' in global_stocks else '' }}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -162,8 +184,12 @@
                 <div class="card h-100 market-card-crypto" data-market="crypto">
                     <div class="card-body">
                         <h3 class="card-title">Krypto</h3>
-                        <div class="placeholder-glow">
-                            <span class="placeholder col-6"></span>
+                        <div>
+                            <span class="fw-bold">BTC-USD:</span>
+                            <span class="index-price">{{ crypto['BTC-USD'].last_price if crypto and 'BTC-USD' in crypto else 'N/A' }}</span>
+                            <span class="avg-change {% if crypto and 'BTC-USD' in crypto and crypto['BTC-USD'].change_percent > 0 %}text-success{% elif crypto and 'BTC-USD' in crypto and crypto['BTC-USD'].change_percent < 0 %}text-danger{% endif %}">
+                                {{ crypto['BTC-USD'].change_percent if crypto and 'BTC-USD' in crypto else '' }}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -172,13 +198,101 @@
                 <div class="card h-100 market-card-currency" data-market="currency">
                     <div class="card-body">
                         <h3 class="card-title">Valuta</h3>
-                        <p class="small text-muted mb-1">USD/NOK</p>
-                        <div class="placeholder-glow">
-                            <span class="placeholder col-6"></span>
+                        <div>
+                            <span class="fw-bold">USD/NOK:</span>
+                            <span class="index-price">{{ currency['USDNOK=X'].last_price if currency and 'USDNOK=X' in currency else 'N/A' }}</span>
+                            <span class="avg-change {% if currency and 'USDNOK=X' in currency and currency['USDNOK=X'].change_percent > 0 %}text-success{% elif currency and 'USDNOK=X' in currency and currency['USDNOK=X'].change_percent < 0 %}text-danger{% endif %}">
+                                {{ currency['USDNOK=X'].change_percent if currency and 'USDNOK=X' in currency else '' }}%
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+        <!-- Krypto og Valuta tabeller -->
+        <div class="row mb-5">
+            <!-- Krypto -->
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow h-100">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">Kryptovaluta</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Ticker</th>
+                                        <th>Pris</th>
+                                        <th>+/-</th>
+                                        <th>Signal</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-market="crypto">
+                                    {% for ticker, coin in crypto.items() %}
+                                    <tr data-ticker="{{ ticker }}" data-category="crypto">
+                                        <td><a href="#" class="text-decoration-none">{{ ticker }}</a></td>
+                                        <td class="price-cell" data-price="{{ coin.last_price }}">{{ coin.last_price }}</td>
+                                        <td class="change-cell {% if coin.change_percent > 0 %}text-success{% elif coin.change_percent < 0 %}text-danger{% endif %}" data-change="{{ coin.change_percent }}">
+                                            {{ coin.change_percent }}%
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if coin.signal == 'BUY' %}bg-success{% elif coin.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}" data-bs-toggle="tooltip" title="Signal basert på teknisk analyse">
+                                                {{ coin.signal }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-sm btn-outline-warning">Vis alle</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Valuta -->
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow h-100">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">Valutakurser</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Ticker</th>
+                                        <th>Pris</th>
+                                        <th>+/-</th>
+                                        <th>Signal</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-market="currency">
+                                    {% for ticker, cur in currency.items() %}
+                                    <tr data-ticker="{{ ticker }}" data-category="currency">
+                                        <td>{{ ticker }}</td>
+                                        <td class="price-cell" data-price="{{ cur.last_price }}">{{ cur.last_price }}</td>
+                                        <td class="change-cell {% if cur.change_percent > 0 %}text-success{% elif cur.change_percent < 0 %}text-danger{% endif %}" data-change="{{ cur.change_percent }}">
+                                            {{ cur.change_percent }}%
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if cur.signal == 'BUY' %}bg-success{% elif cur.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}" data-bs-toggle="tooltip" title="Signal basert på teknisk analyse">
+                                                {{ cur.signal }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="{{ url_for('stocks.list_currency') }}" class="btn btn-sm btn-outline-info">Vis alle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
         
         <!-- Oslo Børs -->

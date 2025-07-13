@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from flask_login import login_required, current_user
-from app.models import Portfolio, PortfolioStock, StockTip, Watchlist, WatchlistStock
-from app.extensions import db
-from app.utils.access_control import access_required
-from app.utils.error_handler import (
+
+from ..models import Portfolio, PortfolioStock, StockTip, Watchlist, WatchlistStock
+from ..extensions import db
+from ..utils.access_control import access_required
+from ..utils.error_handler import (
     handle_api_error, format_number_norwegian, format_currency_norwegian,
     format_percentage_norwegian, safe_api_call, validate_stock_symbol,
     validate_quantity, UserFriendlyError

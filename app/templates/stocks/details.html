@@ -24,25 +24,71 @@
                             <p class="text-muted mb-0">{{ ticker }}</p>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <h3 class="mb-0">
-                                {% if stock_info and stock_info.get('regularMarketPrice') %}
-                                    {% if stock_info.get('currency') == 'NOK' %}
-                                        {{ stock_info.get('regularMarketPrice')|nn(2, 'kr') }}
-                                    {% elif stock_info.get('currency') == 'USD' %}
-                                        {{ stock_info.get('regularMarketPrice')|nn(2, '$') }}
+                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                <h3 class="mb-0">
+                                    {% if stock_info and stock_info.get('regularMarketPrice') %}
+                                        {% if stock_info.get('currency') == 'NOK' %}
+                                            {{ stock_info.get('regularMarketPrice')|nn(2, 'kr') }}
+                                        {% elif stock_info.get('currency') == 'USD' %}
+                                            {{ stock_info.get('regularMarketPrice')|nn(2, '$') }}
+                                        {% else %}
+                                            {{ stock_info.get('regularMarketPrice')|nn(2, stock_info.get('currency', '')) }}
+                                        {% endif %}
                                     {% else %}
-                                        {{ stock_info.get('regularMarketPrice')|nn(2, stock_info.get('currency', '')) }}
+                                        -
                                     {% endif %}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </h3>
+                                </h3>
+                                <!-- Favoritt/stjerne-knapp -->
+                                <button id="favorite-btn" class="btn btn-link p-0 ms-2" title="Legg til/fjern favoritt" style="font-size: 2rem; color: #f5c518;">
+                                    <i id="favorite-icon" class="bi bi-star"></i>
+                                </button>
+                            </div>
                             <p class="mb-0 {{ 'text-success' if stock_info and stock_info.get('regularMarketChangePercent', 0) > 0 else 'text-danger' }}">
                                 {% if stock_info %}
                                     {{ stock_info.get('regularMarketChange', 0)|nn(2) }}
                                     ({{ stock_info.get('regularMarketChangePercent', 0)|pct }})
                                 {% endif %}
                             </p>
+<script>
+// Favoritt/stjerne-funksjonalitet
+document.addEventListener('DOMContentLoaded', function() {
+    const ticker = "{{ ticker }}";
+    const btn = document.getElementById('favorite-btn');
+    const icon = document.getElementById('favorite-icon');
+    let isFavorite = false;
+
+    function updateIcon() {
+        icon.className = isFavorite ? 'bi bi-star-fill' : 'bi bi-star';
+        btn.title = isFavorite ? 'Fjern fra favoritter' : 'Legg til i favoritter';
+    }
+
+    // Hent status
+    fetch(`/watchlist/api/favorite/${ticker}`)
+        .then(r => r.json())
+        .then(data => {
+            isFavorite = data.favorite;
+            updateIcon();
+        });
+
+    btn.addEventListener('click', function() {
+        if (!isFavorite) {
+            fetch(`/watchlist/api/favorite/${ticker}`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    isFavorite = true;
+                    updateIcon();
+                });
+        } else {
+            fetch(`/watchlist/api/favorite/${ticker}`, {method: 'DELETE'})
+                .then(r => r.json())
+                .then(data => {
+                    isFavorite = false;
+                    updateIcon();
+                });
+        }
+    });
+});
+</script>
                         </div>
                     </div>
                     

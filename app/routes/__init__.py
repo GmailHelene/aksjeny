@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from app.config import config
-from app.extensions import db, login_manager, mail
+from ..config import config
+from ..extensions import db, login_manager, mail
 from flask_wtf.csrf import CSRFProtect, CSRFError
 import os
 import time

@@ -1,3 +1,9 @@
+from flask_login import login_required
+# Min profil-side
+@stocks.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
 import math
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from flask_login import current_user
@@ -88,32 +94,42 @@ def details(ticker):
     """Stock details page"""
     try:
         from app.services.data_service import DataService
-        
         stock_data = DataService.get_stock_info(ticker)
-        if not stock_data:
-            flash(f'Kunne ikke finne informasjon om {ticker}', 'warning')
-            return redirect(url_for('stocks.index'))
-        
+        # If still no info, use a generic fallback
+        if not stock_data or not isinstance(stock_data, dict) or len(stock_data) < 2:
+            stock_data = DataService.get_fallback_stock_info(ticker)
+        # Defensive: ensure required fields
+        if 'ticker' not in stock_data:
+            stock_data['ticker'] = ticker
+        if 'shortName' not in stock_data:
+            stock_data['shortName'] = ticker
+        if 'longName' not in stock_data:
+            stock_data['longName'] = ticker
         # Get additional data
         try:
             from app.services.analysis_service import AnalysisService
             technical_data = AnalysisService.get_technical_analysis(ticker)
         except Exception:
             technical_data = {}
-        
         # Get news data (placeholder)
         news = []
-        
         return render_template('stocks/details.html',
                              ticker=ticker,
                              stock=stock_data,
+                             stock_info=stock_data,
                              technical=technical_data,
                              news=news,
                              last_updated=datetime.utcnow())
     except Exception as e:
         current_app.logger.error(f"Error loading stock details for {ticker}: {e}")
-        flash('Kunne ikke laste aksjedetaljer. Prøv igjen senere.', 'error')
-        return redirect(url_for('stocks.index'))
+        return render_template('stocks/details.html',
+                             ticker=ticker,
+                             stock=None,
+                             stock_info=None,
+                             technical={},
+                             news=[],
+                             last_updated=datetime.utcnow(),
+                             error='Kunne ikke laste aksjedetaljer. Prøv igjen senere.')
 
 @stocks.route('/search')
 @access_required
@@ -264,56 +280,6 @@ def api_stock(ticker):
     except Exception as e:
         current_app.logger.error(f"Error in stock API for {ticker}: {str(e)}")
         return jsonify({'error': 'Kunne ikke hente aksjedata'}), 500
-
-@stocks.route('/compare')
-@access_required
-def compare():
-    """Compare multiple stocks"""
-    try:
-        tickers = request.args.getlist('ticker')
-        if not tickers:
-            return render_template('stocks/compare.html')
-        
-        stocks_data = {}
-        for ticker in tickers:
-            try:
-                stock_info = DataService.get_stock_info(ticker)
-                stock_data = DataService.get_stock_data(ticker, period='6mo', interval='1d')
-                
-                # Convert DataFrame to list for template
-                chart_data = []
-                if not stock_data.empty:
-                    stock_data_reset = stock_data.reset_index()
-                    for _, row in stock_data_reset.iterrows():
-                        chart_data.append({
-                            'Date': row['Date'].strftime('%Y-%m-%d') if hasattr(row['Date'], 'strftime') else str(row['Date']),
-                            'Close': float(row['Close'])
-                        })
-                
-                stocks_data[ticker] = {
-                    'info': stock_info,
-                    'data': chart_data
-                }
-            except Exception as e:
-                current_app.logger.error(f"Error getting data for {ticker}: {str(e)}")
-        
-        return render_template(
-            'stocks/compare.html',
-            stocks=stocks_data,
-            tickers=tickers
-        )
-    except Exception as e:
-        current_app.logger.error(f"Error in stock comparison: {str(e)}")
-        flash("Kunne ikke sammenligne aksjene. Vennligst prøv igjen senere.", "error")
-        return render_template('stocks/compare.html')
-
-@stocks.route('/index')
-@access_required
-def stocks_index():
-    """Alias for index function"""
-    return render_template('stocks/index.html')
-
-# Removed duplicate routes - keeping only the first set
 
 @stocks.route('/compare')
 @access_required

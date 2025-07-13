@@ -1,0 +1,18 @@
+<!-- GDPR og cookies banner -->
+<div id="cookie-banner" class="alert alert-info alert-dismissible fade show fixed-bottom mb-0" role="alert" style="display:none;">
+  <div class="container d-flex justify-content-between align-items-center">
+    <span>
+      Vi bruker informasjonskapsler (cookies) for å forbedre din opplevelse og for å møte GDPR-krav. <a href="/gdpr" class="alert-link">Les mer</a>.
+    </span>
+    <button type="button" class="btn btn-primary btn-sm ms-3" id="accept-cookies">Godta</button>
+  </div>
+</div>
+<script>
+  if (!localStorage.getItem('cookiesAccepted')) {
+    document.getElementById('cookie-banner').style.display = 'block';
+  }
+  document.getElementById('accept-cookies').onclick = function() {
+    localStorage.setItem('cookiesAccepted', 'true');
+    document.getElementById('cookie-banner').style.display = 'none';
+  };
+</script>

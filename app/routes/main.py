@@ -1,4 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, make_response, jsonify, send_from_directory
+from ..utils.market_open import is_market_open
+
+main = Blueprint('main', __name__)
+
+# GDPR-side
+@main.route('/gdpr')
+def gdpr():
+    return render_template('gdpr.html')
 from flask_login import login_user, logout_user, login_required, current_user
 from ..extensions import db, login_manager
 from ..utils.subscription import subscription_required
@@ -423,7 +431,9 @@ def index():
         market_is_open=market_is_open,
         next_event_time=next_event_time,
         is_demo=is_demo_user(),
-        show_banner=show_banner)
+        show_banner=show_banner,
+        oslo_open=is_market_open('oslo'),
+        global_open=is_market_open('global'))
 
 @main.route('/demo')
 def demo():

@@ -3,6 +3,17 @@ from flask_login import current_user, login_required
 from ..services.analysis_service import AnalysisService
 from ..services.ai_service import AIService
 from ..services.data_service import DataService, OSLO_BORS_TICKERS, GLOBAL_TICKERS
+def get_all_available_stocks():
+    """Aggregate all available tickers from Oslo Børs, global, and crypto."""
+    oslo = DataService.get_oslo_bors_overview() or {}
+    global_ = DataService.get_global_stocks_overview() or {}
+    crypto = DataService.get_crypto_overview() or {}
+    # All dicts are {ticker: info}
+    all_stocks = {}
+    all_stocks.update(oslo)
+    all_stocks.update(global_)
+    all_stocks.update(crypto)
+    return list(all_stocks.keys())
 from ..services.usage_tracker import usage_tracker
 from ..utils.access_control import access_required
 import random
@@ -482,21 +493,18 @@ def market_overview():
 @access_required
 def warren_buffett():
     if request.method == 'GET':
-        available_stocks = DataService.get_available_stocks()
+        available_stocks = get_all_available_stocks()
         return render_template('analysis/warren-buffett.html', available_stocks=available_stocks)
-    
     # Handle POST request
     ticker = request.form.get('ticker')
     if not ticker:
         flash('Vennligst velg en aksje', 'error')
         return redirect(url_for('analysis.warren_buffett'))
-    
     stock_data = AnalysisService.get_buffett_analysis(ticker)
     if not stock_data:
         flash('Kunne ikke hente data for denne aksjen', 'error')
         return redirect(url_for('analysis.warren_buffett'))
-    
-    available_stocks = DataService.get_available_stocks()
+    available_stocks = get_all_available_stocks()
     return render_template('analysis/warren-buffett.html', 
                          stock_data=stock_data, 
                          available_stocks=available_stocks)
@@ -505,21 +513,18 @@ def warren_buffett():
 @access_required
 def benjamin_graham():
     if request.method == 'GET':
-        available_stocks = DataService.get_available_stocks()
+        available_stocks = get_all_available_stocks()
         return render_template('analysis/benjamin-graham.html', available_stocks=available_stocks)
-    
     # Handle POST request
     ticker = request.form.get('ticker')
     if not ticker:
         flash('Vennligst velg en aksje', 'error')
         return redirect(url_for('analysis.benjamin_graham'))
-    
     stock_data = AnalysisService.get_graham_analysis(ticker)
     if not stock_data:
         flash('Kunne ikke hente data for denne aksjen', 'error')
         return redirect(url_for('analysis.benjamin_graham'))
-    
-    available_stocks = DataService.get_available_stocks()
+    available_stocks = get_all_available_stocks()
     return render_template('analysis/benjamin-graham.html', 
                          stock_data=stock_data, 
                          available_stocks=available_stocks)
@@ -528,21 +533,18 @@ def benjamin_graham():
 @access_required
 def short_analysis():
     if request.method == 'GET':
-        available_stocks = DataService.get_available_stocks()
+        available_stocks = get_all_available_stocks()
         return render_template('analysis/short-analysis.html', available_stocks=available_stocks)
-    
     # Handle POST request
     ticker = request.form.get('ticker')
     if not ticker:
         flash('Vennligst velg en aksje', 'error')
         return redirect(url_for('analysis.short_analysis'))
-    
     stock_data = AnalysisService.get_short_analysis(ticker)
     if not stock_data:
         flash('Kunne ikke hente data for denne aksjen', 'error')
         return redirect(url_for('analysis.short_analysis'))
-    
-    available_stocks = DataService.get_available_stocks()
+    available_stocks = get_all_available_stocks()
     return render_template('analysis/short-analysis.html', 
                          stock_data=stock_data, 
                          available_stocks=available_stocks)

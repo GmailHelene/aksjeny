@@ -30,6 +30,10 @@ class TrialTimerManager {
         }
         this.initialized = true;
         
+        // DISABLED: Trial timer disabled as per user request
+        // No trial messages should be shown
+        return;
+        
         try {
             // Don't show timer on demo page - demo shows expired message instead
             if (window.location.pathname === '/demo') {
