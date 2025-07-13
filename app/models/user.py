@@ -53,10 +53,6 @@ class User(UserMixin, db.Model):
     last_reset_date = db.Column(db.DateTime, default=datetime.utcnow)  # Track monthly reset
     is_admin = db.Column(db.Boolean, default=False)  # Admin flag
     
-    # Password reset fields
-    reset_token = db.Column(db.String(100), nullable=True, default=None)
-    reset_token_expires = db.Column(db.DateTime, nullable=True, default=None)
-    
     def __repr__(self):
         return f'<User {self.username}>'
 

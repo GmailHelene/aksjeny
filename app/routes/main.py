@@ -817,3 +817,20 @@ def reset_password(token):
         flash('Passordet er oppdatert. Du kan nå logge inn.', 'success')
         return redirect(url_for('main.login'))
     return render_template('reset_password.html', form=form, token=token)
+
+@main.route('/api/trial-status')
+def api_trial_status():
+    """API endpoint for checking trial status"""
+    from ..utils.access_control import get_trial_status
+    
+    try:
+        # Always return that trial is expired and user needs subscription
+        return jsonify({
+            'trial_active': False,
+            'trial_expired': True,
+            'subscription_required': True,
+            'message': 'Trial period has ended. Please subscribe to continue using premium features.'
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error checking trial status: {e}")
+        return jsonify({'error': 'Unable to check trial status'}), 500

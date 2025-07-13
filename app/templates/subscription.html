@@ -156,11 +156,7 @@
 
 <div class="pricing-container py-5">
     <div class="container">
-    {% if trial_remaining %}
-        <div class="alert alert-info text-center mb-5">
-            <h5><i class="bi bi-clock me-2"></i>Du har {{ trial_remaining }} dager igjen av din prøveperiode.</h5>
-        </div>
-    {% endif %}
+    <!-- Trial period messaging removed -->
     
     <!-- Referral Discount Banner -->
     {% if current_user.is_authenticated and current_user.has_referral_discount() %}
