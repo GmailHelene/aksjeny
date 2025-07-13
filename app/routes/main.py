@@ -294,7 +294,6 @@ def before_request():
         return
 
 @main.route('/')
-@access_required
 def index():
     """Landing page"""
     # Market open/close info - lazy import pytz
@@ -391,6 +390,26 @@ def index():
         oslo_stocks = {}
         global_stocks = {}
     
+    # Determine if banner should be shown
+    EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
+    show_banner = False
+    try:
+        if current_user.is_authenticated:
+            # Exempt emails never see banners
+            if current_user.email in EXEMPT_EMAILS:
+                show_banner = False
+            elif hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription():
+                # Active subscription - no banner
+                show_banner = False
+            else:
+                # No subscription - hide banner (trial period removed)
+                show_banner = False
+        else:
+            # Not logged in - hide banner (trial period removed)
+            show_banner = False
+    except Exception:
+        show_banner = False
+
     return render_template('index.html',
         indices=indices,
         crypto=crypto_data,
@@ -404,7 +423,7 @@ def index():
         market_is_open=market_is_open,
         next_event_time=next_event_time,
         is_demo=is_demo_user(),
-        trial_active=is_trial_active())
+        show_banner=show_banner)
 
 @main.route('/demo')
 def demo():

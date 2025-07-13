@@ -39,7 +39,7 @@ def index():
     else:
         market_sentiment = "Nøytral"
 
-    # Determine if banner should be shown (same logic as in main.py)
+    # Determine if banner should be shown
     EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
     show_banner = False
     try:
@@ -50,61 +50,14 @@ def index():
             elif hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription():
                 # Active subscription - no banner
                 show_banner = False
-            elif hasattr(current_user, 'subscription_start') and current_user.subscription_start and datetime.utcnow() - current_user.subscription_start < timedelta(minutes=10):
-                # Active 10-minute trial - no banner
+            else:
+                # No subscription - hide banner (trial period removed)
                 show_banner = False
-            else:
-                # Check session-based trial for logged in users
-                trial_start = session.get('trial_start_time')
-                if trial_start:
-                    try:
-                        trial_start_dt = datetime.fromisoformat(trial_start)
-                        if datetime.utcnow() - trial_start_dt <= timedelta(minutes=10):
-                            # Active session trial - no banner
-                            show_banner = False
-                        else:
-                            # Expired trial
-                            show_banner = True
-                    except Exception:
-                        show_banner = True
-                else:
-                    # No trial, no subscription
-                    show_banner = True
         else:
-            # Not logged in - check cookie-based trial
-            trial_start = request.cookies.get('trial_start')
-            if trial_start:
-                from dateutil.parser import isoparse
-                try:
-                    trial_start_dt = isoparse(trial_start)
-                    if datetime.utcnow() - trial_start_dt < timedelta(minutes=10):
-                        # Active cookie trial - no banner
-                        show_banner = False
-                    else:
-                        # Expired trial
-                        show_banner = True
-                except Exception:
-                    show_banner = True
-            else:
-                # Check session trial for anonymous users
-                trial_start = session.get('trial_start_time')
-                if trial_start:
-                    try:
-                        trial_start_dt = datetime.fromisoformat(trial_start)
-                        if datetime.utcnow() - trial_start_dt <= timedelta(minutes=10):
-                            # Active session trial - no banner
-                            show_banner = False
-                        else:
-                            # Expired trial - show banner
-                            show_banner = True
-                    except Exception:
-                        # First visit - show banner
-                        show_banner = True
-                else:
-                    # First visit - show banner
-                    show_banner = True
+            # Not logged in - hide banner (trial period removed)
+            show_banner = False
     except Exception:
-        show_banner = True
+        show_banner = False
 
     return render_template(
         'analysis/index.html',

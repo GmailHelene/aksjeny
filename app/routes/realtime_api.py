@@ -45,7 +45,7 @@ def get_live_price(ticker):
             'error': 'Internal server error'
         }), 500
 
-@realtime_api.route('/api/realtime/market-summary')
+@realtime_api.route('/market-summary')
 @access_required
 def get_market_summary():
     """Get real-time market summary"""
