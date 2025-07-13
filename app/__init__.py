@@ -8,9 +8,23 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from flask_migrate import Migrate
 import logging
+import psutil
 
 # Load environment variables
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+try:
+    logger.info("✅ psutil module is available.")
+except ImportError:
+    logger.error("❌ psutil module is missing.")
+
+try:
+    import redis
+    logger.info("✅ Redis module is available.")
+except ImportError:
+    logger.error("❌ Redis module is missing.")
 
 def create_app(config_name='default'):
     """Production-ready app factory with Railway compatibility"""
