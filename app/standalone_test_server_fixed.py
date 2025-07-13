@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Standalone test server for aksjeradar appen - Oppdatert med Stripe endepunkter
+Standalone test server for aksjeradar appen - Oppdatert med Stripe endepunkter og glemt passord-funksjonalitet
 """
 import os
 import sys
+import uuid
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -14,10 +15,9 @@ import json
 import logging
 import hmac
 import hashlib
-import uuid
 
 # Definerer porten som en variabel for enklere endring
-PORT = 5002
+PORT = 5005  # Endret til en annen port for å unngå konflikter
 
 # Stripe configuration
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_your_stripe_test_key')
@@ -64,6 +64,8 @@ class User(db.Model):
     is_exempt = db.Column(db.Boolean, default=False)
     failed_payments = db.Column(db.Integer, default=0)
     customer_id = db.Column(db.String(255), nullable=True)  # Stripe customer ID
+    reset_token = db.Column(db.String(100), nullable=True)
+    reset_token_expiry = db.Column(db.DateTime, nullable=True)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -87,6 +89,25 @@ class User(db.Model):
         """Record the current time as last login"""
         self.last_login = datetime.now()
         db.session.commit()
+
+    def generate_reset_token(self):
+        """Generate a unique reset token and set its expiry to 24 hours from now"""
+        self.reset_token = str(uuid.uuid4())
+        self.reset_token_expiry = datetime.now() + timedelta(hours=24)
+        return self.reset_token
+
+    def validate_reset_token(self, token):
+        """Check if the token is valid and not expired"""
+        if self.reset_token != token:
+            return False
+        if self.reset_token_expiry < datetime.now():
+            return False
+        return True
+
+    def clear_reset_token(self):
+        """Clear the reset token after use"""
+        self.reset_token = None
+        self.reset_token_expiry = None
 
     @property
     def is_authenticated(self):
@@ -212,6 +233,8 @@ def index():
             '/portfolio',
             '/analysis',
             '/stocks',
+            '/forgot-password',
+            '/reset-password/<token>',
             '/api/health',
             '/api/version',
             '/api/subscription/status',
@@ -368,7 +391,8 @@ def login():
         'page': 'login',
         'message': 'Login-side fungerer!',
         'form_fields': ['username', 'password'],
-        'csrf_token': generate_csrf()
+        'csrf_token': generate_csrf(),
+        'forgot_password_link': '/forgot-password'
     })
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -438,6 +462,121 @@ def register():
         'form_fields': ['username', 'email', 'password', 'confirm_password'],
         'csrf_token': generate_csrf()
     })
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """Handle forgot password requests"""
+    if request.method == 'POST':
+        data = request.get_json() or request.form.to_dict()
+        email = data.get('email', '')
+        
+        # Logge gjenopprettingsforsøk
+        logger.info(f"Password reset requested for email: {email}")
+        
+        # Finn brukeren i databasen
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            # Generer en unik token for tilbakestilling av passord
+            reset_token = user.generate_reset_token()
+            db.session.commit()
+            
+            # I en reell implementasjon ville vi sendt en e-post med en lenke
+            # til tilbakestillingssiden med token
+            reset_link = f"{DOMAIN_URL}/reset-password/{reset_token}"
+            
+            # For testing, returner lenken i responsen
+            return jsonify({
+                'status': 'OK',
+                'message': 'Hvis e-postadressen finnes i vårt system, vil du motta instruksjoner for å tilbakestille passordet ditt.',
+                'test_reset_link': reset_link,
+                'note': 'Dette er kun for testing. I en virkelig implementasjon vil lenken sendes på e-post.'
+            })
+        else:
+            # Av sikkerhetsgrunner gir vi samme respons uavhengig av om brukeren finnes
+            logger.warning(f"Password reset requested for non-existent email: {email}")
+            
+            return jsonify({
+                'status': 'OK',
+                'message': 'Hvis e-postadressen finnes i vårt system, vil du motta instruksjoner for å tilbakestille passordet ditt.'
+            })
+    
+    # Vis gjenopprettingssiden (GET-forespørsel)
+    return jsonify({
+        'status': 'OK',
+        'page': 'forgot-password',
+        'message': 'Gjenopprett passord-side fungerer!',
+        'form_fields': ['email'],
+        'csrf_token': generate_csrf()
+    })
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """Handle password reset with token"""
+    # I en virkelig implementasjon ville vi validert token mot databasen
+    # og sjekket at den ikke er utløpt
+    
+    if request.method == 'POST':
+        data = request.get_json() or request.form.to_dict()
+        password = data.get('password', '')
+        confirm_password = data.get('confirm_password', '')
+        
+        # Valider input
+        if not password:
+            return jsonify({
+                'status': 'ERROR',
+                'message': 'Passord må fylles ut'
+            }), 400
+            
+        if password != confirm_password:
+            return jsonify({
+                'status': 'ERROR',
+                'message': 'Passordene må være like'
+            }), 400
+        
+        # Finn brukeren med den gitte token
+        user = User.query.filter_by(reset_token=token).first()
+        
+        if user and user.validate_reset_token(token):
+            # Oppdater passordet
+            user.set_password(password)
+            user.clear_reset_token()
+            db.session.commit()
+            
+            logger.info(f"Password reset successful for user: {user.username}")
+            
+            return jsonify({
+                'status': 'OK',
+                'message': 'Passordet ditt er oppdatert. Du kan nå logge inn med ditt nye passord.',
+                'redirect': '/login'
+            })
+        else:
+            logger.warning(f"Invalid password reset attempt with token: {token}")
+            
+            return jsonify({
+                'status': 'ERROR',
+                'message': 'Ugyldig eller utløpt token. Vennligst be om en ny tilbakestillingslenke.',
+                'redirect': '/forgot-password'
+            }), 400
+    
+    # GET request - vis tilbakestillingssiden
+    user = User.query.filter_by(reset_token=token).first()
+    
+    if user and user.validate_reset_token(token):
+        return jsonify({
+            'status': 'OK',
+            'page': 'reset-password',
+            'message': 'Tilbakestill passord-side fungerer!',
+            'token': token,
+            'form_fields': ['password', 'confirm_password'],
+            'csrf_token': generate_csrf()
+        })
+    else:
+        return jsonify({
+            'status': 'ERROR',
+            'message': 'Ugyldig eller utløpt token. Vennligst be om en ny tilbakestillingslenke.',
+            'redirect': '/forgot-password'
+        }), 400
 
 @app.route('/portfolio')
 def portfolio():
@@ -560,6 +699,7 @@ def logout():
         })
 
 @app.route('/stripe/create-checkout-session', methods=['POST'])
+@csrf.exempt  # Exempting CSRF for API endpoints
 def stripe_create_checkout_session():
     """Create a Stripe checkout session"""
     try:
@@ -622,6 +762,7 @@ def stripe_create_checkout_session():
         }), 500
 
 @app.route('/create-checkout-session', methods=['POST'])
+@csrf.exempt  # Exempting CSRF for API endpoints
 def main_create_checkout_session():
     """Alternative path for the Stripe checkout session endpoint"""
     return stripe_create_checkout_session()
@@ -971,6 +1112,7 @@ def stripe_cancel():
         }), 500
 
 @app.route('/stripe/webhook', methods=['POST'])
+@csrf.exempt  # Exempting CSRF for webhook endpoints
 def stripe_webhook():
     """Handle Stripe webhook events"""
     payload = request.get_data(as_text=True)
@@ -1054,7 +1196,9 @@ def not_found(error):
         'message': 'Endepunkt ikke funnet',
         'available_endpoints': [
             '/', '/demo', '/ai-explained', '/pricing', '/login', '/register',
+            '/forgot-password', '/reset-password/<token>',
             '/portfolio', '/analysis', '/stocks', '/api/health', '/api/version',
+            '/api/subscription/status', '/api/subscription/plans',
             '/stripe/create-checkout-session', '/create-checkout-session',
             '/stripe/success', '/stripe/cancel', '/stripe/webhook'
         ]
@@ -1078,6 +1222,8 @@ if __name__ == '__main__':
     print("   - /pricing (priser)")
     print("   - /login (innlogging)")
     print("   - /register (registrering)")
+    print("   - /forgot-password (glemt passord)")
+    print("   - /reset-password/<token> (tilbakestill passord)")
     print("   - /portfolio (portefølje)")
     print("   - /analysis (analyse)")
     print("   - /stocks (aksjer)")
