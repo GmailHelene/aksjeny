@@ -171,3 +171,8 @@
 2025-07-13 04:24:01,319 - werkzeug - INFO -  * Debugger PIN: 258-782-411
 2025-07-13 04:27:19,405 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
 2025-07-13 04:28:53,421 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 04:29:43,664 - werkzeug - INFO -  * Detected change in '/workspaces/aksjeny/app/standalone_test_server_with_password_reset.py', reloading
+2025-07-13 04:29:43,730 - werkzeug - INFO -  * Restarting with stat
+2025-07-13 04:29:45,133 - aksjeradar - INFO - Test users created with usernames: admin, testbruker, månedlig, årlig, exempt
+2025-07-13 04:29:45,147 - werkzeug - WARNING -  * Debugger is active!
+2025-07-13 04:29:45,148 - werkzeug - INFO -  * Debugger PIN: 258-782-411

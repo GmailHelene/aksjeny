@@ -2,10 +2,11 @@ from flask import Flask
 import os
 import sys
 
-# Add the parent directory to sys.path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add the current directory to sys.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from app import create_app
+# Import create_app from the current directory's __init__.py
+from __init__ import create_app
 
 app = create_app('development')
 

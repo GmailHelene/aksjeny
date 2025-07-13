@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, make_response, jsonify, send_from_directory
 from flask_login import login_user, logout_user, login_required, current_user
-from app.extensions import db, login_manager, mail
-from app.utils.subscription import subscription_required
-from app.utils.access_control import access_required
-from ..utils.access_control import access_required, is_demo_user, is_trial_active
-from ..utils.i18n_simple import set_language, get_available_languages
+from .extensions import db, login_manager, mail
+from .utils.subscription import subscription_required
+from .utils.access_control import access_required, is_demo_user, is_trial_active
+from .utils.i18n_simple import set_language, get_available_languages
 from urllib.parse import urlparse, urljoin
 from datetime import datetime, timedelta, time as dt_time
 import time
@@ -13,28 +12,27 @@ import hashlib
 from flask import g
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
-from app.extensions import mail
 from flask_wtf.csrf import CSRFProtect
 
 # Lazy imports - only import when needed
 def get_user_model():
     """Lazily import and return the User model."""
-    from app.models.user import User
+    from .models.user import User
     return User
 
 def get_data_service():
     """Lazily import and return the DataService class."""
-    from app.services.data_service import DataService
+    from .services.data_service import DataService
     return DataService
 
 def get_referral_service():
     """Lazily import and return the ReferralService class."""
-    from app.services.referral_service import ReferralService
+    from .services.referral_service import ReferralService
     return ReferralService
 
 def get_forms():
     """Lazily import and return all forms used in this module."""
-    from app.forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
+    from .forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
     return LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
 
 def get_performance_monitor():

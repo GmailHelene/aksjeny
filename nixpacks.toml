@@ -1,0 +1,22 @@
+[providers]
+python = "3.11"
+
+[build]
+# Install Python dependencies
+cmds = ["pip install -r requirements.txt"]
+
+[start]
+# Start the application
+cmd = "gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+
+[variables]
+FLASK_ENV = "production"
+FLASK_APP = "run:app"
+PYTHONPATH = "/app"
+
+[phases.build]
+dependsOn = ["install"]
+cmds = ["echo 'Build phase completed'"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
