@@ -6,30 +6,32 @@
 <div class="container py-5">
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold">Velg din plan</h1>
-        <p class="lead text-muted">Start med gratis prøveperiode, oppgrader når du vil</p>
+        <p class="lead text-muted">Velg den planen som passer deg best</p>
     </div>
 
     <!-- Pricing Cards -->
     <div class="row justify-content-center">
-        <!-- Free Trial -->
+        <!-- Monthly Plan -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-header text-center py-4">
-                    <h3 class="mb-0">Prøveperiode</h3>
-                    <p class="text-muted mb-0">Gratis i 14 dager</p>
+                    <h3 class="mb-0">Månedlig</h3>
+                    <p class="text-muted mb-0">Månedlig betaling</p>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr 0</span>
+                        <span class="display-5 fw-bold">kr 399</span>
+                        <span class="text-muted">/mnd</span>
                     </div>
                     <ul class="list-unstyled">
-                        <li>Full tilgang i 14 dager</li>
-                        <li>Ingen betalingsinfo kreves</li>
+                        <li>Full tilgang til alle funksjoner</li>
+                        <li>Ingen bindingstid</li>
+                        <li>Kanseller når som helst</li>
                     </ul>
                 </div>
                 <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary w-100">
-                        Start gratis prøveperiode
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-primary w-100">
+                        Velg månedlig
                     </a>
                 </div>
             </div>
@@ -47,7 +49,7 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr {{ 199|format_currency('NOK') }}/mnd</span>
+                        <span class="display-5 fw-bold">kr {{ 399|format_currency('NOK') }}/mnd</span>
                     </div>
                     <ul class="list-unstyled">
                         <li>Alle analyseverktøy</li>
@@ -57,7 +59,7 @@
                     </ul>
                 </div>
                 <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="{{ url_for('main.register') }}" class="btn btn-primary w-100">
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-primary w-100">
                         Velg Pro
                     </a>
                     <p class="text-center text-muted small mt-2 mb-0">

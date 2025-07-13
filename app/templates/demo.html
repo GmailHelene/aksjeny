@@ -4,107 +4,291 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
 {% endblock %}
 
-{% block title %}Gratis Demo - Aksjeradar{% endblock %}
+{% block title %}Demo - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="demo-section">
-    <h1 class="demo-heading">Aksjeradar Demo</h1>
-    <p class="demo-description">Velkommen til Aksjeradar! Utforsk våre funksjoner med begrenset tilgang, eller logg inn hvis du allerede har en konto.</p>
-    
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="demo-feature">
-                <h3 class="demo-highlight">Gratis demo</h3>
-                <p>begrenset tilgang</p>
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-dark mb-4">Velkommen til Aksjeradar Demo</h1>
+                <p class="lead text-dark mb-4">Utforsk en forenklet versjon av vår kraftige aksjeplattform. Se hva du kan oppnå med full tilgang!</p>
+                <div class="d-flex gap-3 mb-4">
+                    <div class="demo-stat">
+                        <h3 class="text-primary">50+</h3>
+                        <p class="text-muted">Tekniske indikatorer</p>
+                    </div>
+                    <div class="demo-stat">
+                        <h3 class="text-success">AI</h3>
+                        <p class="text-muted">Drevne anbefalinger</p>
+                    </div>
+                    <div class="demo-stat">
+                        <h3 class="text-info">24/7</h3>
+                        <p class="text-muted">Markedsdata</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-rocket"></i> Få full tilgang
+                    </a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-person-plus"></i> Registrer deg
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="demo-feature">
-                <h3 class="demo-highlight">Demo-tilgang</h3>
-                <p>til utvalgte data</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="demo-feature">
-                <h3 class="demo-highlight">Abonnement gir</h3>
-                <p>full tilgang</p>
+            <div class="col-lg-6">
+                <div class="demo-preview">
+                    <img src="https://via.placeholder.com/600x400/0d6efd/ffffff?text=Aksjeradar+Dashboard" alt="Aksjeradar Dashboard" class="img-fluid rounded shadow">
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="text-center mt-5">
-        <h2 class="demo-heading">Klar for mer?</h2>
-        <p class="demo-description">Eller har du allerede konto?</p>
-        <div class="mt-3">
-            <a href="{{ url_for('main.pricing') }}" class="btn btn-primary me-2">Se priser</a>
-            <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary">Logg inn</a>
+</div>
+
+<!-- Demo Features Section -->
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold text-dark">Hva du får med full tilgang</h2>
+                <p class="lead text-muted">Sammenlign demo-versjon med full versjon</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1: See how it works -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-primary">
+                        <i class="bi bi-eye text-white"></i>
+                    </div>
+                    <h4 class="text-dark">1. Utforsk grensesnittet</h4>
+                    <div class="feature-comparison">
+                        <div class="demo-version">
+                            <span class="badge bg-secondary">Demo</span>
+                            <p class="text-muted">Se hvordan plattformen fungerer</p>
+                        </div>
+                        <div class="full-version">
+                            <span class="badge bg-success">Full tilgang</span>
+                            <p class="text-success">Alle markeder + realtime data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2: Try functions -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-success">
+                        <i class="bi bi-gear text-white"></i>
+                    </div>
+                    <h4 class="text-dark">2. Test funksjonaliteten</h4>
+                    <div class="feature-comparison">
+                        <div class="demo-version">
+                            <span class="badge bg-secondary">Demo</span>
+                            <p class="text-muted">Statiske eksempler på analyser</p>
+                        </div>
+                        <div class="full-version">
+                            <span class="badge bg-success">Full tilgang</span>
+                            <p class="text-success">Live AI-anbefalinger</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3: Buy full version -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-info">
+                        <i class="bi bi-cart text-white"></i>
+                    </div>
+                    <h4 class="text-dark">3. Kjøp full versjon</h4>
+                    <div class="feature-comparison">
+                        <div class="demo-version">
+                            <span class="badge bg-secondary">Demo</span>
+                            <p class="text-muted">Begrenset funksjonalitet</p>
+                        </div>
+                        <div class="full-version">
+                            <span class="badge bg-success">Full tilgang</span>
+                            <p class="text-success">Komplett porteføljeadministrasjon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Demo Content Section -->
+<div class="demo-content py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 text-dark">Utforsk demoen</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="demo-widget">
+                    <h5 class="text-dark mb-3">📊 Markedsindekser (Demo)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Indeks</th>
+                                    <th>Verdi</th>
+                                    <th>Endring</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>OSEBX</td>
+                                    <td>1,234.56</td>
+                                    <td class="text-success">+1.2%</td>
+                                </tr>
+                                <tr>
+                                    <td>OBX</td>
+                                    <td>987.65</td>
+                                    <td class="text-danger">-0.5%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="demo-overlay">
+                        <div class="demo-lock">
+                            <i class="bi bi-lock"></i>
+                            <p>Få tilgang til alle markeder</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="demo-widget">
+                    <h5 class="text-dark mb-3">🤖 AI-Anbefalinger (Demo)</h5>
+                    <div class="ai-recommendation">
+                        <div class="alert alert-info">
+                            <strong>Eksempel:</strong> Basert på teknisk analyse anbefaler vi å holde EQUI med kursmål 45 NOK.
+                        </div>
+                    </div>
+                    <div class="demo-overlay">
+                        <div class="demo-lock">
+                            <i class="bi bi-lock"></i>
+                            <p>Få personlige AI-anbefalinger</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <h3 class="text-dark mb-3">Klar for mer?</h3>
+            <p class="text-muted mb-4">Oppgrader til full versjon og få tilgang til alle funksjoner</p>
+            <a href="{{ url_for('main.subscription') }}" class="btn btn-success btn-lg me-3">
+                <i class="bi bi-star"></i> Se abonnement
+            </a>
+            <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right"></i> Logg inn
+            </a>
         </div>
     </div>
 </div>
 
 <style>
-.demo-section {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-    background: #f8f9fa;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    padding: 80px 0;
 }
 
-.demo-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 1rem;
+.demo-stat {
     text-align: center;
-}
-
-.demo-description {
-    font-size: 1.125rem;
-    color: #666;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.demo-feature {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.demo-stat h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.demo-stat p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
 }
 
-.demo-feature:hover {
+.feature-card:hover {
     transform: translateY(-5px);
 }
 
-.demo-highlight {
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
     font-size: 1.5rem;
-    font-weight: 600;
-    color: #007bff;
+}
+
+.feature-comparison {
+    margin-top: 1rem;
+}
+
+.demo-version, .full-version {
     margin-bottom: 0.5rem;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+.demo-widget {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
+.demo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.btn-outline-primary {
-    color: #007bff;
-    border-color: #007bff;
+.demo-widget:hover .demo-overlay {
+    opacity: 1;
 }
 
-.btn-outline-primary:hover {
-    background-color: #007bff;
-    color: white;
+.demo-lock {
+    text-align: center;
+    color: #6c757d;
+}
+
+.demo-lock i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.demo-preview {
+    text-align: center;
 }
 </style>
 {% endblock %}

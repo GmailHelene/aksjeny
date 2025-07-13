@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Logg inn{% endblock %}
+
+{% block head %}
+<style>
+.text-purple {
+    color: #6f42c1 !important;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <!-- Hero section -->
@@ -80,22 +89,27 @@
         <div class="col-md-10">
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white text-center">
-                    <h5 class="mb-0">💎 Oppgrader til Premium for enda mer!</h5>
+                    <h5 class="mb-0">💎 Oppgrader til Pro for enda mer!</h5>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-md-6">
-                            <h6 class="text-info">Pro</h6>
+                        <div class="col-md-4">
+                            <h6 class="text-info">Pro Månedlig</h6>
                             <h5>399 kr/mnd</h5>
-                            <p class="small text-muted">Månedlig betaling</p>
+                            <p class="small text-muted">Ingen binding</p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="border border-warning rounded p-2">
                                 <span class="badge bg-warning text-dark">Mest populær!</span>
                                 <h6 class="text-success mt-2">Pro Årlig</h6>
                                 <h5>2999 kr/år</h5>
                                 <p class="small text-success"><strong>Spar 25%!</strong></p>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-purple">Teams</h6>
+                            <h5>Spesialpris</h5>
+                            <p class="small text-muted">For bedrifter</p>
                         </div>
                     </div>
                     <div class="text-center mt-3">

@@ -53,6 +53,10 @@ class User(UserMixin, db.Model):
     last_reset_date = db.Column(db.DateTime, default=datetime.utcnow)  # Track monthly reset
     is_admin = db.Column(db.Boolean, default=False)  # Admin flag
     
+    # Password reset fields
+    reset_token = db.Column(db.String(100), nullable=True, default=None)
+    reset_token_expires = db.Column(db.DateTime, nullable=True, default=None)
+    
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -135,6 +139,35 @@ class User(UserMixin, db.Model):
         """Check if user has any available referral discounts"""
         discounts = self.get_available_referral_discounts()
         return len([d for d in discounts if d.is_valid()]) > 0
+
+    def generate_reset_token(self):
+        """Generate a unique reset token and set its expiry to 24 hours from now"""
+        import secrets
+        from datetime import datetime, timedelta
+        
+        self.reset_token = secrets.token_urlsafe(32)
+        self.reset_token_expires = datetime.utcnow() + timedelta(hours=24)
+        db.session.commit()
+        return self.reset_token
+
+    def validate_reset_token(self, token):
+        """Check if the token is valid and not expired"""
+        if not self.reset_token or not self.reset_token_expires:
+            return False
+        
+        if token != self.reset_token:
+            return False
+        
+        if datetime.utcnow() > self.reset_token_expires:
+            return False
+        
+        return True
+
+    def clear_reset_token(self):
+        """Clear the reset token after use"""
+        self.reset_token = None
+        self.reset_token_expires = None
+        db.session.commit()
 
 # NOTE: Portfolio and Watchlist relationships are defined in the models themselves
 # No need to import them here as SQLAlchemy will resolve relationships automatically

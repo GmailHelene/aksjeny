@@ -46,10 +46,10 @@ def create_app(config_name='default'):
         from flask import request, redirect, url_for
         def aksjeradar_unauthorized():
             app.logger.warning(f"[UNAUTHORIZED HANDLER] endpoint={request.endpoint} url={request.url}")
-            # Redirect to /demo for main/index routes
+            # Redirect to subscription for main/index routes
             if request.endpoint in ('main.index', 'main', 'main.landing', 'main.home', 'main.demo'):
-                app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /demo")
-                return redirect(url_for('main.demo', source='trial_expired'))
+                app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to subscription")
+                return redirect(url_for('main.subscription'))
             # Otherwise, default to login
             app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /login")
             return redirect(url_for('main.login', next=request.url))
