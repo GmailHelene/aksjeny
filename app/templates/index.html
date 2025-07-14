@@ -1087,20 +1087,20 @@
                     </div>
                 </div>
 
-                <!-- Live Demo -->
+                <!-- Advanced Financial Analytics -->
                 <div class="text-center">
                     <div class="card border-primary shadow-lg">
                         <div class="card-body p-5">
                             <div class="row align-items-center">
                                 <div class="col-lg-8">
-                                    <h3 class="h3 fw-bold mb-3">Se Funksjonene i Aksjon</h3>
-                                    <p class="lead text-muted mb-4">Opplev selv hvordan våre avanserte funksjoner gjør aksjeanalyse enklere og mer effektiv</p>
+                                    <h3 class="h3 fw-bold mb-3">Avanserte Finansanalyser</h3>
+                                    <p class="lead text-muted mb-4">Få tilgang til avanserte finansanalyser, innsidehandel-intelligens, porteføljeoptimalisering og AI-drevne markedsprediksjoner</p>
                                 </div>
                                 <div class="col-lg-4">
-                                    <button class="btn btn-primary btn-lg px-4 py-3" onclick="demonstrateFeatures()">
-                                        <i class="bi bi-play-circle-fill me-2"></i>
-                                        Start Demo
-                                    </button>
+                                    <a href="{{ url_for('main.financial_dashboard') }}" class="btn btn-primary btn-lg px-4 py-3">
+                                        <i class="bi bi-graph-up-arrow me-2"></i>
+                                        Utforsk Dashboard
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -1492,90 +1492,6 @@
             document.getElementById('pwa-install-banner').style.display = 'none';
             localStorage.setItem('pwa-banner-dismissed', 'true');
         };
-        
-        // Advanced Features Demo
-        window.demonstrateFeatures = function() {
-            // Show loading state
-            if (window.loadingManager) {
-                window.loadingManager.showGlobalLoading('Demonstrerer avanserte funksjoner...');
-            }
-            
-            // Simulate feature demonstration
-            setTimeout(() => {
-                // Hide loading
-                if (window.loadingManager) {
-                    window.loadingManager.hideGlobalLoading();
-                }
-                
-                // Show demo notification
-                showDemoNotification();
-                
-                // Trigger real-time data update
-                if (window.enhancedRealtime) {
-                    window.enhancedRealtime.triggerUpdate();
-                }
-                
-                // Simulate skeleton loading on tables
-                demonstrateSkeletonLoading();
-                
-            }, 1500);
-        };
-        
-        function showDemoNotification() {
-            const notification = document.createElement('div');
-            notification.className = 'toast position-fixed bottom-0 end-0 mb-3 me-3';
-            notification.style.zIndex = '9999';
-            notification.innerHTML = `
-                <div class="toast-header bg-primary text-white">
-                    <i class="bi bi-stars me-2"></i>
-                    <strong class="me-auto">Demo Aktiv</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-                </div>
-                <div class="toast-body">
-                    <div class="mb-2">
-                        <i class="bi bi-lightning-charge text-success me-1"></i>
-                        Lynrask datahenting aktivert
-                    </div>
-                    <div class="mb-2">
-                        <i class="bi bi-robot text-primary me-1"></i>
-                        AI-analyse kjører i bakgrunnen
-                    </div>
-                    <div>
-                        <i class="bi bi-speedometer2 text-warning me-1"></i>
-                        Performance-optimering aktiv
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            const toast = new bootstrap.Toast(notification, { delay: 5000 });
-            toast.show();
-            
-            notification.addEventListener('hidden.bs.toast', () => {
-                document.body.removeChild(notification);
-            });
-        }
-        
-        function demonstrateSkeletonLoading() {
-            const tables = document.querySelectorAll('tbody[data-market]');
-            tables.forEach(tbody => {
-                const originalContent = tbody.innerHTML;
-                
-                // Show skeleton
-                tbody.innerHTML = `
-                    <tr>
-                        <td><div class="skeleton skeleton-text" style="width: 60px; height: 16px;"></div></td>
-                        <td><div class="skeleton skeleton-text" style="width: 80px; height: 16px;"></div></td>
-                        <td><div class="skeleton skeleton-text" style="width: 50px; height: 16px;"></div></td                        <td><div class="skeleton skeleton-text" style="width: 40px; height: 16px;"></div></td>
-                    </tr>
-                `.repeat(3);
-                
-                // Restore content after demo
-                setTimeout(() => {
-                    tbody.innerHTML = originalContent;
-                }, 2000);
-            });
-        }
         
         // Initialize news widget after page load
         document.addEventListener('DOMContentLoaded', function() {

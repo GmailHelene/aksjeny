@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() if csrf_token else '' }}">
     
+    <!-- Updated: Fixed navigation routes for proper deployment -->
     <!-- Prevent white line/gap on mobile -->
     <style>
         * {
@@ -128,7 +129,7 @@
                     </li>
                     {% if current_user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='global') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
