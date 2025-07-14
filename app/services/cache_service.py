@@ -29,18 +29,28 @@ class RedisCache:
     """Redis cache service for performance optimization"""
     
     def __init__(self):
-        # Connect to Redis with fallback for development
+        # Connect to Redis with graceful fallback
         redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
         try:
-            self.redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
+            self.redis_client = redis.Redis.from_url(
+                redis_url, 
+                decode_responses=True,
+                socket_timeout=1,
+                socket_connect_timeout=1
+            )
             # Test connection
             self.redis_client.ping()
             self.enabled = True
-            logger.info("✅ Redis cache connected successfully")
+            # Only log in development or when explicitly enabled
+            if os.getenv('FLASK_ENV') == 'development' or os.getenv('CACHE_LOGGING', '').lower() == 'true':
+                logger.info("✅ Redis cache connected successfully")
         except Exception as e:
-            logger.warning(f"⚠️ Redis cache disabled: {e}")
+            # Silently disable cache in production
             self.redis_client = None
             self.enabled = False
+            # Only log in development
+            if os.getenv('FLASK_ENV') == 'development' or os.getenv('DEBUG', '').lower() == 'true':
+                logger.debug(f"Redis cache disabled: {e}")
     
     def set(self, key: str, value: Any, ttl: int = 300) -> bool:
         """
@@ -286,7 +296,7 @@ class CacheServiceV2:
         self._init_redis()
     
     def _init_redis(self):
-        """Initialize Redis connection - safe for import time"""
+        """Initialize Redis connection - gracefully handle unavailability"""
         try:
             # Use environment variables directly if no app context
             import os
@@ -294,14 +304,29 @@ class CacheServiceV2:
                 host=os.getenv('REDIS_HOST', 'localhost'),
                 port=int(os.getenv('REDIS_PORT', 6379)),
                 db=int(os.getenv('REDIS_DB', 0)),
-                decode_responses=True
+                decode_responses=True,
+                socket_timeout=1,  # Quick timeout for development
+                socket_connect_timeout=1
             )
             # Test connection
             self.redis_client.ping()
+            # Only log success if we have an app context
+            try:
+                from flask import current_app
+                current_app.logger.info("✅ Redis cache connected")
+            except RuntimeError:
+                pass  # No app context, that's fine
         except (redis.ConnectionError, redis.TimeoutError, Exception):
-            print("Redis not available, using in-memory cache")
+            # Silently fall back to in-memory cache
             self.redis_client = None
             self._memory_cache = {}
+            # Only log in development/debug mode
+            if os.getenv('FLASK_ENV') == 'development' or os.getenv('DEBUG', '').lower() == 'true':
+                try:
+                    from flask import current_app
+                    current_app.logger.debug("Redis not available, using in-memory cache")
+                except RuntimeError:
+                    pass  # No app context, that's fine
     
     def get(self, key: str, max_age_minutes: int = 5) -> Optional[Any]:
         """Get value from cache"""
