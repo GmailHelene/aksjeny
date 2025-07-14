@@ -102,7 +102,7 @@ class User(UserMixin, db.Model):
     
     def get_referral_code(self):
         """Get or create a referral code for this user"""
-        from app.models.referral import Referral
+        from ..models.referral import Referral
         
         # Check if user already has a referral code
         existing_referral = Referral.query.filter_by(referrer_id=self.id).first()
@@ -120,12 +120,12 @@ class User(UserMixin, db.Model):
     
     def get_completed_referrals_count(self):
         """Get number of successful referrals"""
-        from app.models.referral import Referral
+        from ..models.referral import Referral
         return Referral.query.filter_by(referrer_id=self.id, is_completed=True).count()
     
     def get_available_referral_discounts(self):
         """Get available referral discounts for this user"""
-        from app.models.referral import ReferralDiscount
+        from ..models.referral import ReferralDiscount
         return ReferralDiscount.query.filter_by(
             user_id=self.id, 
             is_used=False

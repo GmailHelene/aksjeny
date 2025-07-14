@@ -3,7 +3,9 @@ from flask_login import login_required, current_user
 from functools import wraps
 import json
 from datetime import datetime, timedelta
-from app.services.performance_monitor import PerformanceMonitor
+from ..services.performance_monitor import PerformanceMonitor
+from ..models.user import User
+from ..models.portfolio import Portfolio
 
 admin = Blueprint('admin', __name__)
 

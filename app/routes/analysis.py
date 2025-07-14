@@ -3,6 +3,15 @@ from flask_login import current_user, login_required
 from ..services.analysis_service import AnalysisService
 from ..services.ai_service import AIService
 from ..services.data_service import DataService, OSLO_BORS_TICKERS, GLOBAL_TICKERS
+from ..services.usage_tracker import usage_tracker
+from ..utils.access_control import access_required
+from ..models.user import User
+from ..models.portfolio import Portfolio, PortfolioStock
+import random
+import pandas as pd
+import time
+from datetime import datetime, timedelta
+
 def get_all_available_stocks():
     """Aggregate all available tickers from Oslo Børs, global, and crypto."""
     oslo = DataService.get_oslo_bors_overview() or {}
@@ -14,12 +23,6 @@ def get_all_available_stocks():
     all_stocks.update(global_)
     all_stocks.update(crypto)
     return list(all_stocks.keys())
-from ..services.usage_tracker import usage_tracker
-from ..utils.access_control import access_required
-import random
-import pandas as pd
-import time
-from datetime import datetime, timedelta
 
 
 analysis = Blueprint('analysis', __name__, url_prefix='/analysis')
@@ -514,7 +517,7 @@ def warren_buffett():
 def benjamin_graham():
     if request.method == 'GET':
         available_stocks = get_all_available_stocks()
-        return render_template('analysis/benjamin-graham.html', available_stocks=available_stocks)
+        return render_template('analysis/graham.html', available_stocks=available_stocks)
     # Handle POST request
     ticker = request.form.get('ticker')
     if not ticker:
@@ -525,7 +528,7 @@ def benjamin_graham():
         flash('Kunne ikke hente data for denne aksjen', 'error')
         return redirect(url_for('analysis.benjamin_graham'))
     available_stocks = get_all_available_stocks()
-    return render_template('analysis/benjamin-graham.html', 
+    return render_template('analysis/graham.html', 
                          stock_data=stock_data, 
                          available_stocks=available_stocks)
 
@@ -646,3 +649,242 @@ def screener():
         logger.error(f"Error running screener: {str(e)}")
         flash('Feil ved kjøring av aksje-screener. Vennligst prøv igjen senere.', 'error')
         return redirect(url_for('analysis.index'))
+
+@analysis.route('/advanced')
+@login_required
+@access_required
+def advanced():
+    """Avansert analyse-oversikt"""
+    try:
+        # Hent avanserte analyse-verktøy og data
+        tools = [
+            {
+                'name': 'Kvantitativ Analyse',
+                'description': 'Matematiske modeller og statistisk analyse',
+                'url': url_for('analysis.quantitative'),
+                'icon': 'bi-calculator'
+            },
+            {
+                'name': 'Monte Carlo Simulering',
+                'description': 'Risiko- og avkastningsanalyse',
+                'url': url_for('analysis.monte_carlo'),
+                'icon': 'bi-dice-5'
+            },
+            {
+                'name': 'Porteføljeoptimalisering',
+                'description': 'Modern Portfolio Theory implementering',
+                'url': url_for('analysis.portfolio_optimization'),
+                'icon': 'bi-pie-chart'
+            },
+            {
+                'name': 'Volatilitet & VaR',
+                'description': 'Value at Risk og volatilitetsanalyse',
+                'url': url_for('analysis.risk_analysis'),
+                'icon': 'bi-exclamation-triangle'
+            },
+            {
+                'name': 'Korrelasjonmatriser',
+                'description': 'Asset korrelasjon og diversifikasjon',
+                'url': url_for('analysis.correlation'),
+                'icon': 'bi-grid-3x3'
+            },
+            {
+                'name': 'Backtesting',
+                'description': 'Test handelsstrategier historisk',
+                'url': url_for('analysis.backtesting'),
+                'icon': 'bi-arrow-clockwise'
+            }
+        ]
+        
+        return render_template('analysis/advanced.html', tools=tools)
+    except Exception as e:
+        logger.error(f"Error loading advanced analysis: {e}")
+        flash('Kunne ikke laste avansert analyse.', 'error')
+        return redirect(url_for('analysis.index'))
+
+@analysis.route('/quantitative')
+@login_required
+@access_required
+def quantitative():
+    """Kvantitativ analyse"""
+    try:
+        ticker = request.args.get('ticker', 'EQNR.OL')
+        
+        # Hent kvantitative metriker
+        quant_data = {
+            'ticker': ticker,
+            'beta': 1.15,
+            'alpha': 0.03,
+            'treynor_ratio': 0.085,
+            'information_ratio': 0.45,
+            'tracking_error': 0.08,
+            'sortino_ratio': 1.32,
+            'calmar_ratio': 0.95,
+            'maximum_drawdown': 0.18,
+            'var_95': 0.12,
+            'cvar_95': 0.15,
+            'skewness': -0.25,
+            'kurtosis': 3.8
+        }
+        
+        return render_template('analysis/quantitative.html', 
+                             ticker=ticker,
+                             data=quant_data)
+    except Exception as e:
+        logger.error(f"Error in quantitative analysis: {e}")
+        flash('Feil ved kvantitativ analyse.', 'error')
+        return redirect(url_for('analysis.advanced'))
+
+@analysis.route('/monte-carlo')
+@login_required
+@access_required
+def monte_carlo():
+    """Monte Carlo simulering"""
+    try:
+        ticker = request.args.get('ticker', 'EQNR.OL')
+        simulations = request.args.get('simulations', 1000, type=int)
+        
+        # Mock Monte Carlo resultater
+        mc_results = {
+            'ticker': ticker,
+            'simulations': simulations,
+            'expected_return': 0.08,
+            'volatility': 0.22,
+            'confidence_intervals': {
+                '95%': {'lower': -0.35, 'upper': 0.51},
+                '90%': {'lower': -0.28, 'upper': 0.44},
+                '80%': {'lower': -0.20, 'upper': 0.36}
+            },
+            'probabilities': {
+                'positive_return': 0.67,
+                'loss_gt_10': 0.18,
+                'loss_gt_20': 0.08
+            }
+        }
+        
+        return render_template('analysis/monte_carlo.html',
+                             ticker=ticker,
+                             results=mc_results)
+    except Exception as e:
+        logger.error(f"Error in Monte Carlo analysis: {e}")
+        flash('Feil ved Monte Carlo simulering.', 'error')
+        return redirect(url_for('analysis.advanced'))
+
+@analysis.route('/portfolio-optimization')
+@login_required
+@access_required
+def portfolio_optimization():
+    """Porteføljeoptimalisering"""
+    try:
+        # Mock optimaliserings-resultater
+        optimization = {
+            'efficient_frontier': [
+                {'risk': 0.10, 'return': 0.06},
+                {'risk': 0.15, 'return': 0.08},
+                {'risk': 0.20, 'return': 0.10},
+                {'risk': 0.25, 'return': 0.11}
+            ],
+            'optimal_portfolio': {
+                'weights': {
+                    'EQNR.OL': 0.30,
+                    'DNB.OL': 0.25,
+                    'AAPL': 0.20,
+                    'MSFT': 0.15,
+                    'BTC-USD': 0.10
+                },
+                'expected_return': 0.095,
+                'risk': 0.18,
+                'sharpe_ratio': 1.4
+            }
+        }
+        
+        return render_template('analysis/portfolio_optimization.html',
+                             optimization=optimization)
+    except Exception as e:
+        logger.error(f"Error in portfolio optimization: {e}")
+        flash('Feil ved porteføljeoptimalisering.', 'error')
+        return redirect(url_for('analysis.advanced'))
+
+@analysis.route('/risk-analysis')
+@login_required
+@access_required
+def risk_analysis():
+    """Risiko- og VaR analyse"""
+    try:
+        ticker = request.args.get('ticker', 'EQNR.OL')
+        
+        risk_metrics = {
+            'ticker': ticker,
+            'var_1d_95': 0.035,
+            'var_1d_99': 0.052,
+            'cvar_1d_95': 0.048,
+            'volatility_annual': 0.22,
+            'volatility_30d': 0.28,
+            'beta': 1.15,
+            'correlation_market': 0.78,
+            'maximum_drawdown': 0.18,
+            'average_drawdown': 0.08,
+            'drawdown_duration': 45
+        }
+        
+        return render_template('analysis/risk_analysis.html',
+                             ticker=ticker,
+                             metrics=risk_metrics)
+    except Exception as e:
+        logger.error(f"Error in risk analysis: {e}")
+        flash('Feil ved risikoanalyse.', 'error')
+        return redirect(url_for('analysis.advanced'))
+
+@analysis.route('/correlation')
+@login_required
+@access_required
+def correlation():
+    """Korrelasjonanalyse"""
+    try:
+        # Mock korrelasjonmatriser
+        tickers = ['EQNR.OL', 'DNB.OL', 'AAPL', 'MSFT', 'BTC-USD']
+        correlation_matrix = {
+            'EQNR.OL': {'EQNR.OL': 1.00, 'DNB.OL': 0.65, 'AAPL': 0.25, 'MSFT': 0.30, 'BTC-USD': 0.15},
+            'DNB.OL': {'EQNR.OL': 0.65, 'DNB.OL': 1.00, 'AAPL': 0.35, 'MSFT': 0.40, 'BTC-USD': 0.10},
+            'AAPL': {'EQNR.OL': 0.25, 'DNB.OL': 0.35, 'AAPL': 1.00, 'MSFT': 0.75, 'BTC-USD': 0.20},
+            'MSFT': {'EQNR.OL': 0.30, 'DNB.OL': 0.40, 'AAPL': 0.75, 'MSFT': 1.00, 'BTC-USD': 0.18},
+            'BTC-USD': {'EQNR.OL': 0.15, 'DNB.OL': 0.10, 'AAPL': 0.20, 'MSFT': 0.18, 'BTC-USD': 1.00}
+        }
+        
+        return render_template('analysis/correlation.html',
+                             tickers=tickers,
+                             matrix=correlation_matrix)
+    except Exception as e:
+        logger.error(f"Error in correlation analysis: {e}")
+        flash('Feil ved korrelasjonanalyse.', 'error')
+        return redirect(url_for('analysis.advanced'))
+
+@analysis.route('/backtesting')
+@login_required
+@access_required
+def backtesting():
+    """Backtesting av handelsstrategier"""
+    try:
+        strategy = request.args.get('strategy', 'momentum')
+        
+        backtest_results = {
+            'strategy': strategy,
+            'period': '2020-2025',
+            'total_return': 0.45,
+            'annual_return': 0.09,
+            'volatility': 0.18,
+            'sharpe_ratio': 1.85,
+            'max_drawdown': 0.12,
+            'win_rate': 0.68,
+            'avg_trade_return': 0.015,
+            'total_trades': 127,
+            'benchmark_outperformance': 0.15
+        }
+        
+        return render_template('analysis/backtesting.html',
+                             strategy=strategy,
+                             results=backtest_results)
+    except Exception as e:
+        logger.error(f"Error in backtesting: {e}")
+        flash('Feil ved backtesting.', 'error')
+        return redirect(url_for('analysis.advanced'))

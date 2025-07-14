@@ -3,10 +3,11 @@ Notification routes for real-time user alerts
 """
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.models.notifications import Notification
-from app.services.notification_service import notification_service
-from app.extensions import db
-from app.utils.access_control import access_required
+from ..models.notifications import Notification
+from ..models.user import User
+from ..services.notification_service import notification_service
+from ..extensions import db
+from ..utils.access_control import access_required
 from datetime import datetime, timedelta
 import logging
 

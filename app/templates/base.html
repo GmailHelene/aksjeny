@@ -88,16 +88,16 @@
     <meta name="mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- Icons for all platforms -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/static/images/logo-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/static/images/logo-512.png">
-    <link rel="apple-touch-icon" href="/static/images/logo-192.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/static/images/logo-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="/static/images/logo-512.png">
-    <link rel="mask-icon" href="/static/images/logo-192.png" color="#0d6efd">
-    <link rel="shortcut icon" href="/static/images/logo-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/logo-192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='images/logo-512.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo-192.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='images/logo-192.png') }}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{{ url_for('static', filename='images/logo-512.png') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='images/logo-192.png') }}" color="#0d6efd">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo-192.png') }}">
     
     <!-- Windows specific -->
-    <meta name="msapplication-TileImage" content="/static/images/logo-192.png">
+    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='images/logo-192.png') }}">
     <meta name="msapplication-config" content="none">
     
     <!-- Bootstrap CSS -->
@@ -127,12 +127,12 @@
                         </a>
                     </li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="/profile"><i class="bi bi-person-circle"></i> Min profil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/watchlist"><i class="bi bi-star"></i> Favoritter</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=oslo"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=global"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/stocks/list?category=crypto"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/stocks/list/currency"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='global') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_currency') }}"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-graph-up"></i> Analyse
@@ -150,8 +150,8 @@
                             </ul>
                         </li>
                         {% if current_user.is_pro %}
-                            <li class="nav-item"><a class="nav-link" href="/pro-tools"><i class="bi bi-tools"></i> Pro-verktøy</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/advanced-analysis"><i class="bi bi-bar-chart-steps"></i> Avansert analyse</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('pro_tools.index') }}"><i class="bi bi-tools"></i> Pro-verktøy</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis.advanced') }}"><i class="bi bi-bar-chart-steps"></i> Avansert analyse</a></li>
                         {% endif %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Logg ut</a></li>
                     {% else %}

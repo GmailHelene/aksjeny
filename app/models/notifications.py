@@ -1,5 +1,5 @@
 """Notification models for Aksjeradar"""
-from app.extensions import db
+from ..extensions import db
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Enum, Float
 from sqlalchemy.orm import relationship

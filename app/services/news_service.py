@@ -13,8 +13,8 @@ import re
 from typing import List, Dict, Optional
 import logging
 from dataclasses import dataclass
-from app.services.simple_cache import simple_cache
-from app.services.cache_service import cached
+from ..services.simple_cache import simple_cache
+from ..services.cache_service import cached
 
 logger = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, current_app
 from flask_login import current_user
 from sqlalchemy import text
 from ..extensions import db
+from ..models.user import User
 import stripe
 import os
 from datetime import datetime

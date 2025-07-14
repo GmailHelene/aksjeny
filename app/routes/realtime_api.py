@@ -2,8 +2,9 @@
 Real-time data API endpoints
 """
 from flask import Blueprint, jsonify, request
-from app.services.realtime_data_service import real_time_service
-from app.utils.access_control import access_required
+from ..services.realtime_data_service import real_time_service
+from ..utils.access_control import access_required
+from ..models.user import User
 from flask_login import current_user
 import logging
 

@@ -7,8 +7,8 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 import pandas as pd
 from flask import current_app
-from app.services.cache_service import get_cache_service
-from app.services.rate_limiter import rate_limiter
+from ..services.cache_service import get_cache_service
+from ..services.rate_limiter import rate_limiter
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +199,7 @@ class YahooFinanceService:
     def _get_fallback_info(ticker: str) -> Dict[str, Any]:
         """Return fallback data when API fails"""
         # Import fallback data from DataService
-        from app.services.data_service import FALLBACK_OSLO_DATA, FALLBACK_GLOBAL_DATA
+        from ..services.data_service import FALLBACK_OSLO_DATA, FALLBACK_GLOBAL_DATA
         
         # Check if we have fallback data
         if ticker in FALLBACK_OSLO_DATA:

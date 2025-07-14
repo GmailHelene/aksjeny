@@ -1,124 +1,68 @@
-from flask import Blueprint
-from flask_login import login_required
-
-# ...eksisterende imports og blueprint-definisjon...
-
-watchlist_bp = Blueprint('watchlist', __name__)
-
-# --- FAVORITE/STAR API ENDPOINTS ---
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['GET'])
-@login_required
-def is_favorite(symbol):
-    """Sjekk om aksje er i brukerens favorittliste (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    # Finn eller opprett hoved-watchlist for bruker
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        return jsonify({'favorite': False})
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    return jsonify({'favorite': bool(item)})
-
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['POST'])
-@login_required
-def add_favorite(symbol):
-    """Legg til aksje i favorittlisten (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        # Opprett hoved-watchlist hvis ingen finnes
-        watchlist = Watchlist(name="Favoritter", user_id=current_user.id)
-        db.session.add(watchlist)
-        db.session.commit()
-    # Sjekk om allerede i listen
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    if item:
-        return jsonify({'favorite': True, 'message': f'{symbol} er allerede i favoritter.'}), 200
-    # Legg til
-    item = WatchlistItem(watchlist_id=watchlist.id, symbol=symbol, added_at=datetime.now())
-    db.session.add(item)
-    db.session.commit()
-    return jsonify({'favorite': True, 'message': f'{symbol} lagt til i favoritter.'}), 201
-
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['DELETE'])
-@login_required
-def remove_favorite(symbol):
-    """Fjern aksje fra favorittlisten (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        return jsonify({'favorite': False, 'message': 'Ingen favorittliste funnet.'}), 404
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    if not item:
-        return jsonify({'favorite': False, 'message': f'{symbol} ikke i favoritter.'}), 404
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'favorite': False, 'message': f'{symbol} fjernet fra favoritter.'}), 200
-
-# ...eksisterende kode...
-
-# --- FAVORITE/STAR API ENDPOINTS ---
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['GET'])
-@login_required
-def is_favorite(symbol):
-    """Sjekk om aksje er i brukerens favorittliste (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    # Finn eller opprett hoved-watchlist for bruker
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        return jsonify({'favorite': False})
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    return jsonify({'favorite': bool(item)})
-
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['POST'])
-@login_required
-def add_favorite(symbol):
-    """Legg til aksje i favorittlisten (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        # Opprett hoved-watchlist hvis ingen finnes
-        watchlist = Watchlist(name="Favoritter", user_id=current_user.id)
-        db.session.add(watchlist)
-        db.session.commit()
-    # Sjekk om allerede i listen
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    if item:
-        return jsonify({'favorite': True, 'message': f'{symbol} er allerede i favoritter.'}), 200
-    # Legg til
-    item = WatchlistItem(watchlist_id=watchlist.id, symbol=symbol, added_at=datetime.now())
-    db.session.add(item)
-    db.session.commit()
-    return jsonify({'favorite': True, 'message': f'{symbol} lagt til i favoritter.'}), 201
-
-@watchlist_bp.route('/api/favorite/<symbol>', methods=['DELETE'])
-@login_required
-def remove_favorite(symbol):
-    """Fjern aksje fra favorittlisten (hoved-watchlist)"""
-    symbol = symbol.upper().strip()
-    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
-    if not watchlist:
-        return jsonify({'favorite': False, 'message': 'Ingen favorittliste funnet.'}), 404
-    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
-    if not item:
-        return jsonify({'favorite': False, 'message': f'{symbol} ikke i favoritter.'}), 404
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'favorite': False, 'message': f'{symbol} fjernet fra favoritter.'}), 200
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
-from app.models.user import User
-from app.models.watchlist import Watchlist, WatchlistItem
-from app.extensions import db, mail
+from ..models.user import User
+from ..models.watchlist import Watchlist, WatchlistItem
+from ..extensions import db, mail
 from flask_mail import Message
 from datetime import datetime, timedelta
 import yfinance as yf
 import pandas as pd
 import numpy as np
-
 import json
 import os
 
-watchlist_bp = Blueprint('watchlist', __name__)
+watchlist_bp = Blueprint('watchlist_advanced', __name__)
+
+# --- FAVORITE/STAR API ENDPOINTS ---
+
+# --- FAVORITE/STAR API ENDPOINTS ---
+@watchlist_bp.route('/api/favorite/<symbol>', methods=['GET'])
+@login_required
+def is_favorite(symbol):
+    """Sjekk om aksje er i brukerens favorittliste (hoved-watchlist)"""
+    symbol = symbol.upper().strip()
+    # Finn eller opprett hoved-watchlist for bruker
+    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
+    if not watchlist:
+        return jsonify({'favorite': False})
+    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
+    return jsonify({'favorite': bool(item)})
+
+@watchlist_bp.route('/api/favorite/<symbol>', methods=['POST'])
+@login_required
+def add_favorite(symbol):
+    """Legg til aksje i favorittlisten (hoved-watchlist)"""
+    symbol = symbol.upper().strip()
+    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
+    if not watchlist:
+        # Opprett hoved-watchlist hvis ingen finnes
+        watchlist = Watchlist(name="Favoritter", user_id=current_user.id)
+        db.session.add(watchlist)
+        db.session.commit()
+    # Sjekk om allerede i listen
+    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
+    if item:
+        return jsonify({'favorite': True, 'message': f'{symbol} er allerede i favoritter.'}), 200
+    # Legg til
+    item = WatchlistItem(watchlist_id=watchlist.id, symbol=symbol, added_at=datetime.now())
+    db.session.add(item)
+    db.session.commit()
+    return jsonify({'favorite': True, 'message': f'{symbol} lagt til i favoritter.'}), 201
+
+@watchlist_bp.route('/api/favorite/<symbol>', methods=['DELETE'])
+@login_required
+def remove_favorite(symbol):
+    """Fjern aksje fra favorittlisten (hoved-watchlist)"""
+    symbol = symbol.upper().strip()
+    watchlist = Watchlist.query.filter_by(user_id=current_user.id).order_by(Watchlist.id).first()
+    if not watchlist:
+        return jsonify({'favorite': False, 'message': 'Ingen favorittliste funnet.'}), 404
+    item = WatchlistItem.query.filter_by(watchlist_id=watchlist.id, symbol=symbol).first()
+    if not item:
+        return jsonify({'favorite': False, 'message': f'{symbol} ikke i favoritter.'}), 404
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'favorite': False, 'message': f'{symbol} fjernet fra favoritter.'}), 200
 
 class WatchlistAnalyzer:
     """AI-basert watchlist-analyse og varsling"""

@@ -4,8 +4,8 @@ Usage tracking service for monitoring user activity and enforcing tier limits
 from flask import session, request
 from flask_login import current_user
 from datetime import datetime, date, timedelta
-from app.extensions import db
-from app.models.user import User
+from ..extensions import db
+from ..models.user import User
 import hashlib
 
 class UsageTracker:
@@ -48,7 +48,7 @@ class UsageTracker:
     @staticmethod
     def can_make_analysis_request():
         """Check if user can make another analysis request"""
-        from app.routes.pricing import get_tier_limits
+        from ..routes.pricing import get_tier_limits
         
         # Get user's tier limits
         limits = get_tier_limits()
@@ -88,7 +88,7 @@ class UsageTracker:
         if current_user.is_authenticated:
             # Count actual watchlist items for authenticated users
             try:
-                from app.models.watchlist import Watchlist
+                from ..models.watchlist import Watchlist
                 return Watchlist.query.filter_by(user_id=current_user.id).count()
             except:
                 return 0
@@ -101,7 +101,7 @@ class UsageTracker:
     @staticmethod
     def can_add_to_watchlist():
         """Check if user can add more items to watchlist"""
-        from app.routes.pricing import get_tier_limits
+        from ..routes.pricing import get_tier_limits
         
         limits = get_tier_limits()
         watchlist_limit = limits.get('watchlist_size', 5)
@@ -118,7 +118,7 @@ class UsageTracker:
     @staticmethod
     def can_access_advanced_features():
         """Check if user can access advanced features"""
-        from app.routes.pricing import get_tier_limits
+        from ..routes.pricing import get_tier_limits
         
         limits = get_tier_limits()
         return limits.get('advanced_features', False)
@@ -145,7 +145,7 @@ class UsageTracker:
     @staticmethod
     def get_remaining_ai_reports():
         """Get remaining AI reports for current month"""
-        from app.routes.pricing import get_tier_limits
+        from ..routes.pricing import get_tier_limits
         
         if not current_user.is_authenticated:
             return 0

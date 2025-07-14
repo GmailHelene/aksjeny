@@ -11,7 +11,7 @@ import yfinance as yf
 from flask import current_app
 import threading
 import time
-from app.extensions import db
+from ..extensions import db
 
 # Import rate limiter
 try:

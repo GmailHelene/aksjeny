@@ -16,3 +16,11 @@ def is_market_open(market):
         close_time = time(22, 0)
         return 0 <= weekday <= 4 and open_time <= now.time() <= close_time
     return False
+
+def is_oslo_bors_open():
+    """Check if Oslo Børs is currently open"""
+    return is_market_open('oslo')
+
+def is_global_markets_open():
+    """Check if global markets (S&P 500) are currently open"""
+    return is_market_open('global')

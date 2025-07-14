@@ -6,10 +6,10 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 from flask import current_app
 from flask_login import current_user
-from app.extensions import db
-from app.models.user import User
-from app.models.notifications import Notification
-from app.services.cache_service import get_cache_service
+from ..extensions import db
+from ..models.user import User
+from ..models.notifications import Notification
+from ..services.cache_service import get_cache_service
 import json
 
 logger = logging.getLogger(__name__)

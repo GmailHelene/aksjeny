@@ -5,7 +5,7 @@
 # Hvis du trenger StockTip-modellen, legg inn for eksempel:
 #
 # from datetime import datetime
-# from app.extensions import db
+# from ..extensions import db
 #
 # class StockTip(db.Model):
 #     __tablename__ = 'stock_tips'

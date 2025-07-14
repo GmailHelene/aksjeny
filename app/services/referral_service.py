@@ -1,9 +1,9 @@
-from app.extensions import db
-from app.models.referral import Referral, ReferralDiscount
-from app.models.user import User
+from ..extensions import db
+from ..models.referral import Referral, ReferralDiscount
+from ..models.user import User
 from datetime import datetime, timedelta
 from flask_mail import Message
-from app.extensions import mail
+from ..extensions import mail
 import logging
 
 logger = logging.getLogger(__name__)

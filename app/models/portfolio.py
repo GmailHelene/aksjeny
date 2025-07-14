@@ -18,7 +18,7 @@ class Portfolio(db.Model):
         total = 0.0
         for stock in self.stocks:
             # Lazy import to avoid circular dependencies
-            from app.services.data_service import DataService
+            from ..services.data_service import DataService
             stock_info = DataService.get_stock_info(stock.ticker)
             if stock_info and 'regularMarketPrice' in stock_info:
                 total += stock_info['regularMarketPrice'] * stock.shares
@@ -29,7 +29,7 @@ class Portfolio(db.Model):
         allocation = []
         for stock in self.stocks:
             # Lazy import to avoid circular dependencies
-            from app.services.data_service import DataService
+            from ..services.data_service import DataService
             stock_info = DataService.get_stock_info(stock.ticker)
             if stock_info and 'regularMarketPrice' in stock_info:
                 value = stock_info['regularMarketPrice'] * stock.shares
@@ -58,7 +58,7 @@ class PortfolioStock(db.Model):
     
     def calculate_return(self):
         # Lazy import to avoid circular dependencies
-        from app.services.data_service import DataService
+        from ..services.data_service import DataService
         stock_info = DataService.get_stock_info(self.ticker)
         if stock_info and 'regularMarketPrice' in stock_info:
             current_price = stock_info['regularMarketPrice']

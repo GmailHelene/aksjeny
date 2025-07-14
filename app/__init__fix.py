@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g
 from .config import config
-from .extensions import db, login_manager, csrf, mail
+from .extensions import db, login_manager, cache, socketio
 from .utils.market_open import is_oslo_bors_open, is_global_markets_open
 from flask_login import current_user
 import logging
@@ -29,11 +29,12 @@ def create_app(config_name=None):
     app.logger.info(f"✅ App created in {config_name} mode")
     
     app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
     
     # Initialize Flask extensions
     db.init_app(app)
     login_manager.init_app(app)
-    csrf.init_app(app)
+    cache.init_app(app)
     
     # Initialize Stripe before configuring stripe webhooks
     setup_stripe(app)
@@ -42,6 +43,7 @@ def create_app(config_name=None):
     migrate = Migrate(app, db)
     
     # Set up CSRF protection
+    csrf = CSRFProtect(app)
     app.config['WTF_CSRF_TIME_LIMIT'] = None
     
     # Custom unauthorized handler to ensure users aren't redirected to /
@@ -135,7 +137,6 @@ def register_blueprints(app):
         ('.routes.stocks', 'stocks', '/stocks'),
         ('.routes.api', 'api', None),
         ('.routes.analysis', 'analysis', '/analysis'),
-        ('.routes.pro_tools', 'pro_tools', '/pro-tools'),
         ('.routes.pricing', 'pricing_bp', '/pricing'),
         ('.routes.news', 'news_bp', '/news'),
         ('.routes.health', 'health', '/health'),
@@ -259,14 +260,6 @@ def setup_error_handlers(app):
         db.session.rollback()
         return render_template('errors/500.html'), 500
     
-    # Add TemplateNotFound error handler
-    from jinja2 import TemplateNotFound
-    @app.errorhandler(TemplateNotFound)
-    def template_not_found_error(error):
-        app.logger.error(f"Template not found: {error}")
-        return render_template('errors/500.html', 
-                             error_message=f"Template ikke funnet: {error}"), 500
-    
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         """Handle CSRFError specifically"""
@@ -283,10 +276,6 @@ def setup_error_handlers(app):
 
 def register_template_filters(app):
     """Register custom template filters"""
-    from .utils.filters import register_filters
-    
-    # Register filters from utils/filters.py
-    register_filters(app)
     
     @app.template_filter('currency')
     def currency_filter(value):

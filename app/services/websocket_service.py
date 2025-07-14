@@ -215,7 +215,7 @@ class WebSocketService:
             """Background task to send periodic market updates"""
             while True:
                 try:
-                    from app.services.realtime_data_service import real_time_service
+                    from ..services.realtime_data_service import real_time_service
                     
                     # Get market summary data
                     market_data = real_time_service.get_market_summary()

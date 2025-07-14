@@ -3,9 +3,9 @@ from flask_login import login_required, current_user
 import stripe
 import os
 from datetime import datetime, timedelta
-from app.models import User
-from app.extensions import db
-from app.services.integrations import ConsultantReportService
+from ..models.user import User
+from ..extensions import db
+from ..services.integrations import ConsultantReportService
 import logging
 
 logger = logging.getLogger(__name__)

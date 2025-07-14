@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from typing import Optional, Dict, Any
 import os
-from app.services.portfolio_service import get_ai_analysis
+from ..services.portfolio_service import get_ai_analysis
 import logging
 
 logger = logging.getLogger(__name__)
@@ -103,8 +103,8 @@ class WeeklyReportService:
     @staticmethod
     def generate_weekly_watchlist_report(user_id: int) -> Dict[str, Any]:
         """Generate comprehensive weekly report for user's watchlist"""
-        from app.models.watchlist import Watchlist
-        from app.services.ai_service import AIService
+        from ..models.watchlist import Watchlist
+        from ..services.ai_service import AIService
         
         try:
             # Get user's watchlist
@@ -209,7 +209,7 @@ class WeeklyReportService:
     def send_weekly_email_report(user_email: str, report_data: Dict[str, Any]) -> bool:
         """Send weekly report via email"""
         from flask_mail import Message
-        from app.extensions import mail
+        from ..extensions import mail
         from flask import render_template_string
         
         try:

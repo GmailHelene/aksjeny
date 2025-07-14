@@ -3,7 +3,7 @@ Backup solution - graceful database column handling
 This adds fallback properties to User model for missing columns
 """
 
-from app.models.user import User
+from ..models.user import User
 from datetime import datetime
 
 # Add graceful property handling for missing columns
@@ -42,7 +42,7 @@ def add_missing_column_properties():
             return getattr(self, '_is_admin', False)
         except:
             # Check if user is in exempt list
-            from app.utils.access_control import EXEMPT_EMAILS
+            from ..utils.access_control import EXEMPT_EMAILS
             return self.email in EXEMPT_EMAILS if hasattr(self, 'email') else False
     
     def set_is_admin(self, value):

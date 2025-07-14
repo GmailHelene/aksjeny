@@ -95,6 +95,21 @@ def premium_required(f):
     
     return decorated_function
 
+def pro_required(f):
+    """Decorator to require Pro subscription"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('main.login'))
+        
+        # Check if user has pro subscription
+        if not (hasattr(current_user, 'is_pro') and current_user.is_pro):
+            flash('Denne funksjonen krever Pro-abonnement. Oppgrader for å få tilgang.', 'warning')
+            return redirect(url_for('main.pricing'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 def _is_exempt_user():
     """Check if current user is exempt (admin)"""
     return (current_user.is_authenticated and 

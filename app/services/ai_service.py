@@ -699,7 +699,7 @@ class AIService:
         """
         try:
             # Import the dedicated Buffett analysis service
-            from app.services.buffett_analysis_service import BuffettAnalysisService
+            from ..services.buffett_analysis_service import BuffettAnalysisService
             
             # Get comprehensive Buffett analysis
             analysis = BuffettAnalysisService.analyze(ticker)
@@ -734,7 +734,7 @@ class AIService:
         """
         try:
             # Import the dedicated Graham analysis service
-            from app.services.graham_analysis_service import GrahamAnalysisService
+            from ..services.graham_analysis_service import GrahamAnalysisService
             
             # Get comprehensive Graham analysis
             analysis = GrahamAnalysisService.analyze(ticker)
@@ -763,7 +763,7 @@ class AIService:
     def _get_buffett_analysis_fallback(ticker):
         """Fallback Buffett analysis using existing implementation"""
         try:
-            from app.services.analysis_service import AnalysisService
+            from ..services.analysis_service import AnalysisService
             
             # Get basic data
             technical_data = AnalysisService.get_fallback_technical_data(ticker)
@@ -895,7 +895,7 @@ class AIService:
         """
         try:
             # Import the dedicated Graham analysis service
-            from app.services.graham_analysis_service import GrahamAnalysisService
+            from ..services.graham_analysis_service import GrahamAnalysisService
             
             # Get comprehensive Graham analysis
             analysis = GrahamAnalysisService.analyze(ticker)
@@ -924,7 +924,7 @@ class AIService:
     def _get_graham_analysis_fallback(ticker):
         """Fallback Graham analysis using existing implementation"""
         try:
-            from app.services.analysis_service import AnalysisService
+            from ..services.analysis_service import AnalysisService
             
             # Get basic data
             technical_data = AnalysisService.get_fallback_technical_data(ticker)
@@ -1004,7 +1004,7 @@ class AIService:
         Focus on: Overvaluation, declining fundamentals, technical weakness, market sentiment
         """
         try:
-            from app.services.analysis_service import AnalysisService
+            from ..services.analysis_service import AnalysisService
             
             # Get basic data
             technical_data = AnalysisService.get_fallback_technical_data(ticker)
@@ -1092,7 +1092,7 @@ class AIService:
         """Get AI price prediction for a stock"""
         try:
             # Get current price
-            from app.services.data_service import DataService
+            from ..services.data_service import DataService
             stock_info = DataService.get_stock_info(ticker)
             current_price = stock_info.get('current_price', 100)
             

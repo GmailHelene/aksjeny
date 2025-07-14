@@ -1,19 +1,21 @@
-from flask_login import login_required
-# Min profil-side
-@stocks.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html')
 import math
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
-from flask_login import current_user
+from flask_login import current_user, login_required
 from datetime import datetime, timedelta
 from ..services.data_service import DataService
 from ..services.analysis_service import AnalysisService
 from ..services.usage_tracker import usage_tracker
 from ..utils.access_control import access_required
+from ..models.favorites import Favorites
+from ..services.notification_service import NotificationService
 
 stocks = Blueprint('stocks', __name__, url_prefix='/stocks')
+
+# Min profil-side
+@stocks.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
 
 @stocks.route('/')
 @access_required
@@ -93,7 +95,7 @@ def list_stocks_by_category(category):
 def details(ticker):
     """Stock details page"""
     try:
-        from app.services.data_service import DataService
+        from ..services.data_service import DataService
         stock_data = DataService.get_stock_info(ticker)
         # If still no info, use a generic fallback
         if not stock_data or not isinstance(stock_data, dict) or len(stock_data) < 2:
@@ -107,7 +109,7 @@ def details(ticker):
             stock_data['longName'] = ticker
         # Get additional data
         try:
-            from app.services.analysis_service import AnalysisService
+            from ..services.analysis_service import AnalysisService
             technical_data = AnalysisService.get_technical_analysis(ticker)
         except Exception:
             technical_data = {}

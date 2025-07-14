@@ -4,12 +4,12 @@ Alert service for monitoring stocks and triggering notifications
 import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
-from app.services.data_service import DataService
-from app.services.notification_service import notification_service
-from app.services.external_apis import ExternalAPIService
-from app.models.user import User
-from app.models.watchlist import WatchlistItem
-from app.extensions import db
+from ..services.data_service import DataService
+from ..services.notification_service import notification_service
+from ..services.external_apis import ExternalAPIService
+from ..models.user import User
+from ..models.watchlist import WatchlistItem
+from ..extensions import db
 import threading
 import time
 

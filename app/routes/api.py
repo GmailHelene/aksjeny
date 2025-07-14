@@ -1,11 +1,14 @@
 
+import math
 from flask import Blueprint, jsonify, request, current_app, render_template
 from flask_login import login_required, current_user
-from app.services.data_service import DataService
-from app.services.ai_service import AIService
-from app.services.yahoo_finance_service import YahooFinanceService
-from app.services.portfolio_service import get_ai_analysis
-from app.utils.access_control import access_required
+from ..services.data_service import DataService
+from ..services.ai_service import AIService
+from ..services.yahoo_finance_service import YahooFinanceService
+from ..services.portfolio_service import get_ai_analysis
+from ..utils.access_control import access_required
+from ..models.user import User
+from ..models.portfolio import Portfolio, PortfolioStock
 from datetime import datetime, timedelta
 import traceback
 import logging

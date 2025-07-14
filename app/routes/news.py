@@ -5,8 +5,9 @@ Handles news-related routes and functionality
 
 from flask import Blueprint, render_template, request, jsonify
 from datetime import datetime, timedelta
-from app.services.news_service import news_service, get_latest_news_sync, get_company_news_sync
-from app.utils.access_control import access_required
+from ..services.news_service import news_service, get_latest_news_sync, get_company_news_sync
+from ..utils.access_control import access_required
+from ..models.user import User
 import asyncio
 import logging
 from datetime import datetime

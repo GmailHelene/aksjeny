@@ -3,7 +3,8 @@ New features routes for analyst recommendations and AI predictions
 """
 from flask import Blueprint, render_template, request, jsonify, current_app
 from flask_login import login_required
-from app.utils.access_control import access_required
+from ..utils.access_control import access_required
+from ..models.user import User
 from datetime import datetime, timedelta
 import random
 
