@@ -146,7 +146,7 @@
             </div>
         </div>
         <div class="card-footer text-end">
-            <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-primary">
+            <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">
                 <i class="bi bi-list-ul"></i> Se alle Oslo Børs aksjer
             </a>
         </div>
@@ -268,7 +268,7 @@
             </div>
         </div>
         <div class="card-footer text-end">
-            <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-success">
+            <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">
                 <i class="bi bi-list-ul"></i> Se alle globale aksjer
             </a>
         </div>
@@ -354,7 +354,7 @@
             </div>
         </div>
         <div class="card-footer text-end">
-            <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-warning">
+            <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-warning">
                 <i class="bi bi-list-ul"></i> Se alle kryptovalutaer
             </a>
         </div>

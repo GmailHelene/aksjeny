@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() if csrf_token else '' }}">
     
-    <!-- Updated: Fixed navigation routes for proper deployment -->
+    <!-- Updated: Fixed all navigation route issues for production deployment -->
     <!-- Prevent white line/gap on mobile -->
     <style>
         * {
@@ -130,9 +130,9 @@
                     {% if current_user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='global') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list', category='crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.global_list') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_currency') }}"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

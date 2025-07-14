@@ -14,7 +14,7 @@
                 </div>
                 <div class="card-body">
                     <p>Se de mest omsatte aksjene og siste signaler fra Oslo Børs.</p>
-                    <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-primary">Se Oslo Børs</a>
+                    <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">Se Oslo Børs</a>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="card-body">
                     <p>Utforsk populære internasjonale aksjer og markedsdata.</p>
-                    <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-success">Se globale aksjer</a>
+                    <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">Se globale aksjer</a>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body">
                     <p>Følg de største kryptovalutaene og deres utvikling.</p>
-                    <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-warning">Se kryptovaluta</a>
+                    <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-warning">Se kryptovaluta</a>
                 </div>
             </div>
         </div>

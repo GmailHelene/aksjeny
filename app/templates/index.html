@@ -247,7 +247,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-sm btn-outline-warning">Vis alle</a>
+                        <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-sm btn-outline-warning">Vis alle</a>
                     </div>
                 </div>
             </div>
@@ -377,7 +377,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-sm btn-outline-primary">Vis alle</a>
+                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-sm btn-outline-primary">Vis alle</a>
                         <a href="{{ url_for('analysis.technical') }}?market=oslo" class="btn btn-sm btn-outline-secondary">Teknisk analyse</a>
                     </div>
                 </div>
@@ -445,7 +445,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-sm btn-outline-success">Vis alle</a>
+                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-sm btn-outline-success">Vis alle</a>
                         <a href="{{ url_for('analysis.technical') }}?market=global" class="btn btn-sm btn-outline-secondary">Teknisk analyse</a>
                     </div>
                 </div>
@@ -476,7 +476,7 @@
                                 <span class="negative-count">8</span> ↓
                             </span>
                         </div>
-                        <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-sm btn-outline-primary mt-2">Se alle aksjer</a>
+                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-sm btn-outline-primary mt-2">Se alle aksjer</a>
                     </div>
                 </div>
             </div>
@@ -503,7 +503,7 @@
                                 <span class="negative-count">5</span> ↓
                             </span>
                         </div>
-                        <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-sm btn-outline-success mt-2">Se globale aksjer</a>
+                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-sm btn-outline-success mt-2">Se globale aksjer</a>
                     </div>
                 </div>
             </div>
@@ -530,7 +530,7 @@
                                 <span class="negative-count">4</span> ↓
                             </span>
                         </div>
-                        <a href="{{ url_for('stocks.list_stocks', category='crypto') }}" class="btn btn-sm btn-outline-warning mt-2">Se kryptovaluta</a>
+                        <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-sm btn-outline-warning mt-2">Se kryptovaluta</a>
                     </div>
                 </div>
             </div>
@@ -726,7 +726,7 @@
                 </div>
             </div>
             <div class="card-footer text-end">
-                <a href="{{ url_for('stocks.list_stocks', category='oslo') }}" class="btn btn-primary">
+                <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">
                     <i class="bi bi-list-ul"></i> Se alle Oslo Børs aksjer
                 </a>
             </div>
@@ -914,7 +914,7 @@
                 </div>
             </div>
             <div class="card-footer text-end">
-                <a href="{{ url_for('stocks.list_stocks', category='global') }}" class="btn btn-success">
+                <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">
                     <i class="bi bi-list-ul"></i> Se alle globale aksjer
                 </a>
             </div>
