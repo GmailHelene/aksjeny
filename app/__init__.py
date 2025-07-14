@@ -150,6 +150,7 @@ def register_blueprints(app):
         ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
         ('.routes.notifications', 'notifications_bp', '/notifications'),
         ('.routes.watchlist_advanced', 'watchlist_bp', '/watchlist'),
+        ('.seo', 'sitemap_bp', None),  # SEO sitemap and robots.txt
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:
@@ -243,9 +244,10 @@ def setup_stripe(app):
         
         if stripe_public_key:
             app.config['STRIPE_PUBLISHABLE_KEY'] = stripe_public_key
-            app.logger.info("Stripe API key configured")
+            app.logger.info("✅ Stripe publishable key configured")
         else:
-            app.logger.warning("⚠️ Stripe publishable key not found in environment")
+            app.logger.info("ℹ️ Stripe publishable key not configured - payment features disabled")
+            app.config['STRIPE_PUBLISHABLE_KEY'] = None
             
     except ImportError:
         app.logger.warning("⚠️ Stripe not installed")

@@ -165,6 +165,21 @@ class User(UserMixin, db.Model):
         self.reset_token_expires = None
         db.session.commit()
 
+    @property
+    def subscription_status(self):
+        """Get subscription status for display"""
+        if self.has_subscription:
+            if self.subscription_type == 'lifetime':
+                return 'lifetime'
+            elif self.has_active_subscription():
+                return 'premium'
+            else:
+                return 'expired'
+        elif self.is_in_trial_period():
+            return 'trial'
+        else:
+            return 'free'
+
 # NOTE: Portfolio and Watchlist relationships are defined in the models themselves
 # No need to import them here as SQLAlchemy will resolve relationships automatically
 

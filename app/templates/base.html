@@ -1,4 +1,4 @@
-    {% include 'cookie_banner.html' %}
+{% include 'cookie_banner.html' %}
 <!DOCTYPE html>
 <html lang="{{ current_language or 'no' }}">
 <head>
@@ -30,15 +30,174 @@
         }
     </style>
     
-    <!-- SEO Meta Tags -->
+    <!-- SEO Meta Tags - Enhanced for Google Norge -->
     <title>{% block title %}Aksjeradar - Din aksje- og finansassistent{% endblock %}</title>
     <meta name="description" content="{% block description %}Få AI-drevet aksjeanalyse, teknisk analyse, porteføljeverktøy og markedsinsikt. Følg norske og internasjonale aksjer med sanntidsdata og ekspertanalyse.{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}aksjer, aksjekurser, børs, oslo børs, teknisk analyse, AI analyse, portefølje, investering, aksjetips, markedsanalyse, sanntidsdata{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}aksjer, aksjekurser, børs, oslo børs, teknisk analyse, AI analyse, portefølje, investering, aksjetips, markedsanalyse, sanntidsdata, Norge, norske aksjer, finans Norge{% endblock %}">
     <meta name="author" content="Aksjeradar">
     <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <meta name="language" content="Norwegian">
+    <meta name="geo.region" content="NO">
+    <meta name="geo.country" content="Norway">
+    <meta name="geo.placename" content="Norge">
+    <meta name="ICBM" content="60.472024, 8.468946">
+    <meta name="DC.title" content="Aksjeradar - Norges beste aksjeanalyse">
+    <meta name="DC.creator" content="Aksjeradar">
+    <meta name="DC.subject" content="Aksjer, børs, finans, investering, Norge">
+    <meta name="DC.description" content="AI-drevet aksjeanalyse for norske og internasjonale markeder">
+    <meta name="DC.language" content="no">
+    <meta name="DC.coverage" content="Norge">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="revisit-after" content="1 days">
     <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Google Norge specific -->
+    <meta name="google" content="notranslate">
+    <meta name="google-site-verification" content="">
+    <meta name="msvalidate.01" content="">
+    <meta name="yandex-verification" content="">
+    
+    <!-- Norwegian Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FinancialService",
+        "name": "Aksjeradar",
+        "alternateName": "Aksjeradar Norge",
+        "description": "Norges fremste plattform for AI-drevet aksjeanalyse og markedsinsikt",
+        "url": "{{ request.url_root }}",
+        "logo": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
+        "image": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
+        "sameAs": [],
+        "areaServed": {
+            "@type": "Country",
+            "name": "Norge"
+        },
+        "serviceType": "Finansielle tjenester",
+        "provider": {
+            "@type": "Organization",
+            "name": "Aksjeradar",
+            "url": "{{ request.url_root }}"
+        },
+        "audience": {
+            "@type": "Audience",
+            "geographicArea": {
+                "@type": "Country",
+                "name": "Norge"
+            }
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Kundeservice",
+            "email": "kontakt@aksjeradar.trade",
+            "availableLanguage": ["Norwegian", "English"]
+        },
+        "keywords": "aksjer, børs, Oslo Børs, teknisk analyse, AI analyse, portefølje, investering, Norge",
+        "inLanguage": "no"
+    }
+    </script>
+    
+    <!-- Norwegian Business Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aksjeradar",
+        "url": "{{ request.url_root }}",
+        "description": "AI-drevet aksjeanalyse for norske investorer",
+        "inLanguage": "no",
+        "audience": {
+            "@type": "Audience",
+            "geographicArea": {
+                "@type": "Country",
+                "name": "Norge"
+            }
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ request.url_root }}search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
+    <!-- Enhanced Norwegian Business Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Aksjeradar",
+        "url": "{{ request.url_root }}",
+        "logo": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
+        "description": "Norges fremste plattform for AI-drevet aksjeanalyse og finansdata",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "NO"
+        },
+        "foundingDate": "2025",
+        "knowsAbout": [
+            "Aksjeanalyse",
+            "Oslo Børs", 
+            "Teknisk analyse",
+            "Porteføljeoptimalisering",
+            "Finansdata",
+            "Investering Norge"
+        ],
+        "audience": {
+            "@type": "Audience",
+            "geographicArea": {
+                "@type": "Country",
+                "name": "Norge"
+            }
+        }
+    }
+    </script>
+    
+    <!-- BreadcrumbList Schema -->
+    {% if request.endpoint != 'main.index' %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Hjem",
+                "item": "{{ url_for('main.index', _external=True) }}"
+            }
+            {% if request.endpoint == 'stocks.details' %}
+            ,{
+                "@type": "ListItem", 
+                "position": 2,
+                "name": "Aksjer",
+                "item": "{{ url_for('main.index', _external=True) }}#stocks"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ ticker if ticker else 'Aksjedetaljer' }}",
+                "item": "{{ request.url }}"
+            }
+            {% endif %}
+        ]
+    }
+    </script>
+    {% endif %}
+    
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//query1.finance.yahoo.com">
+    <link rel="dns-prefetch" href="//finnhub.io">
+    
+    <!-- Performance and SEO optimizations -->
+    <meta name="theme-color" content="#0d6efd" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0d6efd" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    
+    <!-- Open Graph / Facebook - Norwegian focused -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
@@ -46,6 +205,8 @@
     <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/logo-512.png', _external=True) }}{% endblock %}">
     <meta property="og:site_name" content="Aksjeradar">
     <meta property="og:locale" content="no_NO">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:country-name" content="Norge">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -53,24 +214,6 @@
     <meta property="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
     <meta property="twitter:description" content="{% block twitter_description %}{{ self.description() }}{% endblock %}">
     <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/logo-512.png', _external=True) }}{% endblock %}">
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FinancialService",
-        "name": "Aksjeradar",
-        "description": "AI-drevet aksjeanalyse og markedsinsikt",
-        "url": "{{ request.url_root }}",
-        "logo": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
-        "sameAs": [],
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "Customer Service",
-            "email": "kontakt@aksjeradar.trade"
-        }
-    }
-    </script>
     
     <!-- Enhanced PWA Meta Tags -->
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}?v={{ g.current_time }}">
@@ -128,26 +271,72 @@
                         </a>
                     </li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.global_list') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('stocks.list_currency') }}"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
+                        <!-- User Account Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('portfolio.overview') }}"><i class="bi bi-briefcase"></i> Portefølje</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.subscription') }}">
+                                    <i class="bi bi-credit-card"></i> Abonnement
+                                    {% if current_user.subscription_status == 'trial' %}
+                                    <span class="badge bg-warning ms-1">Prøve</span>
+                                    {% elif current_user.subscription_status == 'premium' %}
+                                    <span class="badge bg-success ms-1">Premium</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary ms-1">Gratis</span>
+                                    {% endif %}
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.pricing') }}"><i class="bi bi-tags"></i> Priser</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Logg ut</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!-- Stocks Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-graph-up"></i> Aksjer
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="stocksDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.index') }}"><i class="bi bi-grid"></i> Oversikt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.global_list') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_currency') }}"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.search') }}"><i class="bi bi-search"></i> Søk aksjer</a></li>
+                            </ul>
+                        </li>
+                        <!-- Analysis Dropdown with enhanced submenu -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-graph-up"></i> Analyse
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="analysisDropdown">
                                 <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}"><i class="bi bi-grid"></i> Analyseoversikt</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.financial_dashboard') }}"><i class="fas fa-chart-line"></i> Finansiell Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.financial_dashboard') }}"><i class="bi bi-speedometer2"></i> Finansiell Dashboard</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.technical', ticker='AAPL') }}"><i class="bi bi-graph-down"></i> Teknisk Analyse</a></li>
+                                <li><h6 class="dropdown-header">Teknisk Analyse</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.technical') }}"><i class="bi bi-graph-down"></i> Teknisk Analyse</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('analysis.ai') }}"><i class="bi bi-robot"></i> KI-Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}"><i class="bi bi-lightbulb"></i> Warren Buffett Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}"><i class="bi bi-book"></i> Benjamin Graham Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}"><i class="bi bi-arrow-down-circle"></i> Short-Analyse</a></li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Fundamental Analyse</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}"><i class="bi bi-lightbulb"></i> Warren Buffett</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}"><i class="bi bi-book"></i> Benjamin Graham</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Spesialisert Analyse</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}"><i class="bi bi-arrow-down-circle"></i> Short-Analyse</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.insider_trading') }}"><i class="bi bi-eye"></i> Innsidehandel</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.sentiment') }}"><i class="bi bi-emoji-smile"></i> Sentiment</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('analysis.screener') }}"><i class="bi bi-funnel"></i> Screener</a></li>
+                            </ul>
+                        </li>
                                 <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}"><i class="bi bi-globe"></i> Markedsoversikt</a></li>
                             </ul>
                         </li>
@@ -213,7 +402,7 @@
                     <p class="mb-0">Din komplette aksje- og finansassistent</p>
                 </div>
                 <div class="col-md-3 text-md-end">
-                    <p class="mb-0">© 2024 Aksjeradar. Alle rettigheter forbeholdt.</p>
+                    <p class="mb-0">© 2025 Aksjeradar. Alle rettigheter forbeholdt.</p>
                     <a href="{{ url_for('main.privacy') }}" class="text-white-50">Personvern</a>
                     <button class="btn btn-outline-light btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#feedbackModal">Gi tilbakemelding</button>
                 </div>

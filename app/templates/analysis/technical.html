@@ -171,10 +171,100 @@
             {% endif %}
         </div>
     </div>
+    {% elif market_data %}
+    <!-- Market-wide technical analysis -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        {% if market_data.market_type == 'global' %}
+                            Global Market Technical Analysis
+                        {% else %}
+                            Norwegian Market Technical Analysis
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="lead">{{ market_data.overview }}</p>
+                            
+                            <h6>Key Indices:</h6>
+                            <div class="row g-3 mb-4">
+                                {% for index in market_data.indices %}
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded">
+                                        <h6 class="text-muted mb-1">{{ index }}</h6>
+                                        <span class="badge {{ 'bg-success' if market_data.trend == 'bullish' else 'bg-warning' if market_data.trend == 'neutral' else 'bg-danger' }}">
+                                            {{ market_data.trend|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if market_data.market_type == 'global' %}
+                            <div class="alert alert-info">
+                                <h6>Global Market Insights:</h6>
+                                <ul class="mb-0">
+                                    <li>Major technology stocks showing resilience</li>
+                                    <li>Energy sector volatility due to geopolitical factors</li>
+                                    <li>Federal Reserve policy impacts on interest-sensitive sectors</li>
+                                    <li>Emerging markets showing mixed signals</li>
+                                </ul>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <h6>Norwegian Market Insights:</h6>
+                                <ul class="mb-0">
+                                    <li>Oil and gas sector performance tied to Brent crude prices</li>
+                                    <li>Seafood industry showing seasonal strength</li>
+                                    <li>Technology and renewable energy sector growth</li>
+                                    <li>NOK exchange rate impacts on export companies</li>
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>Market Sentiment</h6>
+                                    <div class="text-center mb-3">
+                                        <span class="badge fs-6 {{ 'bg-success' if market_data.trend == 'bullish' else 'bg-warning' if market_data.trend == 'neutral' else 'bg-danger' }}">
+                                            {% if market_data.trend == 'bullish' %}
+                                                🐂 Bullish
+                                            {% elif market_data.trend == 'bearish' %}
+                                                🐻 Bearish
+                                            {% else %}
+                                                ⚖️ Neutral
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6 class="text-muted small">Popular Analysis Tools:</h6>
+                                        <div class="d-grid gap-2">
+                                            <a href="/analysis" class="btn btn-outline-primary btn-sm">Market Overview</a>
+                                            <a href="/stocks" class="btn btn-outline-secondary btn-sm">Stock Screener</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% elif ticker and error %}
     <div class="alert alert-danger">
         <i class="bi bi-exclamation-triangle me-2"></i>
         Kunne ikke laste teknisk analyse for {{ ticker }}. {{ error }}
+    </div>
+    {% elif error %}
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ error }}
     </div>
     {% else %}
     <div class="alert alert-info">

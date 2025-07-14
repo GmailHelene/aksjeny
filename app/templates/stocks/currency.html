@@ -42,7 +42,10 @@
                                             <th>Kurs</th>
                                             <th>Endring</th>
                                             <th>Endring %</th>
+                                            <th>Volum</th>
+                                            <th>Høy/Lav</th>
                                             <th>Trend</th>
+                                            <th>Handling</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,11 +70,48 @@
                                                 </span>
                                             </td>
                                             <td>
+                                                <small class="text-muted">
+                                                    {% if data.volume %}
+                                                        {% if data.volume >= 1000000000 %}
+                                                            {{ "%.1f"|format(data.volume / 1000000000) }}B
+                                                        {% elif data.volume >= 1000000 %}
+                                                            {{ "%.1f"|format(data.volume / 1000000) }}M
+                                                        {% elif data.volume >= 1000 %}
+                                                            {{ "%.1f"|format(data.volume / 1000) }}K
+                                                        {% else %}
+                                                            {{ data.volume }}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        N/A
+                                                    {% endif %}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">
+                                                    {{ "%.4f"|format(data.high) if data.high else 'N/A' }} / 
+                                                    {{ "%.4f"|format(data.low) if data.low else 'N/A' }}
+                                                </small>
+                                            </td>
+                                            <td>
                                                 {% if data.signal %}
                                                 <span class="badge {% if data.signal == 'BUY' %}bg-success{% elif data.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
                                                     {{ data.signal }}
                                                 </span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">HOLD</span>
                                                 {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <button type="button" class="btn btn-outline-primary btn-sm" 
+                                                            onclick="addToWatchlist('{{ symbol }}')">
+                                                        <i class="bi bi-star"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-info btn-sm" 
+                                                            onclick="viewDetails('{{ symbol }}')">
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         {% endfor %}

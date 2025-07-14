@@ -1,4 +1,3 @@
-
 import math
 from flask import Blueprint, jsonify, request, current_app, render_template
 from flask_login import login_required, current_user
@@ -243,6 +242,276 @@ def realtime_batch_updates():
     except Exception as e:
         current_app.logger.error(f"Error in batch updates: {e}")
         return jsonify({'error': 'Could not process batch update'}), 500
+
+@api.route('/market/sectors')
+def get_sector_analysis():
+    """Get sector-wise market analysis"""
+    try:
+        # Sector data would be calculated from individual stocks
+        sector_data = {
+            'technology': {
+                'symbols': ['AAPL', 'GOOGL', 'MSFT', 'TSLA'],
+                'performance': '+2.3%',
+                'trend': 'bullish',
+                'change': 2.3,
+                'volume': 125000000
+            },
+            'energy': {
+                'symbols': ['EQNR.OL', 'AKERBP.OL'],
+                'performance': '+1.8%',
+                'trend': 'bullish',
+                'change': 1.8,
+                'volume': 45000000
+            },
+            'finance': {
+                'symbols': ['DNB.OL'],
+                'performance': '+0.9%',
+                'trend': 'neutral',
+                'change': 0.9,
+                'volume': 30000000
+            },
+            'telecommunications': {
+                'symbols': ['TEL.OL'],
+                'performance': '-0.5%',
+                'trend': 'bearish',
+                'change': -0.5,
+                'volume': 20000000
+            },
+            'healthcare': {
+                'symbols': ['JNJ', 'PFE'],
+                'performance': '+1.2%',
+                'trend': 'bullish',
+                'change': 1.2,
+                'volume': 85000000
+            },
+            'consumer_goods': {
+                'symbols': ['PG', 'KO'],
+                'performance': '+0.6%',
+                'trend': 'neutral',
+                'change': 0.6,
+                'volume': 65000000
+            }
+        }
+        
+        return jsonify({
+            'success': True,
+            'sector_analysis': sector_data,
+            'last_updated': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting sector analysis: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get sector analysis'
+        }), 500
+
+@api.route('/news/financial')
+def get_financial_news_api():
+    """Get financial news from multiple sources"""
+    try:
+        symbols = request.args.getlist('symbols')
+        sources = request.args.getlist('sources')
+        limit = request.args.get('limit', 50, type=int)
+        
+        # For now, return demo news data
+        news_articles = [
+            {
+                'title': 'Marked stiger på positiv teknologi-utvikling',
+                'summary': 'Teknologiaksjer opplevde sterk vekst i dag etter positive kvartalsrapporter',
+                'sentiment': 'positive',
+                'source': 'Finansavisen',
+                'published_at': datetime.utcnow().isoformat(),
+                'url': 'https://example.com/news/1',
+                'symbol': symbols[0] if symbols else 'AAPL'
+            },
+            {
+                'title': 'Energisektoren under press',
+                'summary': 'Olje- og gasspriser faller på grunn av global økonomisk usikkerhet',
+                'sentiment': 'negative',
+                'source': 'E24',
+                'published_at': (datetime.utcnow() - timedelta(hours=2)).isoformat(),
+                'url': 'https://example.com/news/2',
+                'symbol': 'EQNR.OL'
+            },
+            {
+                'title': 'Sentralbanken holder renten uendret',
+                'summary': 'Norges Bank besluttet å holde styringsrenten på dagens nivå',
+                'sentiment': 'neutral',
+                'source': 'DN',
+                'published_at': (datetime.utcnow() - timedelta(hours=4)).isoformat(),
+                'url': 'https://example.com/news/3',
+                'symbol': 'DNB.OL'
+            },
+            {
+                'title': 'Kryptovaluta marked volatilt',
+                'summary': 'Bitcoin og andre kryptovalutaer opplever store svingninger',
+                'sentiment': 'neutral',
+                'source': 'CryptoNews',
+                'published_at': (datetime.utcnow() - timedelta(hours=6)).isoformat(),
+                'url': 'https://example.com/news/4',
+                'symbol': 'BTC-USD'
+            }
+        ]
+        
+        # Filter by symbols if provided
+        if symbols:
+            filtered_news = [article for article in news_articles 
+                           if any(symbol in article['symbol'] for symbol in symbols)]
+            if filtered_news:
+                news_articles = filtered_news
+        
+        # Limit results
+        news_articles = news_articles[:limit]
+        
+        return jsonify({
+            'success': True,
+            'news': news_articles,
+            'total': len(news_articles)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting financial news: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get financial news'
+        }), 500
+
+@api.route('/economic/indicators')
+def get_economic_indicators():
+    """Get key economic indicators"""
+    try:
+        indicators = [
+            {
+                'indicator': 'Styringsrente',
+                'value': '4.50',
+                'unit': '%',
+                'date': '2025-07-14',
+                'source': 'Norges Bank',
+                'change': '+0.25'
+            },
+            {
+                'indicator': 'Inflasjon',
+                'value': '3.2',
+                'unit': '%',
+                'date': '2025-06-30',
+                'source': 'SSB',
+                'change': '-0.1'
+            },
+            {
+                'indicator': 'Arbeidsledighet',
+                'value': '3.8',
+                'unit': '%',
+                'date': '2025-06-30',
+                'source': 'NAV',
+                'change': '+0.2'
+            },
+            {
+                'indicator': 'BNP Vekst',
+                'value': '2.1',
+                'unit': '%',
+                'date': '2025-Q2',
+                'source': 'SSB',
+                'change': '+0.3'
+            },
+            {
+                'indicator': 'Oljepris (Brent)',
+                'value': '82.50',
+                'unit': ' USD/fat',
+                'date': '2025-07-14',
+                'source': 'Reuters',
+                'change': '+1.20'
+            }
+        ]
+        
+        return jsonify({
+            'success': True,
+            'economic_indicators': indicators
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting economic indicators: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get economic indicators'
+        }), 500
+
+@api.route('/dashboard/data', methods=['GET'])
+def get_dashboard_data():
+    """Get aggregated data for dashboard display"""
+    try:
+        # Generate realistic demo dashboard data
+        dashboard_data = {
+            'portfolio_summary': {
+                'total_value': 1250000,  # NOK
+                'daily_change': 2.3,     # %
+                'daily_change_value': 28750,  # NOK
+                'stocks_count': 7,
+                'sectors': {
+                    'Technology': 45.2,
+                    'Energy': 32.1,
+                    'Finance': 22.7
+                }
+            },
+            'market_indicators': {
+                'vix': 18.5,
+                'fear_greed_index': 68,
+                'market_sentiment': 'bullish'
+            },
+            'top_gainers': [
+                {'symbol': 'TSLA', 'change': 5.2, 'price': 245.30},
+                {'symbol': 'NVDA', 'change': 3.8, 'price': 118.50},
+                {'symbol': 'EQNR.OL', 'change': 2.1, 'price': 285.60}
+            ],
+            'top_losers': [
+                {'symbol': 'META', 'change': -2.3, 'price': 485.20},
+                {'symbol': 'DNB.OL', 'change': -1.1, 'price': 225.80}
+            ],
+            'economic_calendar': [
+                {
+                    'event': 'Federal Reserve Interest Rate Decision',
+                    'time': '2025-07-16T14:00:00Z',
+                    'impact': 'high',
+                    'forecast': '5.25%'
+                },
+                {
+                    'event': 'Norwegian GDP Release',
+                    'time': '2025-07-17T08:00:00Z',
+                    'impact': 'medium',
+                    'forecast': '2.1%'
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'dashboard_data': dashboard_data
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting dashboard data: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get dashboard data'
+        }), 500
+
+@api.before_request
+def before_api_request():
+    """Ensure API requests are handled properly"""
+    # Set JSON content type for API responses
+    pass
+
+@api.after_request
+def after_api_request(response):
+    """Ensure API responses have correct headers"""
+    if response.content_type.startswith('text/html'):
+        # If HTML is being returned from an API endpoint, convert to JSON error
+        return jsonify({
+            'success': False,
+            'message': 'API endpoint error - authentication required',
+            'redirect': '/login'
+        }), 401
+    return response
 
 # Error handlers
 @api.errorhandler(404)

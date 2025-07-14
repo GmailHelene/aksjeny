@@ -737,15 +737,30 @@ def subscription():
 @login_required
 def profile():
     """User profile page"""
-    return jsonify({
-        'status': 'OK',
-        'page': 'profile',
-        'message': 'Profil-side fungerer!',
-        'user': {
-            'email': current_user.email if current_user.is_authenticated else None,
-            'username': current_user.username if current_user.is_authenticated else None
-        }
-    })
+    try:
+        # Get user subscription status and other relevant data
+        has_subscription = current_user.has_active_subscription() if hasattr(current_user, 'has_active_subscription') else False
+        
+        # Get user portfolio and activity data if available
+        portfolio_value = 0
+        total_stocks = 0
+        try:
+            from app.models import Portfolio
+            user_portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+            total_stocks = len(user_portfolios)
+            portfolio_value = sum([p.quantity * (p.current_price or 0) for p in user_portfolios])
+        except:
+            pass
+            
+        return render_template('profile.html',
+                             user=current_user,
+                             has_subscription=has_subscription,
+                             portfolio_value=portfolio_value,
+                             total_stocks=total_stocks)
+    except Exception as e:
+        current_app.logger.error(f"Error in profile route: {str(e)}")
+        flash("En feil oppstod ved lasting av profilen.", "error")
+        return redirect(url_for('main.index'))
 
 @main.route('/terms')
 @main.route('/terms/')
@@ -854,4 +869,15 @@ def financial_dashboard():
     except Exception as e:
         current_app.logger.error(f"Error loading financial dashboard: {e}")
         flash('Feil ved lasting av finansielt dashboard.', 'danger')
+        return redirect(url_for('main.index'))
+
+@main.route('/insider-trading')
+@login_required
+def insider_trading():
+    """Insider Trading Intelligence Dashboard"""
+    try:
+        return render_template('analysis/insider_trading.html')
+    except Exception as e:
+        current_app.logger.error(f"Error loading insider trading dashboard: {e}")
+        flash('Feil ved lasting av innsidehandel-dashboard.', 'danger')
         return redirect(url_for('main.index'))

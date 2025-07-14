@@ -15,10 +15,16 @@ class RateLimiter:
         self.api_calls = defaultdict(deque)
         self.limits = {
             'yahoo_finance': {
-                'requests_per_minute': 5,   # Even more conservative
-                'requests_per_hour': 150,   # Very conservative
-                'delay_between_calls': 6.0, # 6 seconds between calls
-                'burst_delay': 10.0        # 10 seconds after bursts
+                'requests_per_minute': 3,   # Very conservative - 3 per minute
+                'requests_per_hour': 50,    # Only 50 per hour
+                'delay_between_calls': 12.0, # 12 seconds between calls
+                'burst_delay': 20.0        # 20 seconds after bursts
+            },
+            'yfinance': {
+                'requests_per_minute': 3,   # Same as yahoo_finance
+                'requests_per_hour': 50,    
+                'delay_between_calls': 12.0,
+                'burst_delay': 20.0        
             },
             'default': {
                 'requests_per_minute': 100,

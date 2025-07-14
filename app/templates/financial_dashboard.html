@@ -533,6 +533,13 @@ class FinancialDashboard {
     async loadSectorAnalysis() {
         try {
             const response = await fetch('/api/market/sectors');
+            
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Response is not JSON');
+            }
+            
             const data = await response.json();
 
             if (data.success) {
@@ -540,12 +547,22 @@ class FinancialDashboard {
             }
         } catch (error) {
             console.error('Error loading sector analysis:', error);
+            // Display fallback content
+            const container = document.getElementById('sector-analysis');
+            container.innerHTML = '<div class="alert alert-warning">Kunne ikke laste sektoranalyse. Prøv igjen senere.</div>';
         }
     }
 
     async loadFinancialNews() {
         try {
             const response = await fetch(`/api/news/financial?${this.userStocks.map(s => `symbols=${s}`).join('&')}&limit=20`);
+            
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Response is not JSON');
+            }
+            
             const data = await response.json();
 
             if (data.success) {
@@ -553,6 +570,9 @@ class FinancialDashboard {
             }
         } catch (error) {
             console.error('Error loading financial news:', error);
+            // Display fallback content
+            const container = document.getElementById('financial-news');
+            container.innerHTML = '<div class="alert alert-warning">Kunne ikke laste finansielle nyheter. Prøv igjen senere.</div>';
         }
     }
 

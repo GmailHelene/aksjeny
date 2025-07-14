@@ -91,6 +91,8 @@ def index():
 def technical(ticker=None):
     """Technical analysis view"""
     ticker = request.args.get('ticker')
+    market = request.args.get('market')  # Add market parameter support
+    
     if ticker:
         # Check if user can make analysis requests
         can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
@@ -109,6 +111,7 @@ def technical(ticker=None):
             return render_template('analysis/technical.html', 
                                  technical_data=technical_data, 
                                  ticker=ticker,
+                                 market=market,
                                  analyses={},
                                  usage_summary=usage_summary)
         except Exception as e:
@@ -116,6 +119,37 @@ def technical(ticker=None):
             return render_template('analysis/technical.html', 
                                  error=f"Kunne ikke hente teknisk analyse for {ticker}",
                                  ticker=ticker,
+                                 market=market,
+                                 analyses={})
+    elif market:
+        # Handle market-wide technical analysis
+        try:
+            if market == 'global':
+                # Get global market analysis
+                market_data = {
+                    'market_type': 'global',
+                    'indices': ['S&P 500', 'NASDAQ', 'DOW JONES', 'FTSE 100', 'DAX'],
+                    'overview': 'Global market technical analysis showing mixed signals',
+                    'trend': 'bullish'
+                }
+            else:
+                # Default to Norwegian market
+                market_data = {
+                    'market_type': 'norwegian',
+                    'indices': ['OSEBX', 'OBX'],
+                    'overview': 'Norwegian market showing stable growth patterns',
+                    'trend': 'neutral'
+                }
+                
+            return render_template('analysis/technical.html', 
+                                 market_data=market_data,
+                                 market=market,
+                                 analyses={})
+        except Exception as e:
+            current_app.logger.error(f"Error getting market analysis for {market}: {str(e)}")
+            return render_template('analysis/technical.html', 
+                                 error=f"Kunne ikke hente markedsanalyse for {market}",
+                                 market=market,
                                  analyses={})
     
     # If no ticker provided, show the technical analysis landing page with sample data
