@@ -11,11 +11,6 @@ from ..services.notification_service import NotificationService
 
 stocks = Blueprint('stocks', __name__, url_prefix='/stocks')
 
-# Min profil-side
-@stocks.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html')
 
 @stocks.route('/')
 @access_required
@@ -436,7 +431,10 @@ def list_currency():
             }
         }
         
-        # Render template with enhanced data
+        # Legg til last_price-felt for template-kompatibilitet
+        for c in enhanced_currencies.values():
+            c['last_price'] = c.get('rate', None)
+        # Render template med kompatible data
         return render_template(
             'stocks/currency.html',
             currencies=enhanced_currencies,

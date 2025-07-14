@@ -21,20 +21,6 @@ def subscription():
         ]
     })
 
-@additional_routes.route('/profile')
-@additional_routes.route('/profile/')
-@login_required
-def profile():
-    """User profile page"""
-    return jsonify({
-        'status': 'OK',
-        'page': 'profile',
-        'message': 'Profil-side fungerer!',
-        'user': {
-            'email': current_user.email if current_user.is_authenticated else None,
-            'username': current_user.username if current_user.is_authenticated else None
-        }
-    })
 
 @additional_routes.route('/privacy')
 @additional_routes.route('/privacy/')

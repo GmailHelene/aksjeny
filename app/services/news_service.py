@@ -414,8 +414,7 @@ class NewsService:
             final_articles = all_articles[:limit]
             
             # Cache even partial results to prevent repeated hanging
-            cache_time = 300 if len(final_articles) > 0 else 60  # Shorter cache for empty results
-            simple_cache.set(cache_key, final_articles, 'news', cache_time)
+            simple_cache.set(cache_key, final_articles, 'news')  # Ensure only 3 arguments are used
             
             return final_articles
             
@@ -633,7 +632,7 @@ class NewsService:
             final_articles = relevant_articles[:limit]
             
             # Cache the result
-            simple_cache.set(cache_key, final_articles, 'news')
+            simple_cache.set(cache_key, final_articles, 'news')  # Ensure only 3 arguments are used
             
             return final_articles
             
@@ -684,7 +683,7 @@ class NewsService:
                 categorized[category] = categorized[category][:5]
             
             # Cache the result
-            simple_cache.set(cache_key, categorized, 'news')
+            simple_cache.set(cache_key, categorized, 'news')  # Ensure only 3 arguments are used
             
             return categorized
             

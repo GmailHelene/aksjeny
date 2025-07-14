@@ -308,8 +308,8 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('portfolio.overview') }}"><i class="bi bi-briefcase"></i> Portefølje</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url_for('main.subscription') }}">
                                     <i class="bi bi-credit-card"></i> Abonnement
@@ -368,16 +368,11 @@
                             </ul>
                         </li>
                         
-                        <!-- Portfolio Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-briefcase"></i> Portefølje
+                        <!-- Nyheter -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('news_bp.index') }}">
+                                <i class="bi bi-newspaper"></i> Nyheter
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="portfolioDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('portfolio.portfolio_index') }}"><i class="bi bi-grid"></i> Oversikt</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}"><i class="bi bi-globe"></i> Markedsoversikt</a></li>
-                            </ul>
                         </li>
                         
                         {% if current_user.is_pro %}

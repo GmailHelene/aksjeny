@@ -197,27 +197,37 @@ def setup_exempt_users(app):
         from .models.user import User
         
         exempt_users = [
-            {'email': 'helene721@gmail.com', 'username': 'helene721', 'password': 'aksjeradar2024'},
-            {'email': 'tonjekit91@gmail.com', 'username': 'tonjekit91', 'password': 'aksjeradar2024'},
-            {'email': 'helene@luxushair.com', 'username': 'helene_luxus', 'password': 'aksjeradar2024'},
-            {'email': 'eiriktollan.berntsen@gmail.com', 'username': 'eirik_berntsen', 'password': 'aksjeradar2024'}
+            {'email': 'helene721@gmail.com', 'username': 'helene721', 'password': 'aksjeradar2024', 'lifetime': False},
+            {'email': 'tonjekit91@gmail.com', 'username': 'tonjekit91', 'password': 'aksjeradar2024', 'lifetime': True},
+            {'email': 'helene@luxushair.com', 'username': 'helene_luxus', 'password': 'aksjeradar2024', 'lifetime': False},
+            {'email': 'eiriktollan.berntsen@gmail.com', 'username': 'eirik_berntsen', 'password': 'aksjeradar2024', 'lifetime': True}
         ]
-        
         for user_data in exempt_users:
             user = User.query.filter_by(email=user_data['email']).first()
             if not user:
                 user = User(
                     email=user_data['email'],
                     username=user_data['username'],
-                    subscription_type='premium',
                     is_admin=True,
                     trial_used=False
                 )
                 user.set_password(user_data['password'])
                 db.session.add(user)
-                
+            # Oppdater alltid til riktig pro/lifetime-status
+            if user_data['lifetime']:
+                user.has_subscription = True
+                user.subscription_type = 'lifetime'
+                user.subscription_start = datetime.utcnow()
+                user.subscription_end = None
+            else:
+                user.has_subscription = True
+                user.subscription_type = 'premium'
+                user.subscription_start = datetime.utcnow()
+                user.subscription_end = datetime.utcnow() + timedelta(days=365)
+            user.is_admin = True
+            user.trial_used = True
         db.session.commit()
-        app.logger.info("✅ Exempt users configured")
+        app.logger.info("✅ Exempt users configured with correct pro/lifetime access")
         
     except Exception as e:
         app.logger.error(f"❌ Failed to set up exempt users: {e}")

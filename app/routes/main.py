@@ -83,7 +83,7 @@ def get_pytz():
 
 main = Blueprint('main', __name__)
 
-EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com'}
+EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
 
 # Always accessible endpoints (authentication, basic info, etc.)
 EXEMPT_ENDPOINTS = {
@@ -399,12 +399,12 @@ def index():
         global_stocks = {}
     
     # Determine if banner should be shown
-    EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
+    EXEMPT_EMAILS_GLOBAL = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
     show_banner = False
     try:
         if current_user.is_authenticated:
             # Exempt emails never see banners
-            if current_user.email in EXEMPT_EMAILS:
+            if current_user.email in EXEMPT_EMAILS_GLOBAL:
                 show_banner = False
             elif hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription():
                 # Active subscription - no banner
@@ -905,3 +905,16 @@ def insider_trading():
         current_app.logger.error(f"Error loading insider trading dashboard: {e}")
         flash('Feil ved lasting av innsidehandel-dashboard.', 'danger')
         return redirect(url_for('main.index'))
+
+# Add missing navigation routes
+@main.route('/news')
+@access_required
+def news():
+    """News page - redirect to news blueprint"""
+    return redirect(url_for('news_bp.index'))
+
+@main.route('/stocks/screener')
+@access_required
+def stock_screener():
+    """Stock screener page"""
+    return redirect(url_for('analysis.screener'))
