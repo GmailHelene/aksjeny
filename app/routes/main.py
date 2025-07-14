@@ -844,3 +844,14 @@ def api_trial_status():
     except Exception as e:
         current_app.logger.error(f"Error checking trial status: {e}")
         return jsonify({'error': 'Unable to check trial status'}), 500
+
+@main.route('/financial-dashboard')
+@login_required
+def financial_dashboard():
+    """Financial Dashboard with comprehensive market data"""
+    try:
+        return render_template('financial_dashboard.html')
+    except Exception as e:
+        current_app.logger.error(f"Error loading financial dashboard: {e}")
+        flash('Feil ved lasting av finansielt dashboard.', 'danger')
+        return redirect(url_for('main.index'))

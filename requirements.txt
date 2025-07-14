@@ -39,3 +39,8 @@ boto3>=1.28.1  # For S3 backup
 schedule>=1.2.0  # For scheduled tasks
 pytest>=7.4.0  # For testing
 pytest-cov>=4.1.0  # For test coverage
+# Advanced Analytics Dependencies
+scipy>=1.11.0  # For portfolio optimization and risk calculations
+joblib>=1.3.0  # For ML model persistence
+ta-lib>=0.4.0  # For technical analysis indicators
+cvxpy>=1.4.0  # For advanced optimization problems
