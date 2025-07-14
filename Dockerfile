@@ -10,17 +10,25 @@ RUN apt-get update && apt-get install -y \
     g++ \
     build-essential \
     wget \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Install TA-Lib C library
+# Install TA-Lib C library with proper library path setup
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     tar -xzf ta-lib-0.4.0-src.tar.gz && \
     cd ta-lib/ && \
     ./configure --prefix=/usr && \
     make && \
     make install && \
+    echo "/usr/lib" >> /etc/ld.so.conf.d/ta-lib.conf && \
+    ldconfig && \
+    ln -sf /usr/lib/libta_lib.so.0 /usr/lib/libta-lib.so && \
     cd .. && \
     rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
+
+# Set environment variables for TA-Lib
+ENV TA_LIBRARY_PATH=/usr/lib
+ENV TA_INCLUDE_PATH=/usr/include
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
