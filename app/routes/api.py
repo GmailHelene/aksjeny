@@ -580,8 +580,8 @@ def get_currency_rates():
         return jsonify({'error': 'Failed to fetch currency rates'}), 500
 
 @api.route('/insider/analysis')
-def get_insider_analysis():
-    """API endpoint for insider trading analysis"""
+def get_general_insider_analysis():
+    """API endpoint for general insider trading analysis"""
     try:
         # Demo insider trading data
         insider_data = {
@@ -639,6 +639,79 @@ def get_insider_analysis():
         })
     except Exception as e:
         logger.error(f"Error fetching insider analysis: {e}")
+        return jsonify({'error': 'Failed to fetch insider analysis'}), 500
+
+@api.route('/crypto/trending')
+def get_crypto_trending():
+    """API endpoint for trending crypto data"""
+    try:
+        # Get trending crypto data
+        trending_data = [
+            {
+                'ticker': 'BTC-USD',
+                'name': 'Bitcoin',
+                'price': 65432.10,
+                'change_percent': 1.87,
+                'volume': 25000000000,
+                'market_cap': 1200000000000,
+                'trend': 'up'
+            },
+            {
+                'ticker': 'ETH-USD', 
+                'name': 'Ethereum',
+                'price': 3456.78,
+                'change_percent': 1.67,
+                'volume': 15000000000,
+                'market_cap': 420000000000,
+                'trend': 'up'
+            },
+            {
+                'ticker': 'SOL-USD',
+                'name': 'Solana', 
+                'price': 148.75,
+                'change_percent': -1.52,
+                'volume': 850000000,
+                'market_cap': 65000000000,
+                'trend': 'down'
+            }
+        ]
+        return jsonify(trending_data)
+    except Exception as e:
+        logger.error(f"Error fetching trending crypto: {e}")
+        return jsonify({'error': 'Failed to fetch trending crypto'}), 500
+
+@api.route('/insider/analysis/<ticker>')
+def get_ticker_insider_analysis(ticker):
+    """API endpoint for ticker-specific insider trading analysis"""
+    try:
+        # Generate insider analysis data
+        insider_data = {
+            'ticker': ticker.upper(),
+            'insider_sentiment': 'Bullish',
+            'recent_transactions': [
+                {
+                    'date': '2025-01-10',
+                    'insider': 'CEO',
+                    'transaction': 'Buy',
+                    'shares': 10000,
+                    'value': 3400000
+                },
+                {
+                    'date': '2025-01-05',
+                    'insider': 'CFO',
+                    'transaction': 'Buy',
+                    'shares': 5000,
+                    'value': 1700000
+                }
+            ],
+            'total_insider_buying': 5100000,
+            'total_insider_selling': 0,
+            'net_insider_activity': 5100000,
+            'confidence_score': 0.85
+        }
+        return jsonify(insider_data)
+    except Exception as e:
+        logger.error(f"Error fetching insider analysis for {ticker}: {e}")
         return jsonify({'error': 'Failed to fetch insider analysis'}), 500
 
 @api.before_request

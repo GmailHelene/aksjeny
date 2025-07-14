@@ -112,24 +112,24 @@ def details(ticker):
             'regularMarketPrice': stock_data.get('regularMarketPrice', 0),
             'regularMarketChange': stock_data.get('regularMarketChange', 0),
             'regularMarketChangePercent': stock_data.get('regularMarketChangePercent', 0),
-            'marketCap': stock_data.get('marketCap', 'N/A'),
+            'marketCap': stock_data.get('marketCap', None),
             'volume': stock_data.get('volume', 0),
             'averageVolume': stock_data.get('averageVolume', stock_data.get('volume', 0)),
             'fiftyTwoWeekHigh': stock_data.get('fiftyTwoWeekHigh', stock_data.get('regularMarketPrice', 0) * 1.2),
             'fiftyTwoWeekLow': stock_data.get('fiftyTwoWeekLow', stock_data.get('regularMarketPrice', 0) * 0.8),
-            'peRatio': stock_data.get('trailingPE', stock_data.get('forwardPE', 'N/A')),
-            'eps': stock_data.get('trailingEps', 'N/A'),
-            'dividendYield': stock_data.get('dividendYield', stock_data.get('trailingAnnualDividendYield', 'N/A')),
-            'sector': stock_data.get('sector', 'N/A'),
-            'industry': stock_data.get('industry', 'N/A'),
+            'peRatio': stock_data.get('trailingPE', stock_data.get('forwardPE', None)),
+            'eps': stock_data.get('trailingEps', None),
+            'dividendYield': stock_data.get('dividendYield', stock_data.get('trailingAnnualDividendYield', None)),
+            'sector': stock_data.get('sector', 'Ikke tilgjengelig'),
+            'industry': stock_data.get('industry', 'Ikke tilgjengelig'),
             'currency': stock_data.get('currency', 'USD' if not ticker.endswith('.OL') else 'NOK'),
             'exchange': stock_data.get('exchange', 'OSE' if ticker.endswith('.OL') else 'NASDAQ'),
-            'beta': stock_data.get('beta', 'N/A'),
-            'bookValue': stock_data.get('bookValue', 'N/A'),
-            'priceToBook': stock_data.get('priceToBook', 'N/A'),
+            'beta': stock_data.get('beta', None),
+            'bookValue': stock_data.get('bookValue', None),
+            'priceToBook': stock_data.get('priceToBook', None),
             'website': stock_data.get('website', ''),
             'businessSummary': stock_data.get('longBusinessSummary', f'Informasjon om {ticker} vil bli oppdatert snart.'),
-            'employees': stock_data.get('fullTimeEmployees', 'N/A'),
+            'employees': stock_data.get('fullTimeEmployees', None),
             'country': stock_data.get('country', 'Norge' if ticker.endswith('.OL') else 'USA')
         }
         
@@ -145,9 +145,9 @@ def details(ticker):
         except Exception as e:
             current_app.logger.warning(f"Could not get technical analysis for {ticker}: {e}")
             technical_data = {
-                'rsi': 'N/A',
-                'macd': 'N/A',
-                'bollinger_bands': 'N/A',
+                'rsi': None,
+                'macd': None,
+                'bollinger_bands': None,
                 'moving_averages': {},
                 'recommendation': 'HOLD'
             }
@@ -181,9 +181,9 @@ def details(ticker):
             'ticker': ticker,
             'shortName': ticker,
             'longName': ticker,
-            'regularMarketPrice': 'N/A',
-            'regularMarketChange': 'N/A',
-            'regularMarketChangePercent': 'N/A',
+            'regularMarketPrice': 0,
+            'regularMarketChange': 0,
+            'regularMarketChangePercent': 0,
             'currency': 'NOK' if ticker.endswith('.OL') else 'USD',
             'businessSummary': f'Aksjedata for {ticker} er midlertidig utilgjengelig. Prøv igjen senere.',
             'error_message': 'Data midlertidig utilgjengelig'

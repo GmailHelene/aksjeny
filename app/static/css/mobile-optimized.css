@@ -148,16 +148,38 @@
     .navbar-nav .nav-link {
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
+        margin-bottom: 0.25rem;
     }
     
     .navbar-toggler {
         padding: 0.4rem 0.6rem;
         border: none;
         border-radius: 6px;
+        margin-left: 0.5rem;
     }
     
     .navbar-collapse {
-        margin-top: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Better spacing for mobile menu items */
+    @media (max-width: 991.98px) {
+        .navbar-nav .nav-item {
+            margin-bottom: 0.25rem;
+        }
+        
+        .navbar-nav .dropdown-menu {
+            margin-left: 1rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .navbar-nav .dropdown-menu .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
     }
     
     /* Dropdown optimizations */

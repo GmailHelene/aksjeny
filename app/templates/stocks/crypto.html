@@ -13,7 +13,7 @@
                 </a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ url_for('stocks.list_all') }}" class="text-decoration-none">
+                <a href="{{ url_for('stocks.list_stocks') }}" class="text-decoration-none">
                     <i class="bi bi-graph-up me-1"></i>Aksjer
                 </a>
             </li>
@@ -41,22 +41,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if crypto_data %}
-                            {% for crypto in crypto_data %}
+                        {% if stocks %}
+                            {% for ticker, crypto in stocks.items() %}
                             <tr class="text-dark">
-                                <td>{{ crypto.ticker }}</td>
-                                <td>{{ crypto.name }}</td>
-                                <td>{{ crypto.price }}</td>
-                                <td>{{ crypto.change }}</td>
-                                <td class="{{ 'text-success' if crypto.change_percent > 0 else 'text-danger' }}">
-                                    {{ crypto.change_percent }}%
+                                <td><strong>{{ ticker }}</strong></td>
+                                <td>{{ crypto['name'] }}</td>
+                                <td>${{ "{:,.2f}".format(crypto['last_price']) }}</td>
+                                <td class="{% if crypto['change'] > 0 %}text-success{% elif crypto['change'] < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    ${{ "{:+,.2f}".format(crypto['change']) }}
                                 </td>
-                                <td>{{ crypto.volume }}</td>
-                                <td>
-                                    <span class="badge bg-{{ crypto.signal_color }}">{{ crypto.signal }}</span>
+                                <td class="{% if crypto['change_percent'] > 0 %}text-success{% elif crypto['change_percent'] < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    {{ "{:+.2f}".format(crypto['change_percent']) }}%
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('stocks.details', ticker=crypto.ticker) }}" class="btn btn-sm btn-outline-primary">
+                                    {% if crypto['volume'] >= 1000000000 %}
+                                        ${{ "{:.1f}".format(crypto['volume'] / 1000000000) }}B
+                                    {% elif crypto['volume'] >= 1000000 %}
+                                        ${{ "{:.1f}".format(crypto['volume'] / 1000000) }}M
+                                    {% else %}
+                                        ${{ "{:,.0f}".format(crypto['volume']) }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {% if crypto['signal'] == 'BUY' %}bg-success{% elif crypto['signal'] == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                        {{ crypto['signal'] }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-graph-up"></i> Detaljer
                                     </a>
                                 </td>

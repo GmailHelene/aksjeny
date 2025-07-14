@@ -82,7 +82,7 @@ def handle_form_error(error, form=None):
 def format_number_norwegian(number):
     """Format numbers with Norwegian conventions"""
     if number is None:
-        return 'N/A'
+        return '—'
     
     try:
         # Convert to float if it's not already
@@ -100,7 +100,7 @@ def format_number_norwegian(number):
 def format_currency_norwegian(amount, currency='NOK'):
     """Format currency with Norwegian conventions"""
     if amount is None:
-        return 'N/A'
+        return '—'
     
     try:
         formatted = format_number_norwegian(amount)
@@ -111,7 +111,7 @@ def format_currency_norwegian(amount, currency='NOK'):
 def format_percentage_norwegian(percentage):
     """Format percentage with Norwegian conventions"""
     if percentage is None:
-        return 'N/A'
+        return '—'
     
     try:
         num = float(percentage)

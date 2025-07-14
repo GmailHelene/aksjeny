@@ -4,6 +4,11 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    <!-- Main Title -->
+    <h1 class="mb-4 text-center">
+        <i class="bi bi-graph-up me-2"></i>Markedsoversikt
+    </h1>
+    
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -161,8 +166,8 @@
         </div>
     </div>
 
-    <!-- Cryptocurrency Market Overview -->
-    <h2 class="h3 mb-3 text-dark">Kryptovaluta Markedsoversikt</h2>
+    <!-- Global Stocks Market Overview -->
+    <h2 class="h3 mb-3 text-dark">Globale Aksjer Markedsoversikt</h2>
     <div class="card border-0 shadow mb-4">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -178,6 +183,39 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% if global_stocks %}
+                            {% for ticker, stock in global_stocks.items() %}
+                            <tr>
+                                <td><strong>{{ ticker }}</strong></td>
+                                <td>{{ stock['name'] }}</td>
+                                <td class="text-end">
+                                    ${{ "{:,.2f}".format(stock['last_price']) }}
+                                </td>
+                                <td class="text-end">
+                                    <span class="{% if stock['change_percent'] > 0 %}text-success{% elif stock['change_percent'] < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                        {{ "{:+.2f}".format(stock['change_percent']) }}%
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {% if stock['signal'] == 'BUY' %}bg-success{% elif stock['signal'] == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                        {{ stock['signal'] }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-info-circle"></i> Detaljer
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Ingen globale aksjedata tilgjengelig for øyeblikket
+                                </td>
+                            </tr>
+                        {% endif %}
                         {% if crypto %}
                             {% for ticker, data in crypto.items() %}
                                 <tr>

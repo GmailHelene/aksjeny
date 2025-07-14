@@ -162,7 +162,7 @@ def create_app(config_class=Config):
     # Setup login manager
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = 'main.login'
     
     # Register blueprints
     from .routes.main import main

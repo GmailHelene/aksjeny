@@ -43,40 +43,86 @@
                     </div>
                 {% elif analysis %}
                     <div class="analysis-results">
+                        <!-- Overall Assessment -->
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-body">
-                                <h4>KI-vurdering</h4>
-                                <p class="lead">{{ analysis.summary }}</p>
-                                
-                                <div class="progress mb-3" style="height: 25px;">
-                                    <div class="progress-bar {{ analysis.sentiment_class }}" 
-                                         role="progressbar" 
-                                         style="width: {{ analysis.confidence }}%"
-                                         aria-valuenow="{{ analysis.confidence }}"
-                                         aria-valuemin="0"
-                                         aria-valuemax="100">
-                                        {{ analysis.confidence }}% konfidens
+                                <h4><i class="bi bi-brain me-2"></i>KI-vurdering</h4>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <h5 class="mb-1">{{ analysis.sentiment|title }}</h5>
+                                            <small class="text-muted">Sentiment</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <h5 class="mb-1">{{ (analysis.prediction.confidence * 100)|round|int }}%</h5>
+                                            <small class="text-muted">Konfidens</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <h5 class="mb-1">{{ analysis.prediction.target_price }}</h5>
+                                            <small class="text-muted">Målpris</small>
+                                        </div>
                                     </div>
                                 </div>
+                                <p class="lead">{{ analysis.summary }}</p>
                                 
-                                <h5 class="mt-4">Nøkkelfaktorer</h5>
-                                <ul class="list-group">
-                                    {% for factor in analysis.key_factors %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        {{ factor.description }}
-                                        <span class="badge {{ factor.impact_class }} rounded-pill">{{ factor.impact }}</span>
+                                <div class="alert alert-{{ 'success' if analysis.prediction.direction == 'opp' else 'warning' if analysis.prediction.direction == 'sideveis' else 'danger' }}">
+                                    <strong>Prediksjon:</strong> {{ analysis.prediction.direction|upper }} over {{ analysis.prediction.time_frame }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Analysis -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h4><i class="bi bi-graph-up me-2"></i>Teknisk Analyse</h4>
+                                {% if analysis.technical_factors %}
+                                <ul class="list-group list-group-flush">
+                                    {% for factor in analysis.technical_factors %}
+                                    <li class="list-group-item border-0 px-0">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>{{ factor }}
                                     </li>
                                     {% endfor %}
                                 </ul>
+                                {% endif %}
                             </div>
                         </div>
-                        
-                        <div class="card border-0 shadow-sm">
+
+                        <!-- Fundamental Analysis -->
+                        <div class="card border-0 shadow-sm mb-4">
                             <div class="card-body">
-                                <h4>Teknisk analyse</h4>
-                                <!-- Tekniske indikatorer her -->
+                                <h4><i class="bi bi-calculator me-2"></i>Fundamental Analyse</h4>
+                                {% if analysis.fundamental_factors %}
+                                <ul class="list-group list-group-flush">
+                                    {% for factor in analysis.fundamental_factors %}
+                                    <li class="list-group-item border-0 px-0">
+                                        <i class="bi bi-bar-chart-fill text-primary me-2"></i>{{ factor }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
                             </div>
                         </div>
+
+                        <!-- Economic Indicators -->
+                        {% if analysis.economic_indicators %}
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h4><i class="bi bi-globe me-2"></i>Økonomiske Indikatorer</h4>
+                                <div class="row">
+                                    {% for key, value in analysis.economic_indicators.items() %}
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="fw-bold">{{ key.replace('_', ' ')|title }}</h6>
+                                        <p class="mb-0">{{ value }}</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% else %}

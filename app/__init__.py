@@ -299,7 +299,7 @@ def register_template_filters(app):
     def currency_filter(value):
         """Format number as currency"""
         if value is None:
-            return "N/A"
+            return "—"
         try:
             return f"{float(value):,.2f} NOK"
         except (ValueError, TypeError):
@@ -309,7 +309,7 @@ def register_template_filters(app):
     def percentage_filter(value):
         """Format number as percentage"""
         if value is None:
-            return "N/A"
+            return "—"
         try:
             return f"{float(value):.2f}%"
         except (ValueError, TypeError):
@@ -319,7 +319,7 @@ def register_template_filters(app):
     def datetimeformat_filter(value):
         """Format datetime for display"""
         if value is None:
-            return "N/A"
+            return "—"
         try:
             if isinstance(value, str):
                 # Parse ISO format datetime
@@ -337,3 +337,29 @@ def register_template_filters(app):
             now=datetime.utcnow,
             datetime=datetime
         )
+    
+    @app.template_filter('nn')
+    def nn_filter(value, decimals=2, suffix=''):
+        """Norwegian number formatting filter"""
+        if value is None:
+            return "—"
+        try:
+            if isinstance(value, str):
+                value = float(value)
+            formatted = f"{value:,.{decimals}f}".replace(',', ' ').replace('.', ',')
+            if suffix:
+                return f"{formatted} {suffix}"
+            return formatted
+        except (ValueError, TypeError):
+            return str(value) if value is not None else "—"
+
+    @app.template_filter('pct')
+    def pct_filter(value):
+        """Format as percentage"""
+        if value is None:
+            return "—"
+        try:
+            formatted = f"{float(value):.2f}".replace('.', ',')
+            return f"{formatted} %"
+        except (ValueError, TypeError):
+            return str(value) if value is not None else "—"

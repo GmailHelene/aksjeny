@@ -4,6 +4,25 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="bi bi-house-door me-1"></i>Hjem
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('analysis.index') }}" class="text-decoration-none">
+                    <i class="bi bi-graph-up me-1"></i>Analyse
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="bi bi-book me-1"></i>Benjamin Graham
+            </li>
+        </ol>
+    </nav>
+    
     <div class="row">
         <div class="col-md-9">
             <div class="card shadow-sm mb-4">

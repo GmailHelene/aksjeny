@@ -11,7 +11,7 @@ class NorwegianFormatter:
     def format_number(value: Union[int, float], decimals: int = 2) -> str:
         """Format number with Norwegian conventions (space as thousand separator, comma as decimal)"""
         if value is None:
-            return "N/A"
+            return "—"
         
         try:
             if decimals == 0:
@@ -20,7 +20,7 @@ class NorwegianFormatter:
                 formatted = f"{value:,.{decimals}f}".replace(',', ' ').replace('.', ',')
             return formatted
         except (ValueError, TypeError):
-            return "N/A"
+            return "—"
     
     @staticmethod
     def format_currency(value: Union[int, float], currency: str = "NOK", decimals: int = 2) -> str:
@@ -38,19 +38,19 @@ class NorwegianFormatter:
     def format_percentage(value: Union[int, float], decimals: int = 2) -> str:
         """Format percentage with Norwegian conventions"""
         if value is None:
-            return "N/A"
+            return "—"
         
         try:
             formatted = f"{value:.{decimals}f}".replace('.', ',')
             return f"{formatted} %"
         except (ValueError, TypeError):
-            return "N/A"
+            return "—"
     
     @staticmethod
     def format_date(date: datetime, format: str = "short") -> str:
         """Format date in Norwegian style"""
         if not date:
-            return "N/A"
+            return "—"
         
         if format == "short":
             return date.strftime("%d.%m.%Y")
@@ -70,7 +70,7 @@ class NorwegianFormatter:
     def format_large_number(value: Union[int, float]) -> str:
         """Format large numbers with abbreviations (K, M, B)"""
         if value is None:
-            return "N/A"
+            return "—"
         
         try:
             abs_value = abs(value)
@@ -83,7 +83,7 @@ class NorwegianFormatter:
             else:
                 return NorwegianFormatter.format_number(value, 0)
         except (ValueError, TypeError):
-            return "N/A"
+            return "—"
 
 # Register as Jinja2 filters
 def register_norwegian_filters(app):
