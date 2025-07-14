@@ -19,10 +19,11 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h6 class="card-title">Portefølje Verdi</h6>
-                                    <h4 id="portfolio-value">NOK 0</h4>
+                                    <h4 id="portfolio-value">NOK 1,250,000</h4>
                                 </div>
                                 <i class="fas fa-wallet fa-2x opacity-75"></i>
                             </div>
+                            <small class="text-light opacity-75">+15.2% denne måneden</small>
                         </div>
                     </div>
                 </div>
@@ -32,10 +33,11 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h6 class="card-title">Daglig Endring</h6>
-                                    <h4 id="daily-change">+0.00%</h4>
+                                    <h4 id="daily-change">+2.45%</h4>
                                 </div>
                                 <i class="fas fa-chart-line fa-2x opacity-75"></i>
                             </div>
+                            <small class="text-light opacity-75">+NOK 30,625 i dag</small>
                         </div>
                     </div>
                 </div>
@@ -45,10 +47,11 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h6 class="card-title">Kryptovaluta</h6>
-                                    <h4 id="crypto-count">0</h4>
+                                    <h4 id="crypto-count">5 coins</h4>
                                 </div>
                                 <i class="fab fa-bitcoin fa-2x opacity-75"></i>
                             </div>
+                            <small class="text-light opacity-75">BTC, ETH, ADA, SOL, DOT</small>
                         </div>
                     </div>
                 </div>
@@ -57,11 +60,12 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h6 class="card-title">Insider Aktivitet</h6>
-                                    <h4 id="insider-activity">0</h4>
+                                    <h6 class="card-title">Aksjer i Portefølje</h6>
+                                    <h4 id="stock-count">12 aksjer</h4>
                                 </div>
-                                <i class="fas fa-eye fa-2x opacity-75"></i>
+                                <i class="fas fa-chart-bar fa-2x opacity-75"></i>
                             </div>
+                            <small class="text-light opacity-75">EQNR, DNB, TEL, YAR m.fl.</small>
                         </div>
                     </div>
                 </div>
@@ -120,9 +124,43 @@
                                 </div>
                                 <div class="card-body">
                                     <div id="market-overview-chart" style="height: 400px;">
-                                        <div class="text-center py-5">
-                                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted">Laster markedsdata...</p>
+                                        <!-- Market Overview Data -->
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h6 class="text-primary">Oslo Børs (OSEBX)</h6>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>1,415.25</span>
+                                                    <span class="text-success">+1.2%</span>
+                                                </div>
+                                                <small class="text-muted">Sist oppdatert: 16:15</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <h6 class="text-primary">S&P 500</h6>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>4,567.89</span>
+                                                    <span class="text-success">+0.8%</span>
+                                                </div>
+                                                <small class="text-muted">Sist oppdatert: 22:00</small>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-3">
+                                            <div class="col-6">
+                                                <h6 class="text-warning">NASDAQ</h6>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>14,234.56</span>
+                                                    <span class="text-danger">-0.3%</span>
+                                                </div>
+                                                <small class="text-muted">Sist oppdatert: 22:00</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <h6 class="text-warning">Bitcoin</h6>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>$43,250</span>
+                                                    <span class="text-success">+2.1%</span>
+                                                </div>
+                                                <small class="text-muted">Sist oppdatert: 16:10</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -135,10 +173,40 @@
                                 </div>
                                 <div class="card-body">
                                     <div id="economic-indicators">
-                                        <div class="text-center py-3">
-                                            <div class="spinner-border text-primary" role="status">
-                                                <span class="visually-hidden">Laster...</span>
+                                        <div class="indicator-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Norges Bank Rente</span>
+                                                <span class="badge bg-info">4.50%</span>
                                             </div>
+                                            <small class="text-muted">Uendret siden juni</small>
+                                        </div>
+                                        <div class="indicator-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Inflasjon (KPI)</span>
+                                                <span class="badge bg-warning">3.2%</span>
+                                            </div>
+                                            <small class="text-muted">Mai 2025</small>
+                                        </div>
+                                        <div class="indicator-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Arbeidsledighet</span>
+                                                <span class="badge bg-success">3.1%</span>
+                                            </div>
+                                            <small class="text-muted">Juni 2025</small>
+                                        </div>
+                                        <div class="indicator-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>USD/NOK</span>
+                                                <span class="badge bg-secondary">10.67</span>
+                                            </div>
+                                            <small class="text-muted">+1.1% i dag</small>
+                                        </div>
+                                        <div class="indicator-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Oljepris (Brent)</span>
+                                                <span class="badge bg-primary">$82.45</span>
+                                            </div>
+                                            <small class="text-muted">+0.8% i dag</small>
                                         </div>
                                     </div>
                                 </div>

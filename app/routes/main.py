@@ -115,7 +115,7 @@ PREMIUM_ENDPOINTS = {
     'analysis.market_overview',
     
     # Portfolio endpoints
-    'portfolio.index',
+    'portfolio.portfolio_index',
     'portfolio.create_portfolio',
     'portfolio.view_portfolio',
     'portfolio.edit_stock',
@@ -462,6 +462,30 @@ def search():
     DataService = get_data_service()
     results = DataService.search_ticker(query)
     return render_template('search_results.html', results=results, query=query)
+
+@main.route('/prices')
+@access_required
+def prices():
+    """Comprehensive market prices overview"""
+    try:
+        # Lazy import DataService
+        DataService = get_data_service()
+        
+        # Get data for all markets
+        oslo_stocks = DataService.get_oslo_overview()
+        global_stocks = DataService.get_global_overview()
+        crypto = DataService.get_crypto_overview()
+        currency = DataService.get_currency_overview()
+        
+        return render_template('stocks/prices.html', 
+                             oslo_stocks=oslo_stocks,
+                             global_stocks=global_stocks,
+                             crypto=crypto,
+                             currency=currency)
+    except Exception as e:
+        current_app.logger.error(f"Error in prices route: {e}")
+        flash('Kunne ikke hente prisdata. Prøv igjen senere.', 'error')
+        return redirect(url_for('main.index'))
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():

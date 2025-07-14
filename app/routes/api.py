@@ -322,7 +322,7 @@ def get_financial_news_api():
                 'sentiment': 'positive',
                 'source': 'Finansavisen',
                 'published_at': datetime.utcnow().isoformat(),
-                'url': 'https://example.com/news/1',
+                'url': 'https://aksjeradar.trade/news/teknologi-marked-oppgang',
                 'symbol': symbols[0] if symbols else 'AAPL'
             },
             {
@@ -331,7 +331,7 @@ def get_financial_news_api():
                 'sentiment': 'negative',
                 'source': 'E24',
                 'published_at': (datetime.utcnow() - timedelta(hours=2)).isoformat(),
-                'url': 'https://example.com/news/2',
+                'url': 'https://aksjeradar.trade/news/energi-sektor-press',
                 'symbol': 'EQNR.OL'
             },
             {
@@ -340,7 +340,7 @@ def get_financial_news_api():
                 'sentiment': 'neutral',
                 'source': 'DN',
                 'published_at': (datetime.utcnow() - timedelta(hours=4)).isoformat(),
-                'url': 'https://example.com/news/3',
+                'url': 'https://aksjeradar.trade/news/sentralbank-rente-beslutning',
                 'symbol': 'DNB.OL'
             },
             {
@@ -349,7 +349,7 @@ def get_financial_news_api():
                 'sentiment': 'neutral',
                 'source': 'CryptoNews',
                 'published_at': (datetime.utcnow() - timedelta(hours=6)).isoformat(),
-                'url': 'https://example.com/news/4',
+                'url': 'https://aksjeradar.trade/news/krypto-volatilitet',
                 'symbol': 'BTC-USD'
             }
         ]
@@ -494,6 +494,152 @@ def get_dashboard_data():
             'success': False,
             'message': 'Failed to get dashboard data'
         }), 500
+
+@api.route('/crypto/data')
+def get_crypto_data():
+    """API endpoint for detailed crypto data"""
+    try:
+        data = DataService.get_crypto_overview()
+        if not data:
+            return jsonify({'error': 'No crypto data available'}), 404
+        
+        # Format data for API response
+        formatted_data = {}
+        for ticker, crypto_info in data.items():
+            # Handle both dict and object formats
+            if isinstance(crypto_info, dict):
+                formatted_data[ticker] = {
+                    'ticker': ticker,
+                    'last_price': float(crypto_info.get('last_price', 0)),
+                    'change': float(crypto_info.get('change', 0)),
+                    'change_percent': float(crypto_info.get('change_percent', 0)),
+                    'volume': float(crypto_info.get('volume', 0)),
+                    'market_cap': float(crypto_info.get('market_cap', 0)),
+                    'signal': crypto_info.get('signal', 'HOLD')
+                }
+            else:
+                formatted_data[ticker] = {
+                    'ticker': ticker,
+                    'last_price': float(crypto_info.last_price) if hasattr(crypto_info, 'last_price') and crypto_info.last_price else 0,
+                    'change': float(crypto_info.change) if hasattr(crypto_info, 'change') and crypto_info.change else 0,
+                    'change_percent': float(crypto_info.change_percent) if hasattr(crypto_info, 'change_percent') and crypto_info.change_percent else 0,
+                    'volume': float(crypto_info.volume) if hasattr(crypto_info, 'volume') and crypto_info.volume else 0,
+                    'market_cap': float(crypto_info.market_cap) if hasattr(crypto_info, 'market_cap') and crypto_info.market_cap else 0,
+                    'signal': crypto_info.signal if hasattr(crypto_info, 'signal') else 'HOLD'
+                }
+        
+        return jsonify({
+            'status': 'success',
+            'data': formatted_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching crypto data: {e}")
+        return jsonify({'error': 'Failed to fetch crypto data'}), 500
+
+@api.route('/currency/rates')
+def get_currency_rates():
+    """API endpoint for currency exchange rates"""
+    try:
+        data = DataService.get_currency_overview()
+        if not data:
+            return jsonify({'error': 'No currency data available'}), 404
+        
+        # Format data for API response
+        formatted_data = {}
+        for ticker, currency_info in data.items():
+            # Handle both dict and object formats
+            if isinstance(currency_info, dict):
+                formatted_data[ticker] = {
+                    'pair': ticker,
+                    'rate': float(currency_info.get('rate', currency_info.get('last_price', 0))),
+                    'change': float(currency_info.get('change', 0)),
+                    'change_percent': float(currency_info.get('change_percent', 0)),
+                    'bid': float(currency_info.get('bid', 0)),
+                    'ask': float(currency_info.get('ask', 0)),
+                    'volume': float(currency_info.get('volume', 0))
+                }
+            else:
+                formatted_data[ticker] = {
+                    'pair': ticker,
+                    'rate': float(currency_info.last_price) if hasattr(currency_info, 'last_price') and currency_info.last_price else 0,
+                    'change': float(currency_info.change) if hasattr(currency_info, 'change') and currency_info.change else 0,
+                    'change_percent': float(currency_info.change_percent) if hasattr(currency_info, 'change_percent') and currency_info.change_percent else 0,
+                    'bid': float(currency_info.bid) if hasattr(currency_info, 'bid') and currency_info.bid else 0,
+                    'ask': float(currency_info.ask) if hasattr(currency_info, 'ask') and currency_info.ask else 0,
+                    'volume': float(currency_info.volume) if hasattr(currency_info, 'volume') and currency_info.volume else 0
+                }
+        
+        return jsonify({
+            'status': 'success',
+            'data': formatted_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching currency rates: {e}")
+        return jsonify({'error': 'Failed to fetch currency rates'}), 500
+
+@api.route('/insider/analysis')
+def get_insider_analysis():
+    """API endpoint for insider trading analysis"""
+    try:
+        # Demo insider trading data
+        insider_data = {
+            'recent_transactions': [
+                {
+                    'ticker': 'EQNR.OL',
+                    'company': 'Equinor ASA',
+                    'insider_name': 'Anders Opedal',
+                    'position': 'CEO',
+                    'transaction_type': 'Buy',
+                    'shares': 5000,
+                    'price': 285.50,
+                    'value': 1427500,
+                    'date': '2025-07-10',
+                    'sentiment': 'Bullish'
+                },
+                {
+                    'ticker': 'DNB.OL', 
+                    'company': 'DNB Bank ASA',
+                    'insider_name': 'Kjerstin Braathen',
+                    'position': 'CEO',
+                    'transaction_type': 'Sell',
+                    'shares': 2000,
+                    'price': 195.25,
+                    'value': 390500,
+                    'date': '2025-07-08',
+                    'sentiment': 'Neutral'
+                },
+                {
+                    'ticker': 'TEL.OL',
+                    'company': 'Telenor ASA',
+                    'insider_name': 'Sigve Brekke',
+                    'position': 'CEO',
+                    'transaction_type': 'Buy',
+                    'shares': 3000,
+                    'price': 145.75,
+                    'value': 437250,
+                    'date': '2025-07-05',
+                    'sentiment': 'Bullish'
+                }
+            ],
+            'summary': {
+                'total_transactions': 15,
+                'buy_transactions': 9,
+                'sell_transactions': 6,
+                'net_sentiment': 'Bullish',
+                'most_active_sector': 'Energy'
+            }
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'data': insider_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching insider analysis: {e}")
+        return jsonify({'error': 'Failed to fetch insider analysis'}), 500
 
 @api.before_request
 def before_api_request():

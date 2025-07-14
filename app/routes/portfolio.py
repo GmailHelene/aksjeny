@@ -74,7 +74,7 @@ def create_portfolio():
         db.session.add(new_portfolio)
         db.session.commit()
         flash('Porteføljen ble opprettet!', 'success')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
     return render_template('portfolio/create.html')
 
 @portfolio.route('/view/<int:id>')
@@ -135,7 +135,7 @@ def add_stock_to_portfolio(id):
     # Sjekk eierskap
     if portfolio.user_id != current_user.id:
         flash('Du har ikke tilgang til denne porteføljen', 'danger')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
 
     if request.method == 'POST':
         ticker = request.form.get('ticker')
@@ -184,7 +184,7 @@ def remove_stock_from_portfolio(id, stock_id):
     # Sjekk eierskap
     if portfolio.user_id != current_user.id:
         flash('Du har ikke tilgang til denne porteføljen', 'danger')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
 
     stock = PortfolioStock.query.get_or_404(stock_id)
 
@@ -362,7 +362,7 @@ def quick_add_stock(ticker):
 
     db.session.commit()
     flash(f"Aksje {ticker} lagt til i din portefølje!", "success")
-    return redirect(url_for('portfolio.index'))
+    return redirect(url_for('portfolio.portfolio_index'))
 
 @portfolio.route('/add', methods=['GET', 'POST'])
 @access_required
@@ -404,7 +404,7 @@ def add_stock():
         
         db.session.commit()
         flash(f'{ticker} lagt til i porteføljen.', 'success')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
     
     return render_template('portfolio/add_stock.html')
 
@@ -416,7 +416,7 @@ def edit_stock(ticker):
     user_portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if not user_portfolio:
         flash('Du har ingen portefølje ennå.', 'warning')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
     
     # Finn aksjen
     portfolio_stock = PortfolioStock.query.filter_by(
@@ -438,7 +438,7 @@ def edit_stock(ticker):
         db.session.commit()
         
         flash(f'{ticker} oppdatert i porteføljen.', 'success')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
     
     return render_template('portfolio/edit_stock.html', stock=portfolio_stock)
 
@@ -450,7 +450,7 @@ def remove_stock(ticker):
     user_portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if not user_portfolio:
         flash('Du har ingen portefølje ennå.', 'warning')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
     
     # Finn aksjen
     portfolio_stock = PortfolioStock.query.filter_by(
@@ -463,17 +463,22 @@ def remove_stock(ticker):
     db.session.commit()
     
     flash(f'{ticker} fjernet fra porteføljen.', 'success')
-    return redirect(url_for('portfolio.index'))
+    return redirect(url_for('portfolio.portfolio_index'))
 
 @portfolio.route('/overview')
 @access_required
 def overview():
     """Vis porteføljeoversikt med grafer og statistikk"""
     try:
+        # Check if user is authenticated
+        if not current_user.is_authenticated:
+            flash('Du må logge inn for å se porteføljeoversikt.', 'warning')
+            return redirect(url_for('main.index'))
+            
         portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
         if not portfolio:
             flash('Du har ingen portefølje ennå.', 'warning')
-            return redirect(url_for('portfolio.index'))
+            return redirect(url_for('portfolio.portfolio_index'))
         
         portfolio_stocks = PortfolioStock.query.filter_by(portfolio_id=portfolio.id).all()
         
@@ -525,7 +530,7 @@ def overview():
     except Exception as e:
         current_app.logger.error(f"Error in portfolio overview: {str(e)}")
         flash('En feil oppstod under lasting av porteføljeoversikt.', 'error')
-        return redirect(url_for('portfolio.index'))
+        return redirect(url_for('portfolio.portfolio_index'))
 
 @portfolio.route('/transactions')
 @access_required

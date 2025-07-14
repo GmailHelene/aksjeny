@@ -442,7 +442,7 @@ def get_financial_news(symbol):
                     'sentiment': 'positive',
                     'source': 'Financial News',
                     'timestamp': '2025-07-14T10:00:00Z',
-                    'url': f'https://example.com/news/{symbol}'
+                    'url': f'https://aksjeradar.trade/news/{symbol.lower()}'
                 }
             ]
         }

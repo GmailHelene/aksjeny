@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Warren Buffett Analyse - {{ stock_data.ticker|default('') }} | Aksjeradar{% endblock %}
+{% block title %}Warren Buffett Analyse | Aksjeradar{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -281,11 +281,11 @@
                         <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-primary btn-sm">
                             Benjamin Graham Analyse
                         </a>
-                        <a href="{{ url_for('analysis.dcf_analysis') }}" class="btn btn-outline-success btn-sm">
-                            DCF Verdivurdering
+                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-success btn-sm">
+                            Teknisk Analyse
                         </a>
-                        <a href="{{ url_for('analysis.fundamental') }}" class="btn btn-outline-info btn-sm">
-                            Fundamental Analyse
+                        <a href="{{ url_for('analysis.recommendation') }}" class="btn btn-outline-info btn-sm">
+                            Anbefalinger
                         </a>
                     </div>
                 </div>

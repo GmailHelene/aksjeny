@@ -265,16 +265,16 @@
         
         <!-- Oslo Børs -->
         <div class="row mb-4 align-items-center">
-            <div class="col-md-6">
-                <h2 class="h3 mb-3 text-dark">
-                    Oslo Børs
+            <div class="col-12 col-md-6">
+                <h2 class="h3 mb-2 text-dark">
+                    Oslo Børs & Globale markeder
                     <span class="badge bg-success live-indicator pulse" style="display: none;">
                         <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> LIVE
                     </span>
                 </h2>
-                <p class="text-muted data-timestamp small text-break">Sist oppdatert: {{ datetime.now().strftime('%d.%m.%Y %H:%M') }}</p>
+                <p class="text-muted data-timestamp small text-break d-block d-md-inline mb-3 mb-md-0">Sist oppdatert: {{ datetime.now().strftime('%d.%m.%Y %H:%M') }}</p>
             </div>
-            <div class="col-md-6 text-md-end">
+            <div class="col-12 col-md-6 text-start text-md-end">
                 <a href="{{ url_for('analysis.market_overview') }}" class="btn btn-outline-primary">
                     <i class="bi bi-graph-up-arrow"></i> Full markedsoversikt
                 </a>
@@ -590,7 +590,7 @@
         <!-- Oslo Børs Summary -->
         <div class="row mb-4 align-items-center">
             <div class="col-md-6">
-                <h2 class="h3 mb-0 text-dark">Oslo Børs</h2>
+                <h2 class="h3 mb-0 text-dark">Oslo Børs & Globale markeder</h2>
             </div>
             <div class="col-md-6 text-md-end">
                 <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">
@@ -1163,99 +1163,8 @@
         </div>
 {% endif %}
 
-        <!-- Market News and Tips Section -->
-        <div class="row g-4 mb-5">
-            {% for ticker, data in crypto.items() %}
-            {% if loop.index <= 12 and data is mapping %}
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">{{ ticker }}</h5>
-                        <i class="bi bi-currency-bitcoin"></i>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">
-                            {% if ticker == 'BTC-USD' %}Bitcoin
-                            {% elif ticker == 'ETH-USD' %}Ethereum
-                            {% elif ticker == 'XRP-USD' %}Ripple
-                            {% elif ticker == 'LTC-USD' %}Litecoin
-                            {% elif ticker == 'ADA-USD' %}Cardano
-                            {% elif ticker == 'SOL-USD' %}Solana
-                            {% elif ticker == 'DOT-USD' %}Polkadot
-                            {% elif ticker == 'AVAX-USD' %}Avalanche
-                            {% elif ticker == 'LINK-USD' %}Chainlink
-                            {% elif ticker == 'MATIC-USD' %}Polygon
-                            {% elif ticker == 'ATOM-USD' %}Cosmos
-                            {% elif ticker == 'ALGO-USD' %}Algorand
-                            {% else %}{{ ticker }}
-                            {% endif %}
-                        </h3>
-                        <p class="card-text fs-4">{{ data.last_price }} 
-                            <span class="{% if data.change_percent > 0 %}text-success{% elif data.change_percent < 0 %}text-danger{% endif %}">
-                                {{ data.change_percent }}%
-                            </span>
-                        </p>
-                        <div class="d-flex justify-content-between">
-                            <span class="badge {% if data.signal == 'BUY' %}bg-success{% elif data.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
-                                {{ data.signal }}
-                            </span>
-                            <small class="text-muted">Volum: {{ data.volume }}</small>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="d-grid gap-2">
-                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-warning">Se detaljer</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        <!-- Currency Section -->
-        <h2 class="h3 mb-4 text-dark">Valutakurser <span class="badge bg-info">Live</span></h2>
-        <div class="row g-4 mb-5">
-            {% for symbol, data in currency.items() %}
-            {% if loop.index <= 8 and data is mapping %}
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">{{ symbol }}</h5>
-                        <i class="bi bi-currency-exchange"></i>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">
-                            {% if symbol == 'USD' %}USD/NOK
-                            {% elif symbol == 'EUR' %}EUR/NOK
-                            {% elif symbol == 'GBP' %}GBP/NOK
-                            {% elif symbol == 'SEK' %}SEK/NOK
-                            {% elif symbol == 'DKK' %}DKK/NOK
-                            {% elif symbol == 'JPY' %}JPY/NOK
-                            {% elif symbol == 'CHF' %}CHF/NOK
-                            {% elif symbol == 'CAD' %}CAD/NOK
-                            {% else %}{{ data.name if data.name is defined else symbol }}
-                            {% endif %}
-                        </h3>
-                        <p class="card-text fs-4">{{ data.rate if data.rate is defined else data.last_price }} 
-                            <span class="{% if data.change_percent > 0 %}text-success{% elif data.change_percent < 0 %}text-danger{% endif %}">
-                                {{ data.change_percent }}%
-                            </span>
-                        </p>
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">Oppdatert: {{ data.last_updated if data.last_updated is defined else 'i dag' }}</small>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="text-center">
-                            <a href="{{ url_for('api.get_currency') }}" class="btn btn-sm btn-outline-info">Se alle kurser</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
+        <!-- News Widget Section -->
+        <div class="row mb-5">
 
         <!-- Market News and Tips Section -->
         <div class="row g-4 mb-5">

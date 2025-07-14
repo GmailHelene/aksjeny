@@ -7,11 +7,6 @@
             <h5 class="mb-0">
                 <i class="bi bi-newspaper me-2"></i>Siste Finansnyheter
             </h5>
-            <div class="d-flex align-items-center">
-                <a href="{{ url_for('news.news_index') }}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-arrow-right"></i> Se alle
-                </a>
-            </div>
         </div>
         <div class="card-body">
             <div id="news-widget-content">
@@ -88,6 +83,23 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadSimpleNews() {
     const container = document.getElementById('news-widget-content');
     
+    // Try to fetch from API first, then fallback
+    fetch('/news/api/latest?limit=6&category=norwegian')
+        .then(response => response.json())
+        .then(data => {
+            if (data.articles && data.articles.length > 0) {
+                displayNews(data.articles, container);
+            } else {
+                displayFallbackNews(container);
+            }
+        })
+        .catch(error => {
+            console.log('News API failed, using fallback:', error);
+            displayFallbackNews(container);
+        });
+}
+
+function displayFallbackNews(container) {
     // Simple fallback news items
     const fallbackNews = [
         {
@@ -97,13 +109,18 @@ function loadSimpleNews() {
         },
         {
             title: "Norges Bank holder renten uendret på 4,5%",
-            source: "E24",
+            source: "E24", 
             time: "1 time siden"
         },
         {
             title: "DNB rapporterer sterke kvartalstall",
             source: "DN",
             time: "2 timer siden"
+        },
+        {
+            title: "Teknisk analyse: OSEBX viser bullish signal",
+            source: "Aksjeradar",
+            time: "3 timer siden"
         }
     ];
     
@@ -122,17 +139,27 @@ function loadSimpleNews() {
     
     container.innerHTML = newsHtml;
 }
+
+function displayNews(articles, container) {
+    let newsHtml = '';
+    articles.slice(0, 6).forEach(article => {
+        const timeAgo = article.time_ago || 'Nylig';
+        const source = article.source || 'Ukjent kilde';
+        newsHtml += `
+            <div class="news-widget-item">
+                <div class="news-widget-title">${article.title}</div>
+                <div class="news-widget-meta">
+                    <span class="news-widget-source">${source}</span>
+                    <span>${timeAgo}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = newsHtml;
+}
 </script>
-                <select id="news-category-filter" class="form-select form-select-sm me-2" style="width: auto;">
-                    <option value="all">Alle</option>
-                    <option value="norwegian">Norske</option>
-                    <option value="international">Internasjonale</option>
-                    <option value="energy">Energi</option>
-                    <option value="tech">Teknologi</option>
-                </select>
-                <a href="/demo" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-arrow-right"></i> Se alle
-                </a>
+
             </div>
         </div>
         <div class="card-body p-0">

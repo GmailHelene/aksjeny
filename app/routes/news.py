@@ -55,7 +55,7 @@ def api_latest_news():
             {
                 'title': 'Oslo Børs stiger på bred front',
                 'summary': 'Hovedindeksen på Oslo Børs stiger 1,2% i åpningen etter positive signaler fra USA.',
-                'link': 'https://example.com/news1',
+                'link': 'https://aksjeradar.trade/news/oslo-bors-stiger',
                 'source': 'Dagens Næringsliv',
                 'published': datetime.now().isoformat(),
                 'image_url': None,
@@ -65,7 +65,7 @@ def api_latest_news():
             {
                 'title': 'Equinor presenterer sterke kvartalstall',
                 'summary': 'Energigiganten leverer bedre enn ventet resultat for fjerde kvartal.',
-                'link': 'https://example.com/news2',
+                'link': 'https://aksjeradar.trade/news/equinor-kvartalstall',
                 'source': 'E24',
                 'published': (datetime.now() - timedelta(hours=1)).isoformat(),
                 'image_url': None,
@@ -75,7 +75,7 @@ def api_latest_news():
             {
                 'title': 'Bitcoin når nye høyder',
                 'summary': 'Kryptovalutaen Bitcoin har steget 5% i løpet av dagen.',
-                'link': 'https://example.com/news3',
+                'link': 'https://aksjeradar.trade/news/bitcoin-nye-hoyder',
                 'source': 'CoinDesk',
                 'published': (datetime.now() - timedelta(hours=2)).isoformat(),
                 'image_url': None,
@@ -85,7 +85,7 @@ def api_latest_news():
             {
                 'title': 'DNB Bank viser solid vekst',
                 'summary': 'Norges største bank rapporterer økt utlånsvolum og reduserte tap.',
-                'link': 'https://example.com/news4',
+                'link': 'https://aksjeradar.trade/news/dnb-solid-vekst',
                 'source': 'Finansavisen',
                 'published': (datetime.now() - timedelta(hours=3)).isoformat(),
                 'image_url': None,
@@ -95,7 +95,7 @@ def api_latest_news():
             {
                 'title': 'Tech-aksjer i vinden på Wall Street',
                 'summary': 'Store teknologiselskaper drar markedene oppover i USA.',
-                'link': 'https://example.com/news5',
+                'link': 'https://aksjeradar.trade/news/tech-aksjer-wall-street',
                 'source': 'CNBC',
                 'published': (datetime.now() - timedelta(hours=4)).isoformat(),
                 'image_url': None,
@@ -399,3 +399,86 @@ def news_embed():
                              articles=[], 
                              category=category,
                              show_images=False)
+
+@news_bp.route('/<slug>')
+def article_detail(slug):
+    """Display specific news article"""
+    try:
+        # Define our news articles with consistent data
+        articles_map = {
+            'teknologi-marked-oppgang': {
+                'title': 'Marked stiger på positiv teknologi-utvikling',
+                'content': 'Teknologiaksjer opplevde sterk vekst i dag etter positive kvartalsrapporter fra flere store selskaper. Investorer viser økt tillit til teknologisektorens fremtidsutsikter, med særlig fokus på kunstig intelligens og bærekraftige teknologier. Børsene viser bred oppgang, og analytikere forventer fortsatt positiv utvikling.',
+                'source': 'Finansavisen',
+                'published': datetime.now().isoformat(),
+                'symbol': 'TECH'
+            },
+            'energi-sektor-press': {
+                'title': 'Energisektoren under press',
+                'content': 'Olje- og gasspriser faller på grunn av global økonomisk usikkerhet. Energiselskaper opplever reduserte inntekter, og investorer er bekymret for fremtidige utbyteutbetalinger. Equinor og andre norske energiselskaper følges tett, da de spiller en viktig rolle i norsk økonomi.',
+                'source': 'E24',
+                'published': (datetime.now() - timedelta(hours=2)).isoformat(),
+                'symbol': 'EQNR.OL'
+            },
+            'oslo-bors-stiger': {
+                'title': 'Oslo Børs stiger på bred front',
+                'content': 'Hovedindeksen på Oslo Børs stiger 1,2% i åpningen etter positive signaler fra USA. Investorer viser økt risikoappetitt, og flere sektorer bidrar til oppgangen. Finansaksjer og teknologiselskaper leder an, mens energisektoren holder seg stabil.',
+                'source': 'Dagens Næringsliv',
+                'published': datetime.now().isoformat(),
+                'symbol': 'OSEBX'
+            },
+            'bitcoin-nye-hoyder': {
+                'title': 'Bitcoin når nye høyder',
+                'content': 'Kryptovalutaen Bitcoin har steget 5% i løpet av dagen og nærmer seg historiske toppnivåer. Økt institusjonell interesse og positive reguleringssignaler bidrar til oppgangen. Andre kryptovalutaer følger også opp med betydelige gevinster.',
+                'source': 'CoinDesk',
+                'published': (datetime.now() - timedelta(hours=2)).isoformat(),
+                'symbol': 'BTC-USD'
+            },
+            'equinor-kvartalstall': {
+                'title': 'Equinor presenterer sterke kvartalstall',
+                'content': 'Energigiganten leverer bedre enn ventet resultat for fjerde kvartal. Høye olje- og gasspriser kombinert med operasjonell effektivitet gir sterke finansielle resultater. Selskapet øker utbyttet og annonserer nye investeringer i fornybar energi.',
+                'source': 'E24',
+                'published': (datetime.now() - timedelta(hours=1)).isoformat(),
+                'symbol': 'EQNR.OL'
+            },
+            'dnb-solid-vekst': {
+                'title': 'DNB Bank viser solid vekst',
+                'content': 'Norges største bank rapporterer økt utlånsvolum og reduserte tap. Bankens digitale satsning gir resultater, og kundene tar i bruk nye tjenester i økende grad. Ledelsen er optimistisk for fortsatt vekst i det norske markedet.',
+                'source': 'Finansavisen',
+                'published': (datetime.now() - timedelta(hours=3)).isoformat(),
+                'symbol': 'DNB.OL'
+            },
+            'tech-aksjer-wall-street': {
+                'title': 'Tech-aksjer i vinden på Wall Street',
+                'content': 'Store teknologiselskaper drar markedene oppover i USA. Apple, Microsoft og Google alle viser sterke resultater, og investorer satser på fortsatt digital transformasjon. Kunstig intelligens-selskaper opplever særlig stor interesse.',
+                'source': 'CNBC',
+                'published': (datetime.now() - timedelta(hours=4)).isoformat(),
+                'symbol': 'TECH'
+            },
+            'sentralbank-rente-beslutning': {
+                'title': 'Sentralbanken holder renten uendret',
+                'content': 'Norges Bank besluttet å holde styringsrenten på dagens nivå. Sentralbanken viser til balansert økonomisk utvikling og stabil inflasjon. Markedet hadde ventet denne beslutningen, og responsens har vært dempet.',
+                'source': 'DN',
+                'published': (datetime.now() - timedelta(hours=4)).isoformat(),
+                'symbol': 'NOK'
+            },
+            'krypto-volatilitet': {
+                'title': 'Kryptovaluta marked volatilt',
+                'content': 'Bitcoin og andre kryptovalutaer opplever store svingninger denne uken. Regulatoriske bekymringer møter optimisme rundt institusjonell adopsjon. Tradere anbefales forsiktighet i det volatile markedet.',
+                'source': 'CryptoNews',
+                'published': (datetime.now() - timedelta(hours=6)).isoformat(),
+                'symbol': 'BTC-USD'
+            }
+        }
+        
+        # Get article or return 404
+        article_data = articles_map.get(slug)
+        if not article_data:
+            from flask import abort
+            abort(404)
+        
+        return render_template('news/article.html', article=article_data)
+        
+    except Exception as e:
+        logger.error(f"Error loading news article {slug}: {e}")
+        return render_template('error.html', error=f"Kunne ikke laste artikkel: {e}")

@@ -38,29 +38,34 @@ def on_register(state):
 @login_required
 def create_checkout_session():
     """Create a Stripe checkout session for subscription purchase"""
-    subscription_type = request.form.get('subscription_type')
-    if not subscription_type:
-        return jsonify({'error': 'No subscription type provided'}), 400
-
-    price_id = None
-    mode = 'subscription'
-    if subscription_type == 'pro' or subscription_type == 'monthly':
-        price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
-    elif subscription_type == 'yearly':
-        price_id = current_app.config['STRIPE_YEARLY_PRICE_ID']
-    elif subscription_type == 'basic':
-        # For backward compatibility - redirect basic to pro
-        price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
-    elif subscription_type == 'lifetime':
-        price_id = current_app.config['STRIPE_LIFETIME_PRICE_ID']
-        mode = 'payment'
-    else:
-        return jsonify({'error': 'Invalid subscription type'}), 400
-
     try:
+        subscription_type = request.form.get('subscription_type')
+        if not subscription_type:
+            return jsonify({'error': 'No subscription type provided'}), 400
+
+        # Verify user is authenticated
+        if not current_user.is_authenticated:
+            return jsonify({'error': 'Du må være innlogget for å kjøpe abonnement.'}), 401
+
+        price_id = None
+        mode = 'subscription'
+        if subscription_type == 'pro' or subscription_type == 'monthly':
+            price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
+        elif subscription_type == 'yearly':
+            price_id = current_app.config['STRIPE_YEARLY_PRICE_ID']
+        elif subscription_type == 'basic':
+            # For backward compatibility - redirect basic to pro
+            price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
+        elif subscription_type == 'lifetime':
+            price_id = current_app.config['STRIPE_LIFETIME_PRICE_ID']
+            mode = 'payment'
+        else:
+            return jsonify({'error': 'Invalid subscription type'}), 400
+
         # Ekstra defensiv sjekk for innlogget bruker
         if not hasattr(current_user, 'id') or not hasattr(current_user, 'email'):
-            return jsonify({'error': 'Du må være innlogget for å kjøpe abonnement.'}), 401
+            return jsonify({'error': 'Brukerdata ikke tilgjengelig. Prøv å logg inn på nytt.'}), 401
+            
         # Create or retrieve Stripe customer
         if not getattr(current_user, 'stripe_customer_id', None):
             customer = stripe.Customer.create(
@@ -69,6 +74,7 @@ def create_checkout_session():
             )
             current_user.stripe_customer_id = customer.id
             db.session.commit()
+            
         # Create checkout session
         session = stripe.checkout.Session.create(
             customer=current_user.stripe_customer_id,
@@ -86,9 +92,10 @@ def create_checkout_session():
             }
         )
         return jsonify({'sessionId': session.id})
+        
     except Exception as e:
         current_app.logger.error(f'Failed to create checkout session: {str(e)}')
-        return jsonify({'error': 'Failed to opprette Stripe checkout session: ' + str(e)}), 500
+        return jsonify({'error': f'Failed to create checkout session: {str(e)}'}), 500
 
 @stripe_bp.route('/payment/success')
 def payment_success():

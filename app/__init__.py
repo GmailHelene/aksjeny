@@ -315,6 +315,21 @@ def register_template_filters(app):
         except (ValueError, TypeError):
             return str(value)
 
+    @app.template_filter('datetimeformat')
+    def datetimeformat_filter(value):
+        """Format datetime for display"""
+        if value is None:
+            return "N/A"
+        try:
+            if isinstance(value, str):
+                # Parse ISO format datetime
+                dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            else:
+                dt = value
+            return dt.strftime('%d.%m.%Y kl. %H:%M')
+        except (ValueError, TypeError):
+            return str(value)
+
     @app.context_processor
     def inject_utils():
         """Make utility functions available in templates"""

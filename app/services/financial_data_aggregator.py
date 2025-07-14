@@ -605,7 +605,7 @@ class FinancialDataAggregator:
                 source="Financial News Daily",
                 author="Market Analyst",
                 published_at=(datetime.now() - timedelta(hours=np.random.randint(1, 48))).isoformat(),
-                url=f"https://example.com/news/{symbol.lower()}-{i}",
+                url=f"https://aksjeradar.trade/news/{symbol.lower()}-{i}",
                 sentiment=np.random.choice(['positive', 'neutral', 'negative']),
                 symbols_mentioned=[symbol]
             )

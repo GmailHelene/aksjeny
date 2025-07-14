@@ -4,6 +4,25 @@
 
 {% block content %}
 <div class="container py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="bi bi-house-door me-1"></i>Hjem
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.list_all') }}" class="text-decoration-none">
+                    <i class="bi bi-graph-up me-1"></i>Aksjer
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="bi bi-currency-bitcoin me-1"></i>{{ title or "Kryptovaluta" }}
+            </li>
+        </ol>
+    </nav>
+    
     <h1 class="mb-4 text-dark">{{ title or "Kryptovaluta" }}</h1>
     <div class="card">
         <div class="card-body p-0">

@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Sentiment Analyse | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2><i class="bi bi-emoji-smile"></i> Sentiment Analyse</h2>
+                    <p class="mb-0">Analyser markedsstemning og investor sentiment for aksjer</p>
+                </div>
+                <div class="card-body">
+                    <!-- Søkeskjema -->
+                    <form method="POST" action="{{ url_for('analysis.sentiment') }}" class="mb-4">
+                        {{ csrf_token() }}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <select name="ticker" class="form-select" required>
+                                    <option value="">Velg aksje for sentiment analyse</option>
+                                    <optgroup label="Oslo Børs">
+                                        {% for stock in available_stocks.oslo_stocks %}
+                                        <option value="{{ stock.ticker }}">{{ stock.ticker }} - {{ stock.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                    <optgroup label="Globale aksjer">
+                                        {% for stock in available_stocks.global_stocks %}
+                                        <option value="{{ stock.ticker }}">{{ stock.ticker }} - {{ stock.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i> Analyser Sentiment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    {% if sentiment_data %}
+                    <!-- Sentiment Results -->
+                    <div class="sentiment-results">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h3>{{ sentiment_data.ticker }} - Sentiment Analyse</h3>
+                                <div class="alert alert-{{ 'success' if sentiment_data.sentiment_score > 0.6 else 'warning' if sentiment_data.sentiment_score > 0.4 else 'danger' }}">
+                                    <strong>Samlet Sentiment: {{ sentiment_data.overall_sentiment }}</strong>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar" style="width: {{ sentiment_data.sentiment_score * 100 }}%">
+                                            {{ "%.1f"|format(sentiment_data.sentiment_score * 100) }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- News Sentiment -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-newspaper"></i> Nyhetsstemning</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <span class="text-success">Positiv: {{ sentiment_data.news_sentiment.positive }}%</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="text-secondary">Nøytral: {{ sentiment_data.news_sentiment.neutral }}%</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="text-danger">Negativ: {{ sentiment_data.news_sentiment.negative }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Social Sentiment -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-chat-dots"></i> Sosiale Medier</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <small>Twitter mentions:</small><br>
+                                            <strong>{{ sentiment_data.social_sentiment.twitter_mentions }}</strong>
+                                        </div>
+                                        <div class="mb-2">
+                                            <small>Reddit diskusjoner:</small><br>
+                                            <strong>{{ sentiment_data.social_sentiment.reddit_mentions }}</strong>
+                                        </div>
+                                        <div class="mb-2">
+                                            <small>StockTwits bullish:</small><br>
+                                            <strong>{{ sentiment_data.social_sentiment.stocktwits_bullish }}%</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analyst Sentiment -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-graph-up"></i> Analytikere</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <span class="text-success">Kjøp: {{ sentiment_data.analyst_sentiment.buy_ratings }}</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="text-warning">Hold: {{ sentiment_data.analyst_sentiment.hold_ratings }}</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="text-danger">Selg: {{ sentiment_data.analyst_sentiment.sell_ratings }}</span>
+                                        </div>
+                                        <div class="mt-3">
+                                            <small>Gjennomsnittlig kursmål:</small><br>
+                                            <strong>{{ sentiment_data.analyst_sentiment.average_target }} NOK</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sentiment History Chart -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-graph-up"></i> Sentiment Utvikling</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="sentimentChart" width="400" height="100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Analysetyper</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('analysis.warren_buffett') }}" class="btn btn-outline-primary btn-sm">
+                            Warren Buffett Analyse
+                        </a>
+                        <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-success btn-sm">
+                            Benjamin Graham Analyse
+                        </a>
+                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-info btn-sm">
+                            Teknisk Analyse
+                        </a>
+                        <a href="{{ url_for('analysis.screener') }}" class="btn btn-outline-warning btn-sm">
+                            Aksje Screener
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sentiment_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    // Sentiment history chart
+    const ctx = document.getElementById('sentimentChart').getContext('2d');
+    const sentimentLabels = {{ sentiment_data.sentiment_history | map(attribute='date') | list | tojson | safe }};
+    const sentimentData = {{ sentiment_data.sentiment_history | map(attribute='score') | list | tojson | safe }};
+    
+    const sentimentChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: sentimentLabels,
+            datasets: [{
+                label: 'Sentiment Score',
+                data: sentimentData,
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

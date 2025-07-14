@@ -337,15 +337,22 @@
                                 <li><a class="dropdown-item" href="{{ url_for('analysis.screener') }}"><i class="bi bi-funnel"></i> Screener</a></li>
                             </ul>
                         </li>
+                        
+                        <!-- Portfolio Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-briefcase"></i> Portefølje
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="portfolioDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('portfolio.portfolio_index') }}"><i class="bi bi-grid"></i> Oversikt</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}"><i class="bi bi-globe"></i> Markedsoversikt</a></li>
                             </ul>
                         </li>
+                        
                         {% if current_user.is_pro %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('pro_tools.index') }}"><i class="bi bi-tools"></i> Pro-verktøy</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis.advanced') }}"><i class="bi bi-bar-chart-steps"></i> Avansert analyse</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('advanced_analytics.index') }}"><i class="fas fa-brain"></i> Avanserte Analyser</a></li>
                         {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Logg ut</a></li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.demo') }}"><i class="bi bi-eye"></i> Demo</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.pricing') }}"><i class="bi bi-tag"></i> Priser</a></li>

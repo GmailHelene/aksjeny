@@ -13,11 +13,11 @@
                 <div class="card-body">
                     {% if not ticker %}
                     <!-- Stock Selection Form -->
-                    <form method="GET" action="{{ url_for('analysis.benjamin_graham') }}" class="mb-4">
+                    <form method="POST" action="{{ url_for('analysis.benjamin_graham') }}" class="mb-4">
                         <div class="row">
                             <div class="col-md-8">
                                 <label for="ticker" class="form-label">Velg aksje for Graham-analyse:</label>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <select name="ticker" id="ticker" class="form-select" required>
                                     <option value="">-- Velg aksje --</option>
                                     <optgroup label="Oslo Børs">

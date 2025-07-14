@@ -3,6 +3,38 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="bi bi-house-door me-1"></i>Hjem
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.list_all') }}" class="text-decoration-none">
+                    <i class="bi bi-graph-up me-1"></i>Aksjer
+                </a>
+            </li>
+            {% if ticker and (ticker.endswith('.OL') or ticker in ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'NHY.OL']) %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.list_oslo') }}" class="text-decoration-none">Oslo Børs</a>
+            </li>
+            {% elif ticker and ticker in ['BTC-USD', 'ETH-USD', 'XRP-USD', 'ADA-USD'] %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.crypto_list') }}" class="text-decoration-none">Kryptovaluta</a>
+            </li>
+            {% else %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.global_list') }}" class="text-decoration-none">Globale markeder</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ stock_info.get('longName', ticker) if stock_info and stock_info.get('longName') else ticker }}
+            </li>
+        </ol>
+    </nav>
+    
     <div class="row">
         <div class="col-md-8">
             <div class="card shadow-sm">

@@ -3,6 +3,20 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="bi bi-house-door me-1"></i>Hjem
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="bi bi-graph-up me-1"></i>Aksjer - {{ category|default('Alle') }}
+            </li>
+        </ol>
+    </nav>
+    
     <h1 class="mb-4">Aksjeliste - {{ category|default('Alle') }}</h1>
     
     <div class="row">

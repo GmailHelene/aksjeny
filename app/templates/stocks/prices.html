@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Alle Priser - Aksjer, Krypto og Valuta | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 mb-3">Alle Priser</h1>
+            <p class="text-muted">Komplett oversikt over alle priser på tvers av markeder</p>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-warning" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        Det oppstod en feil ved henting av prisdata. Prøv igjen senere.
+    </div>
+    {% else %}
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ stats.total_stocks|default(0) }}</h3>
+                    <p class="card-text">Aksjer</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ stats.total_crypto|default(0) }}</h3>
+                    <p class="card-text">Kryptovaluta</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ stats.total_currency|default(0) }}</h3>
+                    <p class="card-text">Valutapar</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ stats.total_instruments|default(0) }}</h3>
+                    <p class="card-text">Totalt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs" id="pricesTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="oslo-tab" data-bs-toggle="tab" data-bs-target="#oslo" type="button" role="tab">
+                <i class="bi bi-building"></i> Oslo Børs
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="global-tab" data-bs-toggle="tab" data-bs-target="#global" type="button" role="tab">
+                <i class="bi bi-globe"></i> Globale Aksjer
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="crypto-tab" data-bs-toggle="tab" data-bs-target="#crypto" type="button" role="tab">
+                <i class="bi bi-currency-bitcoin"></i> Kryptovaluta
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="currency-tab" data-bs-toggle="tab" data-bs-target="#currency" type="button" role="tab">
+                <i class="bi bi-currency-exchange"></i> Valuta
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="pricesTabContent">
+        <!-- Oslo Børs -->
+        <div class="tab-pane fade show active" id="oslo" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-building"></i> Oslo Børs</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Siste Pris</th>
+                                    <th>Endring</th>
+                                    <th>Endring %</th>
+                                    {% if not restricted %}
+                                    <th>Signal</th>
+                                    {% endif %}
+                                    <th>Åpning</th>
+                                    <th>Høyeste</th>
+                                    <th>Laveste</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticker, stock in market_data.oslo_stocks.items() %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none fw-bold">
+                                            {{ ticker }}
+                                        </a>
+                                    </td>
+                                    <td class="fw-bold">{{ "%.2f"|format(stock.last_price) }} NOK</td>
+                                    <td class="{% if stock.change > 0 %}text-success{% elif stock.change < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change) if stock.change > 0 else "%.2f"|format(stock.change) }}
+                                    </td>
+                                    <td class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change_percent) if stock.change_percent > 0 else "%.2f"|format(stock.change_percent) }}%
+                                    </td>
+                                    {% if not restricted %}
+                                    <td>
+                                        <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {{ stock.signal|default('HOLD') }}
+                                        </span>
+                                    </td>
+                                    {% endif %}
+                                    <td>{{ "%.2f"|format(stock.open|default(0)) }}</td>
+                                    <td>{{ "%.2f"|format(stock.high|default(0)) }}</td>
+                                    <td>{{ "%.2f"|format(stock.low|default(0)) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Stocks -->
+        <div class="tab-pane fade" id="global" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-globe"></i> Globale Aksjer</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Siste Pris</th>
+                                    <th>Endring</th>
+                                    <th>Endring %</th>
+                                    {% if not restricted %}
+                                    <th>Signal</th>
+                                    {% endif %}
+                                    <th>Åpning</th>
+                                    <th>Høyeste</th>
+                                    <th>Laveste</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticker, stock in market_data.global_stocks.items() %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none fw-bold">
+                                            {{ ticker }}
+                                        </a>
+                                    </td>
+                                    <td class="fw-bold">${{ "%.2f"|format(stock.last_price) }}</td>
+                                    <td class="{% if stock.change > 0 %}text-success{% elif stock.change < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change) if stock.change > 0 else "%.2f"|format(stock.change) }}
+                                    </td>
+                                    <td class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change_percent) if stock.change_percent > 0 else "%.2f"|format(stock.change_percent) }}%
+                                    </td>
+                                    {% if not restricted %}
+                                    <td>
+                                        <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {{ stock.signal|default('HOLD') }}
+                                        </span>
+                                    </td>
+                                    {% endif %}
+                                    <td>${{ "%.2f"|format(stock.open|default(0)) }}</td>
+                                    <td>${{ "%.2f"|format(stock.high|default(0)) }}</td>
+                                    <td>${{ "%.2f"|format(stock.low|default(0)) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crypto -->
+        <div class="tab-pane fade" id="crypto" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-currency-bitcoin"></i> Kryptovaluta</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Siste Pris</th>
+                                    <th>Endring</th>
+                                    <th>Endring %</th>
+                                    {% if not restricted %}
+                                    <th>Signal</th>
+                                    {% endif %}
+                                    <th>Markedsverdi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticker, coin in market_data.crypto.items() %}
+                                <tr>
+                                    <td class="fw-bold">{{ ticker }}</td>
+                                    <td class="fw-bold">${{ "%.2f"|format(coin.last_price) }}</td>
+                                    <td class="{% if coin.change > 0 %}text-success{% elif coin.change < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(coin.change) if coin.change > 0 else "%.2f"|format(coin.change) }}
+                                    </td>
+                                    <td class="{% if coin.change_percent > 0 %}text-success{% elif coin.change_percent < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(coin.change_percent) if coin.change_percent > 0 else "%.2f"|format(coin.change_percent) }}%
+                                    </td>
+                                    {% if not restricted %}
+                                    <td>
+                                        <span class="badge {% if coin.signal == 'BUY' %}bg-success{% elif coin.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {{ coin.signal|default('HOLD') }}
+                                        </span>
+                                    </td>
+                                    {% endif %}
+                                    <td>${{ "%.0f"|format(coin.market_cap|default(0)) }}M</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="tab-pane fade" id="currency" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-currency-exchange"></i> Valutakurser</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Valutapar</th>
+                                    <th>Kurs</th>
+                                    <th>Endring</th>
+                                    <th>Endring %</th>
+                                    <th>Bid</th>
+                                    <th>Ask</th>
+                                    <th>Volum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticker, curr in market_data.currency.items() %}
+                                <tr>
+                                    <td class="fw-bold">{{ ticker }}</td>
+                                    <td class="fw-bold">{{ "%.4f"|format(curr.last_price) }}</td>
+                                    <td class="{% if curr.change > 0 %}text-success{% elif curr.change < 0 %}text-danger{% endif %}">
+                                        {{ "+%.4f"|format(curr.change) if curr.change > 0 else "%.4f"|format(curr.change) }}
+                                    </td>
+                                    <td class="{% if curr.change_percent > 0 %}text-success{% elif curr.change_percent < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(curr.change_percent) if curr.change_percent > 0 else "%.2f"|format(curr.change_percent) }}%
+                                    </td>
+                                    <td>{{ "%.4f"|format(curr.bid|default(0)) }}</td>
+                                    <td>{{ "%.4f"|format(curr.ask|default(0)) }}</td>
+                                    <td>{{ "{:,.0f}"|format(curr.volume|default(0)) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Auto-refresh data every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+</script>
+{% endblock %}

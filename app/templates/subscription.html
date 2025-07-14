@@ -305,65 +305,6 @@
             </div>
         </div>
     </div>
-                    <ul class="feature-list mb-4 text-start">
-                        <li><i class="bi bi-check-circle-fill"></i> Alt fra Basic +</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Avansert backtest og strategibygger</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Monte Carlo-simulering</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Ubegrenset watchlist</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Prioritert AI-prosessering</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Konsulent-rapporter (2/måned gratis)</li>
-                        <li><i class="bi bi-check-circle-fill"></i> API-tilgang</li>
-                    </ul>
-                    <div class="mt-auto">
-                        <form action="{{ url_for('stripe.create_checkout_session') }}" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="subscription_type" value="pro">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="bi bi-credit-card me-2"></i>Velg Pro
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pro Yearly -->
-        <div class="col-lg-4 col-md-6">
-            <div class="pricing-card position-relative">
-                <div class="discount-badge">SPAR 25%</div>
-                <div class="card-header text-center py-4 bg-success text-white">
-                    <h3 class="mb-2">Pro Årlig</h3>
-                    <p class="text-white-50 mb-0">Beste verdi</p>
-                </div>
-                <div class="card-body d-flex flex-column text-center p-4">
-                    <div class="mb-4">
-                        <span class="price-amount text-success">2999</span>
-                        <span class="price-period">kr/år</span>
-                        <div class="small text-muted">
-                            <del>4788 kr</del> - Du sparer 1789 kr
-                        </div>
-                    </div>
-                    <ul class="feature-list mb-4 text-start">
-                        <li><i class="bi bi-check-circle-fill"></i> Alt fra Pro månedlig</li>
-                        <li><i class="bi bi-check-circle-fill"></i> 27% rabatt vs månedlig</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Prioritert kundesupport</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Eksklusive webinarer</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Beta-tilgang til nye funksjoner</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Kvartalsvis markedsrapport</li>
-                    </ul>
-                    <div class="mt-auto">
-                        <form action="{{ url_for('stripe.create_checkout_session') }}" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="subscription_type" value="yearly">
-                            <button type="submit" class="btn btn-success btn-lg w-100">
-                                <i class="bi bi-credit-card me-2"></i>Velg Årlig
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- Team Pricing Section -->
     <div class="row mt-5">
