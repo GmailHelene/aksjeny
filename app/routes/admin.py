@@ -25,14 +25,14 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@admin.route('/admin')
+@admin.route('/')
 @login_required
 @admin_required
 def dashboard():
     """Admin dashboard with system overview"""
     return render_template('admin/dashboard.html')
 
-@admin.route('/admin/performance')
+@admin.route('/performance')
 @login_required
 @admin_required
 def performance_stats():
@@ -55,7 +55,7 @@ def performance_stats():
                              stats={'total_requests': 0, 'avg_response_time': 0, 'error_count': 0, 'error_rate': 0, 'slowest_endpoints': [], 'most_used_endpoints': []}, 
                              error_log=[])
 
-@admin.route('/admin/api/performance')
+@admin.route('/api/performance')
 @login_required
 @admin_required
 def api_performance_stats():
@@ -76,7 +76,7 @@ def api_performance_stats():
             'error': str(e)
         }), 500
 
-@admin.route('/admin/api/errors')
+@admin.route('/api/errors')
 @login_required
 @admin_required
 def api_error_log():
@@ -91,7 +91,7 @@ def api_error_log():
         'data': error_log
     })
 
-@admin.route('/admin/users')
+@admin.route('/users')
 @login_required
 @admin_required
 def user_management():
@@ -99,7 +99,7 @@ def user_management():
     # Dette kan utvides senere
     return render_template('admin/users.html')
 
-@admin.route('/admin/system')
+@admin.route('/system')
 @login_required
 @admin_required
 def system_status():

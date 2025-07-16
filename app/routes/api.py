@@ -30,10 +30,21 @@ def get_currency():
     """API endpoint for currency overview"""
     try:
         data = DataService.get_currency_overview()
+        
+        # Ensure proper JSON response
+        if not data:
+            return jsonify({
+                'error': 'No currency data available',
+                'data': {}
+            }), 204
+        
         return jsonify(data)
     except Exception as e:
         logger.error(f"Error fetching currency overview: {e}")
-        return jsonify({'error': 'Failed to fetch currency overview'}), 500
+        return jsonify({
+            'error': 'Failed to fetch currency overview',
+            'message': str(e)
+        }), 500
 
 @api.route('/health')
 def health_check():
@@ -642,77 +653,125 @@ def get_general_insider_analysis():
         return jsonify({'error': 'Failed to fetch insider analysis'}), 500
 
 @api.route('/crypto/trending')
-def get_crypto_trending():
-    """API endpoint for trending crypto data"""
+@access_required
+def crypto_trending():
+    """Get trending crypto currencies"""
     try:
         # Get trending crypto data
-        trending_data = [
-            {
-                'ticker': 'BTC-USD',
+        trending_data = {
+            'BTC-USD': {
                 'name': 'Bitcoin',
-                'price': 65432.10,
+                'symbol': 'BTC',
+                'price': 65432.1,
                 'change_percent': 1.87,
                 'volume': 25000000000,
                 'market_cap': 1200000000000,
-                'trend': 'up'
+                'trend_score': 95
             },
-            {
-                'ticker': 'ETH-USD', 
+            'ETH-USD': {
                 'name': 'Ethereum',
+                'symbol': 'ETH',
                 'price': 3456.78,
                 'change_percent': 1.67,
                 'volume': 15000000000,
-                'market_cap': 420000000000,
-                'trend': 'up'
+                'market_cap': 400000000000,
+                'trend_score': 88
             },
-            {
-                'ticker': 'SOL-USD',
-                'name': 'Solana', 
-                'price': 148.75,
-                'change_percent': -1.52,
-                'volume': 850000000,
-                'market_cap': 65000000000,
-                'trend': 'down'
+            'XRP-USD': {
+                'name': 'Ripple',
+                'symbol': 'XRP',
+                'price': 0.632,
+                'change_percent': 0.32,
+                'volume': 2000000000,
+                'market_cap': 35000000000,
+                'trend_score': 72
             }
-        ]
-        return jsonify(trending_data)
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': trending_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
     except Exception as e:
         logger.error(f"Error fetching trending crypto: {e}")
-        return jsonify({'error': 'Failed to fetch trending crypto'}), 500
+        return jsonify({'success': False, 'error': 'Failed to fetch trending crypto'}), 500
 
 @api.route('/insider/analysis/<ticker>')
-def get_ticker_insider_analysis(ticker):
-    """API endpoint for ticker-specific insider trading analysis"""
+@access_required  
+def insider_analysis(ticker):
+    """Get insider trading analysis for a ticker"""
     try:
-        # Generate insider analysis data
+        # Mock insider trading data
         insider_data = {
             'ticker': ticker.upper(),
-            'insider_sentiment': 'Bullish',
-            'recent_transactions': [
+            'insider_trades': [
                 {
                     'date': '2025-01-10',
-                    'insider': 'CEO',
-                    'transaction': 'Buy',
+                    'insider': 'John Smith',
+                    'title': 'CEO',
+                    'transaction': 'Purchase',
                     'shares': 10000,
-                    'value': 3400000
+                    'price': 156.50,
+                    'value': 1565000
                 },
                 {
-                    'date': '2025-01-05',
-                    'insider': 'CFO',
-                    'transaction': 'Buy',
+                    'date': '2025-01-08',
+                    'insider': 'Jane Doe',
+                    'title': 'CFO',
+                    'transaction': 'Sale',
                     'shares': 5000,
-                    'value': 1700000
+                    'price': 158.20,
+                    'value': 791000
                 }
             ],
-            'total_insider_buying': 5100000,
-            'total_insider_selling': 0,
-            'net_insider_activity': 5100000,
-            'confidence_score': 0.85
+            'analysis': {
+                'insider_sentiment': 'Positive',
+                'recent_activity': 'Increased buying',
+                'confidence_score': 7.5,
+                'recommendation': 'Watch'
+            }
         }
-        return jsonify(insider_data)
+        
+        return jsonify({
+            'success': True,
+            'data': insider_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
     except Exception as e:
         logger.error(f"Error fetching insider analysis for {ticker}: {e}")
-        return jsonify({'error': 'Failed to fetch insider analysis'}), 500
+        return jsonify({'success': False, 'error': 'Failed to fetch insider analysis'}), 500
+
+@api.route('/market/comprehensive', methods=['POST'])
+@access_required
+def market_comprehensive():
+    """Get comprehensive market data for multiple symbols"""
+    try:
+        data = request.get_json()
+        symbols = data.get('symbols', [])
+        
+        market_data = {}
+        for symbol in symbols:
+            # Get stock data using DataService
+            stock_data = DataService.get_single_stock_data(symbol)
+            if stock_data:
+                market_data[symbol] = {
+                    'name': stock_data.get('shortName', symbol),
+                    'price': stock_data.get('last_price', 0),
+                    'change': stock_data.get('change', 0),
+                    'change_percent': stock_data.get('change_percent', 0),
+                    'volume': stock_data.get('volume', 0),
+                    'market_cap': stock_data.get('market_cap', 0)
+                }
+        
+        return jsonify({
+            'success': True,
+            'market_data': market_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching comprehensive market data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch market data'}), 500
 
 @api.before_request
 def before_api_request():

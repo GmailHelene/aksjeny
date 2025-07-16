@@ -144,10 +144,20 @@
                         <h6 class="text-muted">Konfidensgrad</h6>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar" role="progressbar" 
-                                 style="width: {{ (ai_analysis.confidence * 100)|int }}%">
+                                 data-width="{{ (ai_analysis.confidence * 100)|int }}">
                                 {{ "{:.0f}".format(ai_analysis.confidence * 100).replace('.', ',') }}%
                             </div>
                         </div>
+                        <script>
+                            // Set progress bar width from data attribute
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const progressBar = document.querySelector('.progress-bar[data-width]');
+                                if (progressBar) {
+                                    const width = progressBar.getAttribute('data-width');
+                                    progressBar.style.width = width + '%';
+                                }
+                            });
+                        </script>
                     </div>
                     
                     {% if ai_analysis.price_target %}

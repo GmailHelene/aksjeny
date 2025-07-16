@@ -596,6 +596,53 @@ def market_overview():
             fallback_notice=True
         )
 
+@analysis.route('/currency-overview')
+@access_required
+def currency_overview():
+    """Show detailed currency overview"""
+    try:
+        currencies = DataService.get_currency_overview()
+        return render_template(
+            'analysis/currency_overview.html',
+            currencies=currencies,
+            now=datetime.now()
+        )
+    except Exception as e:
+        current_app.logger.error(f"Error in currency_overview route: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        # Return fallback data
+        fallback_currencies = {
+            'USDNOK=X': {
+                'name': 'USD/NOK',
+                'last_price': 10.45,
+                'change': -0.15,
+                'change_percent': -1.42,
+                'volume': 2500000000,
+                'signal': 'HOLD',
+                'high': 10.62,
+                'low': 10.41
+            },
+            'EURNOK=X': {
+                'name': 'EUR/NOK',
+                'last_price': 11.32,
+                'change': 0.08,
+                'change_percent': 0.71,
+                'volume': 1800000000,
+                'signal': 'BUY',
+                'high': 11.38,
+                'low': 11.24
+            }
+        }
+        
+        return render_template(
+            'analysis/currency_overview.html',
+            currencies=fallback_currencies,
+            now=datetime.now(),
+            fallback_notice=True
+        )
+
 @analysis.route('/warren-buffett', methods=['GET', 'POST'])
 @access_required
 def warren_buffett():

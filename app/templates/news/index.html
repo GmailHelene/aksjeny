@@ -40,40 +40,59 @@
 
     <!-- News articles -->
     <div class="row" id="newsContainer">
+        <!-- Debug info -->
+        <div class="col-12 mb-3">
+            <div class="alert alert-info">
+                <small>Debug: news_articles length = {{ news_articles|length }}</small>
+            </div>
+        </div>
+        
         {% if news_articles %}
             {% for article in news_articles %}
             <div class="col-md-6 mb-4">
                 <div class="card h-100 news-card">
-                    {% if article.image_url %}
-                    <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+                    {% if article.thumbnail %}
+                    <img src="{{ article.thumbnail }}" class="card-img-top" alt="{{ article.title }}" 
                          style="height: 200px; object-fit: cover;">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ article.title }}</h5>
-                        <p class="card-text">{{ article.summary }}</p>
+                        <p class="card-text">
+                            {% if article.summary %}
+                                {{ article.summary }}
+                            {% else %}
+                                Klikk for å lese mer om denne saken.
+                            {% endif %}
+                        </p>
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                <i class="bi bi-globe"></i> {{ article.source }}
+                                <i class="bi bi-globe"></i> {{ article.publisher }}
                             </small>
                             <small class="text-muted">
                                 <i class="bi bi-clock"></i> 
-                                {% if article.published %}
-                                    {{ article.published.strftime('%d.%m.%Y %H:%M') if article.published is string else article.published }}
+                                {% if article.providerPublishTime %}
+                                    {{ moment(article.providerPublishTime * 1000).format('DD.MM.YYYY HH:mm') }}
                                 {% else %}
-                                    Ukjent
+                                    Akkurat nå
                                 {% endif %}
                             </small>
                         </div>
+                        {% if article.relatedTickers %}
+                        <div class="mt-2">
+                            <small class="text-muted">Relaterte aksjer:</small>
+                            {% for ticker in article.relatedTickers[:3] %}
+                                <span class="badge bg-secondary me-1">{{ ticker }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                     </div>
                     <div class="card-footer bg-transparent">
                         <a href="{{ article.link }}" target="_blank" class="btn btn-sm btn-primary">
                             Les mer <i class="bi bi-box-arrow-up-right"></i>
                         </a>
-                        {% if article.relevance_score %}
-                        <span class="float-end badge bg-{{ 'success' if article.relevance_score > 0.7 else 'warning' }}">
-                            Relevans: {{ "{:.0%}".format(article.relevance_score).replace('.', ',') }}
+                        <span class="float-end badge bg-info">
+                            {{ article.type }}
                         </span>
-                        {% endif %}
                     </div>
                 </div>
             </div>

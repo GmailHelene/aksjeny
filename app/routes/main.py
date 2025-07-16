@@ -911,10 +911,46 @@ def insider_trading():
 @access_required
 def news():
     """News page - redirect to news blueprint"""
-    return redirect(url_for('news_bp.index'))
+    return redirect(url_for('news.news_index'))
 
 @main.route('/stocks/screener')
 @access_required
 def stock_screener():
     """Stock screener page"""
     return redirect(url_for('analysis.screener'))
+
+@main.route('/about')
+@main.route('/about/')
+def about():
+    """About page"""
+    return render_template('about.html')
+
+@main.route('/help')
+@main.route('/help/')
+def help():
+    """Help page"""
+    return render_template('help.html')
+
+@main.route('/settings')
+@main.route('/settings/')
+@login_required
+def settings():
+    """User settings page"""
+    return render_template('settings.html')
+
+@main.route('/contact')
+@main.route('/contact/')
+def contact():
+    """Contact page"""
+    return render_template('contact.html')
+
+@main.route('/features')
+@main.route('/features/')
+def features():
+    """Features page"""
+    return render_template('features.html')
+
+@main.route('/favicon.ico')
+def favicon():
+    """Favicon redirect"""
+    return redirect(url_for('static', filename='favicon.ico'))

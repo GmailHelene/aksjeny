@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Aksjeliste - {{ category|default('Alle') }}{% endblock %}
+{% block title %}{{ title if title else (category|default('Alle')) }} - Aksjer{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -12,12 +12,12 @@
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-                <i class="bi bi-graph-up me-1"></i>Aksjer - {{ category|default('Alle') }}
+                <i class="bi bi-graph-up me-1"></i>{{ title if title else (category|default('Alle')) }}
             </li>
         </ol>
     </nav>
     
-    <h1 class="mb-4">Aksjeliste - {{ category|default('Alle') }}</h1>
+    <h1 class="mb-4">{{ title if title else (category|default('Alle')) }}</h1>
     
     <div class="row">
         <div class="col-12">

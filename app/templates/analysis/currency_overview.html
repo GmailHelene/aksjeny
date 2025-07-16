@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Valutaoversikt - Aksjeradar{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-exchange-alt text-primary me-2"></i>
+                Valutaoversikt
+            </h1>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i>
+                    Oppdater
+                </button>
+            </div>
+        </div>
+
+        <!-- Market Summary Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Valutamarkedet
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-muted">Antall valutaer</h6>
+                            <h4 class="text-primary">{{ currencies|length }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-muted">Siste oppdatering</h6>
+                            <h6 class="text-success">{{ now.strftime('%H:%M:%S') }}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-muted">Handelsvolum</h6>
+                            <h6 class="text-info">Høy aktivitet</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-muted">Markedsstatus</h6>
+                            <h6 class="text-warning">Åpen</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>
+                    Valutakurser (mot NOK)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Valutapar</th>
+                                <th>Kurs</th>
+                                <th>Endring</th>
+                                <th>Endring %</th>
+                                <th>Volum</th>
+                                <th>Høy</th>
+                                <th>Lav</th>
+                                <th>Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticker, data in currencies.items() %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="currency-flag me-2">
+                                            {% if 'USD' in data.name %}
+                                                <span class="flag-icon">🇺🇸</span>
+                                            {% elif 'EUR' in data.name %}
+                                                <span class="flag-icon">🇪🇺</span>
+                                            {% elif 'GBP' in data.name %}
+                                                <span class="flag-icon">🇬🇧</span>
+                                            {% elif 'SEK' in data.name %}
+                                                <span class="flag-icon">🇸🇪</span>
+                                            {% elif 'DKK' in data.name %}
+                                                <span class="flag-icon">🇩🇰</span>
+                                            {% elif 'JPY' in data.name %}
+                                                <span class="flag-icon">🇯🇵</span>
+                                            {% elif 'AUD' in data.name %}
+                                                <span class="flag-icon">🇦🇺</span>
+                                            {% elif 'CAD' in data.name %}
+                                                <span class="flag-icon">🇨🇦</span>
+                                            {% elif 'CHF' in data.name %}
+                                                <span class="flag-icon">🇨🇭</span>
+                                            {% elif 'CNY' in data.name %}
+                                                <span class="flag-icon">🇨🇳</span>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <strong>{{ data.name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ ticker }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong>{{ "%.4f"|format(data.last_price) }}</strong>
+                                </td>
+                                <td>
+                                    <span class="{% if data.change > 0 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ "%.4f"|format(data.change) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="{% if data.change_percent > 0 %}text-success{% else %}text-danger{% endif %}">
+                                        <i class="fas fa-{% if data.change_percent > 0 %}arrow-up{% else %}arrow-down{% endif %}"></i>
+                                        {{ "%.2f"|format(data.change_percent) }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ "{:,.0f}".format(data.volume) }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="text-success">{{ "%.4f"|format(data.high) }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-danger">{{ "%.4f"|format(data.low) }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge {% if data.signal == 'BUY' %}bg-success{% elif data.signal == 'SELL' %}bg-danger{% else %}bg-warning{% endif %}">
+                                        {{ data.signal }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Analysis Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Markedsanalyse
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Sterkeste valutaer</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇬🇧 GBP/NOK</span>
+                                <span class="text-success">+1.82%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇦🇺 AUD/NOK</span>
+                                <span class="text-success">+1.86%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇨🇭 CHF/NOK</span>
+                                <span class="text-success">+1.64%</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Svakeste valutaer</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇺🇸 USD/NOK</span>
+                                <span class="text-danger">-1.42%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇨🇳 CNY/NOK</span>
+                                <span class="text-danger">-1.38%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>🇯🇵 JPY/NOK</span>
+                                <span class="text-danger">-1.14%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .flag-icon {
+            font-size: 1.2em;
+            margin-right: 0.5rem;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .currency-flag {
+            width: 30px;
+            text-align: center;
+        }
+    </style>
+{% endblock %}

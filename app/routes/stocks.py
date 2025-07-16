@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from flask_login import current_user, login_required
 from datetime import datetime, timedelta
@@ -23,15 +24,31 @@ def index():
 def list_stocks():
     """List stocks with real-time data"""
     try:
-        category = request.args.get('category', 'all')
+        # Get stock_type from query parameter
+        stock_type = request.args.get('stock_type', 'oslo')
         
         # Get real data from DataService
-        if category == 'oslo':
+        if stock_type == 'oslo':
             stocks_data = DataService.get_oslo_bors_overview()
-        elif category == 'global':
+            title = 'Oslo Børs'
+            # Get "mest omsatte" data for Oslo Børs - sorted by volume
+            all_oslo_stocks = DataService.get_oslo_bors_overview()
+            most_traded_list = sorted(all_oslo_stocks.items(), 
+                                    key=lambda x: float(x[1].get('volume', 0)), 
+                                    reverse=True)[:10]  # Top 10 most traded
+            mest_omsatte = dict(most_traded_list)
+        elif stock_type == 'global':
             stocks_data = DataService.get_global_stocks_overview()
-        elif category == 'crypto':
+            title = 'Globale Markeder'
+            mest_omsatte = None
+        elif stock_type == 'crypto':
             stocks_data = DataService.get_crypto_overview()
+            title = 'Kryptovaluta'
+            mest_omsatte = None
+        elif stock_type == 'currency':
+            stocks_data = DataService.get_currency_overview()
+            title = 'Valutakurser'
+            mest_omsatte = None
         else:
             # Get all categories
             oslo_stocks = DataService.get_oslo_bors_overview()
@@ -43,10 +60,14 @@ def list_stocks():
                 'global': global_stocks,
                 'crypto': crypto
             }
+            title = 'Alle Markeder'
+            mest_omsatte = None
         
         return render_template('stocks/list.html', 
                              stocks=stocks_data,
-                             category=category)
+                             category=stock_type,
+                             title=title,
+                             mest_omsatte=mest_omsatte)
                              
     except Exception as e:
         current_app.logger.error(f"Error in list_stocks: {str(e)}")
@@ -60,7 +81,7 @@ def list_stocks_by_category(category):
     try:
         if category == 'oslo':
             stocks = DataService.get_oslo_bors_overview()
-            title = 'Oslo Børs'
+            title = 'Aksjeliste - Oslo Børs'
             # Get "mest omsatte" data for Oslo Børs - sorted by volume
             all_oslo_stocks = DataService.get_oslo_bors_overview()
             most_traded_list = sorted(all_oslo_stocks.items(), 
@@ -69,7 +90,15 @@ def list_stocks_by_category(category):
             mest_omsatte = dict(most_traded_list)
         elif category == 'global':
             stocks = DataService.get_global_stocks_overview()
-            title = 'Globale Aksjer'
+            title = 'Aksjeliste - Globale Markeder'
+            mest_omsatte = None
+        elif category == 'crypto':
+            stocks = DataService.get_crypto_overview()
+            title = 'Kryptovaluta'
+            mest_omsatte = None
+        elif category == 'currency':
+            stocks = DataService.get_currency_overview()
+            title = 'Valutakurser'
             mest_omsatte = None
         else:
             stocks = {}
@@ -234,13 +263,13 @@ def list_oslo():
         return render_template(
             'stocks/list.html',
             stocks=stocks,
-            title="Oslo Børs",
+            title="Aksjeliste - Oslo Børs",
             market_type="oslo"
         )
     except Exception as e:
         current_app.logger.error(f"Error in oslo_list: {str(e)}")
         flash("En feil oppstod ved henting av Oslo Børs data. Vennligst prøv igjen senere.", "error")
-        return render_template('stocks/list.html', title="Oslo Børs", market_type="oslo")
+        return render_template('stocks/list.html', title="Aksjeliste - Oslo Børs", market_type="oslo")
 
 @stocks.route('/list/global')
 @access_required
@@ -252,12 +281,12 @@ def global_list():
             'stocks/list.html',
             stocks=stocks,
             market_type="global",
-            title="Globale markeder"
+            title="Aksjeliste - Globale Markeder"
         )
     except Exception as e:
         current_app.logger.error(f"Error in global stocks list: {str(e)}")
         flash("Kunne ikke hente globale markedsdata. Vennligst prøv igjen senere.", "error")
-        return render_template('stocks/list.html', stocks={}, title="Globale markeder", market_type="global")
+        return render_template('stocks/list.html', stocks={}, title="Aksjeliste - Globale Markeder", market_type="global")
 
 @stocks.route('/list/crypto')
 @access_required
@@ -455,33 +484,56 @@ def list_currency():
 
 @stocks.route('/api/stock/<ticker>')
 @access_required
-def api_stock(ticker):
-    """API endpoint for stock data"""
+def api_stock_data(ticker):
+    """API endpoint for individual stock data"""
     try:
-        period = request.args.get('period', '1d')
-        interval = request.args.get('interval', '1m')
-        data = DataService.get_stock_data(ticker, period, interval)
+        # Get basic stock info
+        stock_data = DataService.get_single_stock_data(ticker)
+        if not stock_data:
+            return jsonify({'error': 'Stock not found'}), 404
         
-        if data.empty:
-            return jsonify({'error': 'Ingen data funnet for denne aksjen'}), 404
+        return jsonify({
+            'ticker': ticker,
+            'data': stock_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting stock data for {ticker}: {str(e)}")
+        return jsonify({'error': 'Failed to fetch stock data'}), 500
+
+@stocks.route('/api/stock/<ticker>/history')
+@access_required
+def api_stock_history(ticker):
+    """API endpoint for stock historical data"""
+    try:
+        period = request.args.get('period', '1y')
+        stock_data = DataService.get_stock_data(ticker, period=period)
+        
+        if stock_data.empty:
+            return jsonify({'error': 'No historical data available'}), 404
         
         # Convert DataFrame to JSON-serializable format
-        data_reset = data.reset_index()
-        result = []
-        for _, row in data_reset.iterrows():
-            result.append({
-                'Date': row['Date'].isoformat() if hasattr(row['Date'], 'isoformat') else str(row['Date']),
-                'Open': float(row['Open']),
-                'High': float(row['High']),
-                'Low': float(row['Low']),
-                'Close': float(row['Close']),
-                'Volume': int(row['Volume']) if 'Volume' in row else 0
+        history = []
+        stock_data_reset = stock_data.reset_index()
+        for _, row in stock_data_reset.iterrows():
+            history.append({
+                'date': row['Date'].strftime('%Y-%m-%d') if hasattr(row['Date'], 'strftime') else str(row['Date']),
+                'open': float(row['Open']) if pd.notna(row['Open']) else None,
+                'high': float(row['High']) if pd.notna(row['High']) else None,
+                'low': float(row['Low']) if pd.notna(row['Low']) else None,
+                'close': float(row['Close']) if pd.notna(row['Close']) else None,
+                'volume': int(row['Volume']) if pd.notna(row['Volume']) else None
             })
         
-        return jsonify(result)
+        return jsonify({
+            'ticker': ticker,
+            'period': period,
+            'history': history,
+            'timestamp': datetime.utcnow().isoformat()
+        })
     except Exception as e:
-        current_app.logger.error(f"Error in stock API for {ticker}: {str(e)}")
-        return jsonify({'error': 'Kunne ikke hente aksjedata'}), 500
+        current_app.logger.error(f"Error getting stock history for {ticker}: {str(e)}")
+        return jsonify({'error': 'Failed to fetch stock history'}), 500
 
 @stocks.route('/compare')
 @access_required

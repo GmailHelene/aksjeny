@@ -9,6 +9,47 @@
         <i class="bi bi-graph-up me-2"></i>Markedsoversikt
     </h1>
     
+    <!-- Market Status Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body py-2">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock text-success me-2"></i>
+                                <span class="fw-bold">Oslo Børs:</span>
+                                <span class="ms-2 text-success" id="oslo-market-status">
+                                    <span class="badge bg-success">ÅPEN</span>
+                                    <small class="ms-1">09:00 - 16:30</small>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock text-success me-2"></i>
+                                <span class="fw-bold">NYSE/NASDAQ:</span>
+                                <span class="ms-2 text-success" id="us-market-status">
+                                    <span class="badge bg-success">ÅPEN</span>
+                                    <small class="ms-1">15:30 - 22:00</small>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-arrow-clockwise text-primary me-2"></i>
+                                <span class="fw-bold">Sist oppdatert:</span>
+                                <span class="ms-2" id="last-updated">
+                                    {{ moment().format('DD.MM.YYYY HH:mm') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -328,4 +369,55 @@
         </a>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    updateMarketStatus();
+    setInterval(updateMarketStatus, 60000); // Update every minute
+});
+
+function updateMarketStatus() {
+    const now = new Date();
+    const norwegianTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Oslo"}));
+    const usTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+    
+    // Oslo market (09:00 - 16:30 CET)
+    const osloOpen = norwegianTime.getHours() >= 9 && norwegianTime.getHours() < 16 ||
+                    (norwegianTime.getHours() === 16 && norwegianTime.getMinutes() <= 30);
+    const osloWeekday = norwegianTime.getDay() >= 1 && norwegianTime.getDay() <= 5;
+    const osloMarketOpen = osloOpen && osloWeekday;
+    
+    // US market (9:30 - 16:00 EST)
+    const usOpen = usTime.getHours() >= 9 && usTime.getHours() < 16 ||
+                  (usTime.getHours() === 9 && usTime.getMinutes() >= 30);
+    const usWeekday = usTime.getDay() >= 1 && usTime.getDay() <= 5;
+    const usMarketOpen = usOpen && usWeekday;
+    
+    // Update Oslo status
+    const osloStatus = document.getElementById('oslo-market-status');
+    if (osloMarketOpen) {
+        osloStatus.innerHTML = '<span class="badge bg-success">ÅPEN</span><small class="ms-1">09:00 - 16:30</small>';
+    } else {
+        osloStatus.innerHTML = '<span class="badge bg-danger">STENGT</span><small class="ms-1">09:00 - 16:30</small>';
+    }
+    
+    // Update US status
+    const usStatus = document.getElementById('us-market-status');
+    if (usMarketOpen) {
+        usStatus.innerHTML = '<span class="badge bg-success">ÅPEN</span><small class="ms-1">15:30 - 22:00</small>';
+    } else {
+        usStatus.innerHTML = '<span class="badge bg-danger">STENGT</span><small class="ms-1">15:30 - 22:00</small>';
+    }
+    
+    // Update last updated time
+    const lastUpdated = document.getElementById('last-updated');
+    lastUpdated.textContent = now.toLocaleString('no-NO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+</script>
 {% endblock %}

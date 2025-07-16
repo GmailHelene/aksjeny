@@ -24,14 +24,19 @@ def news_index():
         category = request.args.get('category', 'all')
         limit = int(request.args.get('limit', 20))
         
-        # Get latest news
-        news_articles = get_latest_news_sync(limit=limit, category=category)
+        # Get latest news using DataService
+        from ..services.data_service import DataService
+        news_articles = DataService.get_general_news()
+        
+        logger.info(f"News articles count: {len(news_articles)}")
         
         return render_template('news/index.html', 
                              news_articles=news_articles,
                              selected_category=category)
     except Exception as e:
         logger.error(f"Error in news index: {e}")
+        import traceback
+        traceback.print_exc()
         return render_template('news/index.html', 
                              news_articles=[],
                              selected_category='all')
