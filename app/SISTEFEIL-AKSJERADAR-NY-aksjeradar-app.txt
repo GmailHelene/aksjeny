@@ -1,3 +1,7 @@
+https://aksjeradar.trade/create-checkout-session
+Error på denne siden
+-
+
 
 Sjekk at apen er 100% responsiv, at glemt passord og slike funksjoner er lette å finne , og fungerer, og
 sjekk at appen er søkemotoroptimalisert, og at demoløsning og betalt løsning fungerer slik det skal til brukerlogikken vi har satt opp.

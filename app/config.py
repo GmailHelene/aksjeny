@@ -39,6 +39,7 @@ class Config:
     # Stripe configuration with secure fallback values and null checks
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY') or 'sk_test_dummy_key_for_development_only'
     STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY') or 'pk_test_dummy_key_for_development_only'
+    STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLIC_KEY') or 'pk_test_dummy_key_for_development_only'
     STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET') or 'whsec_dummy_webhook_secret_for_development'
     
     # Price IDs for different subscription tiers with secure fallbacks
