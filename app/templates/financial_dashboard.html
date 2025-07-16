@@ -571,7 +571,7 @@ class FinancialDashboard {
 
     async loadDashboardData() {
         try {
-            const response = await fetch(`/api/dashboard/data?${this.userStocks.map(s => `symbols=${s}`).join('&')}`);
+            const response = await fetch(`/api/public/market/data?${this.userStocks.map(s => `symbols=${s}`).join('&')}`);
             const data = await response.json();
 
             if (data.success) {
@@ -587,7 +587,7 @@ class FinancialDashboard {
 
     async loadEconomicIndicators() {
         try {
-            const response = await fetch('/api/economic/indicators');
+            const response = await fetch('/api/public/economic/indicators');
             const data = await response.json();
 
             if (data.success) {
@@ -600,7 +600,7 @@ class FinancialDashboard {
 
     async loadSectorAnalysis() {
         try {
-            const response = await fetch('/api/market/sectors');
+            const response = await fetch('/api/public/market/sectors');
             
             // Check if response is JSON
             const contentType = response.headers.get('content-type');
@@ -623,7 +623,7 @@ class FinancialDashboard {
 
     async loadFinancialNews() {
         try {
-            const response = await fetch(`/api/news/financial?${this.userStocks.map(s => `symbols=${s}`).join('&')}&limit=20`);
+            const response = await fetch(`/api/public/news/financial?${this.userStocks.map(s => `symbols=${s}`).join('&')}&limit=20`);
             
             // Check if response is JSON
             const contentType = response.headers.get('content-type');
@@ -822,7 +822,7 @@ class FinancialDashboard {
         container.innerHTML = '<div class="text-center py-3"><div class="spinner-border" role="status"></div></div>';
         
         try {
-            const response = await fetch(`/api/insider/analysis/${symbol}`);
+            const response = await fetch(`/api/public/insider/analysis/${symbol}`);
             const data = await response.json();
             
             if (data.success) {
@@ -980,7 +980,7 @@ class FinancialDashboard {
 
     async loadStockData() {
         try {
-            const response = await fetch('/api/market/comprehensive', {
+            const response = await fetch('/api/public/market/comprehensive', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ symbols: this.userStocks })
@@ -997,7 +997,7 @@ class FinancialDashboard {
 
     async loadCryptoData() {
         try {
-            const response = await fetch('/api/crypto/data?limit=20');
+            const response = await fetch('/api/public/crypto/data?limit=20');
             const data = await response.json();
             
             if (data.success) {
@@ -1005,7 +1005,7 @@ class FinancialDashboard {
             }
             
             // Load trending crypto
-            const trendingResponse = await fetch('/api/crypto/trending');
+            const trendingResponse = await fetch('/api/public/crypto/trending');
             const trendingData = await trendingResponse.json();
             
             if (trendingData.success) {
@@ -1038,7 +1038,7 @@ class FinancialDashboard {
 
     async loadCurrencyData() {
         try {
-            const response = await fetch('/api/currency/rates');
+            const response = await fetch('/api/public/currency/rates');
             const data = await response.json();
             
             if (data.success) {

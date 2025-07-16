@@ -313,26 +313,86 @@ def api_get_notifications():
 @notifications_bp.route('/api/user/preferences', methods=['GET', 'POST'])
 @login_required
 def user_preferences():
-    """Get or update user preferences (language, display, widgets, etc.)"""
-    from app.models.notifications import NotificationSettings
-    settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
-    if request.method == 'GET':
+    """User notification preferences API"""
+    try:
+        if request.method == 'POST':
+            data = request.get_json()
+            
+            # Get or create user notification settings
+            settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
+            if not settings:
+                settings = NotificationSettings(user_id=current_user.id)
+                db.session.add(settings)
+            
+            # Update settings safely with fallback for missing columns
+            try:
+                if 'language' in data:
+                    settings.language = data['language']
+            except Exception:
+                pass  # Column might not exist
+            
+            try:
+                if 'display_mode' in data:
+                    settings.display_mode = data['display_mode']
+            except Exception:
+                pass  # Column might not exist
+            
+            try:
+                if 'number_format' in data:
+                    settings.number_format = data['number_format']
+            except Exception:
+                pass  # Column might not exist
+            
+            try:
+                if 'dashboard_widgets' in data:
+                    settings.dashboard_widgets = data['dashboard_widgets']
+            except Exception:
+                pass  # Column might not exist
+            
+            try:
+                db.session.commit()
+                return jsonify({'success': True, 'message': 'Preferanser oppdatert'})
+            except Exception as e:
+                db.session.rollback()
+                logger.error(f"Error saving notification preferences: {e}")
+                return jsonify({'success': False, 'error': 'Kunne ikke lagre preferanser'})
+        
+        # GET request - return current preferences
+        settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
+        
+        # Return safe defaults if no settings exist
         if not settings:
-            return jsonify({'error': 'No preferences found'}), 404
-        return jsonify({
-            'language': settings.language,
-            'display_mode': settings.display_mode,
-            'number_format': settings.number_format,
-            'dashboard_widgets': settings.dashboard_widgets
-        })
-    # POST: update
-    data = request.get_json()
-    if not settings:
-        settings = NotificationSettings(user_id=current_user.id)
-        db.session.add(settings)
-    settings.language = data.get('language', settings.language)
-    settings.display_mode = data.get('display_mode', settings.display_mode)
-    settings.number_format = data.get('number_format', settings.number_format)
-    settings.dashboard_widgets = data.get('dashboard_widgets', settings.dashboard_widgets)
-    db.session.commit()
-    return jsonify({'success': True, 'message': 'Preferanser oppdatert'})
+            return jsonify({
+                'language': 'no',
+                'display_mode': 'light',
+                'number_format': 'norwegian',
+                'dashboard_widgets': 'default'
+            })
+        
+        # Return existing settings with safe access
+        preferences = {}
+        try:
+            preferences['language'] = getattr(settings, 'language', 'no')
+        except:
+            preferences['language'] = 'no'
+        
+        try:
+            preferences['display_mode'] = getattr(settings, 'display_mode', 'light')
+        except:
+            preferences['display_mode'] = 'light'
+        
+        try:
+            preferences['number_format'] = getattr(settings, 'number_format', 'norwegian')
+        except:
+            preferences['number_format'] = 'norwegian'
+        
+        try:
+            preferences['dashboard_widgets'] = getattr(settings, 'dashboard_widgets', 'default')
+        except:
+            preferences['dashboard_widgets'] = 'default'
+        
+        return jsonify(preferences)
+        
+    except Exception as e:
+        logger.error(f"Error in user preferences: {e}")
+        return jsonify({'success': False, 'error': 'Kunne ikke hente preferanser'})

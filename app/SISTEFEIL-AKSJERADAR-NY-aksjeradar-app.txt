@@ -1,336 +1,1799 @@
-/details/EQNR.OL
-Når jeg forsøker knappene her for "Legg til i favoritter" og "Legg til i portefølje"; så får jeg: " Du må logge inn for å legge til favoritter."
-"Du må logge inn for å legge til i portefølje"og jeg ER allerede innlogget...
 
-----
-
-portfolio/create
-Stårt dette øverst her..?
-Opprett ny portefølje
-IjNiNWI0ZjJjNGIzNTMxMTQ0MjcyMzE5YWM5Mzc1NjFkNzNlMGM4OTUi.aFs-QA.y3dYAfO7SXq5jeIJAnybtZexC1g ---hva er dette
-
-
---
-Gjerne legg til ENDA flere rader her: 1/stocks/list/global
-
---
-Når jeg forsøker å kjøpe abb. (/create-checkout-session) så får jeg Bad Request
-The CSRF token is missing. -- Hvordan løser jeg dette når jeg skal lansere appen live på aksjeradar.trade?
-Jeg har allerede lagt inn stripe keys i railway dashboardet. 
-
----
-Får beklager en feil oppstod her:
-/stocks/details/AKERBP.OL (og sikker på andre tickers og)
----
-Overskriuften Aksjetips må her ha sort tekstfarge: /portfolio/tips
-
---
-På forsiden, nesten nederst bak knappen  "Se alle aksjetips" så har det sneket seg med to bokstaver: "ps", de skal ikke være der 
-
-----
-Når jeg forsøker "Legg til tips" knappen her på /portfolio/tips , så får jeg Bad Request
-The CSRF token is missing.
----
-I footeren, lenken under "Lenker"   "Analyse", endre den til å lenke hit i stedet:
-/ prediction
-
----
-
-Kan du sjekke at det er fungerernde nå med at alle som er på siden får 10 min access til alle sider uten å kjøpe et abb. og etter 10 min er brukt opp, så blir de sendt til /recstricted_accedss.html  siden
-- Dette skal IKKE gjelde meg (helene721@gmail.com) jeg skal ha tilgang til alle sider, uansett hva, men det skal gjelde alle andre.
-
-----
-
-----
-Andre endepunkt som må fikses:
-127.0.0.1 - - [25/Jun/2025 02:11:45] "GET /static/manifest.json?v= HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/css/style.css?v= HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/images/logo-192.png HTTP/1.1" 304 
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/cache-buster.js?v=25020757 HTTP/1.1" 304 -        
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/cookie-consent.js?v=25020757 HTTP/1.1" 304 -      
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /static/js/main.js?v=25020757 HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /service-worker.js HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 02:12:38] "GET /offline.html HTTP/1.1" 404 -
+Sjekk at apen er 100% responsiv, at glemt passord og slike funksjoner er lette å finne , og fungerer, og
+sjekk at appen er søkemotoroptimalisert, og at demoløsning og betalt løsning fungerer slik det skal til brukerlogikken vi har satt opp.
 
 
 
- -
-[2025-06-25 01:49:08,915] ERROR in main: Stripe error in /subscription: Invalid API Key provided: sk_tetatic/js/main.js?v=25014146 HTTP/1.1" 304 -
+INGEN av urlene fungerer i hovednavigasjonen, bortsett fra "Hjem" Dette må fikses!
+Portefølje kan  i menyen ligge under "Min aksjeradar" , også kan det heller være logg inn/ut /registrer, der Portefølje er nå.
 
-192.168.227.126 - - [25/Jun/2025 01:49:12] "POST /create-checkout-session HTTP/1.1" 400 -
--------------------------------------------------------------
+https://aksjeradar.trade/financial-dashboard
+Tabbene:
+Oversikt
+Aksjer
+Krypto
+Valuta
+Innsidehandel
+Nyheter
+Virker ikke som disse er helt ferdig implementert, disse t abbene inne på Finansiell Dashboard?
+Husk å fiks så tabbene her: "Aksjer","Krypto""Valuta", og "Innsidehandel" viser data og at søkefunskjonen i innsidehandel  fungerer som den skal.
+
+https://aksjeradar.trade/news/
+"Ingen nyheter for øyebliket" vises her, det bør være nyheter som hentes inn her
+
+Innsidehandel Analyse
+Aksjesymbol
+AAPL
+Ingen data funnet for AAPL
+
+også kan du gjerne legge til pwa icon, og gjerne legge til apier/innhenting av gratis intel, info, fra andre nettsider som er relevantfor analsye av aksjer, crypto og valuta.
+Og sjekk at brukerne tonje og eirik også har lifetime/pro access med sine logginn, at det fungerer som det skal.
 
 
+https://aksjeradar.trade/stocks/list
+Denne siden gir erroren:
+ "Beklager, en feil oppsto
+Vi jobber med å løse problemet. Prøv igjen senere.
 
+Tekniske detaljer (for utviklere)
+Kunne ikke hente aksjedata. Prøv igjen senere."
 
+https://aksjeradar.trade/analysis/benjamin-graham
+Her fungerer enda ikke analsyen (skjer ingenting når man har valgt en aksje for analyse)
 
+https://aksjeradar.trade/news/sentralbank-rente-beslutning
+Alt for store bilder på disse News sidene
 
+https://aksjeradar.trade/stocks/details/GOOGL
+På slike og andre /details, osv tickers o.l, kan vi få med mer info, verdier
+ellerm lignende? Mer content på slike sider !Kan være alt som er relevant i forhold til både
+tickeren, anlyse, Anbefaling, ai osv 
 
+"Du har brukt opp dine 5 daglige analyser. Oppgrader for ubegrenset tilgang."
+Står det på meg på /pricing, er det riktig, har vi det i demologikken vår?
 
+https://aksjeradar.trade/analysis/technical
+"velg en aksje for å se teknisk analyse " står det på knaopper som går hit,
+Det må vi løse på en bedre måte, en samle side for technical som fungerer evt?
 
-Feil: /subscription
+https://aksjeradar.trade/analysis/market-overview
+Ta med brødsmuleaktig anvigering på denne siden også
 
+https://aksjeradar.trade/api/currency
+Denne siden viser pen formatteringstekst, altså feil, det må fikses
 
-TemplateSyntaxError
-jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'.
+https://aksjeradar.trade/analysis/recommendation?ticker=EQNR.OL
+på disse sidene så er det knappene Se aksjedetaljer og  Teknisk analyse, men Teknisk analyse lenker feil, fiks dette.
 
-Traceback (most recent call last)
-File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\main.py", line 312, in subscription
-prices = stripe.Price.list(
-         
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_resources\abstract\listable_api_resource.py", line 16, in list
-result = cls._static_request(
-         
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_resources\abstract\api_resource.py", line 141, in _static_request
-response, api_key = requestor.request(method_, url_, params, headers)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 121, in request
-resp = self.interpret_response(rbody, rcode, rheaders)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 398, in interpret_response
-self.handle_error_response(rbody, rcode, resp.data, rheaders)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\stripe\api_requestor.py", line 158, in handle_error_response
-raise err
-^^^^^^^^^
-During handling of the above exception, another exception occurred:
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
-return self.wsgi_app(environ, start_response)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
-response = self.handle_exception(e)
-           ^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
-response = self.full_dispatch_request()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
-rv = self.handle_user_exception(e)
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
-rv = self.dispatch_request()
-     ^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
-return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\utils\subscription.py", line 19, in decorated_function
-return f(*args, **kwargs)
-       ^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\main.py", line 353, in subscription
-return render_template(
-       
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\templating.py", line 146, in render_template
-template = app.jinja_env.get_or_select_template(template_name_or_list)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
-return self.get_template(template_name_or_list, parent, globals)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1010, in get_template
-return self._load_template(name, globals)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Open an interactive python shell in this frame
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 969, in _load_template
-template = self.loader.load(self, name, self.make_globals(globals))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\loaders.py", line 138, in load
-code = environment.compile(source, name, filename)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 768, in compile
-self.handle_exception(source=source_hint)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 936, in handle_exception
-raise rewrite_traceback_stack(source=source)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\templates\subscription.html", line 173, in template
-{% endblock %}
-jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'.
+https://aksjeradar.trade/analysis/technical?market=oslo
+Denne fungerer, mend et er litt lite info her?
+Og knappen her som går til "Stock Screener" lenker ikke til riktig sted?
 
+https://aksjeradar.trade/stocks/list/currency
+Fortsatt feilmelding her, en feil oppstod ved henting av valutrakurser osv... Dette må vi fikse på et vis.
+(Altså, urlen sender hit: https://aksjeradar.trade/analysis/technical?ticker=EQNR.OL, men blir videresendt til /pricing?)
+
+https://aksjeradar.trade/analysis/ai
+Når jeg skriver en ticker å søker etter det her i "Analyser" feltet, så blir jeg videresendt til /pricing.
 
 ---
-/technical?ticker=EQNR.OL  (og andre tickers)
 
-Får "no data found for .." på disse sidene. Det må fikses.
+Gå nye gjennom alle endepunkt som er = også en ticker, og sjekk at det ikke er noe ""ingen data tilgjengelig " N/A, - , ingen informasjon, 0, No information, eller bare tomt, der det skal være enten fast tekst eller dynamiske ekte data som hentes inn. Og fiks så det da blir dette der det mangler.
+https://aksjeradar.trade/analysis/market-overview
+Her er det 2 x Kryptovaluta tabell som er lik, bytt heller den ene uyt med tabell for Globale aksjer. Og legg til en hoved overskrift helet øverst som er noe ala "Markedsoversikt"
 
-----
-Feil på disse sidene:
-/recommendation?ticker=MSFT  (og andre tickers)
+Det er ikke nødvendig å ha menyelementet portefølje nederst i menyen, vi fniner de samme elementene igjen inne på brukeren (der det står brukerens epost i menyen) og det er OK, men kanskje heller kalle det Min aksjeradar eller noe slikt? i stedet for brukerens epost , i menyen.
 
-TemplateSyntaxError
-jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endfor'.
+Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
 
-Traceback (most recent call last)
-File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\analysis.py", line 456, in recommendation
-recommendation = AnalysisService.get_recommendation(ticker)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-During handling of the above exception, another exception occurred:
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
-return self.wsgi_app(environ, start_response)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
-response = self.handle_exception(e)
-           ^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
-response = self.full_dispatch_request()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
-rv = self.handle_user_exception(e)
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
-rv = self.dispatch_request()
-     ^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
-return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\utils\subscription.py", line 19, in decorated_function
-return f(*args, **kwargs)
-       ^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\analysis.py", line 472, in recommendation
-return render_template('analysis/recommendation.html',
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\templating.py", line 146, in render_template
-template = app.jinja_env.get_or_select_template(template_name_or_list)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
-return self.get_template(template_name_or_list, parent, globals)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 1010, in get_template
-return self._load_template(name, globals)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 969, in _load_template
-template = self.loader.load(self, name, self.make_globals(globals))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\loaders.py", line 138, in load
-code = environment.compile(source, name, filename)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 768, in compile
-self.handle_exception(source=source_hint)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\jinja2\environment.py", line 936, in handle_exception
-raise rewrite_traceback_stack(source=source)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\templates\analysis\recommendation.html", line 71, in template
-{% endfor %}
-jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endfor'.
+virker som de fleste /stocks/details tickers, altså alle mulige forskjellige ," googl" og alle andre kan slite med internal server error, s¨undmersøk dette næye og fiks.
+
+Når alt dette er fullført så kan du fortsette med slik du foreslår;
+API-testing: Teste /api/crypto og /api/currency endepunkter
+Stock details: Teste om 500-feil på aksjedetaljer er løst
+Benjamin Graham: Teste analyse-form funksjonalitet
+Mobile responsiv: Teste forbedret spacing på mobile enheter
+AI analyse: Teste med flere ticker-symboler
+
 
 ----
 
-/Portfolio/tips
+https://aksjeradar.trade/analysis/benjamin-graham
+Her så skjer det ingenting n år jeg velger en aksje for å analysere
 
-Feil her...:
-OperationalError
-sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: stock_tips.tip_type
-[SQL: SELECT stock_tips.id AS stock_tips_id, stock_tips.ticker AS stock_tips_ticker, stock_tips.tip_type AS stock_tips_tip_type, stock_tips.confidence AS stock_tips_confidence, stock_tips.analysis AS stock_tips_analysis, stock_tips.created_at AS stock_tips_created_at, stock_tips.user_id AS stock_tips_user_id 
-FROM stock_tips ORDER BY stock_tips.created_at DESC
- LIMIT ? OFFSET ?]
-[parameters: (10, 0)]
-(Background on this error at: https://sqlalche.me/e/14/e3q8)
+på KI-analyse ser jeg dette i adressebarfeltet: https://aksjeradar.trade/analysis/ai?csrf_token=IjNiZTljOTY3Y2ViYWE4N2NmMzM0YTE1OWJhZWVmODBlNzY3NjFiZmQi.aHVJyw.MwK9VKDk5iqGvcUYJfEFaKDQ3-0&ticker=eqnr
+er ikke det rart?
 
-Traceback (most recent call last)
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
-self.dialect.do_execute(
-^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
-cursor.execute(statement, parameters)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The above exception was the direct cause of the following exception:
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2552, in __call__
-return self.wsgi_app(environ, start_response)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2532, in wsgi_app
-response = self.handle_exception(e)
-           ^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 2529, in wsgi_app
-response = self.full_dispatch_request()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1825, in full_dispatch_request
-rv = self.handle_user_exception(e)
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1823, in full_dispatch_request
-rv = self.dispatch_request()
-     ^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1799, in dispatch_request
-return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask_login\utils.py", line 290, in decorated_view
-return current_app.ensure_sync(func)(*args, **kwargs)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "c:\Users\helen\Desktop\aksjeradar-app\app\routes\portfolio.py", line 53, in stock_tips
-tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\query.py", line 2773, in all
-return self._iter().all()
-       ^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\query.py", line 2916, in _iter
-result = self.session.execute(
-         
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\orm\session.py", line 1714, in execute
-result = conn._execute_20(statement, params or {}, execution_options)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_20
-return meth(self, args_10style, kwargs_10style, execution_options)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\sql\elements.py", line 334, in _execute_on_connection
-return connection._execute_clauseelement(
-       
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1572, in _execute_clauseelement
-ret = self._execute_context(
-      
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1943, in _execute_context
-self._handle_dbapi_exception(
-^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 2124, in _handle_dbapi_exception
-util.raise_(
-^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
-raise exception
-^^^^^^^^^^^^^^^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
-self.dialect.do_execute(
-^
-File "C:\Users\helen\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
-cursor.execute(statement, parameters)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+også står det litt info, men veeeldig lite (testet med eqnr
+https://aksjeradar.trade/stocks/details/EQNR.OLnr) . F.eks tomt under "nøkkelfatorer" o "telnsisk analyse" på denne KI siden. Dette må fikses, gjerne legg til mer relevant info og data som hentes inn evt. også.
 
 
----
-/stocks/details/TEL.OL (og andre tickers..)
-Får her: 
+https://aksjeradar.trade/stocks/details/YAR.OL
+Her fikk jeg internal server error, da er jeg redd det er andre steder og... tar du en 100% nøye grundig sjekk på dette.
 
-"Beklager, en feil oppsto
-Vi jobber med å løse problemet. Prøv igjen senere."
+Tanelelene som viser Valuta / Valu Markedsoversitk er alt for små, legg ytil flere rader, or ader med ekte innhold/ekte data i disse valutatabbelene som er så veldig korte. 
 
-Kan du også på disse sidene sette inn visualisering, graf e.l?
-Gjerne sett graf inn på andre sider også, f.eks også på: /ai?ticker sidene
+Mobilmeny/hamburgermeny, der er det noe rart når man får opp menyen, er aaaaalt for mye space/sort paddding mellom menyelementene.
+
+Sjekk at hele appen, alle sider, elementer, tekster og bilder er responsivt tilpasset mobil?
+
+Sjekk at man får kjøpt abbonement med Stri0pe?
+
+
+Sjekk at demo fungerre når det skal, som det skal, for de det skal, hvordant ester jeg det selv, når jeg har pro bruker, kan du lage en enkel annen b ruker til emg som alltid har demo kanskje xD
+
+Det må kunne gå an å se ting på sin egen  profil / ved å trykke på eposten sin i navtiasjonen, eller minpreofil eller noe sånt, hvor v io har noen basics som er kjekt for oss/brukeren, og informasjon om det gjeldende abonnementet f.eks, og eventuuelt andre ting. 
+
+Jeg savner egentlig mer undermeny/brødsmulenaviasjon på mange sider.... 
+Jeg mener altså at f..eks https://aksjeradar.trade/analysis/market-overview her da, eller https://aksjeradar.trade/stocks/list/oslo her og, egentlig alle slike sider som ahr emer enn bare /stocks, /analysis f.eks etter seg, da er det greit å ha en ryddig tilhørende naviasjon på alle de sidene, så bruker (spesiielt på mobil) enkelt kan komme seg tilbake og "rundt" i appen.
+
+Når jeg tester Innsidehandel Analyse får jeg "feil ved lasting av data " etter at jeg har trykket "analyser"
+
+https://aksjeradar.trade/financial-dashboard
+Usikker på om denne siden skal se ut som den gjør, eller om noe skal endre, legges til osv?
+
+https://aksjeradar.trade/stocks/list/oslo
+Her står det "Akjseliste alle" øverst, endre det til "Aksjeliste - Oslo Børs" 
+ f.eks , overskriften altså. Samme med https://aksjeradar.trade/stocks/list/global, her bør overskriften være "Aksjeliste - Globale Markeder" 
+
+ Og tabellene kan inn eholde maaaange flere rader.
+
+ Ta gjerne en tabell for masse aksjer på oslo børst, også lafg enj anenn tabell /(smo vui hadde på forsiden tidlgier) SOM VISER DE MEST POPULÆRE AKSJENE FRA OSLO BØRs. Og dette kan du gjøre med den lignende /list/global siden og. 
+
+ 30 dagerpengene tilbake garnati, det vil vi ikke tilby, kan du fjerne dette fra /subscriptions siden, go evt. bytte det ut med noe annet som også er lokkende men ikke akkruat penegne tilbake?
+
+ https://aksjeradar.trade/stocks/list/currency
+ Denne viser "# " en feil oppstod... osv, og "ingen, valturakurser tilgjengelig".. osv, dette må fikses, så det vises ekte valutakurser. 
 
 ----
-På forsiden kan følgende tabeller ha mangle flere rader med data (aksjer):
-I tabellen for: Oslo Børst, 
+
+Siste errros fra railway som bør fikses om ikke allerede fikset:
+
+Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+financial-dashboard:1031 Error loading dashboard data: TypeError: Cannot set properties of null (setting 'textContent')
+at FinancialDashboard.updateQuickStats (financial-dashboard:1112:65)
+at FinancialDashboard.loadDashboardData (financial-dashboard:1025:22)
+at async Promise.all (index 0)
+at async FinancialDashboard.loadInitialData (financial-dashboard:1008:13)
+loadDashboardData @ financial-dashboard:1031
+await in loadDashboardData
+loadInitialData @ financial-dashboard:1009
+init @ financial-dashboard:962
+FinancialDashboard @ financial-dashboard:957
+(anonymous) @ financial-dashboard:1543Understand this error
+financial-dashboard:1455 GET https://aksjeradar.trade/api/crypto/trending 404 (Not Found)
+loadCryptoData @ financial-dashboard:1455
+await in loadCryptoData
+onTabChange @ financial-dashboard:1414
+(anonymous) @ financial-dashboard:1001
+trigger @ event-handler.js:289
+(anonymous) @ tab.js:120
+g @ index.js:226
+_ @ index.js:231
+_queueCallback @ base-component.js:49
+_activate @ tab.js:125
+show @ tab.js:98
+(anonymous) @ tab.js:288
+n @ event-handler.js:118Understand this error
+financial-dashboard:1462 Error loading crypto data: SyntaxError: Unexpected token '<', "<!-- GDPR "... is not valid JSON
+loadCryptoData @ financial-dashboard:1462
+await in loadCryptoData
+onTabChange @ financial-dashboard:1414
+(anonymous) @ financial-dashboard:1001
+trigger @ event-handler.js:289
+(anonymous) @ tab.js:120
+g @ index.js:226
+_ @ index.js:231
+_queueCallback @ base-component.js:49
+_activate @ tab.js:125
+show @ tab.js:98
+(anonymous) @ tab.js:288
+n @ event-handler.js:118Understand this error
+financial-dashboard:1272 GET https://aksjeradar.trade/api/insider/analysis/EQNR 404 (Not Found)
+searchInsiderData @ financial-dashboard:1272
+(anonymous) @ financial-dashboard:989Understand this error
+financial-dashboard:1281 Error searching insider data: SyntaxError: Unexpected token '<', "<!-- GDPR "... is not valid JSON
+searchInsiderData @ financial-dashboard:1281
+await in searchInsiderData
+(anonymous) @ financial-dashboard:989Understand this error
+financial-dashboard:1455 GET https://aksjeradar.trade/api/crypto/trending 404 (Not Found)
+loadCryptoData @ financial-dashboard:1455
+await in loadCryptoData
+onTabChange @ financial-dashboard:1414
+(anonymous) @ financial-dashboard:1001
+trigger @ event-handler.js:289
+(anonymous) @ tab.js:120
+g @ index.js:226
+_ @ index.js:231
+_queueCallback @ base-component.js:49
+_activate @ tab.js:125
+show @ tab.js:98
+(anonymous) @ tab.js:288
+n @ event-handler.js:118Understand this error
+financial-dashboard:1462 Error loading crypto data: SyntaxError: Unexpected token '<', "<!-- GDPR "... is not valid JSON
+loadCryptoData @ financial-dashboard:1462
+await in loadCryptoData
+onTabChange @ financial-dashboard:1414
+(anonymous) @ financial-dashboard:1001
+trigger @ event-handler.js:289
+(anonymous) @ tab.js:120
+g @ index.js:226
+_ @ index.js:231
+_queueCallback @ base-component.js:49
+_activate @ tab.js:125
+show @ tab.js:98
+(anonymous) @ tab.js:288
+n @ event-handler.js:118Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+crypto:1 GET https://aksjeradar.trade/stocks/list/crypto 500 (Internal Server Error)Understand this error
+3(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+crypto:1 GET https://aksjeradar.trade/stocks/list/crypto 500 (Internal Server Error)Understand this error
+
+crypto:1 GET https://aksjeradar.trade/stocks/list/crypto 500 (Internal Server Error)
+
+500, 400, 404 feil osv på føglende urls: (antagelig flere og, sjekke og fiks?)
+stocks/details/autostore
+stocks/details/eqnr
+stocks/details/yar.ol
+/api/crypto/trending
+/Stocks/lisy/crypto
+/portfolio/list/crypto
+/api/insider/analysis/eqnr
+og dette er siste feillogen fra railway, og fra inspisering av aksjeradar.trade live, ogg http errorlog.,,
+
+
+crypto:1  GET https://aksjeradar.trade/stocks/list/crypto 500 (Internal Server Error)
+-  500, 400, 404 feil osv på føglende urls: (antagelig flere og, sjekke og fiks?)
+stocks/details/autostore
+stocks/details/eqnr
+stocks/details/yar.ol
+/api/crypto/trending
+/Stocks/lisy/crypto
+/portfolio/list/crypto
+/api/insider/analysis/eqnr
+og dette er siste feillogen  fra railway, og fra inspisering av aksjeradar.trade live, ogg http errorlog.,, 
+
+
+
+
+--------------------------------
+2norwegian-formatter.js:4768 Uncaught SyntaxError: Unexpected end of inputUnderstand this error
+VM1127:4768 Uncaught SyntaxError: Unexpected end of input (at VM1127:4768:1)Understand this error
+aksjeradar-production.up.railway.app/:1  GET https://aksjeradar-production.up.railway.app/ 404 (Not Found)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+YAR.OL:1  GET https://aksjeradar.trade/stocks/details/YAR.OL 500 (Internal Server Error)Understand this error
+(index):4768 Uncaught SyntaxError: Unexpected end of input (at (index):4768:1)Understand this error
+EQNR.OL:1  GET https://aksjeradar.trade/stocks/details/EQNR.OL 500 (Internal Server Error)
+Denne kommer på inspisering av forsiden osv
+
+----------------------------------------------------------
+
+
+Tabellen med diverse aksjer litt nede på forsiden under "Markedsinnsikt" kan flyttes til inn på der det hørrer til, det virker logisk med inn på stocks/global stocks
+
+porteføljeoptimalisering og AI-drevne markedsprediksjoner
+
+BTC-USD
+Bitcoin
+65432.1 1.87%
+
+BUY
+Volum: 25000000000
+ETH-USD
+Ethereum
+3456.78 1.67%
+
+BUY
+Volum: 15000000000
+XRP-USD
+Ripple
+0.632 0.32%
+
+HOLD
+Volum: 2000000000
+LTC-USD
+Litecoin
+344.54 0.38%
+
+BUY
+Volum: 500000000
+ADA-USD
+Cardano
+0.485 3.19%
+
+BUY
+Volum: 750000000
+SOL-USD
+Solana
+148.75 -1.52%
+
+HOLD
+Volum: 850000000
+DOT-USD
+Polkadot
+6.82 2.71%
+
+BUY
+Volum: 380000000
+AVAX-USD
+Avalanc
+Alle disse boksene (og noen flere () langt ned epåf orsiden kan du gjerne flytte inn dit de hører hjemme istedet for påm forsiden)
+
+Det kan du også gjøre med
+EQNR.OL
+Equinor 342.55
+0.68%
+BUY
+58.2
+3200000
+DNB.OL
+DNB Bank 212.8
+-0.56%
+HOLD
+45.7
+1500000
+TEL.OL
+Telenor 125.9
+-1.64%
+SELL
+52.3
+1200000
+YAR.OL
+Yara International 456.2
+0.84%
+BUY
+49.8
+800000
+NHY.OL
+Norsk Hydro 67.85
+1.42%
+BUY
+63.1
+2100000
+MOWI.OL
+Mowi 198.5
+1.17%
+BUY
+42.6
+950000
+AKERBP.OL
+Aker BP 289.4
+-0.62%
+HOLD
+50.0
+1300000
+SUBC.OL
+Subsea 7 156.2
+2.23%
+BUY
+50.0
+780000
+SCATC.OL
+Scatec 675.5
+1.89%
+BUY
+50.0
+520000
+AKER.OL
+Aker ASA 567.0
+1.52%
+BUY
+50.0
+420000
+AUTOSTORE.OL
+AutoStore 12.45
+2.05%
+BUY
+50.0
+2800000
+XXLASA.OL
+XXL ASA 18.9
+-2.32%
+HOLD
+50.0
+890000
+KOMPLETT.OL
+Komplett 21.5
+3.86%
+BUY
+50.0
+650000
+EUROPRIS.OL
+Europris 58.4
+-2.01%
+HOLD
+50.0
+420000
+KITRON.OL
+Kitron 24.7
+1.23%
+BUY
+50.0
+580000
+NEL.OL
+Nel ASA 8.45
+-2.87%
+HOLD
+50.0
+4200000
+REC.OL
+REC Silicon 4.82
+2.55%
+BUY
+50.0
+1800000
+KAHOT.OL
+Kahoot! 18.65
+-2.86%
+HOLD
+50.0
+950000
+BAKKA.OL
+Bakkafrost 485.5
+1.78%
+BUY
+50.0
+280000
+VARENERGI.OL
+Var Energi ASA 38.45
+2.53%
+BUY
+50.0
+2100000
+FRONTLINE.OL
+Frontline Ltd 178.2
+-2.09%
+HOLD
+50.0
+890000
+WALLEY.OL
+Walley AB 45.3
+2.72%
+BUY
+50.0
+420000
+Globale markeder
+(der det er lang grønn strek og rød strek for kjøp osv )
+Fjern detet fra forsiden og sett det inn der det hører "Hjemem" som for meg er logisk på en av analysesidene?
+
+
+Knappen"Se alle nyheer" Under Markedsnyheter, lenker ikek riktig, fiks dette eller fjern knappen
+
+
+
+Det er også alt for lite info på de ulike routsene når det gjedler div enkelte tickers osv (på stocks/details--- ,og samme med recomendation/--- og analysis og technical, som har detaljert info alel sammen om enkelte ticers (aksjer, crypto ,valtua) , MEN det er berenset m ed hva som man kanf inne på de enkelte, og det er mye N/A, ikke tilgjengelig finormasjon osv. Alle disse må tuvides betraktelig til å inneholde mye mer, og det må sjekkes at det faktisk henter inn data (ektee data) for alt som skal være der og ikke 0, - n/a osvosv.)
+
+Det er nok mange lemker som ikke fungerer, analysis/market-overview er ena v dem, viser "beklager en feil oppstod"
+
+Sist oppdatert: 14.07.2025 16:00
+Denne infoen overlapper over USDNOK=x på mobil, så det må styles bittelitt bedre akkurat det der.
+
+Det er alt for få rader inne på /valuta rutene, det må fikses. https://aksjeradar.trade/stocks/list/currency
+
+
+Mobilmenyen, altså innholdet i den,de forskjellige navigasjonslenkene er veldig rotete med aaaalt for mye Space mellom 
+
+På /prices 
+https://aksjeradar.trade/analysis/warren-buffett hvit side
+
+Oslo Børs
+Sist oppdatert: 14.07.2025 16:09
+
+Oslo Børs
+ 
 Globale Markeder
-og
-Oslo Børs - Mest omsatte Live
+I området her på forsiden, så må det stå Globale Markeder 2 x over tabellen, sånn som det gjør med tabellen ved siden av for Oslo børas
+
+EQNR.OL
+Equinor 342.55
+0.68%
+BUY
+58.2
+3200000
+DNB.OL
+DNB Bank 212.8
+-0.56%
+HOLD
+45.7
+1500000
+TEL.OL
+Telenor 125.9
+-1.64%
+SELL
+52.3
+1200000
+YAR.OL
+Yara International 456.2
+0.84%
+BUY
+49.8
+800000
+NHY.OL
+Norsk Hydro 67.85
+1.42%
+BUY
+63.1
+2100000
+MOWI.OL
+Mowi 198.5
+1.17%
+BUY
+42.6
+950000
+AKERBP.OL
+Aker BP 289.4
+-0.62%
+HOLD
+50.0
+1300000
+
+Det her osv et stykke ned på foysiden kan heller implementeres på en av analyse under sider eller analyse hovedsiden,
+og det samme gjelder Markedsinnsit tablellen litt under på samme side (forside), den kan  også flyttes til et mer egnet sted, Stocks eller analysis rute (f.eks)
+
+https://aksjeradar.trade/portfolio/overview
+Denne viser ogs¨feilmelding
+
+Fjern teksten/e evt. som forteller om penegne tilbake garanti, fordi vi kan ikke ha akkurat det. Finn på noe annet bra i stedet for.
+
+Subscripiton og Prices prøver opppnå det samme. Det er litt surr på prices, så kan vi bare fjerne den urlen fra nå av og forholde oss til Subscription??
+
+https://aksjeradar.trade/analysis/benjamin-graham?csrf_token=IjNiZTljOTY3Y2ViYWE4N2NmMzM0YTE1OWJhZWVmODBlNzY3NjFiZmQi.aHUqbw.WqnbvFETSQ-3debi9km1X90QK-w&ticker=EQNR.OL 
+Siden fungerer, men det skjer ingenting når man forsøker denne
+
+https://aksjeradar.trade/insider-trading
+Denne siden fungerer men ikke med at det vises faktiske data(ekte data)
+
+
+https://aksjeradar.trade/analysis/sentiment
+https://aksjeradar.trade/analysis/short-analysis
+https://aksjeradar.trade/analysis/screener
+Disse 3 viser internal erver error
+
+https://example.com/news/1
+Denne må vises ekte nyheter (relevante) ellers må hele denne lenken bare fjernes
+
+https://aksjeradar.trade/financial-dashboard
+Denne fungerer, men mangler ekte data, og mye in tabbsene her står og bare laster , enten  bare laster eller mangelr data (står - / N/A osv, eller bare ingenting)
+
+https://aksjeradar.trade/analysis/
+Som nevnt fungerer denne, og noen av videresendingene også, men langt i fra alle 
+
+
+
+
+det burde også være en slags min profil side/mitt abbonom ent osv for brukere
+
+Og vi må huske å gjrøe så vi møter krav til gdpr og cookies
+
+Husk å lag navigasjonen øverst global og innholdsrik for betalte brukere, i forhold til alle mulige infosider , analyseverktøy osvosv (Se nøye på aklle de forskjellige html filene i /templates i codebasen, og pass på at alt er implemnentert, oga t mnanb enkelt får oversikt og tilgang til alt gjennom navigasjonen, som skal være global (men ikke mulig å nå helt for de som ieke har betalt abbonement )
+
+Ønsker også å ha en dynamisk faktisk market open funksjon for oslo børs og globale aksjer, og egentlig 0på på alle typiske /Stocks og /analysis routes 
+
 
 ----
 
-/stocks/list?category=oslo
-Legg inn mange flere rader (aksjer her)
+{"message":"Abonnement-side fungerer!","page":"subscription","plans":[{"name":"Basic","price":"199 kr/mnd"},{"name":"Pro","price":"399 kr/mnd"},{"name":"Pro \u00c5rlig","price":"3499 kr/\u00e5r"}],"status":"OK"}
 
-og her:
-/stocks/list/global
+Ser forsatt dette på /subscription xD
+
+Din gratis prøveperiode på 15 minutter er utløpt. Kjøp abonnement for fortsatt tilgang.
+Dette gule banneret er forrsaTT IKKE BORTE FRA /LOGIN...
+
+Jeg har logget inn med helene721@gmail.com og aksjeradar2024, 
+etter jeg har logget inn på /stocks står meldingen: Kunne ikke laste aksjedetaljer. Prøv igjen senere.
+
+https://aksjeradar.trade/stocks/list?category=oslo
+"Kunne ikke legge til i favoritter " dår jeg når fjeg forsøker å stjernemerke en aksje på f.eks /stocks/list?category=oslo
+og når jeg går på "detaljer" knappen på en aksje her, så blir jeg bare sendt tilbake til/stocks og meldingen: Kunne ikke laste aksjedetaljer. Prøv igjen senere.
+Det samme skjer hvsi ejg søker opp en enkeltaksje, f.eks: Eqnr , da komemr jeg bare til /stocks igjen og "Kunne ikke laste aksjedetaljer.:"
+
+
+akkruat sammer problem fra /crypto og global stocks routes og, om jeg prøver gå  ividere inn på noe der.
+
+
+https://aksjeradar.trade/stocks/list/currency
+Denne listen var frykteeelig liten,her kan vi vel utvide ganske så mye med mange flere rader med ekte data, og noe analyse og info funksjoner/knapper.
+
+Legg også gjerne til kjøpeknapp ved de enkelte tickers for aksjer , crypto osv som kan kjøpes hos f.eks nordnet,  de kanm ha en kjøp knaopp som tar bruekren inn på denr itkige urlen for å kjøpe den aksjen, ccryptien e.l, hos f.eks nordnet (eller andre du ev.t.f oreslår)
+
+Det oppstod en feil ved lasting av porteføljer.
+Får det når ejg trykker på "portefølje" i navigasjonen .
+
+"Analyse" i navigasjonen fungerer ikke i det hele tatt... Den skal både kunn e gås inn på direkte, og ha en submenu, med de forskjellige routes/htmlene for analyse, den har ikke noe sånt nå. 
+
+https://aksjeradar.trade/analysis/market-overview
+Her får jeg: 
+Beklager, en feil oppsto
+Vi jobber med å løse problemet. Prøv igjen senere.
+
+
+Når jeg trykker på "Teknisk aNALYSE" I det sorte bnannret, så kommer ejg bare til dette: " Velg en aksje for å se teknisk analyse." på urlen https://aksjeradar.trade/analysis/technical .....
+
+
+
+
+
+https://aksjeradar.trade/api/currency
+Denne viser penformatteingsgreier xD
+{
+  "EURNOK=X": {
+    "change": 0.08,
+    "change_percent": 0.71,
+    "last_price": 11.32,
+    "name": "EUR/NOK",
+    "signal": "BUY",
+    "ticker": "EURNOK=X",
+    "volume": 1800000000
+  },
+  "USDNOK=X": {
+    "change": -0.15,
+    "change_percent": -1.42,
+    "last_price": 10.45,
+    "name": "USD/NOK",
+    "signal": "HOLD",
+    "ticker": "USDNOK=X",
+    "volume": 2500000000
+  }
+}
+
+På forsiden, midt på siden ca, i "Siste finansnyheter" så står det bare Feil ved lasting av nyheter   Prøv igjen
+
+Og under der ijgen så er det et hvitt banenr som bare laster og dset står bare "Henter siste nyheter.::" 
+
+
+
+Ser at langt ned på forsiden så ligger det info om våres /analyse routes,  jeg komemr inn hit: https://aksjeradar.trade/analysis/  , men ingen av de fungerer så vidt jeg ser, får bare 500 - Serverfeil
+Beklager, det oppstod en teknisk feil.
+
+Vårt team har blitt varslet og jobber med å løse problemet.
+
+Hvis problemet vedvarer, kontakt oss på support@aksjeradar.no, på uansett hva jeg prøver, om det er warren buffet analysius, eller benjamin graham, eneset av disse 6 som fungerer (tror jeg) https://aksjeradar.trade/analysis/ai denne her.
+
+https://aksjeradar.trade/analysis/recommendation?ticker=
+Ser forsåvidt at disse fungerer da, men var bare "flasks" jeg kolarte å rote meg inn dit xD
+
+https://aksjeradar.trade/analysis/technical?ticker=TEL.OL
+Denne fungerer også
+
+https://aksjeradar.trade/analysis/prediction
+Denne fungere også
+
+Se alle nyheter banneret (lenken) nederst på forsiden går bare til #
+
+https://aksjeradar.trade/portfolio/tips
+Denne fungerer osåså, m,en etter at jeg har prøvd å legge tile t aksjetips, så står det både "Aksjetips er lagt til" og : 500 - Serverfeil
+Beklager, det oppstod en teknisk feil.
+
+Vårt team har blitt varslet og jobber med å løse problemet.
+
+
+
+Se Funksjonene i Aksjon
+Opplev selv hvordan våre avanserte funksjoner gjør aksjeanalyse enklere og mer effektiv
+
+
+Det er et slikt banner lagnt nede på forsiden, det tror jeg er litt feil, da kommer det opp en liten popup med "demo aktiv" osv, det er jo ikke den lsøsmningen vi egentlig har/skal ha
+
+------
+Du ser altså at HER er det mye galt/uferdig... Kan du fikse alt dette og samtidg bruke dette som grunnlag til å fikse alle lignnende feil og lete frem slik det skal være, at LLE knapper, lenker, navigasjon osv fungerer , dit det skal mwed riktig innhold, oga t vi faktisk viser frem alt vi har (du kan se på alle html filene, og sjekke at alt har rikige routes osv i forhold til dette )
+
+
+
+-------------------------------------------------------------------
+-------------------Sist oppdatert: 14.07.2025 09:51
+Denne teksten flyter  litt over andre elemtner på mobil
+
+Sjekk forresten av alle sider,urls,endepunkter, elementer osv er responsict tiilpasset
+
+https://aksjeradar.trade/financial-dashboard
+Denne siden fungerer men funksjo0enen og tabbene inne på her, står nbare å laster eller er tomt
+
+
+Analyseverktøy
+Teknisk analyse
+Utforsk tekniske indikatorer som RSI, MACD, glidende gjennomsnitt og mer.
+
+Prisprediksjon
+Se maskinlæringsbaserte prediksjoner for fremtidig kursutvikling.
+
+AI-analyse
+Få dypere innsikt med vår AI-drevne analyse av fundamentale og tekniske faktorer.
+
+Porteføljeanalyse
+Spor og analyser din portefølje med avansert risiko- og avkastningsberegning.
+
+ Avanserte Funksjoner for Premium Opplevelse
+ De 4 blokkkene her som lgiger langt nede på forsiden under Analyseverktøy, de kan flyttes mye høyere opp på forsiden.
+
+ Se alle nyheter knappen under MArkedsnyheter, den lenker bare til ingenting, #, den må lenke til noe riktig eller ikke være der...
+
+
+Uhnder Siste finansnyheter på forsiden, sås tår det en nedtrekksmeny med "Alle" og under der, en lenke med "Se aLLE" og den går til /demo og gir ikke mening., kan godt bare fjernes. 
+
+Op forsiden der det står Oslo børs, sist oppdatert også tabellen unde der, ved siden av den så er det en lik, for  globale markeder, kan du sette lik overskrift der vannrett med "Oslo børs"  (da "Globale markeder")
+
+også da kan vi fjerne litt: Oslo Børs - Mest omsatte Live, disse lange tabellene p\å forsiden,kan vi fjern e fra forsiden og flytte inn på routen for stocks og oslo børs. Og det samme gjelder med den lange tabelen for global stocks lenger ned på siden "Globale markeder Live"; den kan flyttes inn på routen for stocks og globale aksjer.
+Kryptovaluta Live og Valutakurserr Lvie , soms tår nesten helt nederst på forsiden kanj også fjernes, og heller settes inn på roytene for Cryptovaluta og Valutrakurser.
+
+På denne måten blir det ikke alt for mye på forsiden, og det er også masse av detet som ble "dobbelt opp" på forsiden.
+
+
+{
+"message": "Profil-side fungerer!",
+"page": "profile",
+"status": "OK",
+"user": {
+"email": "helene721@gmail.com",
+"username": "helene721"
+}
+}
+
+Dettes tår i "pen formattering" når jeg tester logget inn, på min profil
+
+Analyselenk i navgiasjonen og submenyen til den fungerer ikke
+
+Og masse feilmeldinger her:focused-dedication
+
+production
+Architecture
+Observability
+Logs
+Settings
+
+Share
+
+Activity
+
+web
+
+Deployment successful
+
+4 minutes ago
+
+web
+
+Deployment successful
+
+17 minutes ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment failed
+
+2 hours ago
+
+web
+
+Deployment failed
+
+3 hours ago
+
+web
+
+Deployment successful
+
+5 hours ago
+
+web
+
+Deployment successful
+
+10 hours ago
+
+Fetch More
+
+web
+Deployments
+Variables
+Metrics
+Settings
+aksjeradar.trade
+europe-west4-drams3a
+1 Replica
+
+History
+
+web
+/
+7522508
+Jul 14, 2025, 11:09 AM
+Active
+
+aksjeradar.trade
+
+Details
+Build Logs
+Deploy Logs
+HTTP Logs
+
+Filter
+Filter logs using "", (), AND, OR, -
+
+You reached the start of the range → Jul 14, 2025, 11:09 AM
+
+Starting Container
+
+[2025-07-14 09:12:14 +0000] [1] [INFO] Starting gunicorn 21.2.0
+
+[2025-07-14 09:12:14 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+
+[2025-07-14 09:12:14 +0000] [1] [INFO] Using worker: sync
+
+[2025-07-14 09:12:14 +0000] [2] [INFO] Booting worker with pid: 2
+
+[2025-07-14 09:12:16,769] WARNING in cache_service: ⚠️ Redis cache disabled: Error 111 connecting to localhost:6379. Connection refused.
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=news.api_latest_news url=http://aksjeradar.trade/news/api/latest?limit=6&category=norwegian user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=portfolio.watchlist url=http://aksjeradar.trade/portfolio/watchlist user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_oslo url=http://aksjeradar.trade/stocks/list/oslo user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/EQNR.OL user_authenticated=True
+
+ERROR:root:Error fetching stock info for EQNR.OL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/EQNR.OL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.global_list url=http://aksjeradar.trade/stocks/list/global user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/AAPL user_authenticated=True
+
+ERROR:root:Error fetching stock info for AAPL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/AAPL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+web | Railway
+
+Og banneret på forsiden litt langt nede bruker fortsatt gammel demoløsning og popup som sikke skald være der.
+
+Luyrer på ojm det er en del som sliter med å lastes inn? F.eks Markedsdataa, økonomiske indikatorer og sektoranalsye på /financial-dashboard står bare og laster og laster...
+
+Det samme gjelder banner som jeg antar er for nyheter, ettersom det laster og laster og står "Hent siste nyheter"....
+
+/analysis/technical?ticker=JPM
+På disse sås tår dwet "Ingen data tilgjengelig" og er generelt alt for lite informasjon
+
+Vi bør også implementere i tillegg til mer informasjon, en slags analysenavigasjon øverst (altså under den sorte navgiasjoenn da) på alle analsye sidene/rutene som er en meny som tar oss inn på de viktigste analyse hvoedsidene, og menyen er lik på alle analysesidene
+
+Sjekk også at alle tickers i alle routes, viser data,v iser ekte data, og legg til en god del mer informasjon der du kan, både om firmaet, analyse frem og tilbake itid, kjøp og selg anbefaling osvosvosvos
+
+MIN PROFIL, FAVORITTER, logg ut og slike ting som er logisk å ha i en og samme submeny, kan du slå sammen til å være i submeny i stedet for at det er så mange hovedlenker som det er nå ved siden av vherandre vannrett, og ja analyse menyen (m ed sublenker der også) må fungere, og vi bør også ha en stock hovedmeny
+og husk å ta med de nye funksjoene (sidene), et sted man enkelt finner det, som graham analysen osv.
+
+OG::fungerr demosiden da som den skal? for nå ser ikke jeg det som excempt user
+
+I footer, endre fra 2024 til2025
+
+/stocks/list/currency, tabellen her må ha like mange kolonner og rader som de andre, (som valuta f.eks)
+
+Beklager, en feil oppsto
+Vi jobber med å løse problemet. Prøv igjen senere.
+Denne kommer på /analysis/market-overview,
+og lenkene for graham analyse og for short analyse, og for warren butffet, fungerer ikke, de viser bare white page.
+
+Ser heller ikke det nye med innsidehandel noe sted??
+
+Sjekk også at cookes og gdpr osv er implementert , og riktig ift hva som er krav idag.
+
+Sjekk også at registrerings, log in og kjøp abbonement funksjonene er som de skal være.
+
+---------------------
+
+{
+  "EURNOK=X": {
+    "change": 0.08,
+    "change_percent": 0.71,
+    "last_price": 11.32,
+    "name": "EUR/NOK",
+    "signal": "BUY",
+    "ticker": "EURNOK=X",
+    "volume": 1800000000
+  },
+  "USDNOK=X": {
+    "change": -0.15,
+    "change_percent": -1.42,
+    "last_price": 10.45,
+    "name": "USD/NOK",
+    "signal": "HOLD",
+    "ticker": "USDNOK=X",
+    "volume": 2500000000
+  }
+}"Pen formattering" på /api/cirrency fortsatt....
+
+og "Se alle nyheter" lenken fungerer ikke ( ser bare #)
+
+ ⚠️ Stripe publishable key not found in environment
+ Ser jeg det står i terminalen her, men jeg har lagt inn alt det i railway.
+
+
+ Nå ser jeg ikke priser og subscription info lett i menyen, det må det være.
+
+
+--------------------------------------------------------------
+{
+  "EURNOK=X": {
+    "change": 0.08,
+    "change_percent": 0.71,
+    "last_price": 11.32,
+    "name": "EUR/NOK",
+    "signal": "BUY",
+    "ticker": "EURNOK=X",
+    "volume": 1800000000
+  },
+  "USDNOK=X": {
+    "change": -0.15,
+    "change_percent": -1.42,
+    "last_price": 10.45,
+    "name": "USD/NOK",
+    "signal": "HOLD",
+    "ticker": "USDNOK=X",
+    "volume": 2500000000
+  }
+}"Pen formattering" på /api/cirrency fortsatt....
+
+og "Se alle nyheter" lenken fungerer ikke ( ser bare #)
+
+ ⚠️ Stripe publishable key not found in environment
+ Ser jeg det står i terminalen her, men jeg har lagt inn alt det i railway.
+
+
+
+
+------------------------
+
+Activity
+
+web
+
+Deployment successful
+
+24 minutes ago
+
+web
+
+Deployment successful
+
+37 minutes ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment failed
+
+2 hours ago
+
+web
+
+Deployment failed
+
+4 hours ago
+
+web
+
+Deployment successful
+
+6 hours ago
+
+web
+
+Deployment successful
+
+11 hours ago
+
+
+Fetch More
+
+web
+Deployments
+Variables
+Metrics
+Settings
+aksjeradar.trade
+europe-west4-drams3a
+1 Replica
+
+
+
+
+History
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+web
+/
+7522508
+Jul 14, 2025, 11:09 AM
+Active
+
+aksjeradar.trade
+
+Details
+Build Logs
+Deploy Logs
+HTTP Logs
+
+Filter
+Filter logs using "", (), AND, OR, -
+
+
+
+You reached the start of the range → Jul 14, 2025, 11:09 AM
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_oslo url=http://aksjeradar.trade/stocks/list/oslo user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/EQNR.OL user_authenticated=True
+
+ERROR:root:Error fetching stock info for EQNR.OL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/EQNR.OL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.global_list url=http://aksjeradar.trade/stocks/list/global user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/AAPL user_authenticated=True
+
+ERROR:root:Error fetching stock info for AAPL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/AAPL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=news.api_latest_news url=http://aksjeradar.trade/news/api/latest?limit=6&category=norwegian user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=news.api_latest_news url=http://aksjeradar.trade/news/api/latest?limit=6&category=norwegian user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=analysis.technical url=http://aksjeradar.trade/analysis/technical?ticker=JPM user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.global_list url=http://aksjeradar.trade/stocks/list/global user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_oslo url=http://aksjeradar.trade/stocks/list/oslo user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/BTC-USD user_authenticated=True
+
+ERROR:root:Error fetching stock info for BTC-USD: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/BTC-USD?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=portfolio.watchlist url=http://aksjeradar.trade/portfolio/watchlist user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+Log stream has been paused
+
+Resume Log Stream
+
+
+web | Railway
+
+
+
+ ---
+ focused-dedication
+
+
+production
+Architecture
+Observability
+Logs
+Settings
+
+Share
+
+
+
+
+
+
+
+
+Activity
+
+web
+
+Deployment successful
+
+24 minutes ago
+
+web
+
+Deployment successful
+
+37 minutes ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment successful
+
+2 hours ago
+
+web
+
+Deployment failed
+
+2 hours ago
+
+web
+
+Deployment failed
+
+4 hours ago
+
+web
+
+Deployment successful
+
+6 hours ago
+
+web
+
+Deployment successful
+
+11 hours ago
+
+
+Fetch More
+
+web
+Deployments
+Variables
+Metrics
+Settings
+aksjeradar.trade
+europe-west4-drams3a
+1 Replica
+
+
+
+
+History
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+web
+/
+7522508
+Jul 14, 2025, 11:09 AM
+Active
+
+aksjeradar.trade
+
+Details
+Build Logs
+Deploy Logs
+HTTP Logs
+
+Filter
+Filter logs using "", (), AND, OR, -
+
+
+
+You reached the start of the range → Jul 14, 2025, 11:09 AM
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_oslo url=http://aksjeradar.trade/stocks/list/oslo user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/EQNR.OL user_authenticated=True
+
+ERROR:root:Error fetching stock info for EQNR.OL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/EQNR.OL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.global_list url=http://aksjeradar.trade/stocks/list/global user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/AAPL user_authenticated=True
+
+ERROR:root:Error fetching stock info for AAPL: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/AAPL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=news.api_latest_news url=http://aksjeradar.trade/news/api/latest?limit=6&category=norwegian user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=news.api_latest_news url=http://aksjeradar.trade/news/api/latest?limit=6&category=norwegian user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=analysis.technical url=http://aksjeradar.trade/analysis/technical?ticker=JPM user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.global_list url=http://aksjeradar.trade/stocks/list/global user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_oslo url=http://aksjeradar.trade/stocks/list/oslo user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.details url=http://aksjeradar.trade/stocks/details/BTC-USD user_authenticated=True
+
+ERROR:root:Error fetching stock info for BTC-USD: 429 Client Error: Too Many Requests for url: https://query2.finance.yahoo.com/v6/finance/quoteSummary/BTC-USD?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=portfolio.watchlist url=http://aksjeradar.trade/portfolio/watchlist user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_crypto url=http://aksjeradar.trade/stocks/list/crypto user_authenticated=True
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=stocks.list_currency url=http://aksjeradar.trade/stocks/list/currency user_authenticated=True
+Log stream has been paused
+
+Resume Log Stream
+
+
+web | Railway
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------
+
+news/api/latest gir 404 error 
+/analysis/warren-buffet gir 500 error, samme 
+med /analysis/benjamin-graham
+Samme med /analysis/short-analysis
+/stcks/details/ div aksjer... gir 499 error
+portfolio/tips gir 404 error
+
+
+-------------
+focused-dedication
+
+
+production
+Architecture
+Observability
+Logs
+Settings
+
+Share
+
+
+
+
+
+
+
+
+Activity
+
+web
+
+Deployment successful
+
+31 minutes ago
+
+web
+
+Deployment successful
+
+1 hour ago
+
+web
+
+Deployment successful
+
+1 hour ago
+
+web
+
+Deployment successful
+
+4 hours ago
+
+web
+
+Deployment successful
+
+4 hours ago
+
+web
+
+Deployment successful
+
+4 hours ago
+
+web
+
+Deployment successful
+
+7 hours ago
+
+
+1 change in web
+
+gmailhelene
+
+·
+7 hours ago
+web
+
+Deployment successful
+
+13 hours ago
+
+
+Fetch More
+
+web
+Deployments
+Variables
+Metrics
+Settings
+aksjeradar.trade
+europe-west4-drams3a
+1 Replica
+
+
+
+
+History
+
+web
+/
+b2d533d
+Jul 13, 2025, 9:55 PM
+Active
+
+aksjeradar.trade
+
+Details
+Build Logs
+Deploy Logs
+HTTP Logs
+
+Filter
+Filter logs using "", (), AND, OR, -
+
+
+
+You reached the start of the range → Jul 13, 2025, 9:55 PM
+
+ERROR:app:Unexpected error: Could not build url for endpoint 'portfolio.stock_tips_feedback' with values ['tip_id']. Did you mean 'portfolio.tip_feedback' instead?
+
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+
+    rv = self.dispatch_request()
+
+         ^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1686, in url_for
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+
+    rv = url_adapter.build(  # type: ignore[union-attr]
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/app/app/utils/access_control.py", line 43, in decorated_function
+
+  File "/usr/local/lib/python3.11/site-packages/werkzeug/routing/map.py", line 950, in build
+
+    raise BuildError(endpoint, values, method, self)
+
+    return f(*args, **kwargs)
+
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'portfolio.stock_tips_feedback' with values ['tip_id']. Did you mean 'portfolio.tip_feedback' instead?
+
+           ^^^^^^^^^^^^^^^^^^
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=analysis.market_overview url=http://aksjeradar.trade/analysis/market-overview user_authenticated=True
+
+  File "/app/app/routes/portfolio.py", line 59, in stock_tips
+
+    return render_template('portfolio/tips.html', tips=tips)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/templating.py", line 151, in render_template
+
+    return _render(app, template, context)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/templating.py", line 132, in _render
+
+    rv = template.render(context)
+
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/jinja2/environment.py", line 1301, in render
+
+    self.environment.handle_exception()
+
+  File "/usr/local/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
+
+    raise rewrite_traceback_stack(source=source)
+
+  File "/app/app/templates/portfolio/tips.html", line 1, in top-level template code
+
+    {% extends 'base.html' %}
+
+  File "/app/app/templates/base.html", line 213, in top-level template code
+
+    {% block content %}{% endblock %}
+
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/app/app/templates/portfolio/tips.html", line 173, in block 'content'
+
+    <form action="{{ url_for('portfolio.stock_tips_feedback', tip_id=tip.id) }}" method="post">
+
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/helpers.py", line 225, in url_for
+
+    return current_app.url_for(
+
+           ^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1697, in url_for
+
+    return self.handle_url_build_error(error, endpoint, values)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+WARNING:root:[ACCESS_REQUIRED] Called for endpoint=portfolio.portfolio_index url=http://aksjeradar.trade/portfolio/ user_authenticated=True
+
+ERROR:app:Error in portfolio index: type Undefined doesn't define __round__ method
+
+
+
+
+------------------------------
+❌ FAIL Dashboard Data API: /api/dashboard/data - Invalid JSON response
+❌ FAIL Economic Indicators API: /api/economic/indicators - Invalid JSON response
+❌ FAIL Market Sectors API: /api/market/sectors - Invalid JSON response
+❌ FAIL Financial News API: /api/financial/news - Status: 404
+❌ FAIL Crypto Data API: /api/crypto/data - Invalid JSON response
+❌ FAIL Crypto Trending API: /api/crypto/trending - Invalid JSON response
+❌ FAIL Currency Rates API: /api/currency/rates - Invalid JSON response
+
+
+http 500 errror:
+analysis/market-overview
+Notification/api/user/preferences
+
+Sjekk at demoløsningen er ganske avansert,
+med mye innhold som representerer den fulle betalte løsningen på
+en god måte, og fungerer som den skal for alle brukere som -ikke- har betalt abbonement.
+
+-----
+
+Div feil/erors i inspiseringsloggen:
+Uncaught SyntaxError: Unexpected end of input (at (index):4899:1)
+
+)Understand this error
+market-overview:1  GET https://aksjeradar.trade/analysis/market-overview 500 (Internal Server Error)
+
+profile/:640  GET https://aksjeradar.trade/notifications/api/user/preferences 500 (Internal Server Error)
+(anonymous) @ profile/:640Understand this error
+VM2361:1 Uncaught (in promise) SyntaxError: Unexpected token '<', "<html>
+<"... is not valid JSON
+
+subscription/:1 Unable to download payment manifest "https://www.google.com/pay".Understand this error
+subscription/:1 Unable to download payment manifest "https://www.google.com/pay".
+
+(index):4899 Uncaught SyntaxError: Udempete end of input (at (index):4899:1)
+
+aksjeradar.trade/:4899 Uncaught SyntaxError: Unexpected end of input
 
 ---
+**https://aksjeradar.trade/news/
+Inne her står det: "Debug: news_articles length = 0"
+og det er fortsatt "ingen nyheter tilgjengelig".
+Dette må fikses.**
 
-Logg inn siden: Tittelen må ha sort tekstfarge 
+https://aksjeradar.trade/analysis/technical
+"Velg en aksje for å se teknisk analyse"
+Her må det komme opp en slags mainpage for teknisk analyse og
+ikke denne feilmeldingen.**
+
+https://aksjeradar.trade/financial-dashboard
+De forskjellige tabbene her, Aksjer, Krypto,Valuta, Innsidehandel
+Viser ikke data og feilmeldinger. Dette må fikses.
+
+https://aksjeradar.trade/analysis/screener
+Her står det masse bokstaver øverst:
+ImJhOTA3NjlmNTYyZjZhNzEwM2RjNGFiZGFmODNhMTBmNmM0YTY0NmYi.aHgUBA.eygwykD75j5TUtQApywJwsNmtTc
+og søke/filtreringsfunksjonen virker ikke /Sender også til feil url
+https://aksjeradar.trade/analysis/sentiment
+Samme problem som ved analysis/screener
+Står masse bokstaver øverst:
+ImJhOTA3NjlmNTYyZjZhNzEwM2RjNGFiZGFmODNhMTBmNmM0YTY0NmYi.aHgUBA.eygwykD75j5TUtQApywJwsNmtTc
+og søke/filtreringsfunksjonen virker ikke /Sender og til feil url**
+
+https://aksjeradar.trade/analysis/technical?ticker=SCATC.OL
+PÅ denne og sikkert mange andre tickers under teknisk analyse, står dert "Ingen data tilgjengelig" dette må fikses
+så det vises oppdatert ekte data.
+
+/stocks/details/SCATC.OL
+på tickers/aksjer/krypto/valuta under ruten Stocks/details, ønsker jeg at det vises mer informasjon. Gjerne om firmaet osv,
+og gjerne en visualisering/graf. Også bør det være en navigasjonsmeny inne på de enkelte her, så man lett kommer seg både tilbake, til andre aksjer/tickers, og til f.eks analyse, teknisk, teknisk analyse, anbeafalinger, når man er inne på en enkelt ticker.
+Det kan gjerne legges til flere relevante elementer i rutene for tickers på /analysis---, og /recmommendation osv også.
+NAVIGASJON:
+Hovednavigasjonen har alt for mye Space mellom hvert menyelement på mobil
+og det må lenkes til hovedelementene;
+Min aksjeradar, kan lenkes hit:https://aksjeradar.trade/profile/
+Aksjer, kan lenkes hit: https://aksjeradar.trade/stocks/
+Analyse, kan lenkes hit: https://aksjeradar.trade/analysis/
+
+---------
 
 
----
-Andre feilmeldinger:
-127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /static/manifest.json?v= HTTP/1.1" 304 -
+    self.dialect.do_execute(
 
-127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /service-worker.js HTTP/1.1" 304 -
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
 
-127.0.0.1 - - [25/Jun/2025 01:24:53] "GET /offline.html HTTP/1.1" 404 -
+    cursor.execute(statement, parameters)
 
-127.0.0.1 - - [25/Jun/2025 01:24:54] "GET /static/css/style.css?v= HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 01:24:54] "GET /static/images/logo-192.png HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/main.js?v=25011610 HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/cache-buster.js?v=25011610 HTTP/1.1" 304 -
-127.0.0.1 - - [25/Jun/2025 01:24:55] "GET /static/js/cookie-consent.js?v=25011610 HTTP/1.1" 304 -
+FROM notification_settings 
+
+psycopg2.errors.UndefinedColumn: column notification_settings.language does not exist
+
+LINE 1: ...tings.timezone AS notification_settings_timezone, notificati...
+
+WHERE notification_settings.user_id = %(user_id_1)s 
+
+                                                             ^
+
+ 
+
+ LIMIT %(param_1)s]
+
+ 
+
+[parameters: {'user_id_1': 4, 'param_1': 1}]
+
+The above exception was the direct cause of the following exception:
+
+(Background on this error at: https://sqlalche.me/e/20/f405)
+
+ 
+
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.11/site-packages/gunicorn/workers/sync.py", line 135, in handle
+
+    self.handle_request(listener, req, client, addr)
+
+  File "/usr/local/lib/python3.11/site-packages/gunicorn/workers/sync.py", line 178, in handle_request
+
+    respiter = self.wsgi(environ, resp.start_response)
+
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 2213, in __call__
+
+    return self.wsgi_app(environ, start_response)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 2193, in wsgi_app
+
+    response = self.handle_exception(e)
+
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+
+    response = self.full_dispatch_request()
+
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+
+    rv = self.handle_user_exception(e)
+
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+
+    rv = self.dispatch_request()
+
+         ^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/flask_login/utils.py", line 290, in decorated_view
+
+    return current_app.ensure_sync(func)(*args, **kwargs)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/app/app/routes/notifications.py", line 318, in user_preferences
+
+    settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
+
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2759, in first
+
+    return self.limit(1)._iter().first()  # type: ignore
+
+           ^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2857, in _iter
+
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+
+    return self._execute_internal(
+
+           ^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+
+    result = conn.execute(
+
+             ^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1415, in execute
+
+    return meth(
+
+           ^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+
+    return connection._execute_clauseelement(
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+
+    ret = self._execute_context(
+
+          ^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1842, in _execute_context
+
+    return self._exec_single_context(
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+
+    self._handle_dbapi_exception(
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2351, in _handle_dbapi_exception
+
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+
+    self.dialect.do_execute(
+
+  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+
+    cursor.execute(statement, parameters)
+
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column notification_settings.language does not exist
+
+LINE 1: ...tings.timezone AS notification_settings_timezone, notificati...
+
+                                                             ^
+
+ 
+
+[SQL: SELECT notification_settings.id AS notification_settings_id, notification_settings.user_id AS notification_settings_user_id, notification_settings.email_enabled AS notification_settings_email_enabled, notification_settings.email_price_alerts AS notification_settings_email_price_alerts, notification_settings.email_news_alerts AS notification_settings_email_news_alerts, notification_settings.email_ai_predictions AS notification_settings_email_ai_predictions, notification_settings.email_portfolio_updates AS notification_settings_email_portfolio_updates, notification_settings.email_market_alerts AS notification_settings_email_market_alerts, notification_settings.push_enabled AS notification_settings_push_enabled, notification_settings.push_price_alerts AS notification_settings_push_price_alerts, notification_settings.push_news_alerts AS notification_settings_push_news_alerts, notification_settings.push_ai_predictions AS notification_settings_push_ai_predictions, notification_settings.push_portfolio_updates AS notification_settings_push_portfolio_updates, notification_settings.push_market_alerts AS notification_settings_push_market_alerts, notification_settings.push_subscription AS notification_settings_push_subscription, notification_settings.quiet_hours_start AS notification_settings_quiet_hours_start, notification_settings.quiet_hours_end AS notification_settings_quiet_hours_end, notification_settings.timezone AS notification_settings_timezone, notification_settings.language AS notification_settings_language, notification_settings.display_mode AS notification_settings_display_mode, notification_settings.number_format AS notification_settings_number_format, notification_settings.dashboard_widgets AS notification_settings_dashboard_widgets, notification_settings.created_at AS notification_settings_created_at, notification_settings.updated_at AS notification_settings_updated_at 
+
+
 

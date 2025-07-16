@@ -71,7 +71,7 @@
                             <small class="text-muted">
                                 <i class="bi bi-clock"></i> 
                                 {% if article.providerPublishTime %}
-                                    {{ moment(article.providerPublishTime * 1000).format('DD.MM.YYYY HH:mm') }}
+                                    {{ datetime.fromtimestamp(article.providerPublishTime).strftime('%d.%m.%Y %H:%M') }}
                                 {% else %}
                                     Akkurat nå
                                 {% endif %}

@@ -14,7 +14,7 @@
             (Internasjonale)
             {% endif %}
         </h6>
-        <small class="text-muted">Oppdatert {{ moment().format('HH:mm') }}</small>
+        <small class="text-muted">Oppdatert {{ datetime.now().strftime('%H:%M') }}</small>
     </div>
     
     <div class="news-embed-content">

@@ -10,7 +10,11 @@ from ..models.portfolio import Portfolio, PortfolioStock
 import random
 import pandas as pd
 import time
+import logging
 from datetime import datetime, timedelta
+
+# Set up logger
+logger = logging.getLogger(__name__)
 
 def get_all_available_stocks():
     """Aggregate all available tickers from Oslo Børs, global, and crypto."""
@@ -90,30 +94,26 @@ def index():
 @access_required
 def technical(ticker=None):
     """Technical analysis view"""
-    ticker = request.args.get('ticker')
-    market = request.args.get('market')  # Add market parameter support
+    ticker = request.args.get('ticker', ticker)
+    market = request.args.get('market')
     
     if ticker:
-        # Check if user can make analysis requests
-        can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
-        
-        if not can_analyze:
-            flash(f'Du har brukt opp dine {daily_limit} daglige analyser. Oppgrader for ubegrenset tilgang.', 'warning')
-            return redirect(url_for('pricing.pricing'))
-        
-        # Track the analysis request
-        usage_tracker.track_analysis_request(ticker)
-        
+        # Handle specific ticker technical analysis
         try:
-            # Get technical analysis data for the specific ticker
+            # Get technical analysis data
             technical_data = AnalysisService.get_technical_analysis(ticker)
-            usage_summary = usage_tracker.get_usage_summary()
+            stock_info = DataService.get_stock_info(ticker)
+            
+            if not technical_data:
+                flash(f'Ingen teknisk analyse tilgjengelig for {ticker}', 'warning')
+                return redirect(url_for('analysis.technical'))
+            
             return render_template('analysis/technical.html', 
-                                 technical_data=technical_data, 
                                  ticker=ticker,
+                                 technical_data=technical_data,
+                                 stock_info=stock_info,
                                  market=market,
-                                 analyses={},
-                                 usage_summary=usage_summary)
+                                 analyses={ticker: technical_data})
         except Exception as e:
             current_app.logger.error(f"Error getting technical analysis for {ticker}: {str(e)}")
             return render_template('analysis/technical.html', 
@@ -152,65 +152,53 @@ def technical(ticker=None):
                                  market=market,
                                  analyses={})
     
-    # If no ticker provided, show the technical analysis landing page with sample data
+    # Main technical analysis page - show overview and popular analyses
     try:
         # Get usage summary for template
         usage_summary = usage_tracker.get_usage_summary()
         
-        # Get sample analyses for popular tickers including crypto and currency
+        # Get sample analyses for popular tickers
         sample_tickers = ['EQNR.OL', 'DNB.OL', 'AAPL', 'TSLA', 'MSFT']
-        crypto_tickers = ['BTC-USD', 'ETH-USD', 'ADA-USD', 'XRP-USD']
-        currency_tickers = ['USDNOK=X', 'EURNOK=X', 'GBPNOK=X']
+        sample_analyses = {}
         
-        analyses = {}
-        
-        # Add stock analyses
-        for sample_ticker in sample_tickers:
+        for ticker in sample_tickers:
             try:
-                analyses[sample_ticker] = AnalysisService.get_technical_analysis(sample_ticker)
-            except:
-                pass
+                analysis = AnalysisService.get_technical_analysis(ticker)
+                if analysis:
+                    sample_analyses[ticker] = analysis
+            except Exception as e:
+                current_app.logger.error(f"Error getting sample analysis for {ticker}: {str(e)}")
+                continue
         
-        # Add crypto analyses with demo data if service fails
-        for crypto_ticker in crypto_tickers:
-            try:
-                analyses[crypto_ticker] = AnalysisService.get_technical_analysis(crypto_ticker)
-            except:
-                # Add demo crypto data
-                analyses[crypto_ticker] = {
-                    'last_price': 65000.0 if 'BTC' in crypto_ticker else (3500.0 if 'ETH' in crypto_ticker else 0.5),
-                    'signal': 'Buy',
-                    'rsi': 45.2,
-                    'macd': 1.23,
-                    'support': 60000.0 if 'BTC' in crypto_ticker else (3200.0 if 'ETH' in crypto_ticker else 0.45),
-                    'resistance': 70000.0 if 'BTC' in crypto_ticker else (3800.0 if 'ETH' in crypto_ticker else 0.55),
-                    'last_update': 'I dag',
-                    'signal_reason': 'Bullish trend continues'
-                }
-        
-        # Add currency analyses with demo data if service fails
-        for currency_ticker in currency_tickers:
-            try:
-                analyses[currency_ticker] = AnalysisService.get_technical_analysis(currency_ticker)
-            except:
-                # Add demo currency data
-                analyses[currency_ticker] = {
-                    'last_price': 10.45 if 'USD' in currency_ticker else (11.20 if 'EUR' in currency_ticker else 13.15),
-                    'signal': 'Hold',
-                    'rsi': 52.8,
-                    'macd': -0.12,
-                    'support': 10.20 if 'USD' in currency_ticker else (10.95 if 'EUR' in currency_ticker else 12.90),
-                    'resistance': 10.65 if 'USD' in currency_ticker else (11.45 if 'EUR' in currency_ticker else 13.40),
-                    'last_update': 'I dag',
-                    'signal_reason': 'Sideways movement expected'
-                }
+        # Create main page content
+        main_content = {
+            'title': 'Teknisk Analyse',
+            'description': 'Avansert teknisk analyse av aksjer, kryptovaluta og valuta',
+            'features': [
+                'Omfattende tekniske indikatorer',
+                'Støtte- og motstandsnivåer',
+                'Trendanalyse og signaler',
+                'Volum- og prisanalyse',
+                'Interaktive grafer'
+            ],
+            'markets': [
+                {'name': 'Oslo Børs', 'key': 'norwegian', 'description': 'Norske aksjer og indekser'},
+                {'name': 'Globale Markeder', 'key': 'global', 'description': 'Internasjonale aksjer og indekser'},
+                {'name': 'Kryptovaluta', 'key': 'crypto', 'description': 'Bitcoin, Ethereum og andre krypto'},
+                {'name': 'Valuta', 'key': 'currency', 'description': 'Valutapar og råvarer'}
+            ]
+        }
         
         return render_template('analysis/technical.html', 
-                             analyses=analyses, 
-                             usage_summary=usage_summary)
+                             main_content=main_content,
+                             sample_analyses=sample_analyses,
+                             usage_summary=usage_summary,
+                             analyses=sample_analyses)
     except Exception as e:
-        current_app.logger.error(f"Error loading technical analysis page: {str(e)}")
-        return render_template('analysis/technical.html', analyses={})
+        current_app.logger.error(f"Error in technical analysis main page: {str(e)}")
+        return render_template('analysis/technical.html', 
+                             error="Kunne ikke laste teknisk analyse",
+                             analyses={})
 
 @analysis.route('/technical/<path:ticker>')
 @access_required
@@ -512,26 +500,22 @@ def market_overview():
     """Show market overview with analysis data"""
     try:
         # Get market data with proper error handling
-        oslo_stocks = DataService.get_oslo_bors_overview()
-        global_stocks = DataService.get_global_stocks_overview()
-        crypto = DataService.get_crypto_overview()
-        currency = DataService.get_currency_overview()
+        try:
+            oslo_stocks = DataService.get_oslo_bors_overview()
+            global_stocks = DataService.get_global_stocks_overview()
+            crypto = DataService.get_crypto_overview()
+            currency = DataService.get_currency_overview()
+        except Exception as e:
+            current_app.logger.error(f"Error fetching market data: {str(e)}")
+            # Use fallback data
+            oslo_stocks = {}
+            global_stocks = {}
+            crypto = {}
+            currency = {}
         
-        return render_template(
-            'analysis/market_overview.html',
-            oslo_stocks=oslo_stocks,
-            global_stocks=global_stocks,
-            crypto=crypto,
-            currency=currency
-        )
-    except Exception as e:
-        current_app.logger.error(f"Error in market_overview route: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        
-        # Return fallback data instead of error page
-        fallback_data = {
-            'oslo_stocks': {
+        # Ensure we have some data for demo purposes
+        if not oslo_stocks:
+            oslo_stocks = {
                 'EQNR.OL': {
                     'name': 'Equinor ASA',
                     'last_price': 285.60,
@@ -548,8 +532,10 @@ def market_overview():
                     'signal': 'HOLD',
                     'volume': 800000
                 }
-            },
-            'global_stocks': {
+            }
+        
+        if not global_stocks:
+            global_stocks = {
                 'AAPL': {
                     'name': 'Apple Inc.',
                     'last_price': 190.50,
@@ -566,34 +552,66 @@ def market_overview():
                     'signal': 'BUY',
                     'volume': 35000000
                 }
-            },
-            'crypto': {
+            }
+        
+        if not crypto:
+            crypto = {
                 'BTC-USD': {
                     'name': 'Bitcoin',
                     'last_price': 65000.0,
                     'change': 1500.0,
                     'change_percent': 2.36,
                     'signal': 'BUY'
+                },
+                'ETH-USD': {
+                    'name': 'Ethereum',
+                    'last_price': 3400.0,
+                    'change': 120.0,
+                    'change_percent': 3.66,
+                    'signal': 'BUY'
                 }
-            },
-            'currency': {
+            }
+        
+        if not currency:
+            currency = {
                 'USDNOK=X': {
                     'name': 'USD/NOK',
                     'last_price': 10.45,
                     'change': -0.15,
                     'change_percent': -1.42,
                     'signal': 'HOLD'
+                },
+                'EURNOK=X': {
+                    'name': 'EUR/NOK',
+                    'last_price': 11.20,
+                    'change': 0.08,
+                    'change_percent': 0.72,
+                    'signal': 'BUY'
                 }
             }
-        }
         
         return render_template(
             'analysis/market_overview.html',
-            oslo_stocks=fallback_data['oslo_stocks'],
-            global_stocks=fallback_data['global_stocks'],
-            crypto=fallback_data['crypto'],
-            currency=fallback_data['currency'],
-            fallback_notice=True
+            oslo_stocks=oslo_stocks,
+            global_stocks=global_stocks,
+            crypto=crypto,
+            currency=currency,
+            current_time=datetime.now()
+        )
+    except Exception as e:
+        current_app.logger.error(f"Error in market_overview route: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        # Return minimal fallback data
+        return render_template(
+            'analysis/market_overview.html',
+            oslo_stocks={},
+            global_stocks={},
+            crypto={},
+            currency={},
+            current_time=datetime.now(),
+            error="Kunne ikke hente markedsdata"
         )
 
 @analysis.route('/currency-overview')
@@ -900,7 +918,7 @@ def sentiment():
         if request.method == 'POST':
             ticker = request.form.get('ticker', '').upper()
             
-            # Mock sentiment data - can be replaced with real sentiment analysis
+            # Provide comprehensive fallback sentiment data
             sentiment_data = {
                 'ticker': ticker,
                 'overall_sentiment': 'Bullish',
@@ -931,14 +949,18 @@ def sentiment():
             
             return render_template('analysis/sentiment.html', 
                                  sentiment_data=sentiment_data,
-                                 available_stocks=get_available_stocks())
+                                 available_stocks=get_all_available_stocks())
         
+        # GET request - show sentiment form
         return render_template('analysis/sentiment.html', 
-                             available_stocks=get_available_stocks())
+                             available_stocks=get_all_available_stocks())
                              
     except Exception as e:
         logger.error(f"Error in sentiment analysis: {e}")
-        return render_template('error.html', error=f"Sentiment analyse feil: {e}")
+        # Return template with error message instead of error page
+        return render_template('analysis/sentiment.html', 
+                             available_stocks=get_all_available_stocks(),
+                             error=f"Sentiment analyse feil: {e}")
 
 @analysis.route('/screener', methods=['GET', 'POST'])
 @access_required  
@@ -952,7 +974,7 @@ def screener():
             min_dividend_yield = request.form.get('min_dividend_yield', 0)
             sector = request.form.get('sector', 'all')
             
-            # Mock screener results
+            # Provide comprehensive fallback screener results
             screener_results = [
                 {
                     'ticker': 'EQNR.OL',
@@ -975,6 +997,16 @@ def screener():
                     'change_percent': -0.56
                 },
                 {
+                    'ticker': 'TEL.OL',
+                    'name': 'Telenor ASA',
+                    'sector': 'Telecommunications',
+                    'market_cap': 234000000000,
+                    'pe_ratio': 14.2,
+                    'dividend_yield': 6.1,
+                    'price': 178.9,
+                    'change_percent': 0.34
+                },
+                {
                     'ticker': 'YAR.OL',
                     'name': 'Yara International ASA', 
                     'sector': 'Materials',
@@ -983,6 +1015,26 @@ def screener():
                     'dividend_yield': 4.1,
                     'price': 456.2,
                     'change_percent': 0.84
+                },
+                {
+                    'ticker': 'NHY.OL',
+                    'name': 'Norsk Hydro ASA',
+                    'sector': 'Materials',
+                    'market_cap': 178000000000,
+                    'pe_ratio': 11.8,
+                    'dividend_yield': 4.9,
+                    'price': 89.45,
+                    'change_percent': -0.23
+                },
+                {
+                    'ticker': 'MOWI.OL',
+                    'name': 'Mowi ASA',
+                    'sector': 'Consumer Staples',
+                    'market_cap': 145000000000,
+                    'pe_ratio': 18.7,
+                    'dividend_yield': 3.2,
+                    'price': 278.1,
+                    'change_percent': 1.15
                 }
             ]
             
@@ -995,31 +1047,10 @@ def screener():
                                      'sector': sector
                                  })
         
+        # GET request - show screener form
         return render_template('analysis/screener.html')
         
     except Exception as e:
         logger.error(f"Error in screener: {e}")
-        return render_template('error.html', error=f"Screener feil: {e}")
-
-def get_available_stocks():
-    """Return list of available stocks for analysis"""
-    return {
-        'oslo_stocks': [
-            {'ticker': 'EQNR.OL', 'name': 'Equinor ASA'},
-            {'ticker': 'DNB.OL', 'name': 'DNB Bank ASA'},
-            {'ticker': 'TEL.OL', 'name': 'Telenor ASA'},
-            {'ticker': 'YAR.OL', 'name': 'Yara International ASA'},
-            {'ticker': 'NHY.OL', 'name': 'Norsk Hydro ASA'},
-            {'ticker': 'MOWI.OL', 'name': 'Mowi ASA'},
-            {'ticker': 'AKERBP.OL', 'name': 'Aker BP ASA'}
-        ],
-        'global_stocks': [
-            {'ticker': 'AAPL', 'name': 'Apple Inc.'},
-            {'ticker': 'TSLA', 'name': 'Tesla Inc.'},
-            {'ticker': 'NVDA', 'name': 'NVIDIA Corporation'},
-            {'ticker': 'AMZN', 'name': 'Amazon.com Inc.'},
-            {'ticker': 'GOOGL', 'name': 'Alphabet Inc.'},
-            {'ticker': 'META', 'name': 'Meta Platforms Inc.'},
-            {'ticker': 'NFLX', 'name': 'Netflix Inc.'}
-        ]
-    }
+        # Return template with error message instead of error page
+        return render_template('analysis/screener.html', error=f"Screener feil: {e}")

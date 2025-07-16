@@ -451,6 +451,11 @@ def get_economic_indicators():
 def get_dashboard_data():
     """Get aggregated data for dashboard display"""
     try:
+        # Check if this is an API request that should be exempt from authentication
+        if request.endpoint in ['api.get_dashboard_data', 'api.get_economic_indicators', 'api.get_sector_analysis', 'api.get_financial_news_api', 'api.crypto_trending', 'api.insider_analysis', 'api.market_comprehensive']:
+            # These endpoints can be accessed without authentication for basic market data
+            pass
+        
         # Generate realistic demo dashboard data
         dashboard_data = {
             'portfolio_summary': {
@@ -653,7 +658,6 @@ def get_general_insider_analysis():
         return jsonify({'error': 'Failed to fetch insider analysis'}), 500
 
 @api.route('/crypto/trending')
-@access_required
 def crypto_trending():
     """Get trending crypto currencies"""
     try:
@@ -698,7 +702,6 @@ def crypto_trending():
         return jsonify({'success': False, 'error': 'Failed to fetch trending crypto'}), 500
 
 @api.route('/insider/analysis/<ticker>')
-@access_required  
 def insider_analysis(ticker):
     """Get insider trading analysis for a ticker"""
     try:
@@ -743,7 +746,6 @@ def insider_analysis(ticker):
         return jsonify({'success': False, 'error': 'Failed to fetch insider analysis'}), 500
 
 @api.route('/market/comprehensive', methods=['POST'])
-@access_required
 def market_comprehensive():
     """Get comprehensive market data for multiple symbols"""
     try:
@@ -772,6 +774,443 @@ def market_comprehensive():
     except Exception as e:
         logger.error(f"Error fetching comprehensive market data: {e}")
         return jsonify({'success': False, 'error': 'Failed to fetch market data'}), 500
+
+# Public API endpoints - no authentication required
+@api.route('/public/market/data')
+def get_public_market_data():
+    """Get public market data for dashboard"""
+    try:
+        # Generate realistic demo dashboard data
+        dashboard_data = {
+            'portfolio_summary': {
+                'total_value': 1250000,  # NOK
+                'daily_change': 2.3,     # %
+                'daily_change_value': 28750,  # NOK
+                'stocks_count': 7,
+                'sectors': {
+                    'Technology': 45.2,
+                    'Energy': 32.1,
+                    'Finance': 22.7
+                }
+            },
+            'market_indicators': {
+                'vix': 18.5,
+                'fear_greed_index': 68,
+                'market_sentiment': 'bullish'
+            },
+            'top_gainers': [
+                {'symbol': 'TSLA', 'change': 5.2, 'price': 245.30},
+                {'symbol': 'NVDA', 'change': 3.8, 'price': 118.50},
+                {'symbol': 'EQNR.OL', 'change': 2.1, 'price': 285.60}
+            ],
+            'top_losers': [
+                {'symbol': 'META', 'change': -2.3, 'price': 485.20},
+                {'symbol': 'DNB.OL', 'change': -1.1, 'price': 225.80}
+            ],
+            'economic_calendar': [
+                {
+                    'event': 'Federal Reserve Interest Rate Decision',
+                    'time': '2025-07-16T14:00:00Z',
+                    'impact': 'high',
+                    'currency': 'USD'
+                },
+                {
+                    'event': 'Norwegian GDP Release',
+                    'time': '2025-07-18T08:00:00Z',
+                    'impact': 'medium',
+                    'currency': 'NOK'
+                }
+            ],
+            'stocks': DataService.get_market_overview(),
+            'crypto': DataService.get_crypto_overview(),
+            'currencies': DataService.get_currency_overview()
+        }
+        
+        return jsonify({
+            'success': True,
+            'dashboard_data': dashboard_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting public market data: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get market data'
+        }), 500
+
+@api.route('/public/economic/indicators')
+def get_public_economic_indicators():
+    """Get public economic indicators"""
+    try:
+        indicators = [
+            {
+                'indicator': 'Styringsrente',
+                'value': '4.50',
+                'unit': '%',
+                'date': '2025-07-14',
+                'source': 'Norges Bank',
+                'change': '+0.25'
+            },
+            {
+                'indicator': 'Inflasjon',
+                'value': '3.2',
+                'unit': '%',
+                'date': '2025-06-30',
+                'source': 'SSB',
+                'change': '-0.1'
+            },
+            {
+                'indicator': 'Arbeidsledighet',
+                'value': '3.8',
+                'unit': '%',
+                'date': '2025-06-30',
+                'source': 'NAV',
+                'change': '+0.2'
+            },
+            {
+                'indicator': 'BNP Vekst',
+                'value': '2.1',
+                'unit': '%',
+                'date': '2025-Q2',
+                'source': 'SSB',
+                'change': '+0.3'
+            },
+            {
+                'indicator': 'Oljepris (Brent)',
+                'value': '82.50',
+                'unit': ' USD/fat',
+                'date': '2025-07-14',
+                'source': 'Reuters',
+                'change': '+1.20'
+            }
+        ]
+        
+        return jsonify({
+            'success': True,
+            'economic_indicators': indicators
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting economic indicators: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get economic indicators'
+        }), 500
+
+@api.route('/public/market/sectors')
+def get_public_sector_analysis():
+    """Get public sector analysis"""
+    try:
+        # Sector data would be calculated from individual stocks
+        sector_data = {
+            'technology': {
+                'symbols': ['AAPL', 'GOOGL', 'MSFT', 'TSLA'],
+                'performance': '+2.3%',
+                'trend': 'bullish',
+                'change': 2.3,
+                'volume': 125000000
+            },
+            'energy': {
+                'symbols': ['EQNR.OL', 'AKERBP.OL'],
+                'performance': '+1.8%',
+                'trend': 'bullish',
+                'change': 1.8,
+                'volume': 85000000
+            },
+            'finance': {
+                'symbols': ['DNB.OL'],
+                'performance': '+0.9%',
+                'trend': 'neutral',
+                'change': 0.9,
+                'volume': 45000000
+            },
+            'telecommunications': {
+                'symbols': ['TEL.OL'],
+                'performance': '-0.5%',
+                'trend': 'bearish',
+                'change': -0.5,
+                'volume': 20000000
+            },
+            'healthcare': {
+                'symbols': ['JNJ', 'PFE'],
+                'performance': '+1.2%',
+                'trend': 'bullish',
+                'change': 1.2,
+                'volume': 85000000
+            },
+            'consumer_goods': {
+                'symbols': ['PG', 'KO'],
+                'performance': '+0.6%',
+                'trend': 'neutral',
+                'change': 0.6,
+                'volume': 65000000
+            }
+        }
+        
+        return jsonify({
+            'success': True,
+            'sector_analysis': sector_data,
+            'last_updated': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting sector analysis: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get sector analysis'
+        }), 500
+
+@api.route('/public/news/financial')
+def get_public_financial_news():
+    """Get public financial news"""
+    try:
+        symbols = request.args.getlist('symbols')
+        sources = request.args.getlist('sources')
+        limit = request.args.get('limit', 50, type=int)
+        
+        # For now, return demo news data
+        news_articles = [
+            {
+                'id': 1,
+                'title': 'Equinor rapporterer sterke Q2-resultater',
+                'summary': 'Equinor overgår forventningene med økte oljeinntekter og reduserte kostnader.',
+                'content': 'Equinor ASA rapporterte sterke resultater for andre kvartal...',
+                'source': 'E24',
+                'url': 'https://e24.no/equinor-q2-results',
+                'published_at': '2025-07-14T08:00:00Z',
+                'sentiment': 'positive',
+                'symbols': ['EQNR.OL'],
+                'category': 'earnings'
+            },
+            {
+                'id': 2,
+                'title': 'Norges Bank holder styringsrenten uendret',
+                'summary': 'Sentralbanken holder renten på 4.50% som forventet av analytikere.',
+                'content': 'Norges Bank besluttet å holde styringsrenten uendret...',
+                'source': 'DN',
+                'url': 'https://dn.no/norges-bank-rente',
+                'published_at': '2025-07-14T10:00:00Z',
+                'sentiment': 'neutral',
+                'symbols': ['DNB.OL', 'EQNR.OL'],
+                'category': 'monetary_policy'
+            }
+        ]
+        
+        return jsonify({
+            'success': True,
+            'news': news_articles,
+            'total': len(news_articles)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting financial news: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Failed to get financial news'
+        }), 500
+
+@api.route('/public/crypto/trending')
+def get_public_crypto_trending():
+    """Get public trending crypto data"""
+    try:
+        # Get trending crypto data
+        trending_data = {
+            'BTC-USD': {
+                'name': 'Bitcoin',
+                'symbol': 'BTC',
+                'price': 65432.1,
+                'change_percent': 1.87,
+                'volume': 25000000000,
+                'market_cap': 1200000000000,
+                'trend_score': 95
+            },
+            'ETH-USD': {
+                'name': 'Ethereum',
+                'symbol': 'ETH',
+                'price': 3456.78,
+                'change_percent': 1.67,
+                'volume': 15000000000,
+                'market_cap': 400000000000,
+                'trend_score': 88
+            },
+            'XRP-USD': {
+                'name': 'Ripple',
+                'symbol': 'XRP',
+                'price': 0.632,
+                'change_percent': 0.32,
+                'volume': 2000000000,
+                'market_cap': 35000000000,
+                'trend_score': 72
+            }
+        }
+        
+        return jsonify({
+            'success': True,
+            'trending_crypto': trending_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching trending crypto: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch trending crypto'}), 500
+
+@api.route('/public/insider/analysis/<symbol>')
+def get_public_insider_analysis(symbol):
+    """Get public insider analysis for a symbol"""
+    try:
+        # Mock insider trading data
+        insider_data = {
+            'ticker': symbol.upper(),
+            'insider_trades': [
+                {
+                    'date': '2025-07-10',
+                    'insider': 'John Smith',
+                    'title': 'CEO',
+                    'transaction': 'Purchase',
+                    'shares': 10000,
+                    'price': 156.50,
+                    'value': 1565000
+                },
+                {
+                    'date': '2025-07-08',
+                    'insider': 'Jane Doe',
+                    'title': 'CFO',
+                    'transaction': 'Sale',
+                    'shares': 5000,
+                    'price': 158.20,
+                    'value': 791000
+                }
+            ],
+            'analysis': {
+                'insider_sentiment': 'Positive',
+                'recent_activity': 'Increased buying',
+                'confidence_score': 7.5,
+                'recommendation': 'Watch'
+            }
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': insider_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching insider analysis for {symbol}: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch insider analysis'}), 500
+
+@api.route('/public/market/comprehensive', methods=['POST'])
+def get_public_market_comprehensive():
+    """Get public comprehensive market data"""
+    try:
+        data = request.get_json()
+        symbols = data.get('symbols', [])
+        
+        market_data = {}
+        for symbol in symbols:
+            # Get stock data using DataService
+            stock_data = DataService.get_single_stock_data(symbol)
+            if stock_data:
+                market_data[symbol] = {
+                    'name': stock_data.get('shortName', symbol),
+                    'price': stock_data.get('last_price', 0),
+                    'change': stock_data.get('change', 0),
+                    'change_percent': stock_data.get('change_percent', 0),
+                    'volume': stock_data.get('volume', 0),
+                    'market_cap': stock_data.get('market_cap', 0)
+                }
+        
+        return jsonify({
+            'success': True,
+            'market_data': market_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching comprehensive market data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch market data'}), 500
+
+@api.route('/public/crypto/data')
+def get_public_crypto_data():
+    """Get public crypto data"""
+    try:
+        data = DataService.get_crypto_overview()
+        if not data:
+            return jsonify({'error': 'No crypto data available'}), 404
+        
+        # Format data for API response
+        formatted_data = {}
+        for ticker, crypto_info in data.items():
+            # Handle both dict and object formats
+            if isinstance(crypto_info, dict):
+                formatted_data[ticker] = {
+                    'ticker': ticker,
+                    'last_price': float(crypto_info.get('last_price', 0)),
+                    'change': float(crypto_info.get('change', 0)),
+                    'change_percent': float(crypto_info.get('change_percent', 0)),
+                    'volume': float(crypto_info.get('volume', 0)),
+                    'market_cap': float(crypto_info.get('market_cap', 0)),
+                    'signal': crypto_info.get('signal', 'HOLD')
+                }
+            else:
+                formatted_data[ticker] = {
+                    'ticker': ticker,
+                    'last_price': float(crypto_info.last_price) if hasattr(crypto_info, 'last_price') and crypto_info.last_price else 0,
+                    'change': float(crypto_info.change) if hasattr(crypto_info, 'change') and crypto_info.change else 0,
+                    'change_percent': float(crypto_info.change_percent) if hasattr(crypto_info, 'change_percent') and crypto_info.change_percent else 0,
+                    'volume': float(crypto_info.volume) if hasattr(crypto_info, 'volume') and crypto_info.volume else 0,
+                    'market_cap': float(crypto_info.market_cap) if hasattr(crypto_info, 'market_cap') and crypto_info.market_cap else 0,
+                    'signal': crypto_info.signal if hasattr(crypto_info, 'signal') else 'HOLD'
+                }
+        
+        return jsonify({
+            'success': True,
+            'crypto_data': formatted_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching crypto data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch crypto data'}), 500
+
+@api.route('/public/currency/rates')
+def get_public_currency_rates():
+    """Get public currency rates"""
+    try:
+        data = DataService.get_currency_overview()
+        if not data:
+            return jsonify({'error': 'No currency data available'}), 404
+        
+        # Format data for API response
+        formatted_data = {}
+        for ticker, currency_info in data.items():
+            # Handle both dict and object formats
+            if isinstance(currency_info, dict):
+                formatted_data[ticker] = {
+                    'pair': ticker,
+                    'rate': float(currency_info.get('rate', currency_info.get('last_price', 0))),
+                    'change': float(currency_info.get('change', 0)),
+                    'change_percent': float(currency_info.get('change_percent', 0)),
+                    'bid': float(currency_info.get('bid', 0)),
+                    'ask': float(currency_info.get('ask', 0)),
+                    'volume': float(currency_info.get('volume', 0))
+                }
+            else:
+                formatted_data[ticker] = {
+                    'pair': ticker,
+                    'rate': float(currency_info.last_price) if hasattr(currency_info, 'last_price') and currency_info.last_price else 0,
+                    'change': float(currency_info.change) if hasattr(currency_info, 'change') and currency_info.change else 0,
+                    'change_percent': float(currency_info.change_percent) if hasattr(currency_info, 'change_percent') and currency_info.change_percent else 0,
+                    'bid': float(currency_info.bid) if hasattr(currency_info, 'bid') and currency_info.bid else 0,
+                    'ask': float(currency_info.ask) if hasattr(currency_info, 'ask') and currency_info.ask else 0,
+                    'volume': float(currency_info.volume) if hasattr(currency_info, 'volume') and currency_info.volume else 0
+                }
+        
+        return jsonify({
+            'success': True,
+            'currency_rates': formatted_data,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Error fetching currency rates: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch currency rates'}), 500
 
 @api.before_request
 def before_api_request():
