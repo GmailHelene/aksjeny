@@ -4,38 +4,7 @@
 
 {% block content %}
 
-{% set exempt_emails = ['helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'] %}
-{% if show_banner and request.endpoint not in ['main.login', 'main.subscription'] and not (current_user.is_authenticated and (current_user.has_active_subscription() or current_user.email in exempt_emails)) %}
-<!-- Trial Expired Banner -->
-<div class="alert alert-warning alert-dismissible fade show m-0 rounded-0" role="alert" style="border-left: 5px solid #ffc107;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h5 class="alert-heading mb-2">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <span data-i18n="trial.expired_banner">Prøveperioden din er utløpt!</span>
-                </h5>
-                <p class="mb-2">
-                    <strong>Aksjeradar</strong> gir deg tilgang til avanserte aksjeanalyser, tekniske indikatorer, AI-drevne prediksjoner og porteføljeadministrasjon for Oslo Børs og globale markeder.
-                </p>
-                <p class="mb-0">
-                    <strong data-i18n="trial.features_title">Premium-funksjoner:</strong> <span data-i18n="trial.features_list">Teknisk analyse • AI-prediksjoner • Porteføljetracking • Markedsinnsikt • Og mye mer!</span>
-                </p>
-            </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a href="{{ url_for('main.subscription') }}" class="btn btn-warning btn-lg me-2" style="color: #000 !important; font-weight: bold; background-color: #ffc107; border-color: #ffc107;">
-                    <i class="bi bi-star-fill me-1"></i>
-                    <span data-i18n="trial.view_pricing">Se abonnement</span>
-                </a>
-                <a href="{{ url_for('main.register') }}" class="btn btn-outline-warning" style="color: #000 !important; border-color: #ffc107 !important; background-color: rgba(255, 193, 7, 0.1);">
-                    <span data-i18n="user.register">Registrer deg</span>
-                </a>
-            </div>
-        </div>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endif %}
+<!-- Demo banner removed per user request: "Det er et slikt banner lagnt nede på forsiden, det tror jeg er litt feil, da kommer det opp en liten popup med "demo aktiv" osv, det er jo ikke den lsøsmningen vi egentlig har/skal ha" -->
 
 {% if restricted %}
 <div class="container py-5 text-center">

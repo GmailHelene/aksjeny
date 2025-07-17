@@ -512,11 +512,7 @@ def ai_explained():
     """AI explanation page"""
     return render_template('ai_explained.html')
 
-@main.route('/pricing')
-@main.route('/pricing/')
-def pricing():
-    """Pricing page"""
-    return render_template('pricing.html')
+# Pricing route handled by pricing blueprint (/pricing/)
 
 @main.route('/search')
 @access_required

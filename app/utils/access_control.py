@@ -177,7 +177,7 @@ def pro_required(f):
         # Check if user has pro subscription
         if not (hasattr(current_user, 'is_pro') and current_user.is_pro):
             flash('Denne funksjonen krever Pro-abonnement. Oppgrader for å få tilgang.', 'warning')
-            return redirect(url_for('main.pricing'))
+            return redirect(url_for('pricing.pricing'))
         
         return f(*args, **kwargs)
     return decorated_function
