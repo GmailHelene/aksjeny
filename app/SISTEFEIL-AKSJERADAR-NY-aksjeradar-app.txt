@@ -1,3 +1,7 @@
+https://aksjeradar.trade/demo
+her står det på de fleste knapper/funksjoner "få tilgang til.:" også en lås
+Dette må ordnes,så det fungerer , at det -er- tilgang tl alle disse demofunksjonene uten at bruker trenger være innlogget, eller ha aktivt betalt abbonement
+---
 Sjekk at dette er i orden:
 [2025-07-17 16:19:45,545] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_currency_rates
 [2025-07-17 16:19:45,668] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.currency_overview

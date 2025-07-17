@@ -53,7 +53,7 @@ class User(UserMixin, db.Model):
     
     # Password reset fields
     reset_token = db.Column(db.String(100), nullable=True)
-    reset_token_expires = db.Column(db.DateTime, nullable=True)
+    reset_token_expires = db.Column(db.DateTime, nullable=True)  # Added missing column
     
     # Internationalization and settings
     language = db.Column(db.String(10), default='no')  # Language preference (no, en, etc.)
@@ -228,3 +228,9 @@ def load_user(user_id):
         return User.query.get(int(user_id))
     except (ValueError, TypeError):
         return None
+
+# Ensure the database is updated with the new column
+try:
+    db.create_all()  # Create tables if they don't exist
+except Exception as e:
+    print(f"Error creating tables: {e}")

@@ -1,0 +1,25 @@
+/* Demo Card Styling */
+.demo-card {
+    border: 2px solid #28a745;
+    transition: transform 0.2s;
+}
+
+.demo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Remove restriction overlays in demo mode */
+.demo-mode .restriction-overlay {
+    display: none !important;
+}
+
+.demo-mode .btn-restricted {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+}
+
+/* Demo alert styling */
+.alert-info {
+    border-left: 4px solid #17a2b8;
+}

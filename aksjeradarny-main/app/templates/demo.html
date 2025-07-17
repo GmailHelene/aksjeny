@@ -1,0 +1,52 @@
+<!-- Demo Mode - No Restrictions -->
+{% if demo_mode %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i>
+    <strong>Demo Mode:</strong> Utforsk alle funksjoner uten begrensninger
+</div>
+
+<!-- Stock Analysis Cards -->
+<div class="row">
+    {% for stock in stocks %}
+    <div class="col-md-4">
+        <div class="card demo-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ stock.symbol }}</h5>
+                <p class="card-text">{{ stock.name }}</p>
+                <p class="text-success">{{ stock.price }} NOK ({{ stock.change }})</p>
+                <button class="btn btn-primary" onclick="showAnalysis('{{ stock.symbol }}')">
+                    <i class="bi bi-graph-up"></i> Analyser
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Interactive Analysis Section -->
+<div class="mt-4">
+    <h3>AI Analyse</h3>
+    <div class="card">
+        <div class="card-body">
+            <h5>Anbefaling: <span class="badge bg-success">{{ analysis.recommendation }}</span></h5>
+            <p><strong>Konfidensnivå:</strong> {{ analysis.confidence }}</p>
+            <p><strong>Kursmål:</strong> {{ analysis.target_price }}</p>
+            <h6>Signaler:</h6>
+            <ul>
+                {% for signal in analysis.signals %}
+                <li>{{ signal }}</li>
+                {% endfor %}
+            </ul>
+            <button class="btn btn-success">
+                <i class="bi bi-download"></i> Last ned rapport
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showAnalysis(symbol) {
+    alert(`Viser detaljert analyse for ${symbol}`);
+}
+</script>
+{% endif %}

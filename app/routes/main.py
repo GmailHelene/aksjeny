@@ -435,6 +435,7 @@ def index():
         oslo_open=is_market_open('oslo'),
         global_open=is_market_open('global'))
 
+# Ensure demo functions are accessible without login or subscription
 @main.route('/demo')
 def demo():
     """Show demo page for non-subscribers with real data"""
