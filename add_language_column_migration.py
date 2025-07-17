@@ -6,29 +6,30 @@ from sqlalchemy import text
 def add_language_column():
     app = create_app()
     with app.app_context():
-        with db.engine.connect() as conn:
-            dialect = conn.engine.dialect.name
+        try:
+            # Check if column exists using SQLAlchemy 2.0+ syntax
             column_exists = False
-            if dialect == 'sqlite':
-                result = conn.execute(text("PRAGMA table_info(notification_settings);"))
-                for row in result:
-                    # row[1] is the column name in PRAGMA table_info
-                    if row[1] == 'language':
-                        column_exists = True
-                        break
-            else:
-                result = conn.execute(text("""
-                    SELECT column_name FROM information_schema.columns 
-                    WHERE table_name='notification_settings' AND column_name='language';
-                """))
-                if result.fetchone():
-                    column_exists = True
+            
+            # Use db.session.execute instead of engine.execute
+            result = db.session.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='notification_settings' AND column_name='language';
+            """))
+            
+            if result.fetchone():
+                column_exists = True
+                
             if not column_exists:
                 print("Adding 'language' column to notification_settings...")
-                conn.execute(text("ALTER TABLE notification_settings ADD COLUMN language VARCHAR(10) DEFAULT 'en';"))
-                print("Column added.")
+                db.session.execute(text("ALTER TABLE notification_settings ADD COLUMN language VARCHAR(10) DEFAULT 'en';"))
+                db.session.commit()
+                print("✅ Language column added successfully!")
             else:
-                print("'language' column already exists.")
+                print("ℹ️ 'language' column already exists.")
+                
+        except Exception as e:
+            print(f"❌ Error in migration: {e}")
+            db.session.rollback()
 
 if __name__ == "__main__":
     add_language_column()

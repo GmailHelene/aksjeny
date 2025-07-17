@@ -220,7 +220,7 @@ def details(ticker):
             'ticker': ticker,
             'data': safe_stock_data,
             'message': 'Vennligst prøv igjen senere'
-        }
+        })
 
 @stocks.route('/search')
 @access_required

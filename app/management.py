@@ -6,6 +6,7 @@ import click
 import os
 import sys
 from datetime import datetime, timedelta
+from sqlalchemy import text
 
 # Add the app directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -117,7 +118,7 @@ def status():
         app = create_app()
         with app.app_context():
             from app.extensions import db
-            db.session.execute('SELECT 1')
+            db.session.execute(text('SELECT 1'))
             print("✅ Database: Connected")
     except Exception as e:
         print(f"❌ Database: Error - {e}")

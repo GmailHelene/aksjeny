@@ -68,7 +68,7 @@ def detailed_health():
     
     # Check database connection
     try:
-        db.session.execute('SELECT 1')
+        db.session.execute(text('SELECT 1'))
         health_data['database'] = {
             'status': 'connected',
             'message': 'Database connection successful'
@@ -112,7 +112,7 @@ def readiness():
     
     # Check database connection
     try:
-        db.session.execute('SELECT 1')
+        db.session.execute(text('SELECT 1'))
         database_ok = True
     except Exception:
         database_ok = False

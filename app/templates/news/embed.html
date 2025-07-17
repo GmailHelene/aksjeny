@@ -58,10 +58,8 @@
     
     {% if articles %}
     <div class="news-embed-footer text-center mt-3">
-        <a href="/news?category={{ category }}" class="btn btn-outline-primary btn-sm">
-            <a href="{{ url_for('news.latest') }}" class="text-decoration-none">
-                Se alle nyheter <i class="bi bi-arrow-right"></i>
-            </a>
+        <a href="{{ url_for('news.news_index') }}" class="btn btn-outline-primary btn-sm text-decoration-none">
+            Se alle nyheter <i class="bi bi-arrow-right"></i>
         </a>
     </div>
     {% endif %}

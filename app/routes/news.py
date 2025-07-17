@@ -134,48 +134,31 @@ def get_fallback_news():
             'thumbnail': None,
             'link': '#'
         },
-                {
-                    'title': 'Teknologi-aksjer i vinden på Wall Street',
-                    'summary': 'Apple, Microsoft og Google alle viser sterk vekst.',
-                    'publisher': 'CNBC',
-                    'providerPublishTime': (datetime.now() - timedelta(hours=3)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#'
-                },
-                {
-                    'title': 'Kryptovaluta-markedet opplever volatilitet',
-                    'summary': 'Bitcoin og Ethereum viser store prissvingninger.',
-                    'publisher': 'CoinDesk',
-                    'providerPublishTime': (datetime.now() - timedelta(hours=4)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#'
-                },
-                {
-                    'title': 'Norges Bank holder renten uendret',
-                    'summary': 'Sentralbanken vurderer økonomisk situasjon som stabil.',
-                    'publisher': 'Dagens Næringsliv',
-                    'providerPublishTime': (datetime.now() - timedelta(hours=5)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#'
-                }
-            ]
-        
-        logger.info(f"News articles count: {len(news_articles)}")
-        
-        return render_template('news/index.html', 
-                             news_articles=news_articles,
-                             selected_category=category,
-                             datetime=datetime)
-    except Exception as e:
-        logger.error(f"Error in news index: {e}")
-        import traceback
-        traceback.print_exc()
-        
-        # Return empty template with error message
-        return render_template('news/index.html', 
-                             news_articles=[],
-                             selected_category='all',
-                             error="Kunne ikke hente nyheter")
+        {
+            'title': 'Teknologi-aksjer i vinden på Wall Street',
+            'summary': 'Apple, Microsoft og Google alle viser sterk vekst.',
+            'publisher': 'CNBC',
+            'providerPublishTime': (datetime.now() - timedelta(hours=3)).timestamp(),
+            'thumbnail': None,
+            'link': '#'
+        },
+        {
+            'title': 'Kryptovaluta-markedet opplever volatilitet',
+            'summary': 'Bitcoin og Ethereum viser store prissvingninger.',
+            'publisher': 'CoinDesk',
+            'providerPublishTime': (datetime.now() - timedelta(hours=4)).timestamp(),
+            'thumbnail': None,
+            'link': '#'
+        },
+        {
+            'title': 'Norges Bank holder renten uendret',
+            'summary': 'Sentralbanken vurderer økonomisk situasjon som stabil.',
+            'publisher': 'Dagens Næringsliv',
+            'providerPublishTime': (datetime.now() - timedelta(hours=5)).timestamp(),
+            'thumbnail': None,
+            'link': '#'
+        }
+    ]
 
 @news_bp.route('/api/latest')
 @access_required

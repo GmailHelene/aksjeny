@@ -14,7 +14,7 @@
 
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
-            <h2 class="h5 mb-0">Handelsanbefaling for {{ ticker }}</h2>
+            <h2 class="h5 mb-0">Handelsanbefaling{% if ticker %} for {{ ticker }}{% endif %}</h2>
         </div>
         <div class="card-body">
             {% if error %}
@@ -43,12 +43,14 @@
                 <h5>Begrunnelse</h5>
                 <p>{{ details or 'Ingen ytterligere begrunnelse tilgjengelig.' }}</p>
                 <div class="mt-4">
+                    {% if ticker and ticker != '' %}
                     <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary">
                         <i class="bi bi-graph-up"></i> Se aksjedetaljer
                     </a>
                     <a href="{{ url_for('analysis.technical') }}?ticker={{ ticker }}" class="btn btn-outline-info">
                         <i class="bi bi-bar-chart"></i> Teknisk analyse
                     </a>
+                    {% endif %}
                 </div>
             {% else %}
                 <div class="alert alert-info">

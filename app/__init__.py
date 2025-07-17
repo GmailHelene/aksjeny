@@ -158,10 +158,8 @@ def register_blueprints(app):
             from importlib import import_module
             module = import_module(module_path, package=__name__)
             blueprint = getattr(module, blueprint_name)
-            # Special case: stocks blueprint should be registered with no prefix (root)
-            if blueprint_name == 'stocks':
-                app.register_blueprint(blueprint)
-            elif url_prefix:
+            # Register blueprint with appropriate prefix
+            if url_prefix:
                 app.register_blueprint(blueprint, url_prefix=url_prefix)
             else:
                 app.register_blueprint(blueprint)

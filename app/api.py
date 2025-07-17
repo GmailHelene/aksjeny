@@ -531,29 +531,7 @@ def get_trending_crypto():
             'message': 'Failed to get trending crypto'
         }), 500
 
-@api.route('/currency/rates', methods=['GET'])
-def get_currency_rates():
-    """Get currency exchange rates"""
-    try:
-        base = request.args.get('base', 'USD')
-        targets = request.args.getlist('targets')
-        
-        if not targets:
-            targets = ['EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'SEK', 'NOK', 'DKK']
-        
-        rates = data_aggregator.get_currency_rates(base, targets)
-        
-        return jsonify({
-            'success': True,
-            'currency_rates': [data_aggregator._currency_to_dict(r) for r in rates]
-        })
-        
-    except Exception as e:
-        logger.error(f"Error getting currency rates: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Failed to get currency rates'
-        }), 500
+
 
 @api.route('/news/financial', methods=['GET'])
 def get_financial_news_api():

@@ -1,3 +1,12 @@
+Sjekk at dette er i orden:
+[2025-07-17 16:19:45,545] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_currency_rates
+[2025-07-17 16:19:45,668] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.currency_overview
+Error: 'Engine' object has no attribute 'execute'
+
+
+...
+
+
 https://aksjeradar.trade/demo
 Her må den interaktive demoen faktisk fungerer,
 nå er det en nøkkellås på funkskjonene som egeltig skal fungere
