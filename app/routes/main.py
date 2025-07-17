@@ -437,8 +437,75 @@ def index():
 
 @main.route('/demo')
 def demo():
-    """Demo page for non-registered users"""
-    return render_template('demo.html')
+    """Show demo page for non-subscribers with real data"""
+    try:
+        from ..services.data_service import (
+            get_market_overview, get_oslo_bors_overview, 
+            get_global_stocks_overview, get_indices,
+            get_most_active_stocks, get_stock_gainers, get_stock_losers
+        )
+        
+        # Get market data for demo
+        market_data = get_market_overview()
+        oslo_stocks = get_oslo_bors_overview()
+        global_stocks = get_global_stocks_overview()
+        indices = get_indices()
+        active_stocks = get_most_active_stocks()
+        gainers = get_stock_gainers()
+        losers = get_stock_losers()
+        
+        # Sample portfolio data for demo
+        demo_portfolio = [
+            {'ticker': 'EQNR.OL', 'name': 'Equinor ASA', 'shares': 100, 'value': 34255, 'change': '+2.3%'},
+            {'ticker': 'DNB.OL', 'name': 'DNB Bank ASA', 'shares': 50, 'value': 10640, 'change': '-0.56%'},
+            {'ticker': 'AAPL', 'name': 'Apple Inc.', 'shares': 25, 'value': 47500, 'change': '+1.2%'},
+        ]
+        
+        # Sample alerts for demo
+        demo_alerts = [
+            {'type': 'price', 'message': 'EQNR.OL har nådd ditt kursmål på 340 kr', 'time': '10:30'},
+            {'type': 'volume', 'message': 'Høy volum på DNB.OL - 150% over normal', 'time': '09:15'},
+            {'type': 'news', 'message': 'Ny analyse av AAPL fra Goldman Sachs', 'time': '08:45'},
+        ]
+        
+        # Sample news for demo
+        demo_news = [
+            {
+                'title': 'Oslo Børs stiger på sterke tall fra Equinor',
+                'summary': 'Equinor rapporterer sterkere tall enn ventet for Q4, hovedindeksen stiger 1.2%',
+                'time': '2 timer siden',
+                'source': 'E24'
+            },
+            {
+                'title': 'DNB Bank øker utbytte mer enn ventet',
+                'summary': 'Norges største bank øker utbyttet til 15 kroner per aksje for 2024',
+                'time': '4 timer siden',
+                'source': 'Finansavisen'
+            },
+            {
+                'title': 'Apple lanserer nye AI-funksjoner',
+                'summary': 'Apple Intelligence får store oppdateringer i iOS 18.3',
+                'time': '6 timer siden',
+                'source': 'TechCrunch'
+            }
+        ]
+        
+        return render_template('demo.html',
+                             market_data=market_data,
+                             oslo_stocks=oslo_stocks,
+                             global_stocks=global_stocks,
+                             indices=indices,
+                             active_stocks=active_stocks,
+                             gainers=gainers,
+                             losers=losers,
+                             demo_portfolio=demo_portfolio,
+                             demo_alerts=demo_alerts,
+                             demo_news=demo_news)
+                             
+    except Exception as e:
+        current_app.logger.error(f"Error loading demo data: {str(e)}")
+        # Fallback to basic demo if data loading fails
+        return render_template('demo.html')
 
 @main.route('/ai-explained')
 def ai_explained():
@@ -750,6 +817,30 @@ def privacy_policy():
     """Return static privacy policy HTML file (for Google Play)"""
     return current_app.send_static_file('privacy_policy.html')
 
+@main.route('/financial-dashboard')
+@main.route('/financial-dashboard/')
+@access_required
+def financial_dashboard():
+    """Financial dashboard with tabbed interface"""
+    try:
+        return render_template('dashboard/financial_dashboard.html')
+    except Exception as e:
+        current_app.logger.error(f"Error in financial dashboard: {str(e)}")
+        flash("En feil oppstod ved lasting av dashbordet.", "error")
+        return redirect(url_for('main.index'))
+
+@main.route('/insider-trading')
+@main.route('/insider-trading/')
+@access_required
+def insider_trading():
+    """Insider trading analysis page"""
+    try:
+        return render_template('analysis/insider_trading.html')
+    except Exception as e:
+        current_app.logger.error(f"Error in insider trading: {str(e)}")
+        flash("En feil oppstod ved lasting av innsidehandel.", "error")
+        return redirect(url_for('main.index'))
+
 @main.route('/subscription')
 @main.route('/subscription/')
 def subscription():
@@ -883,17 +974,6 @@ def api_trial_status():
     except Exception as e:
         current_app.logger.error(f"Error checking trial status: {e}")
         return jsonify({'error': 'Unable to check trial status'}), 500
-
-@main.route('/financial-dashboard')
-@login_required
-def financial_dashboard():
-    """Financial Dashboard with comprehensive market data"""
-    try:
-        return render_template('financial_dashboard.html')
-    except Exception as e:
-        current_app.logger.error(f"Error loading financial dashboard: {e}")
-        flash('Feil ved lasting av finansielt dashboard.', 'danger')
-        return redirect(url_for('main.index'))
 
 @main.route('/api/dashboard/data')
 @login_required
@@ -1159,75 +1239,3 @@ def currency_rates():
     except Exception as e:
         current_app.logger.error(f"Error getting currency rates: {e}")
         return jsonify({'success': False, 'error': str(e)})
-
-@main.route('/insider-trading')
-@access_required
-def insider_trading():
-    """Insider trading analysis page"""
-    try:
-        # Get popular Norwegian stocks for insider analysis
-        popular_stocks = ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'MOWI.OL']
-        
-        # Demo insider trading data
-        insider_data = {
-            'EQNR.OL': {
-                'company': 'Equinor ASA',
-                'recent_trades': [
-                    {
-                        'date': '2025-07-10',
-                        'insider': 'Anders Opedal',
-                        'position': 'CEO',
-                        'transaction': 'Kjøp',
-                        'shares': 5000,
-                        'price': 285.50,
-                        'value': 1427500
-                    },
-                    {
-                        'date': '2025-07-05',
-                        'insider': 'Torgrim Reitan',
-                        'position': 'CFO',
-                        'transaction': 'Salg',
-                        'shares': 2000,
-                        'price': 287.20,
-                        'value': 574400
-                    }
-                ]
-            },
-            'DNB.OL': {
-                'company': 'DNB Bank ASA',
-                'recent_trades': [
-                    {
-                        'date': '2025-07-08',
-                        'insider': 'Kjerstin Braathen',
-                        'position': 'CEO',
-                        'transaction': 'Kjøp',
-                        'shares': 3000,
-                        'price': 195.25,
-                        'value': 585750
-                    }
-                ]
-            },
-            'TEL.OL': {
-                'company': 'Telenor ASA',
-                'recent_trades': [
-                    {
-                        'date': '2025-07-05',
-                        'insider': 'Sigve Brekke',
-                        'position': 'CEO',
-                        'transaction': 'Kjøp',
-                        'shares': 4000,
-                        'price': 145.75,
-                        'value': 583000
-                    }
-                ]
-            }
-        }
-        
-        return render_template('insider_trading.html', 
-                             insider_data=insider_data,
-                             popular_stocks=popular_stocks)
-    
-    except Exception as e:
-        logger.error(f"Error loading insider trading: {e}")
-        return render_template('error.html', 
-                             error="Kunne ikke laste innsidehandel data.")

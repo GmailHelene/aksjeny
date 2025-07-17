@@ -177,34 +177,44 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>OSEBX</td>
-                                    <td>1,234.56</td>
-                                    <td class="text-success">+1.2%</td>
-                                </tr>
-                                <tr>
-                                    <td>OBX</td>
-                                    <td>987.65</td>
-                                    <td class="text-danger">-0.5%</td>
-                                </tr>
-                                <tr>
-                                    <td>Nasdaq</td>
-                                    <td>15,432.10</td>
-                                    <td class="text-success">+0.8%</td>
-                                </tr>
-                                <tr>
-                                    <td>S&P 500</td>
-                                    <td>4,567.89</td>
-                                    <td class="text-success">+0.3%</td>
-                                </tr>
+                                {% if indices and indices|length > 0 %}
+                                    {% for index in indices[:4] %}
+                                    <tr>
+                                        <td>{{ index.name or index.ticker }}</td>
+                                        <td>{{ "%.2f"|format(index.last_price or 0) }}</td>
+                                        <td class="{% if (index.change_percent or 0) >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                            {{ "%+.1f"|format(index.change_percent or 0) }}%
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td>OSEBX</td>
+                                        <td>1,234.56</td>
+                                        <td class="text-success">+1.2%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OBX</td>
+                                        <td>987.65</td>
+                                        <td class="text-danger">-0.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nasdaq</td>
+                                        <td>15,432.10</td>
+                                        <td class="text-success">+0.8%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>S&P 500</td>
+                                        <td>4,567.89</td>
+                                        <td class="text-success">+0.3%</td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Få tilgang til alle markeder</p>
-                        </div>
+                    <!-- Removed lock overlay to make demo functional -->
+                    <div class="demo-preview">
+                        <small class="text-muted">💡 Dette er live data! Med full tilgang får du alle globale markeder.</small>
                     </div>
                 </div>
             </div>
@@ -220,12 +230,7 @@
                             <strong>Kjøp signal:</strong> DNB viser sterke tekniske indikatorer. RSI: 35 (oversold)
                         </div>
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Få personlige AI-anbefalinger</p>
-                        </div>
-                    </div>
+                    <!-- Demo is now interactive - overlay removed -->
                 </div>
             </div>
         </div>
@@ -273,12 +278,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Få tilgang til alle analyseverktøy</p>
-                        </div>
-                    </div>
+                    <!-- Analysis tools are now interactive -->
                 </div>
             </div>
         </div>
@@ -293,59 +293,70 @@
                             <strong>Min Portefølje</strong>
                             <span class="badge bg-success">+12.5%</span>
                         </div>
-                        <div class="portfolio-item">
-                            <div class="d-flex justify-content-between">
-                                <span>EQUI</span>
-                                <span class="text-success">+8.2%</span>
+                        {% if demo_portfolio %}
+                            {% for stock in demo_portfolio %}
+                            <div class="portfolio-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ stock.ticker }}</span>
+                                    <span class="{% if '+' in stock.change %}text-success{% else %}text-danger{% endif %}">{{ stock.change }}</span>
+                                </div>
+                                <small class="text-muted">{{ stock.shares }} aksjer • NOK {{ "{:,.0f}"|format(stock.value) }}</small>
                             </div>
-                            <small class="text-muted">100 aksjer • NOK 4,200</small>
-                        </div>
-                        <div class="portfolio-item">
-                            <div class="d-flex justify-content-between">
-                                <span>DNB</span>
-                                <span class="text-danger">-2.1%</span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="portfolio-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>EQUI</span>
+                                    <span class="text-success">+8.2%</span>
+                                </div>
+                                <small class="text-muted">100 aksjer • NOK 4,200</small>
                             </div>
-                            <small class="text-muted">50 aksjer • NOK 8,500</small>
-                        </div>
-                        <div class="portfolio-item">
-                            <div class="d-flex justify-content-between">
-                                <span>TEL</span>
-                                <span class="text-success">+15.7%</span>
+                            <div class="portfolio-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>DNB</span>
+                                    <span class="text-danger">-2.1%</span>
+                                </div>
+                                <small class="text-muted">50 aksjer • NOK 8,500</small>
                             </div>
-                            <small class="text-muted">200 aksjer • NOK 3,400</small>
-                        </div>
+                            <div class="portfolio-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>TEL</span>
+                                    <span class="text-success">+15.7%</span>
+                                </div>
+                                <small class="text-muted">200 aksjer • NOK 3,400</small>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Administrer din portefølje</p>
-                        </div>
-                    </div>
+                    <!-- Portfolio demo is now interactive -->
                 </div>
             </div>
             
             <div class="col-md-6">
                 <div class="demo-widget">
                     <h5 class="text-dark mb-3">🔔 Prisvarsler</h5>
-                    <div class="alert alert-warning">
-                        <i class="bi bi-bell"></i>
-                        <strong>Varsel:</strong> EQUI har nådd kursmål på 42 NOK!
-                    </div>
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
-                        <strong>Info:</strong> DNB rapporterer kvartalstall i morgen
-                    </div>
+                    {% if demo_alerts %}
+                        {% for alert in demo_alerts %}
+                        <div class="alert {% if alert.type == 'price' %}alert-warning{% elif alert.type == 'volume' %}alert-info{% else %}alert-success{% endif %}">
+                            <i class="bi {% if alert.type == 'price' %}bi-bell{% elif alert.type == 'volume' %}bi-activity{% else %}bi-newspaper{% endif %}"></i>
+                            <strong>{{ alert.time }}:</strong> {{ alert.message }}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-bell"></i>
+                            <strong>Varsel:</strong> EQUI har nådd kursmål på 42 NOK!
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Info:</strong> DNB rapporterer kvartalstall i morgen
+                        </div>
+                    {% endif %}
                     <div class="text-center mt-3">
-                        <button class="btn btn-sm btn-outline-primary" disabled>
+                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Demo: Prøv å registrere deg for full varsel-funksjonalitet!')">
                             <i class="bi bi-plus"></i> Legg til nytt varsel
                         </button>
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Sett opp prisvarsler</p>
-                        </div>
-                    </div>
+                    <!-- Price alerts now functional -->
                 </div>
             </div>
         </div>
@@ -355,27 +366,33 @@
             <div class="col-md-6">
                 <div class="demo-widget">
                     <h5 class="text-dark mb-3">📰 Markedsnyheter</h5>
-                    <div class="news-item">
-                        <h6>Oslo Børs åpner høyt</h6>
-                        <p class="text-muted small">Positive signaler fra olje- og gassektoren...</p>
-                        <span class="badge bg-info">2 timer siden</span>
-                    </div>
-                    <div class="news-item">
-                        <h6>DNB rapporterer sterke tall</h6>
-                        <p class="text-muted small">Banken overgår forventningene...</p>
-                        <span class="badge bg-info">4 timer siden</span>
-                    </div>
-                    <div class="news-item">
-                        <h6>Equinor kutter utbytte</h6>
-                        <p class="text-muted small">Oljeselskapet justerer strategi...</p>
-                        <span class="badge bg-info">6 timer siden</span>
-                    </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Få tilgang til alle nyheter</p>
+                    {% if demo_news %}
+                        {% for news in demo_news %}
+                        <div class="news-item">
+                            <h6>{{ news.title }}</h6>
+                            <p class="text-muted small">{{ news.summary }}</p>
+                            <span class="badge bg-info">{{ news.time }}</span>
                         </div>
-                    </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="news-item">
+                            <h6>Oslo Børs åpner høyt</h6>
+                            <p class="text-muted small">Positive signaler fra olje- og gassektoren...</p>
+                            <span class="badge bg-info">2 timer siden</span>
+                        </div>
+                        <div class="news-item">
+                            <h6>DNB rapporterer sterke tall</h6>
+                            <p class="text-muted small">Banken overgår forventningene...</p>
+                            <span class="badge bg-info">4 timer siden</span>
+                        </div>
+                        <div class="news-item">
+                            <h6>Equinor kutter utbytte</h6>
+                            <p class="text-muted small">Oljeselskapet justerer strategi...</p>
+                            <span class="badge bg-info">6 timer siden</span>
+                        </div>
+                    {% endif %}
+                    <!-- Reduced lock overlay for partial functionality -->
+                    <!-- News demo is now interactive -->
                 </div>
             </div>
             
@@ -383,41 +400,50 @@
                 <div class="demo-widget">
                     <h5 class="text-dark mb-3">🌍 Globale Markeder</h5>
                     <div class="global-markets">
-                        <div class="market-item">
-                            <span class="flag">🇺🇸</span>
-                            <div class="market-info">
-                                <strong>S&P 500</strong>
-                                <span class="text-success">+0.5%</span>
+                        {% if global_stocks and global_stocks|length > 0 %}
+                            {% for stock in global_stocks[:4] %}
+                            <div class="market-item">
+                                <span class="flag">�</span>
+                                <div class="market-info">
+                                    <strong>{{ stock.name or stock.ticker }}</strong>
+                                    <span class="{% if (stock.change_percent or 0) >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ "%+.1f"|format(stock.change_percent or 0) }}%
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="market-item">
-                            <span class="flag">🇩🇪</span>
-                            <div class="market-info">
-                                <strong>DAX</strong>
-                                <span class="text-danger">-0.3%</span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="market-item">
+                                <span class="flag">�🇺🇸</span>
+                                <div class="market-info">
+                                    <strong>S&P 500</strong>
+                                    <span class="text-success">+0.5%</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="market-item">
-                            <span class="flag">🇯🇵</span>
-                            <div class="market-info">
-                                <strong>Nikkei</strong>
-                                <span class="text-success">+1.2%</span>
+                            <div class="market-item">
+                                <span class="flag">🇩🇪</span>
+                                <div class="market-info">
+                                    <strong>DAX</strong>
+                                    <span class="text-danger">-0.3%</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="market-item">
-                            <span class="flag">🇬🇧</span>
-                            <div class="market-info">
-                                <strong>FTSE 100</strong>
-                                <span class="text-success">+0.7%</span>
+                            <div class="market-item">
+                                <span class="flag">🇯🇵</span>
+                                <div class="market-info">
+                                    <strong>Nikkei</strong>
+                                    <span class="text-success">+1.2%</span>
+                                </div>
                             </div>
-                        </div>
+                            <div class="market-item">
+                                <span class="flag">🇬🇧</span>
+                                <div class="market-info">
+                                    <strong>FTSE 100</strong>
+                                    <span class="text-success">+0.7%</span>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="demo-overlay">
-                        <div class="demo-lock">
-                            <i class="bi bi-lock"></i>
-                            <p>Følg globale markeder</p>
-                        </div>
-                    </div>
+                    <!-- Global markets demo is now interactive -->
                 </div>
             </div>
         </div>

@@ -53,6 +53,14 @@ class User(UserMixin, db.Model):
     last_reset_date = db.Column(db.DateTime, default=datetime.utcnow)  # Track monthly reset
     is_admin = db.Column(db.Boolean, default=False)  # Admin flag
     
+    # Password reset fields
+    reset_token = db.Column(db.String(100), nullable=True)
+    reset_token_expires = db.Column(db.DateTime, nullable=True)
+    
+    # Internationalization and settings
+    language = db.Column(db.String(10), default='no')  # Language preference (no, en, etc.)
+    notification_settings = db.Column(db.Text, nullable=True)  # JSON string for notification preferences
+    
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -179,6 +187,40 @@ class User(UserMixin, db.Model):
             return 'trial'
         else:
             return 'free'
+
+    def get_notification_settings(self):
+        """Get notification settings as dictionary"""
+        import json
+        if self.notification_settings:
+            try:
+                return json.loads(self.notification_settings)
+            except (json.JSONDecodeError, TypeError):
+                return {}
+        return {}
+
+    def update_notification_settings(self, settings_dict):
+        """Update notification settings from dictionary"""
+        import json
+        try:
+            self.notification_settings = json.dumps(settings_dict)
+            db.session.commit()
+            return True
+        except Exception:
+            return False
+
+    def get_language(self):
+        """Get user's preferred language"""
+        return self.language or 'no'
+
+    def set_language(self, language_code):
+        """Set user's preferred language"""
+        # Validate language code
+        valid_languages = ['no', 'en', 'da', 'sv']  # Norwegian, English, Danish, Swedish
+        if language_code in valid_languages:
+            self.language = language_code
+            db.session.commit()
+            return True
+        return False
 
 # NOTE: Portfolio and Watchlist relationships are defined in the models themselves
 # No need to import them here as SQLAlchemy will resolve relationships automatically

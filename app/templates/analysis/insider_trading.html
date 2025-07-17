@@ -306,8 +306,75 @@ function refreshInsiderData() {
 }
 
 function exportInsiderData() {
-    // Implement export functionality
-    alert('Export funksjonalitet kommer snart!');
+    try {
+        const ticker = document.getElementById('ticker').value;
+        const timeframe = document.getElementById('timeframe').value;
+        const transactionType = document.getElementById('transaction-type').value;
+        
+        // Get current data from table
+        const rows = document.querySelectorAll('#insider-tbody tr');
+        if (rows.length === 0 || rows[0].cells.length === 1) {
+            alert('Ingen data tilgjengelig for eksport');
+            return;
+        }
+        
+        // Prepare CSV data
+        const headers = ['Dato', 'Ticker', 'Selskap', 'Insider', 'Posisjon', 'Type', 'Antall', 'Pris', 'Verdi', 'Signal'];
+        let csvContent = headers.join(',') + '\n';
+        
+        rows.forEach(row => {
+            if (row.cells.length > 1) {
+                const rowData = [];
+                for (let i = 0; i < row.cells.length; i++) {
+                    let cellText = row.cells[i].textContent.trim();
+                    // Clean badges and formatting
+                    cellText = cellText.replace(/\s+/g, ' ');
+                    // Escape commas and quotes
+                    if (cellText.includes(',') || cellText.includes('"')) {
+                        cellText = '"' + cellText.replace(/"/g, '""') + '"';
+                    }
+                    rowData.push(cellText);
+                }
+                csvContent += rowData.join(',') + '\n';
+            }
+        });
+        
+        // Create and download file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        
+        // Generate filename with parameters
+        let filename = 'insider_trading_data';
+        if (ticker) filename += '_' + ticker;
+        filename += '_' + timeframe + 'days';
+        if (transactionType !== 'all') filename += '_' + transactionType;
+        filename += '_' + new Date().toISOString().split('T')[0] + '.csv';
+        
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show success message
+        const exportBtn = document.querySelector('button[onclick="exportInsiderData()"]');
+        const originalText = exportBtn.innerHTML;
+        exportBtn.innerHTML = '<i class="bi bi-check-circle"></i> Eksportert!';
+        exportBtn.classList.remove('btn-outline-success');
+        exportBtn.classList.add('btn-success');
+        
+        setTimeout(() => {
+            exportBtn.innerHTML = originalText;
+            exportBtn.classList.remove('btn-success');
+            exportBtn.classList.add('btn-outline-success');
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Feil ved eksport: ' + error.message);
+    }
 }
 </script>
 {% endblock %}

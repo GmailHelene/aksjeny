@@ -2234,3 +2234,114 @@ class DataService:
         except Exception as e:
             print(f"Error fetching general news: {str(e)}")
             return []
+    
+    @staticmethod
+    def get_oslo_stocks():
+        """Get Oslo Børs stocks overview"""
+        try:
+            oslo_stocks = []
+            for ticker in OSLO_BORS_TICKERS[:10]:  # Top 10 stocks
+                stock_info = DataService.get_fallback_stock_info(ticker)
+                oslo_stocks.append({
+                    'symbol': ticker,
+                    'name': stock_info.get('shortName', ticker),
+                    'price': stock_info.get('regularMarketPrice', 0),
+                    'change': stock_info.get('regularMarketChange', 0),
+                    'changePercent': stock_info.get('regularMarketChangePercent', 0),
+                    'volume': stock_info.get('volume', 0)
+                })
+            return oslo_stocks
+        except Exception as e:
+            logging.error(f"Error getting Oslo stocks: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_global_stocks():
+        """Get global stocks overview"""
+        try:
+            global_tickers = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'AMZN', 'META', 'NVDA', 'NFLX']
+            global_stocks = []
+            for ticker in global_tickers:
+                stock_info = DataService.get_fallback_stock_info(ticker)
+                global_stocks.append({
+                    'symbol': ticker,
+                    'name': stock_info.get('shortName', ticker),
+                    'price': stock_info.get('regularMarketPrice', 0),
+                    'change': stock_info.get('regularMarketChange', 0),
+                    'changePercent': stock_info.get('regularMarketChangePercent', 0),
+                    'volume': stock_info.get('volume', 0)
+                })
+            return global_stocks
+        except Exception as e:
+            logging.error(f"Error getting global stocks: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_crypto_data():
+        """Get cryptocurrency data"""
+        try:
+            crypto_data = [
+                {
+                    'symbol': 'BTC-USD',
+                    'name': 'Bitcoin',
+                    'price': 65432.10,
+                    'change': 1234.56,
+                    'changePercent': 1.93,
+                    'volume': 25000000000
+                },
+                {
+                    'symbol': 'ETH-USD',
+                    'name': 'Ethereum',
+                    'price': 3456.78,
+                    'change': 67.89,
+                    'changePercent': 2.01,
+                    'volume': 15000000000
+                },
+                {
+                    'symbol': 'BNB-USD',
+                    'name': 'Binance Coin',
+                    'price': 345.67,
+                    'change': -12.34,
+                    'changePercent': -3.44,
+                    'volume': 2000000000
+                }
+            ]
+            return crypto_data
+        except Exception as e:
+            logging.error(f"Error getting crypto data: {str(e)}")
+            return []
+
+    @staticmethod
+    def get_global_indices():
+        """Get global market indices"""
+        try:
+            indices = {
+                'OSEBX': {
+                    'name': 'OBX Oslo Børs',
+                    'value': 1345.67,
+                    'change': 12.34,
+                    'changePercent': 0.93
+                },
+                'SPX': {
+                    'name': 'S&P 500',
+                    'value': 4567.89,
+                    'change': 23.45,
+                    'changePercent': 0.52
+                },
+                'NDX': {
+                    'name': 'NASDAQ 100',
+                    'value': 15678.90,
+                    'change': -45.67,
+                    'changePercent': -0.29
+                },
+                'DAX': {
+                    'name': 'DAX',
+                    'value': 16789.01,
+                    'change': 78.90,
+                    'changePercent': 0.47
+                }
+            }
+            return indices
+        except Exception as e:
+            logging.error(f"Error getting global indices: {str(e)}")
+            return {}

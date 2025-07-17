@@ -20,6 +20,78 @@ EXEMPT_EMAILS = {
 # Trial duration in minutes (10 minutes)
 TRIAL_DURATION_MINUTES = 10
 
+def api_login_required(f):
+    """API-specific decorator that requires login and returns JSON responses"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        from flask import jsonify
+        
+        if not current_user.is_authenticated:
+            return jsonify({
+                'error': 'Authentication required',
+                'message': 'Please log in to access this resource.',
+                'code': 'LOGIN_REQUIRED'
+            }), 401
+            
+        return f(*args, **kwargs)
+    return decorated_function
+
+def api_access_required(f):
+    """API-specific decorator that returns JSON responses instead of redirects"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        import logging
+        from flask import current_app, jsonify
+        
+        # First check if this is an exempt endpoint that should always be accessible
+        if hasattr(current_app, 'config') and 'EXEMPT_ENDPOINTS' in current_app.config:
+            exempt_endpoints = current_app.config.get('EXEMPT_ENDPOINTS', set())
+            if request.endpoint in exempt_endpoints:
+                return f(*args, **kwargs)
+                
+        logging.warning(f"[API_ACCESS_REQUIRED] Called for endpoint={request.endpoint} url={request.url} user_authenticated={current_user.is_authenticated}")
+        
+        # For authenticated users
+        if current_user.is_authenticated:
+            # Exempt users always have access
+            if getattr(current_user, 'email', None) in EXEMPT_EMAILS:
+                return f(*args, **kwargs)
+                
+            # Users with active subscription have access
+            if hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription():
+                return f(*args, **kwargs)
+                
+            # Check if user is in initial subscription period (10 minutes)
+            if hasattr(current_user, 'subscription_start') and current_user.subscription_start:
+                if datetime.utcnow() - current_user.subscription_start < timedelta(minutes=10):
+                    return f(*args, **kwargs)
+                    
+            # No valid subscription - return JSON error instead of redirect
+            return jsonify({
+                'error': 'Access denied',
+                'message': 'Your subscription has expired or is not active. Please upgrade to continue.',
+                'code': 'SUBSCRIPTION_REQUIRED'
+            }), 403
+            
+        # For unauthenticated users
+        else:
+            # Check trial status
+            trial_status = _check_trial_access()
+            
+            if trial_status.get('active'):
+                logging.warning("[API_ACCESS_REQUIRED] Trial active, allowing access.")
+                return f(*args, **kwargs)
+                
+            # If trial is expired or not started, return JSON error instead of redirect
+            logging.warning("[API_ACCESS_REQUIRED] Trial expired or not started, returning JSON error")
+            return jsonify({
+                'error': 'Access denied',
+                'message': 'Trial has expired. Please sign up to continue.',
+                'code': 'TRIAL_EXPIRED'
+            }), 401
+    
+    return decorated_function
+
 def access_required(f):
     """Decorator to check if user has access to the resource"""
     @wraps(f)

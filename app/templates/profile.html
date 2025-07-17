@@ -102,12 +102,10 @@
                     <div class="card border-0 bg-light">
                         <div class="card-body">
                             <h6 class="mb-3"><i class="bi bi-envelope"></i> Inviter en venn direkte:</h6>
-                            <form method="POST" action="#">
-                                <p class="text-muted">Invite venner funksjon kommer snart...</p>
-                            </form>
+                            <form method="POST" action="{{ url_for('main.send_invitation') }}" id="inviteForm">
                                 <div class="row">
                                     <div class="col-md-8">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <input type="email" class="form-control" name="email" placeholder="Vennens e-postadresse" required>
                                     </div>
                                     <div class="col-md-4">
@@ -116,8 +114,19 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeMessage" name="include_message">
+                                        <label class="form-check-label" for="includeMessage">
+                                            Inkluder personlig melding
+                                        </label>
+                                    </div>
+                                    <div id="personalMessage" style="display: none;" class="mt-2">
+                                        <textarea class="form-control" name="personal_message" rows="3" placeholder="Skriv en personlig melding til vennen din..."></textarea>
+                                    </div>
+                                </div>
                             </form>
-                            <small class="text-muted">Vi sender en invitasjon med din spesielle lenke til vennen din.</small>
+                            <small class="text-muted">Vi sender en invitasjon med din spesielle lenke til vennen din. De får 20% rabatt på sitt første abonnement!</small>
                         </div>
                     </div>
 

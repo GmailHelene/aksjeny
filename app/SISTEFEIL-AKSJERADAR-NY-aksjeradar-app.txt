@@ -1,7 +1,111 @@
+https://aksjeradar.trade/demo
+Her må den interaktive demoen faktisk fungerer,
+nå er det en nøkkellås på funkskjonene som egeltig skal fungere
+
+Pass på at main/top navigation er lik på alle sider,
+eksempelvis er den -ikke- riktig på market-overview
+
+-
+-
 https://aksjeradar.trade/create-checkout-session
 Error på denne siden
 -
+----
 
+zsh: permission denied: /workspaces/aksjeny/app/routes/api.py
+ aksjeny (main) ✗ '/workspaces/aksjeny/app/routes/api.py'
+zsh: permission denied: /workspaces/aksjeny/app/routes/api.py
+ aksjeny (main) ✗ python3 debug_auth_test.py
+[2025-07-17 15:11:12,205] ERROR in __init__: Error registering stocks: invalid syntax (stocks.py, line 225)
+[2025-07-17 15:11:12,344] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_dashboard_data
+[2025-07-17 15:11:12,603] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.market_overview
+[2025-07-17 15:11:12,619] ERROR in __init__: Error registering news_bp: unexpected indent (news.py, line 124)
+Testing specific failing endpoints...
+
+🔗 Testing /api/crypto/trending
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/crypto/trending
+
+🔗 Testing /api/economic/indicators
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/economic/indicators
+
+🔗 Testing /api/market/sectors
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/market/sectors
+
+🔍 Testing with app context...
+App name: app
+Testing mode: True
+CSRF enabled: False
+ aksjeny (main) ✗ python3 debug_auth_test.py
+[2025-07-17 15:12:12,086] ERROR in __init__: Error registering stocks: invalid syntax (stocks.py, line 225)
+[2025-07-17 15:12:12,219] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_dashboard_data
+[2025-07-17 15:12:12,466] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.market_overview
+[2025-07-17 15:12:12,482] ERROR in __init__: Error registering news_bp: unexpected indent (news.py, line 124)
+Testing specific failing endpoints...
+
+🔗 Testing /api/crypto/trending
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/crypto/trending
+
+🔗 Testing /api/economic/indicators
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/economic/indicators
+
+🔗 Testing /api/market/sectors
+Status: 302
+❌ Redirect (likely to login)
+Location: /login?next=http://localhost/api/market/sectors
+
+[2025-07-17 15:13:14,947] ERROR in __init__: Error registering stocks: invalid syntax (stocks.py, line 227)
+[2025-07-17 15:13:15,080] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_dashboard_data
+[2025-07-17 15:13:15,323] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.market_overview
+[2025-07-17 15:13:15,340] ERROR in __init__: Error registering news_bp: unexpected indent (news.py, line 163)
+
+[2025-07-17 15:13:24,855] ERROR in __init__: Error registering stocks: invalid syntax (stocks.py, line 227)
+[2025-07-17 15:13:24,990] ERROR in __init__: Error registering api: View function mapping is overwriting an existing endpoint function: api.get_dashboard_data
+[2025-07-17 15:13:25,247] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.market_overview
+[2025-07-17 15:13:25,264] ERROR in __init__: Error registering news_bp: unexpected indent (news.py, line 163)
+Testing API endpoints...
+
+🔗 Testing /api/crypto/trending
+❌ /api/crypto/trending - Status: 302
+   Response: <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/login?next=http://localhost/api/crypto/trend
+
+🔗 Testing /api/economic/indicators
+❌ /api/economic/indicators - Status: 302
+   Response: <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/login?next=http://localhost/api/economic/ind
+
+🔗 Testing /api/market/sectors
+❌ /api/market/sectors - Status: 302
+   Response: <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/login?next=http://localhost/api/market/secto
+
+🔗 Testing /api/stocks/search
+❌ /api/stocks/search - Status: 400
+   Response: {
+  "error": "No search query provided"
+}
+
+
+-------
 
 Sjekk at apen er 100% responsiv, at glemt passord og slike funksjoner er lette å finne , og fungerer, og
 sjekk at appen er søkemotoroptimalisert, og at demoløsning og betalt løsning fungerer slik det skal til brukerlogikken vi har satt opp.

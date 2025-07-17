@@ -458,8 +458,9 @@ def view_watchlist(id):
     for item in watchlist.items:
         data = analyzer.get_stock_data(item.symbol)
         if data:
-            # Generer alerts for denne aksjen
-            alerts = analyzer.analyze_alerts(data, current_user.notification_preferences)
+            # Generer alerts for denne aksjen using the new notification settings
+            user_preferences = current_user.get_notification_settings()
+            alerts = analyzer.analyze_alerts(data, user_preferences)
             data['alerts'] = alerts
             stock_data.append(data)
     
@@ -531,7 +532,9 @@ def get_alerts(watchlist_id):
     for item in watchlist.items:
         stock_data = analyzer.get_stock_data(item.symbol)
         if stock_data:
-            alerts = analyzer.analyze_alerts(stock_data, current_user.notification_preferences)
+            # Use the new notification settings method
+            user_preferences = current_user.get_notification_settings()
+            alerts = analyzer.analyze_alerts(stock_data, user_preferences)
             for alert in alerts:
                 alert['symbol'] = item.symbol
                 alert['watchlist_name'] = watchlist.name

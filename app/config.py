@@ -66,6 +66,20 @@ class Config:
     # Server configuration for proper URL generation
     SERVER_NAME = os.getenv('SERVER_NAME')  # Set to 'aksjeradar.trade' in production
     PREFERRED_URL_SCHEME = os.getenv('PREFERRED_URL_SCHEME', 'https' if not DEBUG else 'http')
+    
+    # API endpoints that should be accessible without authentication
+    EXEMPT_ENDPOINTS = {
+        'api.get_crypto_trending',
+        'api.get_economic_indicators', 
+        'api.get_market_sectors',
+        'api.search_stocks',
+        'api.market_data',
+        'api.market_summary',
+        'api.get_news',
+        'api.get_crypto_data',
+        'api.get_currency_rates',
+        'api.health_check'
+    }
 
 class DevelopmentConfig(Config):
     DEBUG = True

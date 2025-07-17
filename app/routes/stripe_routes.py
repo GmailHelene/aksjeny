@@ -34,11 +34,16 @@ def on_register(state):
         state.app.logger.error(f'Failed to initialize Stripe: {str(e)}')
         # Don't raise - allow app to start without Stripe
 
-@stripe_bp.route('/create-checkout-session', methods=['POST'])
+@stripe_bp.route('/create-checkout-session', methods=['POST', 'GET'])
 @login_required
 def create_checkout_session():
     """Create a Stripe checkout session for subscription purchase"""
     try:
+        # Handle both POST and GET requests
+        if request.method == 'GET':
+            # Redirect GET requests to subscription page
+            return redirect(url_for('main.subscription'))
+            
         subscription_type = request.form.get('subscription_type')
         if not subscription_type:
             return jsonify({'error': 'No subscription type provided'}), 400
@@ -47,20 +52,35 @@ def create_checkout_session():
         if not current_user.is_authenticated:
             return jsonify({'error': 'Du må være innlogget for å kjøpe abonnement.'}), 401
 
+        # Check if Stripe is properly configured
+        stripe_secret_key = current_app.config.get('STRIPE_SECRET_KEY')
+        if not stripe_secret_key or stripe_secret_key.startswith('sk_test_dummy') or stripe_secret_key == 'sk_test_dummy_key_for_development_only':
+            current_app.logger.warning("⚠️ Stripe not properly configured")
+            flash('Betalingssystem er ikke tilgjengelig for øyeblikket. Kontakt support.', 'warning')
+            return redirect(url_for('main.subscription'))
+        
+        # Set Stripe API key
+        stripe.api_key = stripe_secret_key
+
         price_id = None
         mode = 'subscription'
         if subscription_type == 'pro' or subscription_type == 'monthly':
-            price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
+            price_id = current_app.config.get('STRIPE_MONTHLY_PRICE_ID')
         elif subscription_type == 'yearly':
-            price_id = current_app.config['STRIPE_YEARLY_PRICE_ID']
+            price_id = current_app.config.get('STRIPE_YEARLY_PRICE_ID')
         elif subscription_type == 'basic':
             # For backward compatibility - redirect basic to pro
-            price_id = current_app.config['STRIPE_MONTHLY_PRICE_ID']
+            price_id = current_app.config.get('STRIPE_MONTHLY_PRICE_ID')
         elif subscription_type == 'lifetime':
-            price_id = current_app.config['STRIPE_LIFETIME_PRICE_ID']
+            price_id = current_app.config.get('STRIPE_LIFETIME_PRICE_ID')
             mode = 'payment'
         else:
             return jsonify({'error': 'Invalid subscription type'}), 400
+
+        # Check if price_id was found and is not a dummy value
+        if not price_id or price_id.startswith('price_') and 'default_dev' in price_id:
+            current_app.logger.error(f"No valid price ID configured for subscription type: {subscription_type}")
+            return jsonify({'error': f'Subscription type {subscription_type} is not properly configured. Please contact support.'}), 400
 
         # Ekstra defensiv sjekk for innlogget bruker
         if not hasattr(current_user, 'id') or not hasattr(current_user, 'email'):

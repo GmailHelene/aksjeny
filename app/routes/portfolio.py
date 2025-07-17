@@ -16,7 +16,98 @@ def get_data_service():
     from app.services.data_service import DataService
     return DataService
 
-portfolio = Blueprint('portfolio', __name__)
+portfolio = Blueprint('portfolio', __name__, url_prefix='/portfolio')
+
+@portfolio.route('/overview')
+@access_required
+def overview():
+    """Portfolio overview page"""
+    try:
+        # Get user portfolios
+        user_portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+        
+        # Calculate total portfolio value
+        total_value = 0
+        total_gain_loss = 0
+        portfolio_data = []
+        
+        for portfolio_obj in user_portfolios:
+            portfolio_value = 0
+            portfolio_gain_loss = 0
+            
+            for stock in portfolio_obj.stocks:
+                try:
+                    # Get current stock price
+                    current_data = get_data_service().get_stock_info(stock.ticker)
+                    current_price = current_data.get('regularMarketPrice', stock.purchase_price)
+                    
+                    value = current_price * stock.shares
+                    investment = stock.purchase_price * stock.shares
+                    gain_loss = value - investment
+                    
+                    portfolio_value += value
+                    portfolio_gain_loss += gain_loss
+                except Exception as e:
+                    current_app.logger.warning(f"Could not get price for {stock.ticker}: {e}")
+                    # Use purchase price as fallback
+                    value = stock.purchase_price * stock.shares
+                    portfolio_value += value
+            
+            total_value += portfolio_value
+            total_gain_loss += portfolio_gain_loss
+            
+            portfolio_data.append({
+                'portfolio': portfolio_obj,
+                'value': portfolio_value,
+                'gain_loss': portfolio_gain_loss,
+                'gain_loss_percent': (portfolio_gain_loss / (portfolio_value - portfolio_gain_loss)) * 100 if (portfolio_value - portfolio_gain_loss) > 0 else 0
+            })
+        
+        return render_template('portfolio/overview.html',
+                             portfolios=portfolio_data,
+                             total_value=total_value,
+                             total_gain_loss=total_gain_loss,
+                             total_gain_loss_percent=(total_gain_loss / (total_value - total_gain_loss)) * 100 if (total_value - total_gain_loss) > 0 else 0)
+    except Exception as e:
+        current_app.logger.error(f"Error in portfolio overview: {str(e)}")
+        flash('Det oppstod en feil ved lasting av porteføljer.', 'error')
+        return redirect(url_for('main.index'))
+
+@portfolio.route('/watchlist')
+@access_required
+def watchlist():
+    """User's watchlist"""
+    try:
+        # Get user's watchlist items
+        watchlist_items = Watchlist.query.filter_by(user_id=current_user.id).all()
+        
+        # Get current prices for watchlist items
+        watchlist_data = []
+        for item in watchlist_items:
+            try:
+                stock_data = get_data_service().get_stock_info(item.ticker)
+                watchlist_data.append({
+                    'item': item,
+                    'current_price': stock_data.get('regularMarketPrice', 0),
+                    'change': stock_data.get('regularMarketChange', 0),
+                    'change_percent': stock_data.get('regularMarketChangePercent', 0),
+                    'name': stock_data.get('shortName', item.ticker)
+                })
+            except Exception as e:
+                current_app.logger.warning(f"Could not get data for watchlist item {item.ticker}: {e}")
+                watchlist_data.append({
+                    'item': item,
+                    'current_price': 0,
+                    'change': 0,
+                    'change_percent': 0,
+                    'name': item.ticker
+                })
+        
+        return render_template('portfolio/watchlist.html', watchlist=watchlist_data)
+    except Exception as e:
+        current_app.logger.error(f"Error in watchlist: {str(e)}")
+        flash('Det oppstod en feil ved lasting av favoritter.', 'error')
+        return redirect(url_for('main.index'))
 
 @portfolio.route('/', endpoint='portfolio_index')
 @access_required
@@ -197,51 +288,6 @@ def remove_stock_from_portfolio(id, stock_id):
 
     flash('Aksje fjernet fra porteføljen', 'success')
     return redirect(url_for('portfolio.view_portfolio', id=id))
-
-@portfolio.route('/watchlist')
-@access_required
-def watchlist():
-    """Show user's watchlist"""
-    try:
-        if not hasattr(current_user, 'id') or current_user.is_anonymous:
-            flash('Du må være innlogget for å bruke favorittlisten.', 'warning')
-            return render_template('portfolio/watchlist.html', stocks=[])
-        watchlist = Watchlist.query.filter_by(user_id=current_user.id).first()
-        stocks = []
-        if watchlist:
-            for ws in watchlist.stocks:
-                try:
-                    # Hent sanntidsdata for aksjen
-                    stock_data = get_data_service().get_stock_data(ws.ticker, period='2d')
-                    last_price = None
-                    change_percent = None
-                    if not stock_data.empty and len(stock_data) > 1:
-                        last_price = stock_data['Close'].iloc[-1]
-                        prev_price = stock_data['Close'].iloc[-2]
-                        change_percent = ((last_price - prev_price) / prev_price) * 100 if prev_price else None
-                    # Hent navn fra info
-                    info = get_data_service().get_stock_info(ws.ticker)
-                    name = info.get('longName', ws.ticker) if info else ws.ticker
-                    stocks.append({
-                        'ticker': ws.ticker,
-                        'name': name,
-                        'last_price': last_price,
-                        'change_percent': change_percent
-                    })
-                except Exception as e:
-                    current_app.logger.error(f"Error processing stock {ws.ticker}: {str(e)}")
-                    # Add stock with basic info even if data fetch fails
-                    stocks.append({
-                        'ticker': ws.ticker,
-                        'name': ws.ticker,
-                        'last_price': None,
-                        'change_percent': None
-                    })
-        return render_template('portfolio/watchlist.html', stocks=stocks)
-    except Exception as e:
-        current_app.logger.error(f"Error in watchlist: {str(e)}")
-        flash('Det oppstod en feil ved lasting av favorittlisten.', 'danger')
-        return render_template('portfolio/watchlist.html', stocks=[])
 
 @portfolio.route('/watchlist/create', methods=['GET', 'POST'])
 @access_required
@@ -464,73 +510,6 @@ def remove_stock(ticker):
     
     flash(f'{ticker} fjernet fra porteføljen.', 'success')
     return redirect(url_for('portfolio.portfolio_index'))
-
-@portfolio.route('/overview')
-@access_required
-def overview():
-    """Vis porteføljeoversikt med grafer og statistikk"""
-    try:
-        # Check if user is authenticated
-        if not current_user.is_authenticated:
-            flash('Du må logge inn for å se porteføljeoversikt.', 'warning')
-            return redirect(url_for('main.index'))
-            
-        portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
-        if not portfolio:
-            flash('Du har ingen portefølje ennå.', 'warning')
-            return redirect(url_for('portfolio.portfolio_index'))
-        
-        portfolio_stocks = PortfolioStock.query.filter_by(portfolio_id=portfolio.id).all()
-        
-        # Samle data for oversikten
-        overview_data = {
-            'total_value': 0,
-            'total_profit_loss': 0,
-            'sectors': {},
-            'performance': [],
-            'stocks': {}
-        }
-        
-        for ps in portfolio_stocks:
-            stock_data = get_data_service().get_single_stock_data(ps.ticker)
-            if stock_data:
-                current_value = float(stock_data['last_price']) * ps.quantity
-                purchase_value = ps.purchase_price * ps.quantity
-                profit_loss = current_value - purchase_value
-                
-                overview_data['total_value'] += current_value
-                overview_data['total_profit_loss'] += profit_loss
-                
-                # Sektorfordeling
-                sector = stock_data.get('sector', 'Annet')
-                if sector not in overview_data['sectors']:
-                    overview_data['sectors'][sector] = 0
-                overview_data['sectors'][sector] += current_value
-                
-                # Aksjedata
-                overview_data['stocks'][ps.ticker] = {
-                    'name': stock_data.get('shortName', ps.ticker),
-                    'quantity': ps.quantity,
-                    'purchase_price': ps.purchase_price,
-                    'current_price': stock_data['last_price'],
-                    'current_value': current_value,
-                    'profit_loss': profit_loss,
-                    'profit_loss_percent': ((current_value / purchase_value) - 1) * 100 if purchase_value > 0 else 0
-                }
-        
-        # Beregn prosenter for sektorfordeling
-        if overview_data['total_value'] > 0:
-            for sector in overview_data['sectors']:
-                overview_data['sectors'][sector] = round(
-                    (overview_data['sectors'][sector] / overview_data['total_value']) * 100, 2
-                )
-        
-        return render_template('portfolio/overview.html', overview=overview_data)
-        
-    except Exception as e:
-        current_app.logger.error(f"Error in portfolio overview: {str(e)}")
-        flash('En feil oppstod under lasting av porteføljeoversikt.', 'error')
-        return redirect(url_for('portfolio.portfolio_index'))
 
 @portfolio.route('/transactions')
 @access_required

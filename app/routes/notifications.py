@@ -174,18 +174,20 @@ def api_unread_count():
 def settings():
     """Notification settings page"""
     try:
-        # Get user's notification preferences
+        # Get user's notification preferences using new methods
+        user_settings = current_user.get_notification_settings()
+        
         preferences = {
-            'email_enabled': getattr(current_user, 'email_notifications', True),
-            'push_enabled': getattr(current_user, 'push_notifications', False),
-            'price_alerts': getattr(current_user, 'price_alerts_enabled', True),
-            'insider_alerts': getattr(current_user, 'insider_alerts_enabled', True),
-            'earnings_alerts': getattr(current_user, 'earnings_alerts_enabled', True),
-            'analyst_alerts': getattr(current_user, 'analyst_alerts_enabled', True),
-            'volume_alerts': getattr(current_user, 'volume_alerts_enabled', False),
-            'daily_summary': getattr(current_user, 'daily_summary_enabled', False),
-            'market_news': getattr(current_user, 'market_news_enabled', False),
-            'system_updates': getattr(current_user, 'system_updates_enabled', True)
+            'email_enabled': user_settings.get('email_enabled', True),
+            'push_enabled': user_settings.get('push_enabled', False),
+            'price_alerts': user_settings.get('price_alerts', True),
+            'insider_alerts': user_settings.get('insider_alerts', True),
+            'earnings_alerts': user_settings.get('earnings_alerts', True),
+            'analyst_alerts': user_settings.get('analyst_alerts', True),
+            'volume_alerts': user_settings.get('volume_alerts', False),
+            'daily_summary': user_settings.get('daily_summary', False),
+            'market_news': user_settings.get('market_news', False),
+            'system_updates': user_settings.get('system_updates', True)
         }
         
         return render_template('notifications/settings.html', preferences=preferences)
@@ -201,31 +203,31 @@ def api_update_settings():
     try:
         data = request.get_json()
         
-        # Update user preferences
-        if hasattr(current_user, 'email_notifications'):
-            current_user.email_notifications = data.get('email_enabled', True)
-        if hasattr(current_user, 'push_notifications'):
-            current_user.push_notifications = data.get('push_enabled', False)
-        if hasattr(current_user, 'price_alerts_enabled'):
-            current_user.price_alerts_enabled = data.get('price_alerts', True)
-        if hasattr(current_user, 'insider_alerts_enabled'):
-            current_user.insider_alerts_enabled = data.get('insider_alerts', True)
-        if hasattr(current_user, 'earnings_alerts_enabled'):
-            current_user.earnings_alerts_enabled = data.get('earnings_alerts', True)
-        if hasattr(current_user, 'analyst_alerts_enabled'):
-            current_user.analyst_alerts_enabled = data.get('analyst_alerts', True)
-        if hasattr(current_user, 'volume_alerts_enabled'):
-            current_user.volume_alerts_enabled = data.get('volume_alerts', False)
-        if hasattr(current_user, 'daily_summary_enabled'):
-            current_user.daily_summary_enabled = data.get('daily_summary', False)
-        if hasattr(current_user, 'market_news_enabled'):
-            current_user.market_news_enabled = data.get('market_news', False)
-        if hasattr(current_user, 'system_updates_enabled'):
-            current_user.system_updates_enabled = data.get('system_updates', True)
+        # Get current settings
+        current_settings = current_user.get_notification_settings()
         
-        db.session.commit()
+        # Update settings with new values
+        current_settings.update({
+            'email_enabled': data.get('email_enabled', True),
+            'push_enabled': data.get('push_enabled', False),
+            'price_alerts': data.get('price_alerts', True),
+            'insider_alerts': data.get('insider_alerts', True),
+            'earnings_alerts': data.get('earnings_alerts', True),
+            'analyst_alerts': data.get('analyst_alerts', True),
+            'volume_alerts': data.get('volume_alerts', False),
+            'daily_summary': data.get('daily_summary', False),
+            'market_news': data.get('market_news', False),
+            'system_updates': data.get('system_updates', True)
+        })
         
-        return jsonify({'success': True, 'message': 'Innstillinger oppdatert'})
+        # Save updated settings
+        success = current_user.update_notification_settings(current_settings)
+        
+        if success:
+            return jsonify({'success': True, 'message': 'Innstillinger oppdatert'})
+        else:
+            return jsonify({'success': False, 'error': 'Kunne ikke oppdatere innstillinger'})
+            
     except Exception as e:
         logger.error(f"Error updating notification settings: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -318,78 +320,45 @@ def user_preferences():
         if request.method == 'POST':
             data = request.get_json()
             
-            # Get or create user notification settings
-            settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
-            if not settings:
-                settings = NotificationSettings(user_id=current_user.id)
-                db.session.add(settings)
+            # Update user's language setting
+            if 'language' in data:
+                current_user.set_language(data['language'])
             
-            # Update settings safely with fallback for missing columns
-            try:
-                if 'language' in data:
-                    settings.language = data['language']
-            except Exception:
-                pass  # Column might not exist
+            # Update notification settings using the new notification_settings column
+            current_settings = current_user.get_notification_settings()
             
-            try:
-                if 'display_mode' in data:
-                    settings.display_mode = data['display_mode']
-            except Exception:
-                pass  # Column might not exist
+            # Update settings from request data
+            if 'display_mode' in data:
+                current_settings['display_mode'] = data['display_mode']
+            if 'number_format' in data:
+                current_settings['number_format'] = data['number_format']
+            if 'dashboard_widgets' in data:
+                current_settings['dashboard_widgets'] = data['dashboard_widgets']
+            if 'email_enabled' in data:
+                current_settings['email_enabled'] = data['email_enabled']
+            if 'push_enabled' in data:
+                current_settings['push_enabled'] = data['push_enabled']
             
-            try:
-                if 'number_format' in data:
-                    settings.number_format = data['number_format']
-            except Exception:
-                pass  # Column might not exist
+            # Save updated settings
+            success = current_user.update_notification_settings(current_settings)
             
-            try:
-                if 'dashboard_widgets' in data:
-                    settings.dashboard_widgets = data['dashboard_widgets']
-            except Exception:
-                pass  # Column might not exist
-            
-            try:
-                db.session.commit()
+            if success:
                 return jsonify({'success': True, 'message': 'Preferanser oppdatert'})
-            except Exception as e:
-                db.session.rollback()
-                logger.error(f"Error saving notification preferences: {e}")
+            else:
                 return jsonify({'success': False, 'error': 'Kunne ikke lagre preferanser'})
         
         # GET request - return current preferences
-        settings = NotificationSettings.query.filter_by(user_id=current_user.id).first()
+        current_settings = current_user.get_notification_settings()
         
-        # Return safe defaults if no settings exist
-        if not settings:
-            return jsonify({
-                'language': 'no',
-                'display_mode': 'light',
-                'number_format': 'norwegian',
-                'dashboard_widgets': 'default'
-            })
-        
-        # Return existing settings with safe access
-        preferences = {}
-        try:
-            preferences['language'] = getattr(settings, 'language', 'no')
-        except:
-            preferences['language'] = 'no'
-        
-        try:
-            preferences['display_mode'] = getattr(settings, 'display_mode', 'light')
-        except:
-            preferences['display_mode'] = 'light'
-        
-        try:
-            preferences['number_format'] = getattr(settings, 'number_format', 'norwegian')
-        except:
-            preferences['number_format'] = 'norwegian'
-        
-        try:
-            preferences['dashboard_widgets'] = getattr(settings, 'dashboard_widgets', 'default')
-        except:
-            preferences['dashboard_widgets'] = 'default'
+        # Return preferences with safe defaults
+        preferences = {
+            'language': current_user.get_language(),
+            'display_mode': current_settings.get('display_mode', 'light'),
+            'number_format': current_settings.get('number_format', 'norwegian'),
+            'dashboard_widgets': current_settings.get('dashboard_widgets', 'default'),
+            'email_enabled': current_settings.get('email_enabled', True),
+            'push_enabled': current_settings.get('push_enabled', False)
+        }
         
         return jsonify(preferences)
         

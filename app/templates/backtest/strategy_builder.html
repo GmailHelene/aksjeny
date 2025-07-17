@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}Strategibygger - Backtest | Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="bi bi-wrench text-primary"></i> Strategibygger
+                    </h1>
+                    <p class="text-muted">Bygg og test dine egne handelsstrategier</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('backtest_bp.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Tilbake til backtest
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Strategy Builder Form -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5><i class="bi bi-gear me-2"></i>Strategiparametere</h5>
+                </div>
+                <div class="card-body">
+                    <form id="strategyForm">
+                        <!-- Strategy Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Strateginavn</label>
+                            <input type="text" class="form-control" id="strategyName" placeholder="Min strategi" required>
+                        </div>
+
+                        <!-- Entry Conditions -->
+                        <div class="mb-3">
+                            <label class="form-label">Inngangsvilkår</label>
+                            <div class="mb-2">
+                                <select class="form-select" id="entryIndicator">
+                                    <option value="">Velg indikator</option>
+                                    <option value="sma">Simple Moving Average</option>
+                                    <option value="ema">Exponential Moving Average</option>
+                                    <option value="rsi">RSI</option>
+                                    <option value="macd">MACD</option>
+                                    <option value="bb">Bollinger Bands</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="entryPeriod" placeholder="Periode" min="1" max="200">
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="entryCondition">
+                                        <option value="above">Over</option>
+                                        <option value="below">Under</option>
+                                        <option value="cross_above">Krysser over</option>
+                                        <option value="cross_below">Krysser under</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="number" class="form-control mt-2" id="entryValue" placeholder="Verdi" step="0.01">
+                        </div>
+
+                        <!-- Exit Conditions -->
+                        <div class="mb-3">
+                            <label class="form-label">Utgangsvilkår</label>
+                            <div class="mb-2">
+                                <select class="form-select" id="exitIndicator">
+                                    <option value="">Velg indikator</option>
+                                    <option value="sma">Simple Moving Average</option>
+                                    <option value="ema">Exponential Moving Average</option>
+                                    <option value="rsi">RSI</option>
+                                    <option value="macd">MACD</option>
+                                    <option value="stop_loss">Stop Loss</option>
+                                    <option value="take_profit">Take Profit</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="exitPeriod" placeholder="Periode" min="1" max="200">
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="exitCondition">
+                                        <option value="above">Over</option>
+                                        <option value="below">Under</option>
+                                        <option value="cross_above">Krysser over</option>
+                                        <option value="cross_below">Krysser under</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="number" class="form-control mt-2" id="exitValue" placeholder="Verdi (%)" step="0.01">
+                        </div>
+
+                        <!-- Risk Management -->
+                        <div class="mb-3">
+                            <label class="form-label">Risikostyring</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label small">Stop Loss (%)</label>
+                                    <input type="number" class="form-control" id="stopLoss" placeholder="5" step="0.1" min="0" max="50">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Take Profit (%)</label>
+                                    <input type="number" class="form-control" id="takeProfit" placeholder="10" step="0.1" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Position Sizing -->
+                        <div class="mb-3">
+                            <label class="form-label">Posisjonsstørrelse</label>
+                            <select class="form-select" id="positionSize">
+                                <option value="fixed">Fast beløp</option>
+                                <option value="percentage">Prosent av kapital</option>
+                                <option value="kelly">Kelly Criterion</option>
+                            </select>
+                            <input type="number" class="form-control mt-2" id="positionValue" placeholder="100000" step="1000">
+                        </div>
+
+                        <!-- Test Parameters -->
+                        <div class="mb-3">
+                            <label class="form-label">Testperiode</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="date" class="form-control" id="startDate">
+                                </div>
+                                <div class="col-6">
+                                    <input type="date" class="form-control" id="endDate">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-play"></i> Test strategi
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Strategy Templates -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-collection me-2"></i>Strategimaler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="loadTemplate('golden_cross')">
+                            Golden Cross (SMA 50/200)
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="loadTemplate('rsi_oversold')">
+                            RSI Oversolgt
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="loadTemplate('bollinger_mean')">
+                            Bollinger Mean Reversion
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="loadTemplate('momentum')">
+                            Momentum Følger
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Visualization -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="bi bi-graph-up me-2"></i>Strategivisualisering</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportStrategy()">
+                            <i class="bi bi-download"></i> Eksporter
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="saveStrategy()">
+                            <i class="bi bi-save"></i> Lagre
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="strategyChart" style="height: 400px;">
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
+                                <i class="bi bi-graph-up display-1 text-muted"></i>
+                                <h4 class="text-muted mt-3">Bygg din strategi</h4>
+                                <p class="text-muted">Velg parametere til venstre for å se strategien visualisert her</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="card border-0 shadow-sm mt-4" id="resultsPanel" style="display: none;">
+                <div class="card-header">
+                    <h5><i class="bi bi-bar-chart me-2"></i>Backtestresultater</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h5 class="text-primary">Total avkastning</h5>
+                                <h3 id="totalReturn">-</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h5 class="text-success">Sharpe Ratio</h5>
+                                <h3 id="sharpeRatio">-</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h5 class="text-warning">Max Drawdown</h5>
+                                <h3 id="maxDrawdown">-</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h5 class="text-info">Antall trades</h5>
+                                <h3 id="tradeCount">-</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Handelsstatistikk</h6>
+                            <ul class="list-unstyled">
+                                <li>Vinnende trades: <span id="winRate" class="float-end">-</span></li>
+                                <li>Gjennomsnittlig gevinst: <span id="avgWin" class="float-end">-</span></li>
+                                <li>Gjennomsnittlig tap: <span id="avgLoss" class="float-end">-</span></li>
+                                <li>Profit Factor: <span id="profitFactor" class="float-end">-</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Risikometrikker</h6>
+                            <ul class="list-unstyled">
+                                <li>Volatilitet: <span id="volatility" class="float-end">-</span></li>
+                                <li>Calmar Ratio: <span id="calmarRatio" class="float-end">-</span></li>
+                                <li>VaR (95%): <span id="var95" class="float-end">-</span></li>
+                                <li>Beta: <span id="beta" class="float-end">-</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let strategyChart = null;
+
+// Strategy form submission
+document.getElementById('strategyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    runBacktest();
+});
+
+// Template loading functions
+function loadTemplate(templateName) {
+    const templates = {
+        'golden_cross': {
+            name: 'Golden Cross',
+            entryIndicator: 'sma',
+            entryPeriod: 50,
+            entryCondition: 'cross_above',
+            entryValue: 200,
+            exitIndicator: 'sma',
+            exitPeriod: 50,
+            exitCondition: 'cross_below',
+            exitValue: 200,
+            stopLoss: 5,
+            takeProfit: 15
+        },
+        'rsi_oversold': {
+            name: 'RSI Oversolgt',
+            entryIndicator: 'rsi',
+            entryPeriod: 14,
+            entryCondition: 'below',
+            entryValue: 30,
+            exitIndicator: 'rsi',
+            exitPeriod: 14,
+            exitCondition: 'above',
+            exitValue: 70,
+            stopLoss: 3,
+            takeProfit: 10
+        },
+        'bollinger_mean': {
+            name: 'Bollinger Mean Reversion',
+            entryIndicator: 'bb',
+            entryPeriod: 20,
+            entryCondition: 'below',
+            entryValue: -2,
+            exitIndicator: 'bb',
+            exitPeriod: 20,
+            exitCondition: 'above',
+            exitValue: 0,
+            stopLoss: 4,
+            takeProfit: 8
+        },
+        'momentum': {
+            name: 'Momentum Følger',
+            entryIndicator: 'ema',
+            entryPeriod: 12,
+            entryCondition: 'cross_above',
+            entryValue: 26,
+            exitIndicator: 'ema',
+            exitPeriod: 12,
+            exitCondition: 'cross_below',
+            exitValue: 26,
+            stopLoss: 6,
+            takeProfit: 12
+        }
+    };
+
+    const template = templates[templateName];
+    if (template) {
+        // Populate form with template values
+        document.getElementById('strategyName').value = template.name;
+        document.getElementById('entryIndicator').value = template.entryIndicator;
+        document.getElementById('entryPeriod').value = template.entryPeriod;
+        document.getElementById('entryCondition').value = template.entryCondition;
+        document.getElementById('entryValue').value = template.entryValue;
+        document.getElementById('exitIndicator').value = template.exitIndicator;
+        document.getElementById('exitPeriod').value = template.exitPeriod;
+        document.getElementById('exitCondition').value = template.exitCondition;
+        document.getElementById('exitValue').value = template.exitValue;
+        document.getElementById('stopLoss').value = template.stopLoss;
+        document.getElementById('takeProfit').value = template.takeProfit;
+    }
+}
+
+function runBacktest() {
+    // Show loading state
+    document.getElementById('resultsPanel').style.display = 'block';
+    
+    // Simulate backtest results (in real app, this would be an API call)
+    setTimeout(() => {
+        displayResults({
+            totalReturn: '+24.5%',
+            sharpeRatio: '1.34',
+            maxDrawdown: '-8.2%',
+            tradeCount: '47',
+            winRate: '63.8%',
+            avgWin: '+2.8%',
+            avgLoss: '-1.4%',
+            profitFactor: '1.85',
+            volatility: '18.3%',
+            calmarRatio: '2.99',
+            var95: '-3.1%',
+            beta: '0.87'
+        });
+        
+        createStrategyChart();
+    }, 1500);
+}
+
+function displayResults(results) {
+    document.getElementById('totalReturn').textContent = results.totalReturn;
+    document.getElementById('totalReturn').className = results.totalReturn.startsWith('+') ? 'text-success' : 'text-danger';
+    
+    document.getElementById('sharpeRatio').textContent = results.sharpeRatio;
+    document.getElementById('maxDrawdown').textContent = results.maxDrawdown;
+    document.getElementById('tradeCount').textContent = results.tradeCount;
+    document.getElementById('winRate').textContent = results.winRate;
+    document.getElementById('avgWin').textContent = results.avgWin;
+    document.getElementById('avgLoss').textContent = results.avgLoss;
+    document.getElementById('profitFactor').textContent = results.profitFactor;
+    document.getElementById('volatility').textContent = results.volatility;
+    document.getElementById('calmarRatio').textContent = results.calmarRatio;
+    document.getElementById('var95').textContent = results.var95;
+    document.getElementById('beta').textContent = results.beta;
+}
+
+function createStrategyChart() {
+    const ctx = document.getElementById('strategyChart').getContext('2d');
+    
+    if (strategyChart) {
+        strategyChart.destroy();
+    }
+    
+    // Generate sample equity curve data
+    const dates = [];
+    const equityCurve = [];
+    const benchmark = [];
+    let equity = 100000;
+    let benchmarkValue = 100000;
+    
+    for (let i = 0; i < 252; i++) { // One year of trading days
+        const date = new Date();
+        date.setDate(date.getDate() - (252 - i));
+        dates.push(date.toISOString().split('T')[0]);
+        
+        // Simulate returns
+        const strategyReturn = (Math.random() - 0.47) * 0.02; // Slightly positive bias
+        const benchmarkReturn = (Math.random() - 0.5) * 0.015;
+        
+        equity *= (1 + strategyReturn);
+        benchmarkValue *= (1 + benchmarkReturn);
+        
+        equityCurve.push(equity);
+        benchmark.push(benchmarkValue);
+    }
+    
+    strategyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Strategi',
+                data: equityCurve,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.1
+            }, {
+                label: 'Benchmark',
+                data: benchmark,
+                borderColor: '#6c757d',
+                backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '€' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Equity Curve - Strategy vs Benchmark'
+                }
+            }
+        }
+    });
+}
+
+function saveStrategy() {
+    // Implement strategy saving
+    alert('Strategi lagret! (Ikke implementert ennå)');
+}
+
+function exportStrategy() {
+    // Implement strategy export
+    alert('Eksport vil være tilgjengelig snart!');
+}
+
+// Set default dates
+const today = new Date();
+const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+document.getElementById('endDate').value = today.toISOString().split('T')[0];
+document.getElementById('startDate').value = oneYearAgo.toISOString().split('T')[0];
+</script>
+{% endblock %}
