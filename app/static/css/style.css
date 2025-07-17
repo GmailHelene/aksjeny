@@ -416,6 +416,55 @@ main {
     .nav-pills-custom .nav-link {
         border-radius: 8px;
     }
+    
+    /* Mobile spacing fixes */
+    .container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    
+    /* Fix card overflow on mobile */
+    .card {
+        width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix tables on mobile */
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto !important;
+    }
+    
+    /* Fix navigation dropdown positioning */
+    .dropdown-menu {
+        position: static !important;
+        float: none !important;
+        width: 100% !important;
+        background-color: #3a3a3a !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin-top: 0 !important;
+        padding-left: 1.5rem !important;
+    }
+    
+    /* Fix spacing between nav items */
+    .navbar-nav .nav-item {
+        margin-bottom: 5px !important;
+    }
+    
+    /* Ensure text readability on mobile */
+    h1, .h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    h2, .h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Fix any scrolling issues */
+    body {
+        overflow-x: hidden !important;
+    }
 }
 
 /* Missing responsive display classes - Critical Fix */
@@ -716,6 +765,14 @@ main {
     background-color: #0b5ed7 !important;
     border-color: #0a58ca !important;
     color: #fff !important;
+}
+
+/* Ensure buttons in subscription page have white text */
+.pricing-card .btn-primary,
+.pricing-card .btn-success,
+button[type="submit"].btn-primary,
+button[type="submit"].btn-success {
+    color: #ffffff !important;
 }
 
 .btn-outline-primary {

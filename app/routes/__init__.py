@@ -49,7 +49,7 @@ def create_app(config_name='default'):
             # Redirect to /demo for main/index routes
             if request.endpoint in ('main.index', 'main', 'main.landing', 'main.home', 'main.demo'):
                 app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /demo")
-                return redirect(url_for('main.demo', source='trial_expired'))
+                return redirect(url_for('main.demo'))
             # Otherwise, default to login
             app.logger.warning("[UNAUTHORIZED HANDLER] Redirecting to /login")
             return redirect(url_for('main.login', next=request.url))

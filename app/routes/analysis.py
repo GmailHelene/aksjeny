@@ -136,9 +136,9 @@ def warren_buffett():
         flash("En feil oppstod ved lasting av Warren Buffett-analysen.", "error")
         return redirect(url_for('analysis.index'))
 
-@analysis.route('/benjamin-graham')
+@analysis.route('/benjamin-graham-view')
 @access_required  
-def benjamin_graham():
+def benjamin_graham_view():
     """Benjamin Graham analysis style"""
     try:
         ticker = request.args.get('ticker')
@@ -173,9 +173,9 @@ def benjamin_graham():
         flash("En feil oppstod ved lasting av Benjamin Graham-analysen.", "error")
         return redirect(url_for('analysis.index'))
 
-@analysis.route('/sentiment')
+@analysis.route('/sentiment-view')
 @access_required
-def sentiment():
+def sentiment_view():
     """Social sentiment analysis"""
     try:
         ticker = request.args.get('ticker')
@@ -207,9 +207,9 @@ def sentiment():
         flash("En feil oppstod ved lasting av sentiment-analysen.", "error")
         return redirect(url_for('analysis.index'))
 
-@analysis.route('/screener')
+@analysis.route('/screener-view')
 @access_required
-def screener():
+def screener_view():
     """Stock screening tool"""
     try:
         # Get screening parameters
@@ -265,9 +265,9 @@ def screener():
         flash("En feil oppstod ved lasting av screeneren.", "error")
         return redirect(url_for('analysis.index'))
 
-@analysis.route('/short-analysis')
+@analysis.route('/short-analysis-view')
 @access_required
-def short_analysis():
+def short_analysis_view():
     """Short selling analysis"""
     try:
         ticker = request.args.get('ticker')
@@ -876,9 +876,9 @@ def download_file(filename):
     """Download exported files"""
     return send_from_directory(current_app.config['EXPORT_FOLDER'], filename, as_attachment=True)
 
-@analysis.route('/warren-buffett', methods=['GET', 'POST'])
+@analysis.route('/warren-buffett-analysis', methods=['GET', 'POST'])
 @access_required
-def warren_buffett():
+def warren_buffett_analysis():
     """Warren Buffett investment analysis"""
     if request.method == 'GET':
         # Return form page with available stocks
@@ -892,7 +892,7 @@ def warren_buffett():
     ticker = request.form.get('ticker')
     if not ticker:
         flash('Vennligst velg en aksje', 'error')
-        return redirect(url_for('analysis.warren_buffett'))
+        return redirect(url_for('analysis.warren_buffett_analysis'))
     
     try:
         # Generate Buffett-style analysis with demo data
@@ -941,7 +941,7 @@ def warren_buffett():
     except Exception as e:
         current_app.logger.error(f"Error in Warren Buffett analysis for {ticker}: {str(e)}")
         flash('Kunne ikke hente data for denne aksjen', 'error')
-        return redirect(url_for('analysis.warren_buffett'))
+        return redirect(url_for('analysis.warren_buffett_analysis'))
 
 @analysis.route('/benjamin-graham', methods=['GET', 'POST'])
 @access_required

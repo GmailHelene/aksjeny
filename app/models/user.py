@@ -24,10 +24,8 @@ class DeviceTrialTracker(db.Model):
         return f'<DeviceTrialTracker {self.device_fingerprint}>'
     
     def trial_expired(self):
-        """Check if trial period (10 minutes) has expired"""
-        if not self.trial_start_time:
-            return True
-        return datetime.utcnow() - self.trial_start_time > timedelta(minutes=10)
+        """Check if trial period has expired - Always returns False as trials are permanently disabled"""
+        return False
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'  # <-- Viktig!
@@ -79,13 +77,8 @@ class User(UserMixin, db.Model):
         return False
     
     def is_in_trial_period(self):
-        """Check if the user is in their free trial period (10 minutes)"""
-        if not self.trial_used or not self.trial_start:
-            return False
-        
-        # Trial period is 10 minutes
-        trial_end = self.trial_start + timedelta(minutes=10)
-        return datetime.utcnow() <= trial_end
+        """Check if the user is in their free trial period - Always returns True as trials are permanently disabled"""
+        return True
     
     def has_active_subscription(self):
         """Check if the user has an active subscription"""

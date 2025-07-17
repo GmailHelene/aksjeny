@@ -819,7 +819,7 @@ def privacy_policy():
 def financial_dashboard():
     """Financial dashboard with tabbed interface"""
     try:
-        return render_template('dashboard/financial_dashboard.html')
+        return render_template('financial_dashboard.html')
     except Exception as e:
         current_app.logger.error(f"Error in financial dashboard: {str(e)}")
         flash("En feil oppstod ved lasting av dashbordet.", "error")
