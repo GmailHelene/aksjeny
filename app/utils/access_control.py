@@ -182,6 +182,14 @@ def pro_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def demo_access(f):
+    """Demo access decorator - allows access without login for demonstration purposes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Demo access allows public access to certain endpoints
+        return f(*args, **kwargs)
+    return decorated_function
+
 def _is_exempt_user():
     """Check if current user is exempt (admin)"""
     return (current_user.is_authenticated and 
