@@ -10,7 +10,7 @@
             <div class="flex items-center space-x-2 text-sm text-gray-600">
                 <a href="{{ url_for('main.index') }}" class="hover:text-blue-600">Hjem</a>
                 <span>/</span>
-                <a href="{{ url_for('news.news_index') }}" class="hover:text-blue-600">Nyheter</a>
+                <a href="{{ url_for('news_bp.index') }}" class="hover:text-blue-600">Nyheter</a>
                 <span>/</span>
                 <span class="text-gray-800">{{ article.title[:50] }}{% if article.title|length > 50 %}...{% endif %}</span>
             </div>
@@ -69,7 +69,7 @@
                     </a>
                     {% endif %}
                     
-                    <a href="{{ url_for('news.news_index') }}" 
+                    <a href="{{ url_for('news_bp.index') }}" 
                        class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0L2.586 11A2 2 0 012 9.586V6a2 2 0 012-2h3.586a2 2 0 011.414.586l3.707 3.707a1 1 0 010 1.414l-3.707 3.707z" clip-rule="evenodd"></path>
@@ -87,7 +87,7 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="font-semibold text-gray-900 mb-2">Markedsoppdatering</h3>
                     <p class="text-gray-600 text-sm mb-3">Siste utvikling i finansmarkedene...</p>
-                    <a href="{{ url_for('news.news_index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Les mer →</a>
+                    <a href="{{ url_for('news_bp.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Les mer →</a>
                 </div>
                 
                 <div class="bg-white rounded-lg shadow-md p-6">
