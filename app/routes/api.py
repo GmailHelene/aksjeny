@@ -48,7 +48,7 @@ def get_crypto_trending():
         })
     except Exception as e:
         logger.error(f"Error fetching trending crypto: {e}")
-        return jsonify({'error': 'Failed to fetch trending crypto'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/crypto/data')
 def get_crypto_data():
@@ -62,7 +62,7 @@ def get_crypto_data():
         })
     except Exception as e:
         logger.error(f"Error fetching crypto data: {e}")
-        return jsonify({'error': 'Failed to fetch crypto data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/currency/rates')
 def get_currency_rates():
@@ -76,7 +76,7 @@ def get_currency_rates():
         })
     except Exception as e:
         logger.error(f"Error fetching currency rates: {e}")
-        return jsonify({'error': 'Failed to fetch currency rates'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/dashboard/data')
 def get_dashboard_data():
@@ -105,7 +105,7 @@ def get_dashboard_data():
         })
     except Exception as e:
         logger.error(f"Error fetching dashboard data: {e}")
-        return jsonify({'error': 'Failed to fetch dashboard data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/financial/news')
 def get_financial_news():
@@ -151,7 +151,7 @@ def get_financial_news():
         })
     except Exception as e:
         logger.error(f"Error fetching financial news: {e}")
-        return jsonify({'error': 'Failed to fetch financial news'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/economic/indicators')
 def get_economic_indicators():
@@ -189,7 +189,7 @@ def get_economic_indicators():
         })
     except Exception as e:
         logger.error(f"Error fetching economic indicators: {e}")
-        return jsonify({'error': 'Failed to fetch economic indicators'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market/sectors')
 def get_market_sectors():
@@ -249,7 +249,7 @@ def get_market_sectors():
         })
     except Exception as e:
         logger.error(f"Error fetching sector analysis: {e}")
-        return jsonify({'error': 'Failed to fetch sector analysis'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/insider/analysis/<symbol>')
 def get_insider_analysis(symbol):
@@ -284,7 +284,7 @@ def get_insider_analysis(symbol):
         })
     except Exception as e:
         logger.error(f"Error fetching insider analysis: {e}")
-        return jsonify({'error': 'Failed to fetch insider analysis'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/crypto')
 def get_crypto():
@@ -294,7 +294,7 @@ def get_crypto():
         return jsonify(data)
     except Exception as e:
         logger.error(f"Error fetching crypto overview: {e}")
-        return jsonify({'error': 'Failed to fetch crypto overview'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/currency')
 def get_currency():
@@ -386,7 +386,7 @@ def search():
         return jsonify({'results': results})
     except Exception as e:
         logger.error(f"Search error: {e}")
-        return jsonify({'error': 'Search failed', 'results': []}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/stocks/search')
 def search_stocks():
@@ -401,7 +401,7 @@ def search_stocks():
         return jsonify({'success': True, 'results': results})
     except Exception as e:
         logger.error(f"Error searching stocks: {str(e)}")
-        return jsonify({'error': 'Search failed'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/stock/<symbol>')
 @api_access_required
@@ -415,7 +415,7 @@ def get_stock_data(symbol):
         return jsonify(stock_data)
     except Exception as e:
         logger.error(f"Error fetching stock data for {symbol}: {e}")
-        return jsonify({'error': 'Failed to fetch stock data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/stock/<symbol>/price')
 @access_required
@@ -429,7 +429,7 @@ def get_stock_price(symbol):
         return jsonify(price_data)
     except Exception as e:
         logger.error(f"Error fetching price for {symbol}: {e}")
-        return jsonify({'error': 'Failed to fetch price data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/stock/<symbol>/analysis')
 @api_access_required
@@ -440,7 +440,7 @@ def get_stock_analysis(symbol):
         return jsonify(analysis)
     except Exception as e:
         logger.error(f"Error getting analysis for {symbol}: {e}")
-        return jsonify({'error': 'Analysis failed'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market/overview')
 @api_access_required
@@ -457,7 +457,7 @@ def market_overview():
         return jsonify(overview)
     except Exception as e:
         logger.error(f"Error fetching market overview: {e}")
-        return jsonify({'error': 'Failed to fetch market overview'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market-data')
 def market_data():
@@ -473,7 +473,7 @@ def market_data():
         return jsonify({'success': True, 'data': data})
     except Exception as e:
         logger.error(f"Error fetching market data: {str(e)}")
-        return jsonify({'error': 'Failed to fetch market data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market-data/realtime')
 @api_access_required
@@ -491,7 +491,7 @@ def market_data_realtime():
         return jsonify({'success': True, 'data': data})
     except Exception as e:
         logger.error(f"Error fetching realtime market data: {str(e)}")
-        return jsonify({'error': 'Failed to fetch realtime market data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/user/watchlist')
 @login_required
@@ -503,7 +503,7 @@ def get_user_watchlist():
         return jsonify({'watchlist': watchlist})
     except Exception as e:
         logger.error(f"Error fetching watchlist: {e}")
-        return jsonify({'error': 'Failed to fetch watchlist'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/user/portfolio')
 @login_required
@@ -515,7 +515,7 @@ def get_user_portfolio():
         return jsonify({'portfolio': portfolio})
     except Exception as e:
         logger.error(f"Error fetching portfolio: {e}")
-        return jsonify({'error': 'Failed to fetch portfolio'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/feedback', methods=['POST'])
 @login_required
@@ -551,7 +551,7 @@ def realtime_price(ticker):
         return jsonify(price_data)
     except Exception as e:
         current_app.logger.error(f"Error getting realtime price for {ticker}: {e}")
-        return jsonify({'error': 'Could not fetch price data'}), 500
+        return jsonify({'success': False, 'error': 'Could not fetch price data'}), 500
 
 @api.route('/realtime/batch-updates', methods=['POST'])
 def realtime_batch_updates():
@@ -581,7 +581,7 @@ def realtime_batch_updates():
         })
     except Exception as e:
         current_app.logger.error(f"Error in batch updates: {e}")
-        return jsonify({'error': 'Could not process batch update'}), 500
+        return jsonify({'success': False, 'error': 'Could not process batch update'}), 500
 
 @api.route('/news/financial')
 def get_financial_news_api():
@@ -716,7 +716,7 @@ def get_general_insider_analysis():
         })
     except Exception as e:
         logger.error(f"Error fetching insider analysis: {e}")
-        return jsonify({'error': 'Failed to fetch insider analysis'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/insider/analysis/<ticker>')
 def insider_analysis(ticker):
@@ -760,7 +760,7 @@ def insider_analysis(ticker):
         })
     except Exception as e:
         logger.error(f"Error fetching insider analysis for {ticker}: {e}")
-        return jsonify({'success': False, 'error': 'Failed to fetch insider analysis'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market/comprehensive', methods=['POST'])
 def market_comprehensive():
@@ -790,7 +790,7 @@ def market_comprehensive():
         })
     except Exception as e:
         logger.error(f"Error fetching comprehensive market data: {e}")
-        return jsonify({'success': False, 'error': 'Failed to fetch market data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 # Public API endpoints - no authentication required
 @api.route('/public/market/data')
@@ -1113,7 +1113,7 @@ def get_public_insider_analysis(symbol):
         })
     except Exception as e:
         logger.error(f"Error fetching insider analysis for {symbol}: {e}")
-        return jsonify({'success': False, 'error': 'Failed to fetch insider analysis'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/public/market/comprehensive', methods=['POST'])
 def get_public_market_comprehensive():
@@ -1143,7 +1143,7 @@ def get_public_market_comprehensive():
         })
     except Exception as e:
         logger.error(f"Error fetching comprehensive market data: {e}")
-        return jsonify({'success': False, 'error': 'Failed to fetch market data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/public/crypto/data')
 def get_public_crypto_data():
@@ -1280,7 +1280,7 @@ def get_stock_symbol_data(symbol):
         })
     except Exception as e:
         logger.error(f"Error fetching stock data for {symbol}: {e}")
-        return jsonify({'error': 'Failed to fetch stock data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/stocks/<symbol>/history')
 @api_access_required
@@ -1304,7 +1304,7 @@ def get_stock_history(symbol):
         })
     except Exception as e:
         logger.error(f"Error fetching history for {symbol}: {e}")
-        return jsonify({'error': 'Failed to fetch historical data'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/market/summary')
 def market_summary():
@@ -1351,7 +1351,7 @@ def market_summary():
         })
     except Exception as e:
         logger.error(f"Error fetching market summary: {e}")
-        return jsonify({'error': 'Failed to fetch market summary'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api.route('/news')
 def get_news():
@@ -1365,4 +1365,4 @@ def get_news():
         })
     except Exception as e:
         logger.error(f"Error fetching news: {e}")
-        return jsonify({'error': 'Failed to fetch news'}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500

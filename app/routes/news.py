@@ -3,144 +3,144 @@ News Blueprint for Aksjeradar
 Handles news-related routes and functionality
 """
 
-from flask import Blueprint, render_template, request, jsonify
-from datetime import datetime, timedelta
-from ..services.news_service import news_service, get_latest_news_sync, get_company_news_sync
-from ..utils.access_control import access_required
-from ..models.user import User
-import asyncio
+from flask import Blueprint, render_template, request, jsonify, current_app
+from ..services.news_service import NewsService
+from ..utils.access_control import demo_access
 import logging
-from datetime import datetime
 
+news_bp = Blueprint('news_bp', __name__)
 logger = logging.getLogger(__name__)
 
-news_bp = Blueprint('news', __name__, url_prefix='/news')
-
 @news_bp.route('/')
-@access_required
-def news_index():
+@demo_access
+def index():
     """Main news page"""
     try:
-        category = request.args.get('category', 'all')
-        limit = int(request.args.get('limit', 20))
-        
-        # Get latest news with fallback
-        try:
-            from ..services.data_service import DataService
-            news_articles = DataService.get_general_news()
-            
-            # If DataService doesn't return articles, create fallback
-            if not news_articles:
-                news_articles = []
-        except Exception as e:
-            logger.error(f"Error fetching news from DataService: {e}")
-            news_articles = []
-        
-        # Always ensure we have news articles by creating fallback
-        if not news_articles or len(news_articles) == 0:
-            current_time = datetime.now()
-            news_articles = [
-                {
-                    'title': 'Oslo Børs: Equinor stiger på høye energipriser',
-                    'summary': 'Equinor har steget 2,1% i dag på bakgrunn av stigende olje- og gasspriser. Selskapet drar nytte av økt etterspørsel etter energi i Europa.',
-                    'publisher': 'Finansavisen',
-                    'providerPublishTime': current_time.timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': ['EQNR.OL']
-                },
-                {
-                    'title': 'DNB Bank med sterke kvartalstall',
-                    'summary': 'DNB Bank rapporterte bedre resultater enn ventet for fjerde kvartal, med økt utlånsvolum og lavere tap.',
-                    'publisher': 'Dagens Næringsliv',
-                    'providerPublishTime': (current_time - timedelta(hours=2)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': ['DNB.OL']
-                },
-                {
-                    'title': 'Teknologiaksjer fortsetter oppgang',
-                    'summary': 'Apple, Microsoft og Google viser fortsatt sterke resultater på amerikanske børser.',
-                    'publisher': 'E24',
-                    'providerPublishTime': (current_time - timedelta(hours=4)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': ['AAPL', 'MSFT', 'GOOGL']
-                },
-                {
-                    'title': 'Norges Bank holder renten uendret',
-                    'summary': 'Sentralbanken besluttet å holde styringsrenten på 4,5% i påvente av videre inflasjonsutviklingen.',
-                    'publisher': 'NTB',
-                    'providerPublishTime': (current_time - timedelta(hours=6)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': []
-                },
-                {
-                    'title': 'Kryptovaluta viser volatilitet',
-                    'summary': 'Bitcoin og Ethereum har svingt kraftig den siste uken, men holder seg over viktige støttenivåer.',
-                    'publisher': 'Bloomberg',
-                    'providerPublishTime': (current_time - timedelta(hours=8)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': ['BTC-USD', 'ETH-USD']
-                },
-                {
-                    'title': 'Shipping-aksjer i vinden',
-                    'summary': 'Frontline og andre shipping-selskaper stiger på økte fraktrater og bedret utsikter for internasjonal handel.',
-                    'publisher': 'Kapital',
-                    'providerPublishTime': (current_time - timedelta(hours=10)).timestamp(),
-                    'thumbnail': None,
-                    'link': '#',
-                    'relatedTickers': ['FRONTLINE.OL']
-                }
-            ]
-        
-        # Debugging information
-        logger.info(f"News articles length: {len(news_articles)}")
+        # Get latest Norwegian financial news
+        news_articles = NewsService.get_latest_news(limit=20, category='norwegian')
         
         return render_template('news/index.html', 
                              news_articles=news_articles,
-                             category=category,
-                             debug_info=f"Debug: news_articles length = {len(news_articles)}")
+                             total_articles=len(news_articles))
+                             
     except Exception as e:
-        logger.error(f"Error in news index: {str(e)}")
-        # Return error template with fallback news
-        current_time = datetime.now()
-        fallback_news = [
-            {
-                'title': 'Markedsoversikt: Stabile markeder',
-                'summary': 'Dagens markeder viser stabile bevegelser med moderat optimisme.',
-                'publisher': 'Aksjeradar',
-                'providerPublishTime': current_time.timestamp(),
-                'thumbnail': None,
-                'link': '#'
-            }
-        ]
-        return render_template('news/index.html',
-                             news_articles=fallback_news,
-                             category=category,
-                             debug_info=f"Error fallback: {str(e)}")
+        logger.error(f"Error loading news: {e}")
+        return render_template('news/index.html', 
+                             news_articles=[],
+                             total_articles=0,
+                             error="Kunne ikke laste nyheter. Prøv igjen senere.")
 
-def get_fallback_news():
-    """Get fallback news data"""
-    current_time = datetime.now()
-    return [
-        {
-            'title': 'DNB Bank rapporterer sterke kvartalstall',
-            'summary': 'Norges største bank leverer bedre resultater enn forventet.',
-            'publisher': 'E24',
-            'providerPublishTime': (current_time - timedelta(hours=2)).timestamp(),
-            'thumbnail': None,
-            'link': '#'
-        },
-        {
-            'title': 'Teknologi-aksjer i vinden på Wall Street',
-            'summary': 'Apple, Microsoft og Google alle viser sterk vekst.',
-            'publisher': 'CNBC',
-            'providerPublishTime': (datetime.now() - timedelta(hours=3)).timestamp(),
-            'thumbnail': None,
-            'link': '#'
+@news_bp.route('/api/latest')
+@demo_access
+def api_latest_news():
+    """API endpoint for latest news"""
+    try:
+        limit = request.args.get('limit', 10, type=int)
+        category = request.args.get('category', 'all')
+        
+        news_articles = NewsService.get_latest_news(limit=limit, category=category)
+        
+        return jsonify({
+            'success': True,
+            'articles': news_articles,
+            'total': len(news_articles)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API latest news: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to load news',
+            'articles': []
+        }), 500
+
+@news_bp.route('/article/<int:article_id>')
+@demo_access
+def article(article_id):
+    """Individual news article"""
+    try:
+        article_data = NewsService.get_article_by_id(article_id)
+        
+        if not article_data:
+            return render_template('news/article.html', 
+                                 article=None,
+                                 error="Artikkel ikke funnet")
+        
+        return render_template('news/article.html', article=article_data)
+        
+    except Exception as e:
+        logger.error(f"Error loading article {article_id}: {e}")
+        return render_template('news/article.html', 
+                             article=None,
+                             error="Feil ved lasting av artikkel")
+
+@news_bp.route('/search')
+@demo_access
+def search():
+    """News search"""
+    query = request.args.get('q', '')
+    results = []
+    
+    if query:
+        try:
+            results = NewsService.search_news(query)
+        except Exception as e:
+            logger.error(f"Error searching news for {query}: {e}")
+    
+    return render_template('news/search.html', 
+                         query=query, 
+                         results=results)
+
+@news_bp.route('/category/<category>')
+@demo_access
+def category(category):
+    """News by category"""
+    try:
+        news_articles = NewsService.get_news_by_category(category)
+        
+        return render_template('news/category.html',
+                             news_articles=news_articles,
+                             category=category)
+                             
+    except Exception as e:
+        logger.error(f"Error loading category {category}: {e}")
+        return render_template('news/category.html',
+                             news_articles=[],
+                             category=category,
+                             error="Feil ved lasting av kategori")
+
+@news_bp.route('/widget')
+@demo_access
+def widget():
+    """News widget for embedding"""
+    try:
+        limit = request.args.get('limit', 5, type=int)
+        news_articles = NewsService.get_latest_news(limit=limit)
+        
+        return render_template('news/widget.html', 
+                             news_articles=news_articles)
+                             
+    except Exception as e:
+        logger.error(f"Error loading news widget: {e}")
+        return render_template('news/widget.html', news_articles=[])
+
+@news_bp.route('/embed')
+@demo_access
+def embed():
+    """Embeddable news feed"""
+    try:
+        limit = request.args.get('limit', 10, type=int)
+        style = request.args.get('style', 'default')
+        
+        news_articles = NewsService.get_latest_news(limit=limit)
+        
+        return render_template('news/embed.html',
+                             news_articles=news_articles,
+                             style=style)
+                             
+    except Exception as e:
+        logger.error(f"Error loading embed: {e}")
+        return render_template('news/embed.html', news_articles=[])
         },
         {
             'title': 'Kryptovaluta-markedet opplever volatilitet',

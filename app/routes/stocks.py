@@ -1,223 +1,273 @@
 import math
 import pandas as pd
-from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, current_app
 from flask_login import current_user, login_required
 from datetime import datetime, timedelta
 from ..services.data_service import DataService
 from ..services.analysis_service import AnalysisService
 from ..services.usage_tracker import usage_tracker
-from ..utils.access_control import access_required
+from ..utils.access_control import access_required, demo_access
 from ..models.favorites import Favorites
 from ..services.notification_service import NotificationService
+import logging
 
-stocks = Blueprint('stocks', __name__, url_prefix='/stocks')
-
+stocks = Blueprint('stocks', __name__)
+logger = logging.getLogger(__name__)
 
 @stocks.route('/')
-@access_required
+@demo_access
 def index():
-    """Show stocks landing page with links to all markets"""
-    return render_template('stocks/index.html')
+    """Main stocks page"""
+    try:
+        oslo_stocks = DataService.get_oslo_bors_overview()
+        global_stocks = DataService.get_global_stocks_overview()
+        
+        return render_template('stocks/index.html',
+                             oslo_stocks=oslo_stocks,
+                             global_stocks=global_stocks)
+    except Exception as e:
+        logger.error(f"Error in stocks index: {e}")
+        flash('Kunne ikke laste aksjedata. Prøv igjen senere.', 'error')
+        return render_template('stocks/index.html', oslo_stocks={}, global_stocks={})
 
 @stocks.route('/list')
-@access_required
-def list_stocks():
-    """List stocks with real-time data"""
-    try:
-        # Get stock_type from query parameter
-        stock_type = request.args.get('stock_type', 'oslo')
-        
-        # Get real data from DataService
-        if stock_type == 'oslo':
-            stocks_data = DataService.get_oslo_bors_overview()
-            title = 'Oslo Børs'
-            # Get "mest omsatte" data for Oslo Børs - sorted by volume
-            all_oslo_stocks = DataService.get_oslo_bors_overview()
-            most_traded_list = sorted(all_oslo_stocks.items(), 
-                                    key=lambda x: float(x[1].get('volume', 0)), 
-                                    reverse=True)[:10]  # Top 10 most traded
-            mest_omsatte = dict(most_traded_list)
-        elif stock_type == 'global':
-            stocks_data = DataService.get_global_stocks_overview()
-            title = 'Globale Markeder'
-            mest_omsatte = None
-        elif stock_type == 'crypto':
-            stocks_data = DataService.get_crypto_overview()
-            title = 'Kryptovaluta'
-            mest_omsatte = None
-        elif stock_type == 'currency':
-            stocks_data = DataService.get_currency_overview()
-            title = 'Valutakurser'
-            mest_omsatte = None
-        else:
-            # Get all categories
-            oslo_stocks = DataService.get_oslo_bors_overview()
-            global_stocks = DataService.get_global_stocks_overview()
-            crypto = DataService.get_crypto_overview()
-            
-            stocks_data = {
-                'oslo': oslo_stocks,
-                'global': global_stocks,
-                'crypto': crypto
-            }
-            title = 'Alle Markeder'
-            mest_omsatte = None
-        
-        return render_template('stocks/list.html', 
-                             stocks=stocks_data,
-                             category=stock_type,
-                             title=title,
-                             mest_omsatte=mest_omsatte)
-                             
-    except Exception as e:
-        current_app.logger.error(f"Error in list_stocks: {str(e)}")
-        return render_template('error.html', 
-                             error="Kunne ikke hente aksjedata. Prøv igjen senere.")
-
 @stocks.route('/list/<category>')
-@access_required
-def list_stocks_by_category(category):
+@demo_access
+def list_stocks(category='all'):
     """List stocks by category"""
     try:
         if category == 'oslo':
-            stocks = DataService.get_oslo_bors_overview()
-            title = 'Aksjeliste - Oslo Børs'
-            # Get "mest omsatte" data for Oslo Børs - sorted by volume
-            all_oslo_stocks = DataService.get_oslo_bors_overview()
-            most_traded_list = sorted(all_oslo_stocks.items(), 
-                                    key=lambda x: float(x[1].get('volume', 0)), 
-                                    reverse=True)[:10]  # Top 10 most traded
-            mest_omsatte = dict(most_traded_list)
+            stocks_data = DataService.get_oslo_bors_overview()
+            title = "Aksjeliste - Oslo Børs"
+            template = 'stocks/list.html'
         elif category == 'global':
-            stocks = DataService.get_global_stocks_overview()
-            title = 'Aksjeliste - Globale Markeder'
-            mest_omsatte = None
+            stocks_data = DataService.get_global_stocks_overview()
+            title = "Aksjeliste - Globale Markeder"
+            template = 'stocks/list.html'
         elif category == 'crypto':
-            stocks = DataService.get_crypto_overview()
-            title = 'Kryptovaluta'
-            mest_omsatte = None
+            stocks_data = DataService.get_crypto_overview()
+            title = "Kryptovaluta"
+            template = 'stocks/crypto.html'
         elif category == 'currency':
-            stocks = DataService.get_currency_overview()
-            title = 'Valutakurser'
-            mest_omsatte = None
+            stocks_data = DataService.get_currency_overview()
+            title = "Valutakurser"
+            template = 'stocks/currency.html'
         else:
-            stocks = {}
-            title = 'Ukjent kategori'
-            mest_omsatte = None
-            
-        return render_template('stocks/list.html',
-                             stocks=stocks,
-                             category=category,
-                             title=title,
-                             mest_omsatte=mest_omsatte)
-    except Exception as e:
-        current_app.logger.error(f"Error listing stocks: {str(e)}")
-        return render_template('error.html', error=str(e))
-
-@stocks.route('/details/<ticker>')
-@access_required
-def details(ticker):
-    """Stock details page with bulletproof error handling"""
-    # Always start with a safe, working data structure
-    safe_stock_data = {
-        'ticker': ticker,
-        'shortName': ticker.replace('.OL', '').replace('-USD', '').replace('.', ''),
-        'longName': f"{ticker.replace('.OL', '').replace('-USD', '')} Corporation",
-        'regularMarketPrice': 100.0,
-        'regularMarketChange': 0.0,
-        'regularMarketChangePercent': 0.0,
-        'currency': 'NOK' if ticker.endswith('.OL') else 'USD',
-        'volume': 1000000,
-        'marketCap': 10000000000,
-        'sector': 'Teknologi',
-        'industry': 'Software',
-        'businessSummary': f'Aksjedata for {ticker} hentes. Vi jobber med å oppdatere informasjonen.',
-        'fiftyTwoWeekHigh': 120.0,
-        'fiftyTwoWeekLow': 80.0,
-        'regularMarketDayHigh': 105.0,
-        'regularMarketDayLow': 95.0,
-        'regularMarketVolume': 1000000,
-        'regularMarketOpen': 100.0,
-        'previousClose': 100.0,
-        'trailingPE': 15.5,
-        'dividendYield': 2.5,
-        'beta': 1.2
-    }
-    
-    safe_technical_data = {
-        'rsi': 50.0,
-        'macd': 0.5,
-        'recommendation': 'HOLD',
-        'moving_averages': {
-            'sma_20': 100.0,
-            'sma_50': 100.0,
-            'sma_200': 100.0
-        }
-    }
-    
-    safe_news = [{
-        'title': f'Markedsoppdatering for {ticker}',
-        'summary': f'Følg med på utviklingen for {ticker} og andre relaterte aksjer.',
-        'url': '#',
-        'published': datetime.utcnow().isoformat(),
-        'source': 'Aksjeradar'
-    }]
-    
-    error_message = None
-    
-    # Try to get real data, but NEVER let it crash
-    try:
-        from ..services.data_service import DataService
-        real_stock_data = DataService.get_stock_info(ticker)
+            # Show all categories
+            oslo_stocks = DataService.get_oslo_bors_overview()
+            global_stocks = DataService.get_global_stocks_overview()
+            return render_template('stocks/list.html',
+                                 oslo_stocks=oslo_stocks,
+                                 global_stocks=global_stocks,
+                                 title="Alle Aksjer")
         
-        # Only update if we got valid data
-        if real_stock_data and isinstance(real_stock_data, dict):
-            # Safely update only fields that exist
-            for key, value in real_stock_data.items():
-                if value is not None and value != '':
-                    safe_stock_data[key] = value
-                    
+        return render_template(template,
+                             stocks=stocks_data,
+                             title=title,
+                             category=category)
+                             
     except Exception as e:
-        current_app.logger.error(f"Error getting stock data for {ticker}: {e}")
-        if "429" in str(e) or "Too Many Requests" in str(e):
-            error_message = "API-grensen nådd. Viser siste tilgjengelige data."
-        else:
-            error_message = "Midlertidig problem med datakilden. Viser fallback-data."
+        logger.error(f"Error in list_stocks for {category}: {e}")
+        flash('Kunne ikke laste aksjedata. Prøv igjen senere.', 'error')
+        return render_template('stocks/list.html', stocks={}, title="Feil")
 
-    # Try to get technical analysis
-    try:
-        from ..services.analysis_service import AnalysisService
-        real_technical = AnalysisService.get_technical_analysis(ticker)
-        if real_technical and isinstance(real_technical, dict):
-            safe_technical_data.update(real_technical)
-    except Exception as e:
-        current_app.logger.warning(f"Could not get technical analysis for {ticker}: {e}")
+@stocks.route('/list/oslo')
+@demo_access
+def list_oslo():
+    """Oslo Børs stocks"""
+    return list_stocks('oslo')
 
-    # Try to get news
-    try:
-        from ..services.data_service import DataService
-        real_news = DataService.get_stock_news(ticker)
-        if real_news and isinstance(real_news, list) and len(real_news) > 0:
-            safe_news = real_news[:5]  # Limit to 5 news items
-    except Exception as e:
-        current_app.logger.warning(f"Could not get news for {ticker}: {e}")
+@stocks.route('/list/global')
+@demo_access
+def global_list():
+    """Global stocks"""
+    return list_stocks('global')
 
-    # ALWAYS return a working response
+@stocks.route('/list/crypto')
+@demo_access
+def list_crypto():
+    """Crypto currencies"""
+    return list_stocks('crypto')
+
+@stocks.route('/list/currency')
+@demo_access
+def list_currency():
+    """Currency rates"""
+    return list_stocks('currency')
+
+@stocks.route('/details/<symbol>')
+@demo_access
+def details(symbol):
+    """Stock details page"""
     try:
-        return render_template('stocks/details.html',
-                             ticker=ticker,
-                             stock=safe_stock_data,
-                             stock_info=safe_stock_data,
-                             technical=safe_technical_data,
-                             news=safe_news,
-                             error=error_message,
-                             last_updated=datetime.utcnow())
+        # Get stock information
+        stock_info = DataService.get_stock_info(symbol)
+        if not stock_info:
+            flash(f'Kunne ikke finne informasjon for {symbol}', 'error')
+            return redirect(url_for('stocks.index'))
+        
+        # Get additional analysis data
+        technical_data = AnalysisService.get_technical_analysis(symbol)
+        
+        return render_template('stocks/detail.html',
+                             symbol=symbol,
+                             stock_info=stock_info,
+                             technical_data=technical_data)
+                             
     except Exception as e:
-        current_app.logger.error(f"Template render error for {ticker}: {e}")
-        # Ultimate fallback - return JSON if template fails
+        logger.error(f"Error in stock details for {symbol}: {e}")
+        flash('Kunne ikke laste aksjedetaljer. Prøv igjen senere.', 'error')
+        return redirect(url_for('stocks.index'))
+
+@stocks.route('/search')
+@demo_access
+def search():
+    """Search for stocks - primary search function"""
+    query = request.args.get('q', '').strip()
+    
+    if not query:
+        return render_template('stocks/search.html', 
+                             results=[], 
+                             query='')
+    
+    try:
+        # Search in all available stocks
+        all_results = []
+        
+        # Search Oslo Børs
+        oslo_stocks = DataService.get_oslo_bors_overview() or {}
+        for ticker, data in oslo_stocks.items():
+            if query.upper() in ticker.upper() or (data.get('name', '') and query.upper() in data.get('name', '').upper()):
+                all_results.append({
+                    'ticker': ticker,
+                    'name': data.get('name', ticker),
+                    'market': 'Oslo Børs',
+                    'price': data.get('last_price', 'N/A'),
+                    'change_percent': data.get('change_percent', 0),
+                    'category': 'oslo'
+                })
+        
+        # Search Global stocks
+        global_stocks = DataService.get_global_stocks_overview() or {}
+        for ticker, data in global_stocks.items():
+            if query.upper() in ticker.upper() or (data.get('name', '') and query.upper() in data.get('name', '').upper()):
+                all_results.append({
+                    'ticker': ticker,
+                    'name': data.get('name', ticker),
+                    'market': 'Global',
+                    'price': data.get('last_price', 'N/A'),
+                    'change_percent': data.get('change_percent', 0),
+                    'category': 'global'
+                })
+        
+        # Search Crypto
+        crypto_data = DataService.get_crypto_overview() or {}
+        for ticker, data in crypto_data.items():
+            if query.upper() in ticker.upper() or (data.get('name', '') and query.upper() in data.get('name', '').upper()):
+                all_results.append({
+                    'ticker': ticker,
+                    'name': data.get('name', ticker),
+                    'market': 'Crypto',
+                    'price': data.get('last_price', 'N/A'),
+                    'change_percent': data.get('change_percent', 0),
+                    'category': 'crypto'
+                })
+        
+        # Limit results
+        all_results = all_results[:20]
+        
+        return render_template('stocks/search.html', 
+                             results=all_results, 
+                             query=query)
+        
+    except Exception as e:
+        current_app.logger.error(f"Error in stock search: {e}")
+        return render_template('stocks/search.html', 
+                             results=[], 
+                             query=query,
+                             error="Søket kunne ikke fullføres. Prøv igjen senere.")
+
+@stocks.route('/api/search')
+@demo_access
+def api_search():
+    """API endpoint for stock search"""
+    query = request.args.get('q', '').strip()
+    
+    if not query:
+        return jsonify({'error': 'No search query provided'}), 400
+    
+    try:
+        results = DataService.search_stocks(query)
         return jsonify({
-            'error': 'Template ikke tilgjengelig',
-            'ticker': ticker,
+            'success': True,
+            'results': results,
+            'query': query
+        })
+    except Exception as e:
+        logger.error(f"Error in API search for {query}: {e}")
+        return jsonify({'error': 'Search failed', 'message': str(e)}), 500
+
+@stocks.route('/api/favorites/add', methods=['POST'])
+@login_required
+def add_to_favorites():
+    """Add stock to favorites"""
+    try:
+        data = request.get_json()
+        symbol = data.get('symbol')
+        
+        if not symbol:
+            return jsonify({'error': 'Symbol required'}), 400
+        
+        # Add to favorites logic here
+        return jsonify({'success': True, 'message': f'{symbol} lagt til i favoritter'})
+        
+    except Exception as e:
+        logger.error(f"Error adding to favorites: {e}")
+        return jsonify({'error': 'Failed to add to favorites'}), 500
+
+@stocks.route('/compare')
+@demo_access
+def compare():
+    """Stock comparison page"""
+    symbols = request.args.getlist('symbols')
+    
+    if not symbols:
+        return render_template('stocks/compare.html', stocks=[])
+    
+    try:
+        stocks_data = []
+        for symbol in symbols:
+            stock_info = DataService.get_stock_info(symbol)
+            if stock_info:
+                stocks_data.append(stock_info)
+        
+        return render_template('stocks/compare.html', stocks=stocks_data)
+        
+    except Exception as e:
+        logger.error(f"Error in stock comparison: {e}")
+        flash('Feil ved sammenligning av aksjer.', 'error')
+        return render_template('stocks/compare.html', stocks=[])
+
+@stocks.route('/prices')
+@demo_access
+def prices():
+    """Stock prices overview"""
+    try:
+        oslo_stocks = DataService.get_oslo_bors_overview()
+        global_stocks = DataService.get_global_stocks_overview()
+        crypto_data = DataService.get_crypto_overview()
+        currency_data = DataService.get_currency_overview()
+        
+        return render_template('stocks/prices.html',
+                             oslo_stocks=oslo_stocks,
+                             global_stocks=global_stocks,
+                             crypto_data=crypto_data,
+                             currency_data=currency_data)
+                             
+    except Exception as e:
+        logger.error(f"Error in prices overview: {e}")
+        flash('Kunne ikke laste prisdata.', 'error')
+        return render_template('stocks/prices.html')
             'data': safe_stock_data,
             'message': 'Vennligst prøv igjen senere'
         })

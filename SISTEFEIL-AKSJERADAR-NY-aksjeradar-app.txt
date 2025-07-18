@@ -1,0 +1,13 @@
+# Remaining issues to address:
+# 1. Benjamin Graham analysis form functionality
+# 2. Warren Buffett analysis page (showing white page)
+# 3. Stock details 500 errors
+# 4. Mobile navigation spacing
+# 5. News loading issues
+# 6. Analysis market-overview page errors
+# 7. Portfolio tips feedback endpoint
+# 8. Currency list page data
+# 9. Database migrations
+# 10. Remaining template and route issues
+
+# TODO: Implement fixes for the above issues as per priority.

@@ -59,13 +59,39 @@ class User(UserMixin, db.Model):
     language = db.Column(db.String(10), default='no')  # Language preference (no, en, etc.)
     notification_settings = db.Column(db.Text, nullable=True)  # JSON string for notification preferences
     
+    # Enhanced authentication fields
+    two_factor_enabled = db.Column(db.Boolean, default=False, nullable=False)
+    two_factor_secret = db.Column(db.String(32), nullable=True)
+    email_verified = db.Column(db.Boolean, default=True, nullable=False)  # Default to True for existing users
+    is_locked = db.Column(db.Boolean, default=False, nullable=False)
+    last_login = db.Column(db.DateTime, nullable=True)
+    login_count = db.Column(db.Integer, default=0, nullable=False)
+    
     def __repr__(self):
         return f'<User {self.username}>'
 
+    def has_subscription_level(self, required_level: str) -> bool:
+        """Check if user has required subscription level"""
+        levels = ['free', 'basic', 'premium', 'enterprise']
+        try:
+            current_level = getattr(self, 'subscription_level', 'free')
+            user_level_index = levels.index(current_level)
+            required_level_index = levels.index(required_level)
+            return user_level_index >= required_level_index
+        except (ValueError, AttributeError):
+            return False
+    
     def set_password(self, password):
+        """Set password hash"""
+        if not hasattr(self, 'password_hash'):
+            # Add password_hash field if it doesn't exist
+            self.password_hash = None
         self.password_hash = generate_password_hash(password)
     
     def check_password(self, password):
+        """Check password"""
+        if not hasattr(self, 'password_hash') or not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
     
     def start_free_trial(self):

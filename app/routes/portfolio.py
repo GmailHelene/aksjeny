@@ -169,53 +169,77 @@ def create_portfolio():
     return render_template('portfolio/create.html')
 
 @portfolio.route('/view/<int:id>')
-@access_required
+@login_required
 def view_portfolio(id):
-    """View a specific portfolio"""
-    portfolio = Portfolio.query.get_or_404(id)
-
-    # Fjern eierskapssjekk for å la alle se
-    stocks_data = []
-    total_value = 0
-    total_investment = 0
-
-    for stock in portfolio.stocks:
-        current_data = get_data_service().get_stock_data(stock.ticker, period='1d')
-        if not current_data.empty:
-            current_price = current_data['Close'].iloc[-1]
-            value = current_price * stock.shares
-            investment = stock.purchase_price * stock.shares
-            gain_loss = (current_price - stock.purchase_price) * stock.shares
-            gain_loss_percent = ((current_price / stock.purchase_price) - 1) * 100 if stock.purchase_price > 0 else 0
-
-            stocks_data.append({
-                'ticker': stock.ticker,
-                'shares': stock.shares,
-                'purchase_price': stock.purchase_price,
-                'current_price': current_price,
-                'value': value,
-                'investment': investment,
-                'gain_loss': gain_loss,
-                'gain_loss_percent': gain_loss_percent
-            })
-
-            total_value += value
-            total_investment += investment
-
-    total_gain_loss = total_value - total_investment
-    total_gain_loss_percent = ((total_value / total_investment) - 1) * 100 if total_investment > 0 else 0
-
-    tickers = [stock.ticker for stock in portfolio.stocks]
-    ai_recommendation = AIService.get_ai_portfolio_recommendation(tickers) if tickers else None
-
-    return render_template('portfolio/view.html',
-                           portfolio=portfolio,
-                           stocks=stocks_data,
-                           total_value=total_value,
-                           total_investment=total_investment,
-                           total_gain_loss=total_gain_loss,
-                           total_gain_loss_percent=total_gain_loss_percent,
-                           ai_recommendation=ai_recommendation)
+    """View a specific portfolio - primary function"""
+    try:
+        portfolio_obj = Portfolio.query.filter_by(id=id, user_id=current_user.id).first()
+        if not portfolio_obj:
+            flash('Portefølje ikke funnet', 'error')
+            return redirect(url_for('portfolio.portfolio_index'))
+        
+        # Get portfolio stocks
+        portfolio_stocks = PortfolioStock.query.filter_by(portfolio_id=id).all()
+        
+        # Calculate portfolio metrics
+        total_value = 0
+        total_cost = 0
+        portfolio_data = []
+        
+        for stock in portfolio_stocks:
+            try:
+                # Get current stock data
+                current_data = DataService.get_stock_data(stock.ticker)
+                if current_data:
+                    current_price = current_data.get('last_price', stock.purchase_price)
+                    current_value = current_price * stock.quantity
+                    cost_value = stock.purchase_price * stock.quantity
+                    gain_loss = current_value - cost_value
+                    gain_loss_percent = (gain_loss / cost_value * 100) if cost_value > 0 else 0
+                    
+                    portfolio_data.append({
+                        'stock': stock,
+                        'current_price': current_price,
+                        'current_value': current_value,
+                        'cost_value': cost_value,
+                        'gain_loss': gain_loss,
+                        'gain_loss_percent': gain_loss_percent
+                    })
+                    
+                    total_value += current_value
+                    total_cost += cost_value
+                    
+            except Exception as e:
+                current_app.logger.error(f"Error getting data for {stock.ticker}: {e}")
+                # Use stored values as fallback
+                cost_value = stock.purchase_price * stock.quantity
+                portfolio_data.append({
+                    'stock': stock,
+                    'current_price': stock.purchase_price,
+                    'current_value': cost_value,
+                    'cost_value': cost_value,
+                    'gain_loss': 0,
+                    'gain_loss_percent': 0
+                })
+                total_value += cost_value
+                total_cost += cost_value
+        
+        # Calculate total metrics
+        total_gain_loss = total_value - total_cost
+        total_gain_loss_percent = (total_gain_loss / total_cost * 100) if total_cost > 0 else 0
+        
+        return render_template('portfolio/view.html',
+                             portfolio=portfolio_obj,
+                             portfolio_data=portfolio_data,
+                             total_value=total_value,
+                             total_cost=total_cost,
+                             total_gain_loss=total_gain_loss,
+                             total_gain_loss_percent=total_gain_loss_percent)
+                             
+    except Exception as e:
+        current_app.logger.error(f"Error viewing portfolio {id}: {e}")
+        flash('Feil ved lasting av portefølje', 'error')
+        return redirect(url_for('portfolio.portfolio_index'))
 
 @portfolio.route('/portfolio/<int:id>/add', methods=['GET', 'POST'])
 @access_required

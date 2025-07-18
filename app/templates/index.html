@@ -1,637 +1,723 @@
 {% extends "base.html" %}
 
-{% block title %}Aksjeradar - Din aksje- og finansassistent{% endblock %}
+{% block title %}Aksjeradar - Norges Beste Aksjeanalyse Platform{% endblock %}
 
 {% block content %}
-
-<!-- Demo banner removed per user request: "Det er et slikt banner lagnt nede på forsiden, det tror jeg er litt feil, da kommer det opp en liten popup med "demo aktiv" osv, det er jo ikke den lsøsmningen vi egentlig har/skal ha" -->
-
-{% if restricted %}
-<div class="container py-5 text-center">
-    <h2 class="text-danger mb-4">Begrenset tilgang</h2>
-    <p class="lead mb-4">
-        Du har ikke tilgang til alt innhold på Aksjeradar.<br>
-        Oppgrader for å få full tilgang til analyser, portefølje, AI-funksjoner og mye mer!
-    </p>
-    <div class="mb-4">
-        <img src="/static/images/logo-192.png" alt="Aksjeradar Logo" style="width:80px;">
-    </div>
-    <div class="card mx-auto mb-4" style="max-width: 500px;">
-        <div class="card-body">
-            <h4 class="mb-3">Få full tilgang med Aksjeradar Premium</h4>
-            <ul class="list-group list-group-flush text-start mb-3">
-                <li class="list-group-item">✔ Ubegrenset tilgang til alle analyser</li>
-                <li class="list-group-item">✔ AI-drevne aksjetips og prisprediksjoner</li>
-                <li class="list-group-item">✔ Portefølje og favorittliste</li>
-                <li class="list-group-item">✔ Varsler på kurs og volum</li>
-                <li class="list-group-item">✔ Ingen reklame</li>
-                <li class="list-group-item">✔ Prioritert support</li>
-            </ul>
-            <div class="mb-3">
-                <span class="badge bg-info fs-6 me-2">Pro: 399 kr/mnd</span>
-                <span class="badge bg-success fs-6">Årlig Pro: 2999 kr/år</span>
-            </div>
-            <a href="{{ url_for('main.subscription') }}" class="btn btn-lg btn-primary">Se abonnement og kjøp tilgang</a>
-        </div>
-    </div>
-    <div class="mt-4">
-        <p class="text-muted">Har du allerede abonnement? <a href="{{ url_for('main.login') }}">Logg inn her</a></p>
-        <p class="small text-muted">Spørsmål? <a href="mailto:support@aksjeradar.no">Kontakt oss</a></p>
-    </div>
-</div>
-{% else %}
-
-{% if show_banner and not (current_user.is_authenticated and current_user.has_active_subscription()) %}
-<!-- Welcome Banner for non-subscribers -->
-<div class="alert alert-info alert-dismissible fade show" role="alert">
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
     <div class="container">
-        <h5 class="alert-heading">Velkommen til Aksjeradar!</h5>
-        <p class="mb-0">Få full oversikt over Oslo Børs, globale aksjer og kryptovaluta – med AI-analyse, tekniske signaler og personlig portefølje. Oppdag smarte investeringsmuligheter!</p>
-        <hr>
-        <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-sm" style="color: white !important; font-weight: bold;">Oppgrader nå</a>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-</div>
-{% endif %}
-    <!-- Hero Section -->
-<section class="bg-dark text-white py-4">
-    <div class="container py-2 bg-dark">
         <div class="row align-items-center">
-            <div class="col-lg-10 mb-3 mb-lg-0">
-                <h1 class="display-5 fw-bold mb-2 text-white">Aksjeradar</h1>
-                <p class="lead mb-3 text-white">Din digitale aksje- og finansassistent for Oslo Børs og internasjonale markeder.</p>
-                <div class="d-grid gap-2 d-md-flex">
-                    <a href="/stocks" class="btn btn-light px-4 me-md-2" style="color: #212529 !important; background-color: #f8f9fa !important; border-color: #f8f9fa !important; font-weight: bold;"><i class="bi bi-graph-up"></i> Utforsk aksjer</a>
-                    <a href="/analysis" class="btn btn-outline-light px-4" style="color: #ffffff !important; border-color: #ffffff !important; background-color: transparent !important; font-weight: bold;"><i class="bi bi-bar-chart"></i> Teknisk analyse</a>
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    Norges Mest Avanserte<br>
+                    <span class="text-warning">Aksjeanalyse Platform</span>
+                </h1>
+                <p class="lead mb-4">
+                    Få tilgang til AI-drevne analyser, sanntidsdata og ekspertanbefalinger. 
+                    Perfekt for både nybegynnere og erfarne investorer.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('main.demo') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-play me-2"></i>Prøv Gratis Demo
+                    </a>
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-crown me-2"></i>Se Priser
+                    </a>
                 </div>
             </div>
-            <div class="col-lg-2 text-center d-none d-lg-block">
-                <img src="/static/images/logo-192.png" alt="Aksjeradar Logo" class="img-fluid" style="max-width: 80px;">
+            <div class="col-lg-6">
+                <div class="hero-dashboard p-4 bg-white rounded shadow-lg">
+                    <h6 class="text-dark mb-3">Live Markedsdata</h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="market-widget p-3 bg-light rounded">
+                                <small class="text-muted">EQNR.OL</small>
+                                <div class="h5 text-success mb-0">342.55 NOK</div>
+                                <small class="text-success">+2.1%</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="market-widget p-3 bg-light rounded">
+                                <small class="text-muted">DNB.OL</small>
+                                <div class="h5 text-danger mb-0">234.10 NOK</div>
+                                <small class="text-danger">-0.8%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- Quick Stats -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-4">
+            <div class="col">
+                <h2 class="h3">Rask Statistikk</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Totalt Aksjer</h5>
+                        <p class="card-text display-4 fw-bold">1,245</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Følgte Aksjer</h5>
+                        <p class="card-text display-4 fw-bold">87</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Porteføljer</h5>
+                        <p class="card-text display-4 fw-bold">32</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Siste Handel</h5>
+                        <p class="card-text display-4 fw-bold">+2.1%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Market Overview Tables -->
 <section class="py-5">
     <div class="container">
         <h2 class="text-center mb-5">Markedsoversikt</h2>
-        <div class="row g-4 mb-5">
-            <!-- Dynamiske market-cards -->
-            <div class="col-md-3">
-                <div class="card h-100 market-card-oslo" data-market="oslo">
-                    <div class="card-body">
-                        <h3 class="card-title">Oslo Børs
-                            {% if oslo_open %}
-                                <span class="badge bg-success ms-2">ÅPEN</span>
-                            {% else %}
-                                <span class="badge bg-secondary ms-2">STENGT</span>
-                            {% endif %}
-                        </h3>
-                        <div>
-                            <span class="fw-bold">OSEBX:</span>
-                            <span class="index-price">{{ oslo_stocks['EQNR.OL'].last_price if oslo_stocks and 'EQNR.OL' in oslo_stocks else 'N/A' }}</span>
-                            <span class="avg-change {% if oslo_stocks and 'EQNR.OL' in oslo_stocks and oslo_stocks['EQNR.OL'].change_percent > 0 %}text-success{% elif oslo_stocks and 'EQNR.OL' in oslo_stocks and oslo_stocks['EQNR.OL'].change_percent < 0 %}text-danger{% endif %}">
-                                {{ oslo_stocks['EQNR.OL'].change_percent if oslo_stocks and 'EQNR.OL' in oslo_stocks else '' }}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 market-card-global" data-market="global">
-                    <div class="card-body">
-                        <h3 class="card-title">Globale Aksjer
-                            {% if global_open %}
-                                <span class="badge bg-success ms-2">ÅPEN</span>
-                            {% else %}
-                                <span class="badge bg-secondary ms-2">STENGT</span>
-                            {% endif %}
-                        </h3>
-                        <div>
-                            <span class="fw-bold">NVDA:</span>
-                            <span class="index-price">{{ global_stocks['NVDA'].last_price if global_stocks and 'NVDA' in global_stocks else 'N/A' }}</span>
-                            <span class="avg-change {% if global_stocks and 'NVDA' in global_stocks and global_stocks['NVDA'].change_percent > 0 %}text-success{% elif global_stocks and 'NVDA' in global_stocks and global_stocks['NVDA'].change_percent < 0 %}text-danger{% endif %}">
-                                {{ global_stocks['NVDA'].change_percent if global_stocks and 'NVDA' in global_stocks else '' }}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 market-card-crypto" data-market="crypto">
-                    <div class="card-body">
-                        <h3 class="card-title">Krypto</h3>
-                        <div>
-                            <span class="fw-bold">BTC-USD:</span>
-                            <span class="index-price">{{ crypto['BTC-USD'].last_price if crypto and 'BTC-USD' in crypto else 'N/A' }}</span>
-                            <span class="avg-change {% if crypto and 'BTC-USD' in crypto and crypto['BTC-USD'].change_percent > 0 %}text-success{% elif crypto and 'BTC-USD' in crypto and crypto['BTC-USD'].change_percent < 0 %}text-danger{% endif %}">
-                                {{ crypto['BTC-USD'].change_percent if crypto and 'BTC-USD' in crypto else '' }}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 market-card-currency" data-market="currency">
-                    <div class="card-body">
-                        <h3 class="card-title">Valuta</h3>
-                        <div>
-                            <span class="fw-bold">USD/NOK:</span>
-                            <span class="index-price">{{ currency['USDNOK=X'].last_price if currency and 'USDNOK=X' in currency else 'N/A' }}</span>
-                            <span class="avg-change {% if currency and 'USDNOK=X' in currency and currency['USDNOK=X'].change_percent > 0 %}text-success{% elif currency and 'USDNOK=X' in currency and currency['USDNOK=X'].change_percent < 0 %}text-danger{% endif %}">
-                                {{ currency['USDNOK=X'].change_percent if currency and 'USDNOK=X' in currency else '' }}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <!-- Krypto og Valuta tabeller -->
-        <div class="row mb-5">
-            <!-- Krypto -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow h-100">
-                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                        <h3 class="h5 mb-0">Kryptovaluta</h3>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Ticker</th>
-                                        <th>Pris</th>
-                                        <th>+/-</th>
-                                        <th>Signal</th>
-                                    </tr>
-                                </thead>
-                                <tbody data-market="crypto">
-                                    {% for ticker, coin in crypto.items() %}
-                                    <tr data-ticker="{{ ticker }}" data-category="crypto">
-                                        <td><a href="#" class="text-decoration-none">{{ ticker }}</a></td>
-                                        <td class="price-cell" data-price="{{ coin.last_price }}">{{ coin.last_price }}</td>
-                                        <td class="change-cell {% if coin.change_percent > 0 %}text-success{% elif coin.change_percent < 0 %}text-danger{% endif %}" data-change="{{ coin.change_percent }}">
-                                            {{ coin.change_percent }}%
-                                        </td>
-                                        <td>
-                                            <span class="badge {% if coin.signal == 'BUY' %}bg-success{% elif coin.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}" data-bs-toggle="tooltip" title="Signal basert på teknisk analyse">
-                                                {{ coin.signal }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-sm btn-outline-warning">Vis alle</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Valuta -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow h-100">
-                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                        <h3 class="h5 mb-0">Valutakurser</h3>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Ticker</th>
-                                        <th>Pris</th>
-                                        <th>+/-</th>
-                                        <th>Signal</th>
-                                    </tr>
-                                </thead>
-                                <tbody data-market="currency">
-                                    {% for ticker, cur in currency.items() %}
-                                    <tr data-ticker="{{ ticker }}" data-category="currency">
-                                        <td>{{ ticker }}</td>
-                                        <td class="price-cell" data-price="{{ cur.last_price }}">{{ cur.last_price }}</td>
-                                        <td class="change-cell {% if cur.change_percent > 0 %}text-success{% elif cur.change_percent < 0 %}text-danger{% endif %}" data-change="{{ cur.change_percent }}">
-                                            {{ cur.change_percent }}%
-                                        </td>
-                                        <td>
-                                            <span class="badge {% if cur.signal == 'BUY' %}bg-success{% elif cur.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}" data-bs-toggle="tooltip" title="Signal basert på teknisk analyse">
-                                                {{ cur.signal }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_currency') }}" class="btn btn-sm btn-outline-info">Vis alle</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
         
-        <!-- Oslo Børs -->
-        <div class="row mb-4 align-items-center">
-            <div class="col-12 col-md-6">
-                <h2 class="h3 mb-2 text-dark">
-                    Oslo Børs & Globale markeder
-                    <span class="badge bg-success live-indicator pulse" style="display: none;">
-                        <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> LIVE
-                    </span>
-                </h2>
-                <p class="text-muted data-timestamp small text-break d-block d-md-inline mb-3 mb-md-0">Sist oppdatert: {{ datetime.now().strftime('%d.%m.%Y %H:%M') }}</p>
-            </div>
-            <div class="col-12 col-md-6 text-start text-md-end">
-                <a href="{{ url_for('analysis.market_overview') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-graph-up-arrow"></i> Full markedsoversikt
-                </a>
-            </div>
-        </div>
-
-        <!-- Grid Layout for Market Overview -->
-        <div class="row mb-5">
+        <div class="row g-4 mb-5">
             <!-- Oslo Børs -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow h-100">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h3 class="h5 mb-0">Oslo Børs</h3>
-                        <span class="badge bg-light text-primary">OSEBX: +1.2%</span>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Ticker</th>
-                                        <th>Pris</th>
-                                        <th>+/-</th>
-                                        <th>Signal</th>
-                                    </tr>
-                                </thead>                                <tbody data-market="oslo">
-                                    {% for ticker, stock in oslo_stocks.items() %}
-                                    {% if loop.index <= (5 if restricted else 25) %}
-                                    <tr data-ticker="{{ ticker }}" data-category="oslo">
-                                        <td><a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
-                                        <td class="price-cell" data-price="{{ stock.last_price }}">{{ stock.last_price }}</td>
-                                        <td class="change-cell {% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}" data-change="{{ stock.change_percent }}">
-                                            {{ stock.change_percent }}%
-                                        </td>
-                                        <td>
-                                            {% if restricted %}
-                                            <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Logg inn for å se signaler">
-                                                ***
-                                            </span>
-                                            {% else %}
-                                            <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}" 
-                                                  data-bs-toggle="tooltip" title="Basert på teknisk analyse av prisutvikling, volum og momentum">
-                                                {{ stock.signal }}
-                                            </span>
-                                            {% endif %}
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary ms-1" data-bs-toggle="tooltip" title="Se detaljer for {{ ticker }}">
-                                                <i class="bi bi-info-circle"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% if restricted and oslo_stocks|length > 5 %}
-                                    <tr>
-                                        <td colspan="4" class="text-center py-3">
-                                            <div class="text-muted">
-                                                <i class="bi bi-lock-fill"></i> 
-                                                <strong>{{ oslo_stocks|length - 5 }}+ flere aksjer tilgjengelig</strong>
-                                            </div>
-                                            <a href="{{ url_for('main.login') }}" class="btn btn-sm btn-primary mt-2">
-                                                Logg inn for å se alle
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-sm btn-outline-primary">Vis alle</a>
-                        <a href="{{ url_for('analysis.technical') }}?market=oslo" class="btn btn-sm btn-outline-secondary">Teknisk analyse</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Global Markets -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow h-100">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                        <h3 class="h5 mb-0">Globale Markeder</h3>
-                        <span class="badge bg-light text-success">S&P 500: +0.8%</span>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Ticker</th>
-                                        <th>Pris</th>
-                                        <th>+/-</th>
-                                        <th>Signal</th>
-                                    </tr>
-                                </thead>                                <tbody data-market="global">
-                                    {% for ticker, stock in global_stocks.items() %}
-                                    {% if loop.index <= (5 if restricted else 20) %}
-                                    <tr data-ticker="{{ ticker }}" data-category="global">
-                                        <td><a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
-                                        <td class="price-cell" data-price="{{ stock.last_price }}">{{ stock.last_price }}</td>
-                                        <td class="change-cell {% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}" data-change="{{ stock.change_percent }}">
-                                            {{ stock.change_percent }}%
-                                        </td>
-                                        <td>
-                                            {% if restricted %}
-                                            <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Logg inn for å se signaler">
-                                                ***
-                                            </span>
-                                            {% else %}
-                                            <span class="badge {% if stock.signal == 'BUY' %}bg-success{% elif stock.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}"
-                                                  data-bs-toggle="tooltip" title="Basert på teknisk analyse av prisutvikling, volum og momentum">
-                                                {{ stock.signal }}
-                                            </span>
-                                            {% endif %}
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-success ms-1" data-bs-toggle="tooltip" title="Se detaljer for {{ ticker }}">
-                                                <i class="bi bi-info-circle"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% if restricted and global_stocks|length > 5 %}
-                                    <tr>
-                                        <td colspan="4" class="text-center py-3">
-                                            <div class="text-muted">
-                                                <i class="bi bi-lock-fill"></i> 
-                                                <strong>{{ global_stocks|length - 5 }}+ flere aksjer tilgjengelig</strong>
-                                            </div>
-                                            <a href="{{ url_for('main.login') }}" class="btn btn-sm btn-success mt-2">
-                                                Logg inn for å se alle
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-sm btn-outline-success">Vis alle</a>
-                        <a href="{{ url_for('analysis.technical') }}?market=global" class="btn btn-sm btn-outline-secondary">Teknisk analyse</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Market Cards -->
-        <div class="row g-4 mb-5">
-            <!-- Oslo Market -->
-            <div class="col-md-3">
-                <div class="card h-100 market-card-oslo" data-market="oslo">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Oslo Børs</h5>
-                        <i class="bi bi-graph-up"></i>
+                        <small>Sist oppdatert: Live</small>
                     </div>
-                    <div class="card-body">
-                        <h3 class="card-title">OSEBX</h3>
-                        <p class="card-text fs-4">
-                            <span class="index-price" data-ticker="OSEBX">1342.56</span> 
-                            <span class="avg-change text-success">+0.4%</span>
-                        </p>
-                        <div class="small text-muted mb-3 data-timestamp">Siste oppdatering: i dag</div>
-                        <div class="market-stats">
-                            <span class="badge bg-success me-1">
-                                <span class="positive-count">12</span> ↑
-                            </span>
-                            <span class="badge bg-danger">
-                                <span class="negative-count">8</span> ↓
-                            </span>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Aksje</th>
+                                        <th>Pris</th>
+                                        <th>Endring</th>
+                                        <th>Signal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>EQNR.OL</strong><br>
+                                            <small class="text-muted">Equinor</small>
+                                        </td>
+                                        <td>342.55 NOK</td>
+                                        <td class="text-success">+2.1%</td>
+                                        <td><span class="badge bg-success">KJØP</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>DNB.OL</strong><br>
+                                            <small class="text-muted">DNB Bank</small>
+                                        </td>
+                                        <td>234.10 NOK</td>
+                                        <td class="text-danger">-0.8%</td>
+                                        <td><span class="badge bg-warning">HOLD</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>TEL.OL</strong><br>
+                                            <small class="text-muted">Telenor</small>
+                                        </td>
+                                        <td>156.80 NOK</td>
+                                        <td class="text-danger">-1.2%</td>
+                                        <td><span class="badge bg-danger">SELG</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-sm btn-outline-primary mt-2">Se alle aksjer</a>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary btn-sm">Se alle Oslo Børs aksjer</a>
                     </div>
                 </div>
             </div>
             
-            <!-- US Market -->
-            <div class="col-md-3">
-                <div class="card h-100 market-card-global" data-market="global">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">USA</h5>
-                        <i class="bi bi-currency-dollar"></i>
+            <!-- Globale Markeder -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Globale Markeder</h5>
+                        <small>Sist oppdatert: Live</small>
                     </div>
-                    <div class="card-body">
-                        <h3 class="card-title">S&P 500</h3>
-                        <p class="card-text fs-4">
-                            <span class="index-price" data-ticker="SPX">5,467.82</span> 
-                            <span class="avg-change text-success">+0.28%</span>
-                        </p>
-                        <div class="small text-muted mb-3 data-timestamp">Siste oppdatering: i dag</div>
-                        <div class="market-stats">
-                            <span class="badge bg-success me-1">
-                                <span class="positive-count">15</span> ↑
-                            </span>
-                            <span class="badge bg-danger">
-                                <span class="negative-count">5</span> ↓
-                            </span>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Aksje</th>
+                                        <th>Pris</th>
+                                        <th>Endring</th>
+                                        <th>Signal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>AAPL</strong><br>
+                                            <small class="text-muted">Apple Inc.</small>
+                                        </td>
+                                        <td>$185.70</td>
+                                        <td class="text-success">+1.5%</td>
+                                        <td><span class="badge bg-success">KJØP</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>GOOGL</strong><br>
+                                            <small class="text-muted">Alphabet</small>
+                                        </td>
+                                        <td>$142.30</td>
+                                        <td class="text-success">+0.8%</td>
+                                        <td><span class="badge bg-success">KJØP</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>TSLA</strong><br>
+                                            <small class="text-muted">Tesla</small>
+                                        </td>
+                                        <td>$245.80</td>
+                                        <td class="text-danger">-2.1%</td>
+                                        <td><span class="badge bg-warning">HOLD</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-sm btn-outline-success mt-2">Se globale aksjer</a>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Crypto Market -->
-            <div class="col-md-3">
-                <div class="card h-100 market-card-crypto" data-market="crypto">
-                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Krypto</h5>
-                        <i class="bi bi-currency-bitcoin"></i>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Bitcoin</h3>
-                        <p class="card-text fs-4">
-                            <span class="index-price" data-ticker="BTC">65,432.10</span> 
-                            <span class="avg-change text-success">+1.2%</span>
-                        </p>
-                        <div class="small text-muted mb-3 data-timestamp">Siste oppdatering: i dag</div>
-                        <div class="market-stats">
-                            <span class="badge bg-success me-1">
-                                <span class="positive-count">8</span> ↑
-                            </span>
-                            <span class="badge bg-danger">
-                                <span class="negative-count">4</span> ↓
-                            </span>
-                        </div>
-                        <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-sm btn-outline-warning mt-2">Se kryptovaluta</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Currency Market -->
-            <div class="col-md-3">
-                <div class="card h-100 market-card-currency" data-market="currency">
-                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Valuta</h5>
-                        <i class="bi bi-currency-exchange"></i>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">USD/NOK</h3>
-                        <p class="card-text fs-4">
-                            <span class="index-price" data-ticker="USDNOK">10.45</span> 
-                            <span class="avg-change text-danger">-0.15%</span>
-                        </p>
-                        <div class="small text-muted mb-3 data-timestamp">Siste oppdatering: i dag</div>
-                        <div class="market-stats">
-                            <span class="badge bg-success me-1">
-                                <span class="positive-count">3</span> ↑
-                            </span>
-                            <span class="badge bg-danger">
-                                <span class="negative-count">2</span> ↓
-                            </span>
-                        </div>
-                        <a href="{{ url_for('api.get_currency') }}" class="btn btn-sm btn-outline-info mt-2">Se valutakurser</a>
+                    <div class="card-footer">
+                        <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success btn-sm">Se alle globale aksjer</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-        <!-- Analysis Tools Section - Moved Higher -->
-        <h2 class="h3 mb-4 text-dark">Analyseverktøy</h2>
-        <div class="row g-4 mb-5">
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+<!-- Call to Action -->
+{% if not current_user.is_authenticated %}
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3>Klar til å ta kontroll over dine investeringer?</h3>
+                <p class="mb-0">Bli med tusenvis av investorer som allerede bruker Aksjeradar.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ url_for('main.demo') }}" class="btn btn-warning btn-lg me-3">Prøv Gratis</a>
+                <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-light btn-lg">Kjøp Nå</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Aksjeradar enhanced homepage loaded successfully!');
+});
+</script>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}
+        </div>
+    </div>
+</section>
+
+<!-- News Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Siste Finansnyheter</h2>
+                    <a href="{{ url_for('news_bp.index') }}" class="btn btn-outline-primary">Se alle nyheter</a>
+                </div>
+                
+                <div class="row g-4" id="news-container">
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Henter siste nyheter...</span>
                         </div>
-                        <h5 class="card-title">Teknisk analyse</h5>
-                        <p class="card-text small">Utforsk tekniske indikatorer som RSI, MACD, glidende gjennomsnitt og mer.</p>
-                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-primary btn-sm">Utforsk</a>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-cpu fs-1 text-success"></i>
+            <div class="col-lg-4">
+                <h2 class="mb-4">Markedsinnsikt</h2>
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightbulb me-2"></i>Dagens fokus
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Energisektoren:</strong> Høy aktivitet i Equinor og Aker BP.
                         </div>
-                        <h5 class="card-title">Prisprediksjon</h5>
-                        <p class="card-text small">Se maskinlæringsbaserte prediksjoner for fremtidig kursutvikling.</p>
-                        <a href="{{ url_for('analysis.prediction') }}" class="btn btn-outline-success btn-sm">Se prediksjoner</a>
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Volatilitet:</strong> Forventes frem mot rentebeslutning.
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+{% if not current_user.is_authenticated or (current_user.is_authenticated and show_banner) %}
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3>Klar til å ta kontroll over dine investeringer?</h3>
+                <p class="mb-0">Bli med tusenvis av investorer som allerede bruker Aksjeradar for å ta bedre investeringsbeslutninger.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-warning btn-lg me-3">Min portefølje</a>
+                    <a href="{{ url_for('analysis.index') }}" class="btn btn-outline-light btn-lg">Analyseverktøy</a>
+                {% else %}
+                    <a href="{{ url_for('main.demo') }}" class="btn btn-warning btn-lg me-3">Prøv Gratis</a>
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-light btn-lg">Kjøp Nå</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Enhanced homepage data loading with optimized API endpoints
+document.addEventListener('DOMContentLoaded', function() {
+    initializeHomepage();
+    updateMarketStatus();
+    
+    // Update intervals
+    setInterval(updateMarketStatus, 60000);      // Every minute
+    setInterval(updateQuickPrices, 30000);       // Every 30 seconds
+    setInterval(loadMarketOverview, 300000);     // Every 5 minutes
+});
+
+async function initializeHomepage() {
+    // Load all initial data
+    await Promise.all([
+        loadLatestNews(),
+        loadMarketOverview(),
+        updateQuickPrices()
+    ]);
+}
+
+async function loadLatestNews() {
+    try {
+        const response = await fetch('/api/news/latest?limit=3&category=norwegian');
+        const data = await response.json();
+        
+        const newsContainer = document.getElementById('news-container');
+        
+        if (data.success && data.articles && data.articles.length > 0) {
+            newsContainer.innerHTML = '';
             
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-robot fs-1 text-warning"></i>
-                        </div>
-                        <h5 class="card-title">AI-analyse</h5>
-                        <p class="card-text small">Få dypere innsikt med vår AI-drevne analyse av fundamentale og tekniske faktorer.</p>
-                        <a href="{{ url_for('analysis.ai') }}" class="btn btn-outline-warning btn-sm">Start AI-analyse</a>
-                    </div>
+            data.articles.forEach(article => {
+                const newsCard = createNewsCard(article);
+                newsContainer.appendChild(newsCard);
+            });
+        } else {
+            showNoNewsMessage(newsContainer);
+        }
+    } catch (error) {
+        console.error('Error loading news:', error);
+        showNewsError(document.getElementById('news-container'));
+    }
+}
+
+async function loadMarketOverview() {
+    try {
+        const response = await fetch('/api/homepage/market-data');
+        const data = await response.json();
+        
+        if (data.success) {
+            updateMarketTables(data.data);
+        }
+    } catch (error) {
+        console.warn('Failed to load market overview:', error);
+    }
+}
+
+async function updateQuickPrices() {
+    try {
+        const response = await fetch('/api/stocks/quick-prices?tickers=EQNR.OL,DNB.OL');
+        const data = await response.json();
+        
+        if (data.success) {
+            updateHeroWidget('EQNR.OL', data.data['EQNR.OL']);
+            updateHeroWidget('DNB.OL', data.data['DNB.OL']);
+        }
+    } catch (error) {
+        console.warn('Failed to update hero prices:', error);
+    }
+}
+
+function createNewsCard(article) {
+    const col = document.createElement('div');
+    col.className = 'col-lg-4 col-md-6';
+    
+    col.innerHTML = `
+        <div class="card h-100 shadow-sm news-card">
+            <div class="card-body">
+                <h6 class="card-title">${escapeHtml(article.title)}</h6>
+                <p class="card-text text-muted small">${escapeHtml(article.summary || article.description || '')}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">${escapeHtml(article.source || 'Aksjeradar')}</small>
+                    <span class="badge bg-${getSentimentColor(article.sentiment)}">${escapeHtml(article.sentiment || 'Nøytral')}</span>
                 </div>
             </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-pie-chart fs-1 text-info"></i>
-                        </div>
-                        <h5 class="card-title">Porteføljeanalyse</h5>
-                        <p class="card-text small">Spor og analyser din portefølje med avansert risiko- og avkastningsberegning.</p>
-                        <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-outline-info btn-sm">Min portefølje</a>
-                    </div>
-                </div>
+            <div class="card-footer">
+                <a href="${escapeHtml(article.url || '#')}" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer">Les mer</a>
             </div>
         </div>
+    `;
+    
+    return col;
+}
 
-        <!-- Oslo Børs Summary -->
-        <div class="row mb-4 align-items-center">
-            <div class="col-md-6">
-                <h2 class="h3 mb-0 text-dark">Oslo Børs & Globale markeder</h2>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">
-                    <i class="bi bi-list-ul"></i> Se alle Oslo Børs aksjer
-                </a>
+function updateMarketTables(marketData) {
+    // Update Oslo Børs table
+    updateMarketTable('.card-header.bg-primary', marketData.oslo, 'NOK');
+    
+    // Update Global markets table
+    updateMarketTable('.card-header.bg-success', marketData.global, 'USD');
+}
+
+function updateMarketTable(headerSelector, stocks, currency) {
+    const card = document.querySelector(headerSelector)?.closest('.card');
+    if (!card || !stocks) return;
+    
+    const tbody = card.querySelector('tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    stocks.slice(0, 3).forEach(stock => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <strong>${escapeHtml(stock.ticker)}</strong><br>
+                <small class="text-muted">${escapeHtml(stock.name)}</small>
+            </td>
+            <td>${stock.price.toFixed(2)} ${currency}</td>
+            <td class="${stock.change_percent >= 0 ? 'text-success' : 'text-danger'}">
+                ${stock.change_percent >= 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%
+            </td>
+            <td>
+                <span class="badge bg-${getSignalColor(stock.signal)}">${escapeHtml(stock.signal)}</span>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateMarketStatus() {
+    fetch('/api/market/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateMarketStatusBadge('.card-header.bg-primary', data.data.oslo.open);
+                updateMarketStatusBadge('.card-header.bg-success', data.data.nyse.open);
+                updateTimestamps(data.data.current_time);
+            }
+        })
+        .catch(error => console.warn('Failed to update market status:', error));
+}
+
+function updateMarketStatusBadge(selector, isOpen) {
+    const header = document.querySelector(selector);
+    if (!header) return;
+    
+    let statusBadge = header.querySelector('.market-status-badge');
+    if (!statusBadge) {
+        statusBadge = document.createElement('small');
+        statusBadge.className = 'market-status-badge badge ms-2';
+        header.querySelector('h5').appendChild(statusBadge);
+    }
+    
+    statusBadge.className = `market-status-badge badge ms-2 ${isOpen ? 'bg-success' : 'bg-secondary'}`;
+    statusBadge.textContent = isOpen ? 'ÅPEN' : 'STENGT';
+}
+
+function updateHeroWidget(ticker, stockData) {
+    if (!stockData) return;
+    
+    const widgets = document.querySelectorAll('.market-widget');
+    const widget = Array.from(widgets).find(w => w.textContent.includes(ticker));
+    
+    if (widget) {
+        const priceElement = widget.querySelector('.h5');
+        const changeElement = widget.querySelector('small:last-child');
+        
+        if (priceElement && stockData.price) {
+            priceElement.textContent = `${stockData.price.toFixed(2)} NOK`;
+        }
+        
+        if (changeElement && stockData.change_percent !== undefined) {
+            const change = stockData.change_percent;
+            changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+            changeElement.className = `small ${change > 0 ? 'text-success' : change < 0 ? 'text-danger' : 'text-muted'}`;
+        }
+    }
+}
+
+function updateTimestamps(currentTime) {
+    const date = new Date(currentTime);
+    const timeString = date.toLocaleString('no-NO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    document.querySelectorAll('small').forEach(el => {
+        if (el.textContent.includes('Sist oppdatert')) {
+            el.textContent = `Sist oppdatert: ${timeString}`;
+        }
+    });
+}
+
+// Helper functions
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function getSentimentColor(sentiment) {
+    switch(sentiment?.toLowerCase()) {
+        case 'positive': return 'success';
+        case 'negative': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function getSignalColor(signal) {
+    switch(signal?.toUpperCase()) {
+        case 'BUY': case 'KJØP': return 'success';
+        case 'SELL': case 'SELG': return 'danger';
+        default: return 'warning';
+    }
+}
+
+function showNoNewsMessage(container) {
+    container.innerHTML = `
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Ingen nyheter tilgjengelig for øyeblikket. Prøv igjen senere.
             </div>
         </div>
+    `;
+}
 
-        <!-- Globale markeder Summary -->
-        <div class="row mb-4 align-items-center">
-            <div class="col-md-6">
-                <h2 class="h3 mb-0 text-dark">Globale markeder</h2>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">
-                    <i class="bi bi-list-ul"></i> Se alle globale aksjer
-                </a>
+function showNewsError(container) {
+    container.innerHTML = `
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Feil ved lasting av nyheter. Prøv igjen senere.
             </div>
         </div>
+    `;
+}
 
-        <!-- News Widget Section -->
-        <div class="row mb-5">
-                            {% for ticker, data in oslo_stocks.items() %}
-                            {% if loop.index <= (8 if restricted else 25) and data is mapping %}
-                            <tr>
-                                <td><strong>{{ ticker }}</strong></td>
-                                <td>
-                                    {% if ticker == 'EQNR.OL' %}
-                                        Equinor
-                                    {% elif ticker == 'DNB.OL' %}
-                                        DNB Bank
-                                    {% elif ticker == 'TEL.OL' %}
-                                        Telenor
-                                    {% elif ticker == 'NHY.OL' %}
-                                        Norsk Hydro
-                                    {% elif ticker == 'YAR.OL' %}
-                                        Yara International
-                                    {% elif ticker == 'AKSO.OL' %}
-                                        Aker Solutions
-                                    {% elif ticker == 'MOWI.OL' %}
-                                        Mowi
-                                    {% elif ticker == 'ORK.OL' %}
-                                        Orkla
-                                    {% elif ticker == 'SALM.OL' %}
-                                        SalMar
-                                    {% elif ticker == 'AKERBP.OL' %}
-                                        Aker BP
-                                    {% elif ticker == 'SUBC.OL' %}
-                                        Subsea 7
-                                    {% elif ticker == 'SCATC.OL' %}
-                                        Scatec
-                                    {% elif ticker == 'AKER.OL' %}
-                                        Aker ASA
-                                    {% elif ticker == 'AUTOSTORE.OL' %}
-                                        AutoStore
-                                    {% elif ticker == 'XXLASA.OL' %}
-                                        XXL ASA
-                                    {% elif ticker == 'KOMPLETT.OL' %}
-                                        Komplett
-                                    {% elif ticker == 'EUROPRIS.OL' %}
-                                        Europris
-                                    {% elif ticker == 'KITRON.OL' %}
-                                        Kitron
-                                    {% elif ticker == 'NEL.OL' %}
-                                        Nel ASA
-                                    {% elif ticker == 'REC.OL' %}
-                                        REC Silicon
-                                    {% elif ticker == 'KAHOT.OL' %}
-                                        Kahoot!
-                                    {% elif ticker == 'BAKKA.OL' %}
-                                        Bakkafrost
-                                    {% else %}
+// Error handling
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+});
+</script>
+
+<!-- Enhanced CSS -->
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+}
+
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.market-widget {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.market-widget:hover {
+    background-color: #e9ecef !important;
+    transform: scale(1.02);
+}
+
+.feature-card {
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.stat-card {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+}
+
+.market-status-badge {
+    font-size: 0.75rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.025);
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.spinner-border {
+    animation: spinner-border 1s linear infinite;
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .hero-dashboard {
+        margin-top: 2rem;
+    }
+}
+</style>
+{% endblock %}
+    }
+    
+    .market-widget {
+        padding: 1rem !important;
+    }
+    
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading states */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .bg-light {
+        background-color: #1a202c !important;
+    }
+    
+    .text-muted {
+        color: #a0aec0 !important;
+    }
+}
+</style>
+{% endblock %}
                                         {{ data.name if data.name is defined else ticker }}
                                     {% endif %}
                                 </td>
@@ -861,627 +947,5 @@
                                         55.1
                                     {% elif ticker == 'GOOGL' %}
                                         58.7
-                                    {% elif ticker == 'META' %}
-                                        65.2
-                                    {% elif ticker == 'TSLA' %}
-                                        38.4
-                                    {% elif ticker == 'NVDA' %}
-                                        76.8
-                                    {% elif ticker == 'JPM' %}
-                                        59.3
-                                    {% else %}
-                                        50.0
-                                    {% endif %}
-                                    </span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ data.volume|default('1000000') if not restricted else '***' }}</td>
-                                <td>
-                                    {% if restricted %}
-                                    <a href="{{ url_for('main.login') }}" class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-lock-fill"></i> Logg inn
-                                    </a>
-                                    {% else %}
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i> Detaljer</a>
-                                        <a href="{{ url_for('analysis.technical') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se teknisk analyse"><i class="bi bi-bar-chart"></i> Analyse</a>
-                                        <a href="https://www.nordnet.no/market/stocks/{{ ticker }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Åpne i Nordnet (ekstern lenke)"><i class="bi bi-cart-plus"></i></a>
-                                    </div>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endif %}
-                            {% endfor %}
-                            {% if restricted and global_stocks|length > 6 %}
-                            <tr class="table-info">
-                                <td colspan="8" class="text-center py-4">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <div class="mb-3">
-                                            <i class="bi bi-lock-fill text-info" style="font-size: 2rem;"></i>
-                                        </div>
-                                        <h5 class="text-dark mb-2">{{ global_stocks|length - 6 }}+ flere globale aksjer tilgjengelig</h5>
-                                        <p class="text-muted mb-3">Se alle US-aksjer, tekniske signaler, RSI og handelsmuligheter</p>
-                                        <div class="btn-group">
-                                            <a href="{{ url_for('main.login') }}" class="btn btn-success">
-                                                <i class="bi bi-box-arrow-in-right"></i> Logg inn
-                                            </a>
-                                            <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-success">
-                                                <i class="bi bi-star-fill"></i> Se abonnement
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer text-end">
-                <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">
-                    <i class="bi bi-list-ul"></i> Se alle globale aksjer
-                </a>
-            </div>
-        </div>
-
-        <!-- Analysis Tools Section -->
-        <h2 class="h3 mb-4 text-dark">Analyseverktøy</h2>
-        <div class="row g-4 mb-5">
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-bar-chart-line fs-1 text-primary mb-3"></i>
-                        <h3 class="h5">Teknisk analyse</h3>
-                        <p class="card-text">Utforsk tekniske indikatorer som RSI, MACD, glidende gjennomsnitt og mer.</p>
-                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-primary mt-auto">Åpne verktøy</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-graph-up-arrow fs-1 text-success mb-3"></i>
-                        <h3 class="h5">Prisprediksjon</h3>
-                        <p class="card-text">Se maskinlæringsbaserte prediksjoner for fremtidig kursutvikling.</p>
-                        <a href="{{ url_for('analysis.prediction') }}" class="btn btn-success mt-auto">Se prediksjoner</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-robot fs-1 text-info mb-3"></i>
-                        <h3 class="h5">AI-analyse</h3>
-                        <p class="card-text">Få dypere innsikt med vår AI-drevne analyse av fundamentale og tekniske faktorer.</p>
-                        <a href="{{ url_for('analysis.ai') }}" class="btn btn-info mt-auto">AI-analyse</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-briefcase fs-1 text-warning mb-3"></i>
-                        <h3 class="h5">Porteføljeanalyse</h3>
-                        <p class="card-text">Spor og analyser din portefølje med avansert risiko- og avkastningsberegning.</p>
-                        <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-warning mt-auto">Min portefølje</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advanced Features Showcase -->
-        <section class="py-5 bg-light" style="margin: 0 -15px;">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="h2 fw-bold text-dark mb-3">
-                        <i class="bi bi-stars text-primary me-2"></i>
-                        Avanserte Funksjoner for Premium Opplevelse
-                    </h2>
-                    <p class="lead text-muted">Opplev neste generasjons finansanalyse med AI-drevet innsikt og sanntidsdata</p>
-                </div>
-
-                <div class="row g-4 mb-5">
-                    <!-- Real-time Data -->
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-lg">
-                            <div class="card-body p-4 text-center">
-                                <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                                    <i class="bi bi-lightning-charge-fill text-white" style="font-size: 2rem;"></i>
-                                </div>
-                                <h3 class="h4 fw-bold mb-3">Sanntidsdata</h3>
-                                <p class="text-muted mb-4">Live oppdateringer hver 30. sekund for umiddelbar markedsinnsikt</p>
-                                <div class="d-flex justify-content-center mb-3">
-                                    <span class="badge bg-success live-indicator pulse px-3 py-2">
-                                        <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>
-                                        LIVE DATA
-                                    </span>
-                                </div>
-                                <div class="progress mb-3" style="height: 4px;">
-                                    <div class="progress-bar bg-success progress-bar-animated progress-bar-striped" style="width: 100%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Analytics -->
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-lg">
-                            <div class="card-body p-4 text-center">
-                                <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                                    <i class="bi bi-robot text-white" style="font-size: 2rem;"></i>
-                                </div>
-                                <h3 class="h4 fw-bold mb-3">AI-Analyse</h3>
-                                <p class="text-muted mb-4">Maskinlæring og nevrale nettverk analyserer markedstrender og predikerer prisbevegelser</p>
-                                <div class="row text-center mb-3">
-                                    <div class="col-6">
-                                        <div class="fw-bold text-primary">94.2%</div>
-                                        <small class="text-muted">Nøyaktighet</small>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="fw-bold text-success">15,847</div>
-                                        <small class="text-muted">Prediksjoner</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Performance Optimization -->
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-lg">
-                            <div class="card-body p-4 text-center">
-                                <div class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                                    <i class="bi bi-speedometer2 text-white" style="font-size: 2rem;"></i>
-                                </div>
-                                <h3 class="h4 fw-bold mb-3">Lynrask Ytelse</h3>
-                                <p class="text-muted mb-4">Avansert caching, lazy loading og preload-teknologi for optimal brukeropplevelse</p>
-                                <div class="row text-center mb-3">
-                                    <div class="col-6">
-                                        <div class="fw-bold text-warning">0.3s</div>
-                                        <small class="text-muted">Lastetid</small>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="fw-bold text-info">99.8%</div>
-                                        <small class="text-muted">Oppetid</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Feature Matrix -->
-                <div class="card border-0 shadow-lg mb-5">
-                    <div class="card-header bg-dark text-white text-center py-4">
-                        <h3 class="h3 fw-bold mb-2">⚡ Advanced Technology Stack</h3>
-                        <p class="mb-0 opacity-75">Cutting-edge teknologi for overlegen brukeropplevelse</p>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="row g-0">
-                            <div class="col-md-6">
-                                <div class="p-4 border-end">
-                                    <h4 class="h5 fw-bold mb-3 text-primary">
-                                        <i class="bi bi-gear-fill me-2"></i>Backend & Data
-                                    </h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Rate-limited Yahoo Finance API</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>In-memory caching system</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Robust error handling</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>WebSocket real-time updates</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="p-4">
-                                    <h4 class="h5 fw-bold mb-3 text-info">
-                                        <i class="bi bi-palette-fill me-2"></i>Frontend & UX
-                                    </h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Skeleton loading states</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Dark/Light mode toggle</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Performance optimization</li>
-                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>PWA support & offline mode</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Advanced Financial Analytics -->
-                <div class="text-center">
-                    <div class="card border-primary shadow-lg">
-                        <div class="card-body p-5">
-                            <div class="row align-items-center">
-                                <div class="col-lg-8">
-                                    <h3 class="h3 fw-bold mb-3">Avanserte Finansanalyser</h3>
-                                    <p class="lead text-muted mb-4">Få tilgang til avanserte finansanalyser, innsidehandel-intelligens, porteføljeoptimalisering og AI-drevne markedsprediksjoner</p>
-                                </div>
-                                <div class="col-lg-4">
-                                    <a href="{{ url_for('main.financial_dashboard') }}" class="btn btn-primary btn-lg px-4 py-3">
-                                        <i class="bi bi-graph-up-arrow me-2"></i>
-                                        Utforsk Dashboard
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-{% if not current_user.is_authenticated or (current_user.is_authenticated and show_banner) %}
-        <!-- Call to Action -->
-        <div class="card bg-primary text-white mb-5">
-            <div class="card-body p-4 text-center">
-                <h2 class="h3 mb-3">Start din investeringsreise i dag</h2>
-                <p class="lead mb-4">Lag en konto for å spore aksjer, opprette porteføljer og få personlige anbefalinger.</p>
-                <div class="d-flex justify-content-center gap-3">
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-primary btn-lg">Min portefølje</a>
-                        <a href="{{ url_for('analysis.index') }}" class="btn btn-outline-light btn-lg">Analyseverktøy</a>
-                    {% else %}
-                        <a href="{{ url_for('main.register') }}" class="btn btn-light btn-lg" style="color: #212529 !important; background-color: #f8f9fa !important; border-color: #f8f9fa !important; font-weight: bold;">Registrer deg</a>
-                        <a href="{{ url_for('main.login') }}" class="btn btn-light btn-lg" style="color: #212529 !important; background-color: #f8f9fa !important; border-color: #f8f9fa !important; font-weight: bold;">Logg inn</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-{% endif %}
-
-        <!-- News Widget Section -->
-        <div class="row mb-5">
-
-        <!-- Market News and Tips Section -->
-        <div class="row g-4 mb-5">
-            <div class="col-lg-8">
-                <h2 class="h3 mb-4">Markedsnyheter</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
-                                <div>
-                                    <div class="fw-bold">Sentralbanken holder renten uendret</div>
-                                    Norges Bank besluttet i dag å holde styringsrenten uendret på 4,5%.
-                                    <div class="small text-muted mt-1">Kilde: Norges Bank - {{ datetime.now().strftime('%d.%m.%Y') }}</div>
-                                </div>
-                                <span class="badge bg-primary rounded-pill">Ny</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
-                                <div>
-                                    <div class="fw-bold">Teknologisektoren leder markedsoppgangen</div>
-                                    Sterke resultater fra techgigantene bidrar til bred oppgang i aksjemarkedene.
-                                    <div class="small text-muted mt-1">Kilde: Bloomberg - {{ datetime.now().strftime('%d.%m.%Y') }}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
-                                <div>
-                                    <div class="fw-bold">Oljeprisene stiger på forventninger om økt etterspørsel</div>
-                                    Brent-oljen handles nå over 85 dollar fatet etter positive økonomiske data fra Kina.
-                                    <div class="small text-muted mt-1">Kilde: Reuters - {{ datetime.now().strftime('%d.%m.%Y') }}</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('news.news_index') }}" class="btn btn-outline-primary">Se alle nyheter</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4">
-                <h2 class="h3 mb-4">Aksjetips</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="badge bg-success me-2">KJØP</span>
-                                <strong>EQNR.OL</strong>
-                            </div>
-                            <p class="small">Stigende oljepriser og solid teknisk utvikling gir positive utsikter for energisektoren.</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="badge bg-warning me-2">HOLD</span>
-                                <strong>DNB.OL</strong>
-                            </div>
-                            <p class="small">Stabil inntjening, men utfordrende rentemiljø på kort sikt.</p>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="badge bg-success me-2">KJØP</span>
-                                <strong>MSFT</strong>
-                            </div>
-                            <p class="small">Sterk vekst i skytjenester og AI-satsinger gir gode fremtidsutsikter.</p>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('portfolio.stock_tips') }}" class="btn btn-outline-success">Se alle aksjetips</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="container mb-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h1 class="display-5 fw-bold mb-3">Velkommen til Aksjeradar!</h1>
-                    <p class="lead mb-3">Få full oversikt over Oslo Børs, globale aksjer og kryptovaluta – med AI-analyse, tekniske signaler og personlig portefølje. Oppdag smarte investeringsmuligheter!</p>
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('portfolio.portfolio_index') }}" class="btn btn-lg btn-primary me-2 text-white">Se min portefølje</a>
-                        <a href="{{ url_for('analysis.index') }}" class="btn btn-lg btn-outline-primary text-white">Analyseverktøy</a>
-                    {% else %}
-                        <a href="{{ url_for('main.register') }}" class="btn btn-lg btn-primary me-2 text-white">Registrer deg</a>
-                        <a href="{{ url_for('main.subscription') }}" class="btn btn-lg btn-outline-primary text-white">Se priser</a>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="data-timestamp mb-2">
-                <i class="bi bi-clock-history"></i> Markedsoversikt &ndash; Sist oppdatert: {{ last_updated }}
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Live market status og data-oppdatering
-    document.addEventListener('DOMContentLoaded', function() {
-        // Live market status opdatering
-        function updateMarketStatus() {
-            const now = new Date();
-            const osloTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Oslo"}));
-            const hours = osloTime.getHours();
-            const minutes = osloTime.getMinutes();
-            const day = osloTime.getDay(); // 0 = Sunday, 1 = Monday, etc.
-            
-            // Oslo Børs: 09:00-16:30 CET/CEST, Monday-Friday
-            const isOsloOpen = (day >= 1 && day <= 5) && 
-                             ((hours > 9) || (hours === 9 && minutes >= 0)) && 
-                             ((hours < 16) || (hours === 16 && minutes <= 30));
-            
-            // NYSE: 15:30-22:00 Oslo time (09:30-16:00 ET), Monday-Friday 
-            const isNYSEOpen = (day >= 1 && day <= 5) && 
-                             ((hours > 15) || (hours === 15 && minutes >= 30)) && 
-                             (hours < 22);
-            
-            // Update Oslo market status
-            const osloCard = document.querySelector('.card-header.bg-primary');
-            if (osloCard) {
-                let statusElement = osloCard.querySelector('.market-status');
-                if (!statusElement) {
-                    statusElement = document.createElement('small');
-                    statusElement.className = 'market-status badge ms-2';
-                    osloCard.appendChild(statusElement);
-                }
-                statusElement.className = 'market-status badge ms-2 ' + (isOsloOpen ? 'bg-success' : 'bg-secondary');
-                statusElement.textContent = isOsloOpen ? 'ÅPEN' : 'STENGT';
-            }
-            
-            // Update US market status
-            const usCard = document.querySelector('.card-header.bg-success');
-            if (usCard) {
-                let statusElement = usCard.querySelector('.market-status');
-                if (!statusElement) {
-                    statusElement = document.createElement('small');
-                    statusElement.className = 'market-status badge ms-2';
-                    usCard.appendChild(statusElement);
-                }
-                statusElement.className = 'market-status badge ms-2 ' + (isNYSEOpen ? 'bg-success' : 'bg-secondary');
-                statusElement.textContent = isNYSEOpen ? 'ÅPEN' : 'STENGT';
-            }
-            
-            // Update timestamp on price data
-            const timestampElements = document.querySelectorAll('.small.text-muted');
-            timestampElements.forEach(el => {
-                if (el.textContent.includes('Siste oppdatering')) {
-                    el.textContent = 'Siste oppdatering: ' + osloTime.toLocaleTimeString('no-NO', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                }
-            });
-        }
-        
-        // Update immediately and then every minute
-        updateMarketStatus();
-        setInterval(updateMarketStatus, 60000);
-        
-        // Initialize real-time data service (automatically starts)
-        if (typeof RealTimeDataService !== 'undefined') {
-            const realTimeService = new RealTimeDataService();
-            
-            // Subscribe to all visible tickers for live updates
-            document.querySelectorAll('[data-ticker][data-category]').forEach(row => {
-                const ticker = row.dataset.ticker;
-                const category = row.dataset.category;
-                
-                if (ticker && category) {
-                    realTimeService.subscribeTicker(ticker, category, (data) => {
-                        updateRowData(row, data);
-                    });
-                }
-            });
-            
-            // Update market indices
-            document.querySelectorAll('.index-price[data-ticker]').forEach(element => {
-                const ticker = element.dataset.ticker;
-                if (ticker) {
-                    realTimeService.subscribeTicker(ticker, 'index', (data) => {
-                        updateIndexPrice(element, data);
-                    });
-                }
-            });
-        }
-        
-        // Update individual row data
-        function updateRowData(row, data) {
-            if (!data) return;
-            
-            const Cell = row.querySelector('.price-cell');
-            const changeCell = row.querySelector('.change-cell');
-            
-            if (priceCell && data.price !== undefined) {
-                priceCell.textContent = data.price.toFixed(2);
-                priceCell.dataset.price = data.price;
-            }
-            
-            if (changeCell && data.change_percent !== undefined) {
-                const changePercent = data.change_percent;
-                changeCell.textContent = `${changePercent > 0 ? '+' : ''}${changePercent.toFixed(2)}%`;
-                changeCell.dataset.change = changePercent;
-                
-                // Update color classes
-                changeCell.className = changeCell.className.replace(/text-(success|danger|muted)/g, '');
-                if (changePercent > 0) {
-                    changeCell.classList.add('text-success');
-                } else if (changePercent < 0) {
-                    changeCell.classList.add('text-danger');
-                } else {
-                    changeCell.classList.add('text-muted');
-                }
-            }
-        }
-        
-        // Update index prices in market cards
-        function updateIndexPrice(element, data) {
-            if (!data || data.price === undefined) return;
-            
-            element.textContent = data.price.toFixed(2);
-            
-            // Update associated change element
-            const changeElement = element.parentElement.querySelector('.avg-change');
-            if (changeElement && data.change_percent !== undefined) {
-                const changePercent = data.change_percent;
-                changeElement.textContent = `${changePercent > 0 ? '+' : ''}${changePercent.toFixed(2)}%`;
-                
-                // Update color classes
-                changeElement.className = changeElement.className.replace(/text-(success|danger|muted)/g, '');
-                if (changePercent > 0) {
-                    changeElement.classList.add('text-success');
-                } else if (changePercent < 0) {
-                    changeElement.classList.add('text-danger');
-                } else {
-                    changeElement.classList.add('text-muted');
-                }
-            }
-        }
-        
-        // PWA functionality
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        
-        // Initialize news widget after page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load news widget if present
-            if (typeof loadNewsWidget === 'function') {
-                loadNewsWidget('norwegian');
-            }
-        });
-    });
-</script>
-
-<!-- Additional CSS for enhanced features -->
-<style>
-    .live-indicator.pulse {
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.05); }
-        100% { opacity: 1; transform: scale(1); }
-    }
-    
-    .card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-    
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-    }
-    
-    .progress-bar-animated.progress-bar-striped {
-        animation: progress-bar-stripes 1s linear infinite, pulse-glow 2s ease-in-out infinite alternate;
-    }
-    
-    @keyframes pulse-glow {
-        from { box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); }
-        to { box-shadow: 0 0 20px rgba(40, 167, 69, 0.8), 0 0 30px rgba(40, 167, 69, 0.3); }
-    }
-    
-    .skeleton {
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200px 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: 4px;
-    }
-    
-    @keyframes skeleton-loading {
-        0% { background-position: -200px 0; }
-        100% { background-position: calc(200px + 100%) 0; }
-    }
-    
-    .bg-gradient {
-        background: linear-gradient(135deg, var(--bs-primary) 0%, color-mix(in srgb, var(--bs-primary) 80%, black) 100%);
-    }
-    
-    .toast {
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.95) !important;
-    }
-    
-    [data-theme="dark"] .toast {
-        background: rgba(33, 37, 41, 0.95) !important;
-    }
-    
-    /* Mobile responsiveness improvements */
-    @media (max-width: 768px) {
-        .data-timestamp {
-            font-size: 0.75rem;
-            word-break: break-word;
-        }
-        
-        .card-title {
-            font-size: 1rem;
-        }
-        
-        .btn-group .btn {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-        }
-        
-        .analysis-tools .card-body {
-            padding: 1rem 0.5rem;
-        }
-        
-        .market-cards .card-body h3 {
-            font-size: 1.2rem;
-        }
-        
-        .table-responsive {
-            font-size: 0.85rem;
-        }
-    }
-    
-    /* Improved text wrapping for small screens */
-    .text-break {
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
-    }
-</style>
-{% endblock %}
 
 

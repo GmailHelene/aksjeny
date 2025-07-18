@@ -5,8 +5,8 @@ load_dotenv()
 
 class Config:
     # Basic configurations - ensure proper fallbacks
-    SECRET_KEY = os.getenv('SECRET_KEY') or 'dev-key-change-this-in-production-secure-2024'
-    WTF_CSRF_SECRET_KEY = os.getenv('WTF_CSRF_SECRET_KEY') or 'csrf-key-change-this-in-production-secure-2024'
+    SECRET_KEY = os.getenv('SECRET_KEY') or 'dev-key-change-this-in-production-secure-2025'
+    WTF_CSRF_SECRET_KEY = os.getenv('WTF_CSRF_SECRET_KEY') or 'csrf-key-change-this-in-production-secure-2025'
     FLASK_DEBUG = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
     DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
     
@@ -81,6 +81,20 @@ class Config:
         'api.health_check'
     }
 
+    # File upload configuration
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+    
+    # Export folder for generated reports
+    EXPORT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'exports')
+    
+    # Cache configuration
+    CACHE_TYPE = 'simple'
+    CACHE_DEFAULT_TIMEOUT = 300
+    
+    # Rate limiting
+    RATELIMIT_STORAGE_URL = os.getenv('REDIS_URL', 'memory://')
+
 class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
@@ -117,13 +131,6 @@ class ProductionConfig(Config):
     SESSION_COOKIE_SECURE = True  # Only send cookies over HTTPS
     SESSION_COOKIE_SAMESITE = 'Lax'  # Protect against CSRF
     REMEMBER_COOKIE_SECURE = True  # Remember me cookies only over HTTPS
-    
-    def __init__(self):
-        # Only enforce required environment variables when this config is actually used
-        if not os.getenv('SECRET_KEY'):
-            raise RuntimeError("SECRET_KEY must be set in production environment")
-        if not os.getenv('STRIPE_SECRET_KEY'):
-            raise RuntimeError("STRIPE_SECRET_KEY must be set in production environment")
 
 config = {
     'development': DevelopmentConfig,

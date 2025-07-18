@@ -14,21 +14,28 @@ from dotenv import load_dotenv
 from flask_migrate import Migrate
 import psutil
 import time
+import redis
 
 # Load environment variables
 load_dotenv()
 
-def create_app(config_name=None):
+def create_app(config_class=None):
     """Application factory pattern"""
     app = Flask(__name__)
     
     # Set configuration
-    if config_name is None:
+    if config_class is None:
         config_name = os.getenv('FLASK_ENV', 'default')
-    
-    app.logger.info(f"✅ App created in {config_name} mode")
-    
-    app.config.from_object(config[config_name])
+        app.config.from_object(config[config_name])
+        app.logger.info(f"✅ App created in {config_name} mode")
+    elif isinstance(config_class, str):
+        # Handle string config names (existing behavior)
+        app.config.from_object(config[config_class])
+        app.logger.info(f"✅ App created in {config_class} mode")
+    else:
+        # Handle config class objects (for testing)
+        app.config.from_object(config_class)
+        app.logger.info(f"✅ App created with custom config")
     
     # Initialize Flask extensions
     db.init_app(app)
@@ -97,6 +104,15 @@ def create_app(config_name=None):
         for rule in app.url_map.iter_rules():
             app.logger.info(f"Endpoint: {rule.endpoint} -> {rule}")
         app.logger.info("✅ App initialization complete")
+        
+        # Initialize database tables within app context
+        with app.app_context():
+            try:
+                if app.config.get('TESTING'):
+                    db.create_all()
+            except Exception as e:
+                app.logger.warning(f"Database initialization skipped: {e}")
+        
         return app
         
     except Exception as e:
