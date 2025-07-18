@@ -5,11 +5,77 @@ Handles news-related routes and functionality
 
 from flask import Blueprint, render_template, request, jsonify, current_app
 from ..services.news_service import NewsService
-from ..utils.access_control import demo_access
+from ..utils.access_control import demo_access, access_required
+from datetime import datetime, timedelta
 import logging
+import asyncio
 
 news_bp = Blueprint('news_bp', __name__)
 logger = logging.getLogger(__name__)
+
+# Initialize news service
+try:
+    news_service = NewsService()
+except Exception as e:
+    logger.warning(f"Could not initialize NewsService: {e}")
+    news_service = None
+
+# Helper functions for news data
+def get_company_news_sync(symbol, limit=5):
+    """Get company news synchronously with mock data"""
+    mock_articles = [
+        type('Article', (), {
+            'title': f'{symbol} viser sterk utvikling',
+            'summary': f'Selskapet {symbol} rapporterer positive resultater.',
+            'link': f'https://aksjeradar.trade/news/{symbol.lower()}-positive-results',
+            'source': 'Finansavisen',
+            'published': datetime.now() - timedelta(hours=1),
+            'image_url': None,
+            'relevance_score': 0.8,
+            'categories': ['norwegian', 'stocks']
+        })(),
+        type('Article', (), {
+            'title': f'{symbol} lanserer ny strategi',
+            'summary': f'Ny strategi kan påvirke {symbol}s fremtidige vekst.',
+            'link': f'https://aksjeradar.trade/news/{symbol.lower()}-new-strategy',
+            'source': 'E24',
+            'published': datetime.now() - timedelta(hours=3),
+            'image_url': None,
+            'relevance_score': 0.7,
+            'categories': ['norwegian', 'strategy']
+        })()
+    ]
+    return mock_articles[:limit]
+
+def get_latest_news_sync(limit=10, category='all'):
+    """Get latest news synchronously with mock data"""
+    mock_articles = [
+        type('Article', (), {
+            'title': 'Oslo Børs stiger på bred front',
+            'summary': 'Hovedindeksen stiger 1,2% i åpningen.',
+            'link': 'https://aksjeradar.trade/news/oslo-bors-stiger',
+            'source': 'Dagens Næringsliv',
+            'published': datetime.now(),
+            'image_url': None,
+            'relevance_score': 0.9,
+            'categories': ['norwegian', 'market']
+        })(),
+        type('Article', (), {
+            'title': 'Teknologi-aksjer i vinden',
+            'summary': 'Tech-sektoren viser sterk utvikling.',
+            'link': 'https://aksjeradar.trade/news/tech-aksjer-vinden',
+            'source': 'TechCrunch',
+            'published': datetime.now() - timedelta(hours=2),
+            'image_url': None,
+            'relevance_score': 0.8,
+            'categories': ['international', 'tech']
+        })()
+    ]
+    
+    if category != 'all':
+        filtered = [a for a in mock_articles if category in a.categories]
+        return filtered[:limit]
+    return mock_articles[:limit]
 
 @news_bp.route('/')
 @demo_access
@@ -141,99 +207,6 @@ def embed():
     except Exception as e:
         logger.error(f"Error loading embed: {e}")
         return render_template('news/embed.html', news_articles=[])
-
-@news_bp.route('/api/latest')
-@access_required
-def api_latest_news():
-    """API endpoint for latest news"""
-    try:
-        category = request.args.get('category', 'all')
-        limit = int(request.args.get('limit', 10))
-        
-        # Validate parameters
-        limit = min(max(limit, 1), 50)  # Between 1 and 50
-        valid_categories = ['all', 'norwegian', 'international', 'energy', 'tech', 'crypto', 'banking', 'shipping']
-        if category not in valid_categories:
-            category = 'all'
-        
-        # Use mock news data directly to avoid caching issues
-        mock_articles = [
-            {
-                'title': 'Oslo Børs stiger på bred front',
-                'summary': 'Hovedindeksen på Oslo Børs stiger 1,2% i åpningen etter positive signaler fra USA.',
-                'link': 'https://aksjeradar.trade/news/oslo-bors-stiger',
-                'source': 'Dagens Næringsliv',
-                'published': datetime.now().isoformat(),
-                'image_url': None,
-                'relevance_score': 0.9,
-                'categories': ['norwegian', 'market']
-            },
-            {
-                'title': 'Equinor presenterer sterke kvartalstall',
-                'summary': 'Energigiganten leverer bedre enn ventet resultat for fjerde kvartal.',
-                'link': 'https://aksjeradar.trade/news/equinor-kvartalstall',
-                'source': 'E24',
-                'published': (datetime.now() - timedelta(hours=1)).isoformat(),
-                'image_url': None,
-                'relevance_score': 0.8,
-                'categories': ['energy', 'norwegian']
-            },
-            {
-                'title': 'Bitcoin når nye høyder',
-                'summary': 'Kryptovalutaen Bitcoin har steget 5% i løpet av dagen.',
-                'link': 'https://aksjeradar.trade/news/bitcoin-nye-hoyder',
-                'source': 'CoinDesk',
-                'published': (datetime.now() - timedelta(hours=2)).isoformat(),
-                'image_url': None,
-                'relevance_score': 0.7,
-                'categories': ['crypto', 'international']
-            },
-            {
-                'title': 'DNB Bank viser solid vekst',
-                'summary': 'Norges største bank rapporterer økt utlånsvolum og reduserte tap.',
-                'link': 'https://aksjeradar.trade/news/dnb-solid-vekst',
-                'source': 'Finansavisen',
-                'published': (datetime.now() - timedelta(hours=3)).isoformat(),
-                'image_url': None,
-                'relevance_score': 0.8,
-                'categories': ['banking', 'norwegian']
-            },
-            {
-                'title': 'Tech-aksjer i vinden på Wall Street',
-                'summary': 'Store teknologiselskaper drar markedene oppover i USA.',
-                'link': 'https://aksjeradar.trade/news/tech-aksjer-wall-street',
-                'source': 'CNBC',
-                'published': (datetime.now() - timedelta(hours=4)).isoformat(),
-                'image_url': None,
-                'relevance_score': 0.6,
-                'categories': ['tech', 'international']
-            }
-        ]
-        
-        # Filter by category if not 'all'
-        if category != 'all':
-            filtered_articles = [article for article in mock_articles if category in article.get('categories', [])]
-        else:
-            filtered_articles = mock_articles
-            
-        # Limit results
-        filtered_articles = filtered_articles[:limit]
-        
-        return jsonify({
-            'success': True,
-            'articles': filtered_articles,
-            'count': len(filtered_articles),
-            'category': category,
-            'last_updated': datetime.now().isoformat()
-        })
-        
-    except Exception as e:
-        logger.error(f"Error in API latest news: {e}")
-        return jsonify({
-            'success': False,
-            'error': 'Kunne ikke hente nyheter',
-            'articles': []
-        }), 200  # Return 200 with error message instead of 500
 
 @news_bp.route('/api/company/<string:symbol>')
 @access_required
