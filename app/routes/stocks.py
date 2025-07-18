@@ -266,11 +266,8 @@ def prices():
                              
     except Exception as e:
         logger.error(f"Error in prices overview: {e}")
-        flash('Kunne ikke laste prisdata.', 'error')
+        flash('Kunne inte laste prisdata.', 'error')
         return render_template('stocks/prices.html')
-            'data': safe_stock_data,
-            'message': 'Vennligst prøv igjen senere'
-        })
 
 @stocks.route('/search')
 @access_required

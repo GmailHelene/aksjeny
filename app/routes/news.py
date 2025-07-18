@@ -141,24 +141,6 @@ def embed():
     except Exception as e:
         logger.error(f"Error loading embed: {e}")
         return render_template('news/embed.html', news_articles=[])
-        },
-        {
-            'title': 'Kryptovaluta-markedet opplever volatilitet',
-            'summary': 'Bitcoin og Ethereum viser store prissvingninger.',
-            'publisher': 'CoinDesk',
-            'providerPublishTime': (datetime.now() - timedelta(hours=4)).timestamp(),
-            'thumbnail': None,
-            'link': '#'
-        },
-        {
-            'title': 'Norges Bank holder renten uendret',
-            'summary': 'Sentralbanken vurderer økonomisk situasjon som stabil.',
-            'publisher': 'Dagens Næringsliv',
-            'providerPublishTime': (datetime.now() - timedelta(hours=5)).timestamp(),
-            'thumbnail': None,
-            'link': '#'
-        }
-    ]
 
 @news_bp.route('/api/latest')
 @access_required
