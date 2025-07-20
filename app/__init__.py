@@ -81,6 +81,11 @@ def create_app(config_class=None):
         
         register_blueprints(app)
         setup_error_handlers(app)
+        
+        # Import and setup security headers
+        from .utils.security import setup_security_headers
+        setup_security_headers(app)
+        
         register_template_filters(app)
         
         # Set up app context globals for templates

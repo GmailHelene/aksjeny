@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, jsonify, session, redirect, url_for, flash
+from flask import Blueprint, current_app, request, jsonify, session, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 from ..models.user import User
 from ..extensions import db
@@ -152,6 +152,16 @@ def payment_success():
     except Exception as e:
         flash(f'Det oppstod en feil ved bekreftelse av betalingen: {str(e)}', 'danger')
         return redirect(url_for('main.subscription_plans'))
+
+@stripe_bp.route('/success')
+def success():
+    """Simple success page for completed payments"""
+    return render_template('stripe/success.html')
+
+@stripe_bp.route('/cancel') 
+def cancel():
+    """Simple cancel page for cancelled payments"""
+    return render_template('stripe/cancel.html')
 
 @stripe_bp.route('/webhook', methods=['POST'])
 def stripe_webhook():

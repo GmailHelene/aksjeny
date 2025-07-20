@@ -26,7 +26,7 @@
                         <div class="card-body">
                             <div class="list-group">
                                 {% for result in results %}
-                                    <a href="{{ url_for('stocks.details', ticker=result.ticker) }}" 
+                                    <a href="{{ url_for('stocks.details', symbol=result.ticker) }}" 
                                        class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <h5 class="mb-1">{{ result.ticker }}</h5>

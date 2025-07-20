@@ -32,6 +32,7 @@ def get_all_available_stocks():
 analysis = Blueprint('analysis', __name__, url_prefix='/analysis')
 
 @analysis.route('/')
+@login_required
 @access_required
 def index():
     oslo_stocks = DataService.get_oslo_bors_overview()
@@ -488,7 +489,7 @@ def technical(ticker=None):
             
             if not technical_data:
                 flash(f'Ingen teknisk analyse tilgjengelig for {ticker}', 'warning')
-                return redirect(url_for('analysis.technical'))
+                return redirect(url_for('analysis.index'))
             
             return render_template('analysis/technical.html', 
                                  ticker=ticker,

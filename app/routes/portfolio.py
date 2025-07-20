@@ -110,6 +110,7 @@ def watchlist():
         return redirect(url_for('main.index'))
 
 @portfolio.route('/', endpoint='portfolio_index')
+@login_required
 @access_required
 def portfolio_index():
     """Portfolio overview with pagination and lazy loading"""

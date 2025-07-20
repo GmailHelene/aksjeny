@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Send oss en melding</h3>
-                    <form method="post" action="{{ url_for('main.contact_submit') }}">
+                    <form method="post" action="{{ url_for('main.contact') }}">>
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
                         <div class="mb-3">
                             <label for="name" class="form-label">Navn</label>

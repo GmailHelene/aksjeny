@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Demo Portefølje - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h2><i class="fas fa-briefcase me-2"></i>Demo - Porteføljeanalyse</h2>
+                    <p class="mb-0">Se hvordan AI-dreven porteføljeanalyse kan optimalisere dine investeringer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ "{:,.0f}".format(portfolio.total_value) }}</h3>
+                    <p class="text-muted mb-0">Total verdi (NOK)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">+{{ "{:,.0f}".format(portfolio.daily_change) }}</h3>
+                    <p class="text-muted mb-0">Dagens endring (NOK)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">+{{ "%.2f"|format(portfolio.daily_change_percent) }}%</h3>
+                    <p class="text-muted mb-0">Dagens endring (%)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">{{ portfolio.holdings|length }}</h3>
+                    <p class="text-muted mb-0">Antall posisjoner</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holdings -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Porteføljeinnhold</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Antall</th>
+                                    <th>Verdi (NOK)</th>
+                                    <th>Vekt (%)</th>
+                                    <th>Handlinger</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for holding in portfolio.holdings %}
+                                <tr>
+                                    <td><strong>{{ holding.symbol }}</strong></td>
+                                    <td>{{ holding.shares }}</td>
+                                    <td>{{ "{:,.0f}".format(holding.value) }}</td>
+                                    <td>{{ "%.1f"|format(holding.weight) }}%</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="analyzeHolding('{{ holding.symbol }}')">
+                                            <i class="fas fa-chart-line"></i> Analyser
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="sellHolding('{{ holding.symbol }}')">
+                                            <i class="fas fa-minus"></i> Selg
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Actions -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="fas fa-robot me-2 text-primary"></i>AI-anbefalinger</h5>
+                    <div class="alert alert-info">
+                        <strong>Optimalisering:</strong> Reduser vekt i teknologi-sektoren med 5% og øk eksponering mot fornybar energi.
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>Risiko:</strong> Porteføljen har høy korrelasjon med amerikansk marked. Vurder diversifisering.
+                    </div>
+                    <button class="btn btn-primary" onclick="optimizePortfolio()">
+                        <i class="fas fa-magic me-1"></i>Optimaliser portefølje
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="fas fa-plus me-2 text-success"></i>Legg til posisjon</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Søk etter aksje..." id="searchStock">
+                        <button class="btn btn-outline-secondary" onclick="searchStocks()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="addPosition()">
+                        <i class="fas fa-plus me-1"></i>Legg til posisjon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5>Ønsker du full porteføljeanalyse?</h5>
+                    <p class="mb-3">Få tilgang til avansert risiko-analyse, optimalisering og automatiske rebalanseringsforslag.</p>
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-crown me-2"></i>Oppgrader nå
+                    </a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Opprett Konto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function analyzeHolding(symbol) {
+    alert('Demo: Detaljert analyse for ' + symbol + ' vil vises her. Registrer deg for full funksjonalitet!');
+}
+
+function sellHolding(symbol) {
+    alert('Demo: Salgsfunksjon for ' + symbol + ' vil vises her. Registrer deg for å handle aksjer!');
+}
+
+function optimizePortfolio() {
+    alert('Demo: AI-dreven porteføljeoptimalisering ville kjørt her. Registrer deg for full funksjonalitet!');
+}
+
+function searchStocks() {
+    alert('Demo: Avansert aksjesøk ville vises her. Registrer deg for full funksjonalitet!');
+}
+
+function addPosition() {
+    alert('Demo: Legg til posisjon-funksjon ville vises her. Registrer deg for å bygge din portefølje!');
+}
+</script>
+{% endblock %}

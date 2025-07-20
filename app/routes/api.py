@@ -16,6 +16,169 @@ import traceback
 api = Blueprint('api', __name__, url_prefix='/api')
 logger = logging.getLogger(__name__)
 
+# Demo API endpoints - no authentication required
+@api.route('/demo/stocks')
+def demo_stocks_api():
+    """Demo stocks API endpoint"""
+    demo_data = [
+        {
+            'symbol': 'EQNR.OL',
+            'name': 'Equinor ASA',
+            'price': 342.55,
+            'change': 7.12,
+            'change_percent': 2.12,
+            'volume': 2500000,
+            'signal': 'BUY'
+        },
+        {
+            'symbol': 'DNB.OL',
+            'name': 'DNB Bank ASA',
+            'price': 234.10,
+            'change': 4.20,
+            'change_percent': 1.83,
+            'volume': 1800000,
+            'signal': 'HOLD'
+        },
+        {
+            'symbol': 'AAPL',
+            'name': 'Apple Inc.',
+            'price': 185.70,
+            'change': 2.75,
+            'change_percent': 1.50,
+            'volume': 50000000,
+            'signal': 'BUY'
+        }
+    ]
+    return jsonify({
+        'success': True,
+        'data': demo_data,
+        'demo': True,
+        'timestamp': datetime.utcnow().isoformat()
+    })
+
+@api.route('/demo/market-data')
+def demo_market_data_api():
+    """Demo market data API endpoint"""
+    demo_market_data = {
+        'market_summary': {
+            'oslo_bors': {
+                'index': 'OSEBX',
+                'value': 1234.56,
+                'change': 12.34,
+                'change_percent': 1.01
+            },
+            'sp500': {
+                'index': 'S&P 500',
+                'value': 4567.89,
+                'change': 23.45,
+                'change_percent': 0.52
+            }
+        },
+        'top_movers': [
+            {'symbol': 'EQNR.OL', 'change_percent': 2.12},
+            {'symbol': 'DNB.OL', 'change_percent': 1.83},
+            {'symbol': 'AAPL', 'change_percent': 1.50}
+        ]
+    }
+    return jsonify({
+        'success': True,
+        'data': demo_market_data,
+        'demo': True,
+        'timestamp': datetime.utcnow().isoformat()
+    })
+
+@api.route('/demo/portfolio')
+def demo_portfolio_api():
+    """Demo portfolio API endpoint"""
+    demo_portfolio = {
+        'total_value': 1250000,
+        'daily_change': 15750,
+        'daily_change_percent': 1.28,
+        'holdings': [
+            {'symbol': 'EQNR.OL', 'shares': 1000, 'value': 342550, 'weight': 27.4},
+            {'symbol': 'DNB.OL', 'shares': 800, 'value': 187280, 'weight': 15.0},
+            {'symbol': 'AAPL', 'shares': 500, 'value': 92850, 'weight': 7.4}
+        ]
+    }
+    return jsonify({
+        'success': True,
+        'data': demo_portfolio,
+        'demo': True,
+        'timestamp': datetime.utcnow().isoformat()
+    })
+
+@api.route('/status')
+def api_status():
+    """API Status endpoint"""
+    try:
+        return jsonify({
+            'success': True,
+            'status': 'healthy',
+            'version': '1.0.0',
+            'endpoints': {
+                'health': '/api/health',
+                'demo_stocks': '/api/demo/stocks',
+                'demo_market_data': '/api/demo/market-data',
+                'demo_portfolio': '/api/demo/portfolio'
+            },
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"API status error: {e}")
+        return jsonify({
+            'success': False,
+            'status': 'error',
+            'error': str(e)
+        }), 500
+
+@api.route('/demo/market-summary')
+def demo_market_summary_api():
+    """Demo market summary API endpoint"""
+    try:
+        market_summary = {
+            'osebx': {
+                'name': 'Oslo Børs All-share Index',
+                'value': 1234.56,
+                'change': 12.34,
+                'change_percent': 1.01,
+                'volume': 1500000
+            },
+            'sp500': {
+                'name': 'S&P 500',
+                'value': 4567.89,
+                'change': 23.45,
+                'change_percent': 0.52,
+                'volume': 3200000000
+            },
+            'nasdaq': {
+                'name': 'NASDAQ Composite',
+                'value': 14123.45,
+                'change': 67.89,
+                'change_percent': 0.48,
+                'volume': 2800000000
+            },
+            'sectors': {
+                'technology': {'change_percent': 1.2},
+                'healthcare': {'change_percent': 0.8},
+                'finance': {'change_percent': -0.3},
+                'energy': {'change_percent': 2.1}
+            },
+            'market_sentiment': 'Positive',
+            'last_updated': datetime.utcnow().isoformat()
+        }
+        return jsonify({
+            'success': True,
+            'data': market_summary,
+            'demo': True,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Demo market summary error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @api.route('/crypto/trending')
 def get_crypto_trending():
     """API endpoint for trending crypto"""

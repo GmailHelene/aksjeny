@@ -108,7 +108,7 @@
                                 {% for ticker, stock in market_data.oslo_stocks.items() %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none fw-bold">
+                                        <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="text-decoration-none fw-bold">
                                             {{ ticker }}
                                         </a>
                                     </td>

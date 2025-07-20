@@ -7,11 +7,11 @@
     <!-- Demo Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="demo-header bg-gradient-primary text-white p-4 rounded">
+            <div class="demo-header p-4 rounded" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: #ffffff;">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h1 class="h3 mb-2">🎯 Aksjeradar Demo</h1>
-                        <p class="mb-0">Utforsk alle funksjonene i vår avanserte aksjeanalyse-plattform</p>
+                        <h1 class="h3 mb-2" style="color: #ffffff;">🎯 Aksjeradar Demo</h1>
+                        <p class="mb-0" style="color: #ffffff;">Utforsk alle funksjonene i vår avanserte aksjeanalyse-plattform</p>
                     </div>
                     <div class="col-md-4 text-md-end">
                         <a href="{{ url_for('main.subscription') }}" class="btn btn-warning btn-lg">
@@ -28,26 +28,43 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <h5 class="card-title mb-3">🎮 Velg Demo Funksjon</h5>
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <a href="#stocks-demo" class="btn btn-outline-primary w-100" onclick="showDemo('stocks')">
-                                <i class="fas fa-chart-line me-2"></i>Aksjer & Markeder
-                            </a>
+                            <button id="stocks-btn" class="btn btn-primary w-100 active" onclick="showDemo('stocks')">
+                                <i class="fas fa-chart-line me-2"></i>
+                                <div>
+                                    <strong>Aksjer & Markeder</strong>
+                                    <br><small>Live markedsdata</small>
+                                </div>
+                            </button>
                         </div>
                         <div class="col-md-3">
-                            <a href="#analysis-demo" class="btn btn-outline-success w-100" onclick="showDemo('analysis')">
-                                <i class="fas fa-microscope me-2"></i>Teknisk Analyse
-                            </a>
+                            <button id="analysis-btn" class="btn btn-outline-success w-100" onclick="showDemo('analysis')">
+                                <i class="fas fa-microscope me-2"></i>
+                                <div>
+                                    <strong>Teknisk Analyse</strong>
+                                    <br><small>Indikatorer & charts</small>
+                                </div>
+                            </button>
                         </div>
                         <div class="col-md-3">
-                            <a href="#ai-demo" class="btn btn-outline-warning w-100" onclick="showDemo('ai')">
-                                <i class="fas fa-robot me-2"></i>AI Prediksjoner
-                            </a>
+                            <button id="ai-btn" class="btn btn-outline-warning w-100" onclick="showDemo('ai')">
+                                <i class="fas fa-robot me-2"></i>
+                                <div>
+                                    <strong>AI Prediksjoner</strong>
+                                    <br><small>Maskinlæring analyse</small>
+                                </div>
+                            </button>
                         </div>
                         <div class="col-md-3">
-                            <a href="#portfolio-demo" class="btn btn-outline-info w-100" onclick="showDemo('portfolio')">
-                                <i class="fas fa-briefcase me-2"></i>Portefølje
-                            </a>
+                            <button id="portfolio-btn" class="btn btn-outline-info w-100" onclick="showDemo('portfolio')">
+                                <i class="fas fa-briefcase me-2"></i>
+                                <div>
+                                    <strong>Portefølje</strong>
+                                    <br><small>Tracking & analyse</small>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -85,11 +102,11 @@
                                         <td class="text-success">+2.1%</td>
                                         <td><span class="badge bg-success">KJØP</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('EQNR.OL')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('EQNR.OL')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('EQNR.OL')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('EQNR.OL')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -102,11 +119,11 @@
                                         <td class="text-danger">-0.8%</td>
                                         <td><span class="badge bg-warning">HOLD</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('DNB.OL')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('DNB.OL')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('DNB.OL')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('DNB.OL')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -119,11 +136,11 @@
                                         <td class="text-danger">-1.2%</td>
                                         <td><span class="badge bg-danger">SELG</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('TEL.OL')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('TEL.OL')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('TEL.OL')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('TEL.OL')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -161,11 +178,11 @@
                                         <td class="text-success">+1.5%</td>
                                         <td><span class="badge bg-success">KJØP</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('AAPL')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('AAPL')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('AAPL')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('AAPL')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -178,11 +195,11 @@
                                         <td class="text-success">+0.8%</td>
                                         <td><span class="badge bg-success">KJØP</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('GOOGL')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('GOOGL')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('GOOGL')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('GOOGL')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -195,11 +212,11 @@
                                         <td class="text-danger">-2.1%</td>
                                         <td><span class="badge bg-warning">HOLD</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="demoAnalyze('TSLA')">
-                                                <i class="fas fa-search"></i>
+                                            <button class="btn btn-sm btn-primary me-1" onclick="demoAnalyze('TSLA')">
+                                                <i class="fas fa-search me-1"></i>Analyser
                                             </button>
-                                            <button class="btn btn-sm btn-outline-warning" onclick="demoAddToWatchlist('TSLA')">
-                                                <i class="fas fa-star"></i>
+                                            <button class="btn btn-sm btn-warning" onclick="demoAddToWatchlist('TSLA')">
+                                                <i class="fas fa-star me-1"></i>Overvåk
                                             </button>
                                         </td>
                                     </tr>
@@ -505,18 +522,32 @@ function showDemo(section) {
     // Show selected section
     document.getElementById(section + '-demo').style.display = 'block';
     
-    // Update active button
-    document.querySelectorAll('.btn-outline-primary, .btn-outline-success, .btn-outline-warning, .btn-outline-info').forEach(btn => {
-        btn.classList.remove('active');
+    // Update active button - reset all buttons
+    document.querySelectorAll('#stocks-btn, #analysis-btn, #ai-btn, #portfolio-btn').forEach(btn => {
+        btn.className = btn.className.replace('btn-primary', 'btn-outline-primary')
+                                     .replace('btn-success', 'btn-outline-success')
+                                     .replace('btn-warning', 'btn-outline-warning')
+                                     .replace('btn-info', 'btn-outline-info');
     });
-    event.target.classList.add('active');
+    
+    // Make clicked button active
+    const activeBtn = document.getElementById(section + '-btn');
+    if (section === 'stocks') {
+        activeBtn.className = activeBtn.className.replace('btn-outline-primary', 'btn-primary');
+    } else if (section === 'analysis') {
+        activeBtn.className = activeBtn.className.replace('btn-outline-success', 'btn-success');
+    } else if (section === 'ai') {
+        activeBtn.className = activeBtn.className.replace('btn-outline-warning', 'btn-warning');
+    } else if (section === 'portfolio') {
+        activeBtn.className = activeBtn.className.replace('btn-outline-info', 'btn-info');
+    }
 }
 
 function demoAnalyze(symbol) {
     // Simulate analysis action
     showNotification(`Analyserer ${symbol}...`, 'info');
     setTimeout(() => {
-        showNotification(`Analyse av ${symbol} fullført! Se resultatet i AI-demo seksjonen.`, 'success');
+        showNotification(`Analyse av ${symbol} fullført! Se resultatet i analyse-seksjonen.`, 'success');
         showDemo('analysis');
     }, 1500);
 }

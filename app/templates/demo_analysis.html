@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}Demo Analyse - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h2><i class="fas fa-chart-line me-2"></i>Demo - AI-dreven Markedsanalyse</h2>
+                    <p class="mb-0">Utforsk avanserte analyser med maskinlæring og prediktive modeller</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">1,245</h3>
+                    <p class="text-muted mb-0">OSEBX Nivå</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">68.45%</h3>
+                    <p class="text-muted mb-0">Markedssentiment</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">18.2%</h3>
+                    <p class="text-muted mb-0">Volatilitet (30d)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">12</h3>
+                    <p class="text-muted mb-0">Aktive signaler</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-robot me-2"></i>AI Markedsprediksjon</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-chart-line me-2"></i>Kortsiktig (1-7 dager)</h6>
+                        <p class="mb-1">Positivt momentum detektert. Forventet oppgang på 2-4% basert på tekniske indikatorer.</p>
+                    </div>
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-calendar me-2"></i>Mellomlang sikt (1-4 uker)</h6>
+                        <p class="mb-1">Blandet signaler. Makroøkonomiske faktorer kan påvirke retning.</p>
+                    </div>
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-calendar-alt me-2"></i>Langsiktig (3-12 måneder)</h6>
+                        <p class="mb-1">Strukturell vekst forventet i teknologi og fornybar energi sektorene.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-crosshairs me-2"></i>Beste Muligheter</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">EQNR.OL</h6>
+                            <small class="text-muted">Sterk teknisk momentum og økt oljepris</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="badge bg-success">85% sikkerhet</div>
+                            <div class="text-success">+12%</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">DNB.OL</h6>
+                            <small class="text-muted">Solid Q3-resultater og økte renter</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="badge bg-success">78% sikkerhet</div>
+                            <div class="text-success">+8%</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">NEL.OL</h6>
+                            <small class="text-muted">Hydrogensektor med sterkt oppsving</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="badge bg-success">72% sikkerhet</div>
+                            <div class="text-success">+15%</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="getDetailedAnalysis()">
+                        <i class="fas fa-search-plus me-1"></i>Detaljert analyse
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sector Analysis -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-industry me-2"></i>Sektoranalyse</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Teknologi</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                    </div>
+                                    <small class="text-muted">85/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Fornybar Energi</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" style="width: 78%"></div>
+                                    </div>
+                                    <small class="text-muted">78/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Helse & Biotek</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-warning" style="width: 65%"></div>
+                                    </div>
+                                    <small class="text-muted">65/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Bank & Finans</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" style="width: 72%"></div>
+                                    </div>
+                                    <small class="text-muted">72/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Shipping</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-warning" style="width: 58%"></div>
+                                    </div>
+                                    <small class="text-muted">58/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Olje & Gass</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" style="width: 75%"></div>
+                                    </div>
+                                    <small class="text-muted">75/100 poeng</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Risikoanalyse</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Generell markedsrisiko</label>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 45%">45%</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Valutarisiko</label>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 30%">30%</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Likviditetsrisiko</label>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 15%">15%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Aktive Signaler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>EQNR.OL</strong>
+                                <span class="badge bg-success">BUY</span>
+                            </div>
+                            <small>85% sikkerhet</small>
+                        </div>
+                        <small class="text-muted">Sterk teknisk momentum og økt oljepris</small>
+                    </div>
+                    <div class="alert alert-success">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>DNB.OL</strong>
+                                <span class="badge bg-success">BUY</span>
+                            </div>
+                            <small>78% sikkerhet</small>
+                        </div>
+                        <small class="text-muted">Solid Q3-resultater og økte renter</small>
+                    </div>
+                    <div class="alert alert-warning">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>MOWI.OL</strong>
+                                <span class="badge bg-warning">HOLD</span>
+                            </div>
+                            <small>65% sikkerhet</small>
+                        </div>
+                        <small class="text-muted">Avventer laksepris-stabilisering</small>
+                    </div>
+                    <button class="btn btn-warning w-100" onclick="setupAlerts()">
+                        <i class="fas fa-bell me-1"></i>Konfigurer varsler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Tools -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-bar fa-3x text-primary mb-3"></i>
+                    <h5>Teknisk Analyse</h5>
+                    <p class="text-muted">Avanserte charting-verktøy med 50+ indikatorer</p>
+                    <button class="btn btn-primary" onclick="openTechnicalAnalysis()">
+                        <i class="fas fa-chart-line me-1"></i>Åpne verktøy
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-calculator fa-3x text-success mb-3"></i>
+                    <h5>Risikokalkulatorer</h5>
+                    <p class="text-muted">Beregn optimal posisjonsstørrelse og risiko</p>
+                    <button class="btn btn-success" onclick="openRiskCalculator()">
+                        <i class="fas fa-calculator me-1"></i>Kalkuler risiko
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-brain fa-3x text-info mb-3"></i>
+                    <h5>AI Assistent</h5>
+                    <p class="text-muted">Chat med AI for personlige anbefalinger</p>
+                    <button class="btn btn-info" onclick="openAIAssistant()">
+                        <i class="fas fa-comments me-1"></i>Start chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5>Klar for full AI-analyse?</h5>
+                    <p class="mb-3">Få tilgang til alle avanserte analyseverktøy, varsler og personlige anbefalinger.</p>
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-crown me-2"></i>Oppgrader nå
+                    </a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Opprett Konto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getDetailedAnalysis() {
+    alert('Demo: Detaljert AI-analyse ville vises her med grafer og prognoser. Registrer deg for full funksjonalitet!');
+}
+
+function setupAlerts() {
+    alert('Demo: Varslingsinnstillinger ville vises her. Registrer deg for å få personlige varsler!');
+}
+
+function openTechnicalAnalysis() {
+    alert('Demo: Avanserte chart-verktøy ville åpnes her. Registrer deg for full tilgang!');
+}
+
+function openRiskCalculator() {
+    alert('Demo: Risikokalkulatorer ville vises her. Registrer deg for å bruke alle verktøy!');
+}
+
+function openAIAssistant() {
+    alert('Demo: AI Chat-assistent ville startes her. Registrer deg for personlige anbefalinger!');
+}
+</script>
+{% endblock %}

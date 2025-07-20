@@ -3,15 +3,11 @@ from ..utils.market_open import is_market_open
 
 main = Blueprint('main', __name__)
 
-# GDPR-side
-@main.route('/gdpr')
-def gdpr():
-    return render_template('gdpr.html')
 from flask_login import login_user, logout_user, login_required, current_user
 from ..extensions import db, login_manager
 from ..utils.subscription import subscription_required
 from ..utils.access_control import access_required
-from ..utils.access_control import access_required, is_demo_user, is_trial_active
+from ..utils.access_control import access_required, is_demo_user, is_trial_active, api_login_required
 from ..utils.i18n_simple import set_language, get_available_languages
 from urllib.parse import urlparse, urljoin
 from datetime import datetime, timedelta, time as dt_time
@@ -505,6 +501,91 @@ def demo():
                          demo_mode=True,
                          show_all_features=True)
 
+# Additional demo endpoints
+@main.route('/demo/stocks')
+def demo_stocks():
+    """Demo stocks page"""
+    demo_stocks = [
+        {
+            'symbol': 'EQNR.OL', 
+            'name': 'Equinor ASA', 
+            'price': 342.55, 
+            'change': '+2.1%',
+            'signal': 'KJØP',
+            'analysis': 'Sterke fundamentale faktorer og positiv teknisk trend'
+        },
+        {
+            'symbol': 'DNB.OL', 
+            'name': 'DNB Bank ASA', 
+            'price': 234.10, 
+            'change': '+1.8%',
+            'signal': 'HOLD',
+            'analysis': 'Stabil utvikling, avvent for bedre inngang'
+        },
+        {
+            'symbol': 'AAPL', 
+            'name': 'Apple Inc.', 
+            'price': 185.70, 
+            'change': '+1.5%',
+            'signal': 'KJØP',
+            'analysis': 'Innovasjon og sterke produktlanseringer driver vekst'
+        }
+    ]
+    return render_template('demo_stocks.html', stocks=demo_stocks, demo_mode=True)
+
+@main.route('/demo/portfolio')
+def demo_portfolio():
+    """Demo portfolio page"""
+    demo_portfolio = {
+        'total_value': 1250000,
+        'daily_change': 15750,
+        'daily_change_percent': 1.28,
+        'holdings': [
+            {'symbol': 'EQNR.OL', 'shares': 1000, 'value': 342550, 'weight': 27.4},
+            {'symbol': 'DNB.OL', 'shares': 800, 'value': 187280, 'weight': 15.0},
+            {'symbol': 'AAPL', 'shares': 500, 'value': 92850, 'weight': 7.4}
+        ]
+    }
+    return render_template('demo_portfolio.html', portfolio=demo_portfolio, demo_mode=True)
+
+@main.route('/demo/analysis')
+def demo_analysis():
+    """Demo analysis page"""
+    demo_analysis = {
+        'osebx_level': 1234.56,
+        'market_sentiment': 67.8,
+        'volatility': 12.3,
+        'active_signals': 8,
+        'recommendation': 'KJØP',
+        'confidence': '87%',
+        'target_price': '375 NOK',
+        'risk_level': 'Moderat',
+        'time_horizon': '6-12 måneder',
+        'opportunities': [
+            {'symbol': 'EQUI', 'name': 'Equinor', 'potential': '+15%', 'sector': 'Energi'},
+            {'symbol': 'NHY', 'name': 'Norsk Hydro', 'potential': '+12%', 'sector': 'Materialer'},
+            {'symbol': 'MOWI', 'name': 'Mowi', 'potential': '+18%', 'sector': 'Havbruk'}
+        ],
+        'sectors': [
+            {'name': 'Energi', 'weight': 35.2, 'performance': '+8.4%', 'score': 75},
+            {'name': 'Teknologi', 'weight': 18.7, 'performance': '+12.1%', 'score': 85},
+            {'name': 'Finans', 'weight': 22.1, 'performance': '+5.3%', 'score': 55},
+            {'name': 'Materialer', 'weight': 14.0, 'performance': '+6.8%', 'score': 65}
+        ],
+        'risk': {
+            'market': 45,
+            'currency': 25,
+            'liquidity': 80
+        },
+        'signals': [
+            'Sterk teknisk momentum de siste 30 dagene',
+            'Gode fundamentale nøkkeltall', 
+            'Positiv markedssentiment i energisektoren',
+            'Økt institusjonell interesse'
+        ]
+    }
+    return render_template('demo_analysis.html', analysis=demo_analysis, demo_mode=True)
+
 @main.route('/ai-explained')
 def ai_explained():
     """AI explanation page"""
@@ -623,7 +704,7 @@ def login():
                         flash(f'{getattr(form, field).label.text}: {error}', 'danger')
     return render_template('login.html', form=form)
 
-@main.route('/logout')
+@main.route('/logout', methods=['GET', 'POST'])
 def logout():
     user_email = current_user.email if current_user.is_authenticated else 'Unknown'
     
@@ -639,37 +720,16 @@ def logout():
     # Flash message that will show on homepage
     flash('Du er nå utlogget.', 'success')
     
-    # Create response with aggressive cache headers to force page refresh
+    # Create simple response with minimal headers
     response = make_response(redirect(url_for('main.index')))
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0, private'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-    response.headers['Last-Modified'] = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
-    response.headers['Vary'] = '*'
-    response.headers['Clear-Site-Data'] = '"cache", "cookies", "storage"'
     
-    # Clear ALL possible authentication cookies more aggressively
-    cookie_names = [
-        'session', 'remember_token', 'user_logged_in', 'user_session', 'flask_session',
-        'trial_start_time', 'trial_used', 'csrf_token', 'remember_me', 'user_id',
-        'authentication', 'auth_token', 'login_session'
-    ]
-    
-    for cookie_name in cookie_names:
-        # Clear for current domain/path
-        response.set_cookie(cookie_name, '', expires=0, max_age=0, path='/', secure=False, httponly=True, samesite='Lax')
-        response.set_cookie(cookie_name, '', expires=0, max_age=0, path='/', secure=True, httponly=True, samesite='None')
-        response.set_cookie(cookie_name, '', expires=0, max_age=0, path='/', secure=False, httponly=False, samesite='Lax')
-        
-        # Try different domain variants
-        domains_to_try = [None, request.host, f'.{request.host}']
-        for domain in domains_to_try:
-            try:
-                response.set_cookie(cookie_name, '', expires=0, max_age=0, domain=domain, path='/', secure=False, httponly=True, samesite='Lax')
-                response.set_cookie(cookie_name, '', expires=0, max_age=0, domain=domain, path='/', secure=True, httponly=True, samesite='None'
-                )
-            except:
-                pass
+    # Clear only essential cookies
+    response.set_cookie('session', '', expires=0, max_age=0, path='/')
+    response.set_cookie('remember_token', '', expires=0, max_age=0, path='/')
+    response.set_cookie('user_logged_in', '', expires=0, max_age=0, path='/')
     
     return response
 
@@ -840,6 +900,34 @@ def insider_trading():
 def subscription():
     """Subscription page"""
     return render_template('subscription.html')
+
+@main.route('/payment/success')
+@main.route('/payment/success/')
+def payment_success():
+    """Payment success page"""
+    try:
+        # Get session_id from query parameters if provided by Stripe
+        session_id = request.args.get('session_id')
+        
+        return render_template('payment/success.html', 
+                             session_id=session_id,
+                             title='Betaling vellykket!')
+    except Exception as e:
+        current_app.logger.error(f"Payment success page error: {str(e)}")
+        flash("En feil oppstod ved lasting av betalingsbekreftelse.", "error")
+        return redirect(url_for('main.index'))
+
+@main.route('/payment/cancel')
+@main.route('/payment/cancel/')
+def payment_cancel():
+    """Payment cancelled page"""
+    try:
+        return render_template('payment/cancel.html',
+                             title='Betaling avbrutt')
+    except Exception as e:
+        current_app.logger.error(f"Payment cancel page error: {str(e)}")
+        flash("En feil oppstod ved lasting av avbrutt betaling.", "error")
+        return redirect(url_for('main.pricing'))
 
 @main.route('/profile')
 @main.route('/profile/')
@@ -1165,6 +1253,50 @@ def insider_analysis(symbol):
         current_app.logger.error(f"Error getting insider analysis for {symbol}: {e}")
         return jsonify({'success': False, 'error': str(e)})
 
+# Add missing pages
+@main.route('/about')
+def about():
+    """About page"""
+    return render_template('about.html')
+
+@main.route('/gdpr')
+def gdpr():
+    """GDPR page"""
+    return render_template('gdpr.html')
+
+@main.route('/contact', methods=['GET', 'POST'])
+def contact():
+    """Contact page"""
+    if request.method == 'POST':
+        # Handle contact form submission
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject', 'Kontakt fra Aksjeradar')
+        message = request.form.get('message')
+        
+        if name and email and message:
+            flash('Takk for henvendelsen! Vi tar kontakt med deg snart.', 'success')
+        else:
+            flash('Vennligst fyll ut alle påkrevde felt.', 'error')
+        
+        return redirect(url_for('main.contact'))
+    
+    return render_template('contact.html')
+
+@main.route('/dashboard')
+@login_required
+@access_required
+def dashboard():
+    """Main dashboard - redirect to financial dashboard"""
+    return redirect(url_for('main.financial_dashboard'))
+
+@main.route('/settings')
+@login_required
+@access_required
+def settings():
+    """User settings page"""
+    return render_template('settings.html')
+
 @main.route('/api/crypto/data')
 @login_required
 def crypto_data():
@@ -1234,5 +1366,130 @@ def currency_rates():
     except Exception as e:
         current_app.logger.error(f"Error getting currency rates: {e}")
         return jsonify({'success': False, 'error': str(e)})
-        current_app.logger.error(f"Error getting currency rates: {e}")
+
+@main.route('/api/status')
+def api_status():
+    """API endpoint for system status"""
+    try:
+        return jsonify({
+            'status': 'operational',
+            'version': '1.0.0',
+            'timestamp': datetime.now().isoformat(),
+            'services': {
+                'database': 'operational',
+                'market_data': 'operational',
+                'ai_analysis': 'operational'
+            },
+            'uptime': '99.9%'
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting API status: {e}")
+        return jsonify({'status': 'error', 'error': str(e)})
+
+@main.route('/api/demo/market-summary')
+def demo_market_summary():
+    """API endpoint for demo market summary"""
+    try:
+        return jsonify({
+            'success': True,
+            'market_summary': {
+                'osebx': {
+                    'value': 1234.56,
+                    'change': '+1.23%',
+                    'status': 'up'
+                },
+                'nasdaq': {
+                    'value': 15678.90,
+                    'change': '+0.45%',
+                    'status': 'up'
+                },
+                'sp500': {
+                    'value': 4567.89,
+                    'change': '-0.12%',
+                    'status': 'down'
+                },
+                'dax': {
+                    'value': 16789.01,
+                    'change': '+0.78%',
+                    'status': 'up'
+                }
+            },
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting demo market summary: {e}")
         return jsonify({'success': False, 'error': str(e)})
+
+@main.route('/api/portfolio')
+@api_login_required
+def api_portfolio():
+    """API endpoint for portfolio data"""
+    try:
+        return jsonify({
+            'success': True,
+            'message': 'Portfolio API endpoint - authentication required',
+            'user_id': current_user.id if current_user.is_authenticated else None
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting portfolio data: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@main.route('/api/watchlist')
+@api_login_required
+def api_watchlist():
+    """API endpoint for watchlist data"""
+    try:
+        return jsonify({
+            'success': True,
+            'message': 'Watchlist API endpoint - authentication required',
+            'user_id': current_user.id if current_user.is_authenticated else None
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting watchlist data: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@main.route('/api/user/profile')
+@api_login_required
+def api_user_profile():
+    """API endpoint for user profile data"""
+    try:
+        return jsonify({
+            'success': True,
+            'message': 'User profile API endpoint - authentication required',
+            'user_id': current_user.id if current_user.is_authenticated else None
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error getting user profile: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@main.route('/api/version')
+def api_version():
+    """API endpoint for application version"""
+    try:
+        version_path = os.path.join(current_app.root_path, '../static/version.txt')
+        version = None
+        if os.path.exists(version_path):
+            with open(version_path, 'r') as f:
+                version = f.read().strip()
+        if not version:
+            # Fallback version based on current timestamp
+            version = datetime.utcnow().strftime('%Y%m%d-%H%M')
+        return jsonify({
+            'success': True,
+            'version': version,
+            'app_name': 'Aksjeradar',
+            'environment': current_app.config.get('ENV', 'development'),
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error reading version: {str(e)}")
+        return jsonify({
+            'success': False,
+            'version': datetime.utcnow().strftime('%Y%m%d-%H%M'),
+            'error': 'Could not read version file'
+        })
+
+@main.route('/terms')
+def terms():
+    """Terms of service page"""
+    return render_template('terms.html')

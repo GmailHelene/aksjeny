@@ -56,13 +56,16 @@
             </div>
         </div>
 
-        <!-- Basic Plan -->
+        <!-- Monthly Plan -->
         <div class="col-lg-4 col-md-6">
             <div class="card h-100 shadow-sm border-primary">
+                <div class="position-absolute top-0 start-50 translate-middle">
+                    <span class="badge bg-primary px-3 py-2">Mest populær</span>
+                </div>
                 <div class="card-header bg-primary text-center py-4" style="background-color: #0d6efd !important;">
-                    <h3 class="mb-0 text-white">Basic</h3>
+                    <h3 class="mb-0 text-white">Månedlig</h3>
                     <div class="display-4 fw-bold my-3 text-white">
-                        kr 199
+                        kr 399
                         <span class="fs-6 fw-normal text-white-50">/måned</span>
                     </div>
                     <span class="badge bg-warning text-dark">Mest populær</span>
@@ -87,114 +90,115 @@
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Watchlist inntil 50 aksjer
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Discord/Slack-integrasjon
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-footer bg-white border-0 p-4">
-                    <a href="{{ url_for('pricing.upgrade', tier='basic') }}" class="btn btn-primary w-100" style="background-color: #0d6efd !important; border-color: #0d6efd !important; color: white !important;">
-                        Velg Basic
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pro Plan -->
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-dark text-center py-4">
-                    <h3 class="mb-0 text-white">Pro</h3>
-                    <div class="display-4 fw-bold my-3 text-white">
-                        kr 399
-                        <span class="fs-6 fw-normal text-white-50">/måned</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Alt fra Basic +
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Avansert backtest og strategibygger
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Monte Carlo-simulering
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
                             Ubegrenset watchlist
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Prioritert AI-prosessering
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Konsulent-rapporter (2/måned gratis)
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
                             API-tilgang
                         </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Ingen bindingstid
+                        </li>
                     </ul>
                 </div>
                 <div class="card-footer bg-white border-0 p-4">
-                    <a href="{{ url_for('pricing.upgrade', tier='pro') }}" class="btn btn-dark w-100" style="background-color: #212529 !important; border-color: #212529 !important; color: white !important;">
-                        Velg Pro
+                    <a href="{{ url_for('pricing.upgrade', tier='monthly') }}" class="btn btn-primary w-100" style="background-color: #0d6efd !important; border-color: #0d6efd !important; color: white !important;">
+                        Velg Månedlig
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Årlig Pro Plan -->
-        <div class="col-lg-4 col-md-6 offset-lg-2">
+        <!-- Årlig Plan -->
+        <div class="col-lg-4 col-md-6">
             <div class="card h-100 shadow-sm border-success">
                 <div class="card-header bg-success text-center py-4">
-                    <h3 class="mb-0 text-white">Årlig Pro</h3>
+                    <h3 class="mb-0 text-white">Årlig</h3>
                     <div class="display-4 fw-bold my-3 text-white">
-                        kr 3499
+                        kr 2999
                         <span class="fs-6 fw-normal text-white-50">/år</span>
                     </div>
-                    <span class="badge bg-warning text-dark">Spar 27%</span>
+                    <span class="badge bg-warning text-dark">Spar 25%</span>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Alt fra Pro +
+                            <strong>Alt fra månedlig abonnement</strong>
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Spar 27% på årlig betaling</strong>
+                            <strong>Spar 1789 kr per år</strong>
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Prioritert kundeservice
+                            Prioritert kundesupport
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Eksklusiv markedsrapporter
+                            Eksklusive markedsrapporter
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Tidlig tilgang til nye funksjoner
+                            Beta-tilgang til nye funksjoner
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            Personlig konsultasjon (1/år gratis)
+                            Kun 249 kr/måned i gjennomsnitt
                         </li>
                     </ul>
                 </div>
                 <div class="card-footer bg-white border-0 p-4">
                     <a href="{{ url_for('pricing.upgrade', tier='yearly') }}" class="btn btn-success w-100" style="background-color: #198754 !important; border-color: #198754 !important; color: white !important;">
-                        Velg Årlig Pro
+                        Velg Årlig (Spar 25%)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-info">
+                <div class="card-header bg-info text-white text-center py-4">
+                    <h3 class="mb-0">Team</h3>
+                    <div class="display-4 fw-bold my-3">
+                        Kontakt
+                        <span class="fs-6 fw-normal">oss</span>
+                    </div>
+                    <span class="badge bg-warning text-dark">For bedrifter</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Alt fra årlig abonnement</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Flere brukere per konto</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Sentralisert administrasjon
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Dedikert kundeservice
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Tilpassede rapporter
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Volumrabatter
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 p-4">
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-info w-100" style="background-color: #0dcaf0 !important; border-color: #0dcaf0 !important; color: white !important;">
+                        Kontakt oss
                     </a>
                 </div>
             </div>

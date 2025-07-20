@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Demo Aksjer - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h2><i class="fas fa-chart-line me-2"></i>Demo - Aksjeovervåkning</h2>
+                    <p class="mb-0">Utforsk våre kraftige analyseverktøy med demo-data</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for stock in stocks %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">{{ stock.symbol }}</h5>
+                        <span class="badge bg-{% if stock.signal == 'KJØP' %}success{% elif stock.signal == 'HOLD' %}warning{% else %}danger{% endif %}">
+                            {{ stock.signal }}
+                        </span>
+                    </div>
+                    <h6 class="text-muted">{{ stock.name }}</h6>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="mb-0">{{ "%.2f"|format(stock.price) }}</h4>
+                                <small class="text-muted">NOK</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h5 class="mb-0 text-success">{{ stock.change }}</h5>
+                                <small class="text-muted">Endring</small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ stock.analysis }}</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-sm" onclick="showStockDetails('{{ stock.symbol }}')">
+                            <i class="fas fa-chart-bar me-1"></i>Se fullstendig analyse
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="addToWatchlist('{{ stock.symbol }}')">
+                            <i class="fas fa-plus me-1"></i>Legg til watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5>Vil du ha tilgang til alle funksjoner?</h5>
+                    <p class="mb-3">Dette er bare en liten del av hva Aksjeradar tilbyr. Få tilgang til alle funksjoner med et abonnement.</p>
+                    <a href="{{ url_for('main.subscription') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-crown me-2"></i>Se Prisplaner
+                    </a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Opprett Konto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showStockDetails(symbol) {
+    alert('Demo: Fullstendig analyse for ' + symbol + ' vil vises her. Registrer deg for full funksjonalitet!');
+}
+
+function addToWatchlist(symbol) {
+    alert('Demo: ' + symbol + ' ville blitt lagt til din watchlist. Registrer deg for å lagre dine watchlists!');
+}
+</script>
+{% endblock %}

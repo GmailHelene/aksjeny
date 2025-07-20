@@ -78,12 +78,12 @@ PRICING_TIERS = {
     },
     'yearly': {
         'name': 'Årlig Pro',
-        'price': 3499,
+        'price': 2999,
         'yearly': True,
         'stripe_price_id': os.getenv('STRIPE_YEARLY_PRICE_ID'),
         'features': [
             'Alt fra Pro +',
-            'Spar 27% på årlig betaling',
+            'Spar 25% på årlig betaling',
             'Prioritert kundeservice',
             'Eksklusiv markedsrapporter',
             'Tidlig tilgang til nye funksjoner',

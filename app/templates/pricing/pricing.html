@@ -44,12 +44,13 @@
                     <span class="badge bg-primary px-3 py-2">Mest populær</span>
                 </div>
                 <div class="card-header text-center py-4 bg-primary text-white">
-                    <h3 class="mb-0">Pro</h3>
+                    <h3 class="mb-0">Årlig</h3>
                     <p class="mb-0">For aktive investorer</p>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr {{ 399|format_currency('NOK') }}/mnd</span>
+                        <span class="display-5 fw-bold">kr 2999/år</span>
+                        <div class="small text-muted">Spar 1789 kr per år</div>
                     </div>
                     <ul class="list-unstyled">
                         <li>Alle analyseverktøy</li>
@@ -60,7 +61,7 @@
                 </div>
                 <div class="card-footer bg-transparent border-0 p-4">
                     <a href="{{ url_for('main.subscription') }}" class="btn btn-primary w-100">
-                        Velg Pro
+                        Velg Årlig
                     </a>
                     <p class="text-center text-muted small mt-2 mb-0">
                         Ingen bindingstid. Avslutt når som helst.
@@ -73,21 +74,23 @@
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-header text-center py-4">
-                    <h3 class="mb-0">Enterprise</h3>
-                    <p class="text-muted mb-0">For profesjonelle</p>
+                    <h3 class="mb-0">Teams</h3>
+                    <p class="text-muted mb-0">For bedrifter</p>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr {{ 3499|format_currency('NOK') }}/år</span>
+                        <span class="display-5 fw-bold">Kontakt oss</span>
                     </div>
                     <ul class="list-unstyled">
-                        <li>Alt i Pro</li>
-                        <li>Dedikert support</li>
-                        <li>Rapportering og API-tilgang</li>
+                        <li>Alt fra årlig plan</li>
+                        <li>Flere brukere per konto</li>
+                        <li>Sentralisert administrasjon</li>
+                        <li>Tilpassede rapporter</li>
+                        <li>Dedikert kundeservice</li>
                     </ul>
                 </div>
                 <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="mailto:support@aksjeradar.no" class="btn btn-primary w-100">
+                    <a href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement" class="btn btn-primary w-100">
                         Kontakt oss
                     </a>
                 </div>

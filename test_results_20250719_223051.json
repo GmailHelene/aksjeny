@@ -1,0 +1,320 @@
+{
+  "timestamp": "2025-07-19T22:30:51.516202",
+  "total_tests": 52,
+  "passed": 16,
+  "failed": 36,
+  "results": [
+    {
+      "test": "Server Health Check",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.048118"
+    },
+    {
+      "test": "Public Endpoint: Homepage",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.166596"
+    },
+    {
+      "test": "Public Endpoint: Demo Page",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.177863"
+    },
+    {
+      "test": "Public Endpoint: Pricing Page",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.188788"
+    },
+    {
+      "test": "Public Endpoint: Registration Page",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.202391"
+    },
+    {
+      "test": "Public Endpoint: Login Page",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.211612"
+    },
+    {
+      "test": "Public Endpoint: About Page",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.216667"
+    },
+    {
+      "test": "Public Endpoint: Contact Page",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.220463"
+    },
+    {
+      "test": "Public Endpoint: GDPR Page",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.223855"
+    },
+    {
+      "test": "Public Endpoint: Forgot Password Page",
+      "success": false,
+      "details": "Status: 200 - Contains error content",
+      "timestamp": "2025-07-19T22:30:51.230332"
+    },
+    {
+      "test": "Public Endpoint: Health Check",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.238120"
+    },
+    {
+      "test": "Public Endpoint: Robots.txt",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.241185"
+    },
+    {
+      "test": "Public Endpoint: Sitemap",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.244075"
+    },
+    {
+      "test": "Demo Endpoint: Demo Main Page",
+      "success": true,
+      "details": "Status: 200 - Contains demo content",
+      "timestamp": "2025-07-19T22:30:51.248403"
+    },
+    {
+      "test": "Demo Endpoint: Demo Stocks",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.252485"
+    },
+    {
+      "test": "Demo Endpoint: Demo Portfolio",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.256401"
+    },
+    {
+      "test": "Demo Endpoint: Demo Analysis",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.260349"
+    },
+    {
+      "test": "Demo Endpoint: Demo API Stocks",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.264435"
+    },
+    {
+      "test": "Demo Endpoint: Demo API Market Data",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.268357"
+    },
+    {
+      "test": "Protected Endpoint: Dashboard",
+      "success": false,
+      "details": "Status: 404 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.271940"
+    },
+    {
+      "test": "Protected Endpoint: Portfolio",
+      "success": false,
+      "details": "Status: 200 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.291644"
+    },
+    {
+      "test": "Protected Endpoint: Watchlist",
+      "success": false,
+      "details": "Status: 200 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.303178"
+    },
+    {
+      "test": "Protected Endpoint: Analysis",
+      "success": false,
+      "details": "Request failed: Exceeded 30 redirects.",
+      "timestamp": "2025-07-19T22:30:51.421359"
+    },
+    {
+      "test": "Protected Endpoint: Notifications",
+      "success": false,
+      "details": "Status: 200 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.431642"
+    },
+    {
+      "test": "Protected Endpoint: Settings",
+      "success": false,
+      "details": "Status: 404 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.434843"
+    },
+    {
+      "test": "Protected Endpoint: API Portfolio",
+      "success": false,
+      "details": "Status: 404 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.438010"
+    },
+    {
+      "test": "Protected Endpoint: API Watchlist",
+      "success": false,
+      "details": "Status: 404 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.441720"
+    },
+    {
+      "test": "Protected Endpoint: API User Profile",
+      "success": false,
+      "details": "Status: 404 (expects redirect or auth error)",
+      "timestamp": "2025-07-19T22:30:51.444857"
+    },
+    {
+      "test": "API Endpoint: API Health",
+      "success": true,
+      "details": "Status: 200 - Valid JSON response with 3 items",
+      "timestamp": "2025-07-19T22:30:51.447361"
+    },
+    {
+      "test": "API Endpoint: API Status",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.450454"
+    },
+    {
+      "test": "API Endpoint: Demo API Stocks",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.453683"
+    },
+    {
+      "test": "API Endpoint: Demo API Market Summary",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.456987"
+    },
+    {
+      "test": "Static File: Main CSS",
+      "success": true,
+      "details": "Status: 200 - Content-Type: text/css; charset=utf-8",
+      "timestamp": "2025-07-19T22:30:51.460464"
+    },
+    {
+      "test": "Static File: Main JavaScript",
+      "success": true,
+      "details": "Status: 200 - Content-Type: application/javascript; charset=utf-8",
+      "timestamp": "2025-07-19T22:30:51.463237"
+    },
+    {
+      "test": "Static File: Demo JavaScript",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.466536"
+    },
+    {
+      "test": "Static File: Portfolio JavaScript",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.470284"
+    },
+    {
+      "test": "Static File: Logo Image",
+      "success": true,
+      "details": "Status: 200 - Content-Type: image/png",
+      "timestamp": "2025-07-19T22:30:51.473601"
+    },
+    {
+      "test": "404 Error Page",
+      "success": true,
+      "details": "Status: 404 - Contains 404 error message",
+      "timestamp": "2025-07-19T22:30:51.476903"
+    },
+    {
+      "test": "Security Header: X-Content-Type-Options",
+      "success": false,
+      "details": "Missing",
+      "timestamp": "2025-07-19T22:30:51.480456"
+    },
+    {
+      "test": "Security Header: X-Frame-Options",
+      "success": false,
+      "details": "Missing",
+      "timestamp": "2025-07-19T22:30:51.480480"
+    },
+    {
+      "test": "Security Header: X-XSS-Protection",
+      "success": false,
+      "details": "Missing",
+      "timestamp": "2025-07-19T22:30:51.480494"
+    },
+    {
+      "test": "Security Header: Strict-Transport-Security",
+      "success": false,
+      "details": "Missing",
+      "timestamp": "2025-07-19T22:30:51.480504"
+    },
+    {
+      "test": "Subscription: Subscription Page",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.489724"
+    },
+    {
+      "test": "Subscription: Pricing Page",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.495948"
+    },
+    {
+      "test": "Subscription: Stripe Checkout Creation",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-07-19T22:30:51.502815"
+    },
+    {
+      "test": "Subscription: Payment Success Page",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.506054"
+    },
+    {
+      "test": "Subscription: Payment Cancel Page",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-07-19T22:30:51.509549"
+    },
+    {
+      "test": "Styling Check: white text on white background",
+      "success": false,
+      "details": "Issue detected",
+      "timestamp": "2025-07-19T22:30:51.513166"
+    },
+    {
+      "test": "Styling Check: missing CSS",
+      "success": true,
+      "details": "No issues found",
+      "timestamp": "2025-07-19T22:30:51.513189"
+    },
+    {
+      "test": "Styling Check: broken images",
+      "success": true,
+      "details": "No issues found",
+      "timestamp": "2025-07-19T22:30:51.513201"
+    },
+    {
+      "test": "Styling Check: inline styles",
+      "success": false,
+      "details": "Issue detected",
+      "timestamp": "2025-07-19T22:30:51.513210"
+    },
+    {
+      "test": "CSS File Loading",
+      "success": true,
+      "details": "CSS file loads successfully",
+      "timestamp": "2025-07-19T22:30:51.515971"
+    }
+  ]
+}

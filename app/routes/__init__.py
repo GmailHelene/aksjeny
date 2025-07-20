@@ -259,10 +259,10 @@ def configure_app(app, config_obj):
     # Add EXEMPT_ENDPOINTS to app config - endpoints that should always be accessible
     app.config['EXEMPT_ENDPOINTS'] = {
         'main.login', 'main.register', 'main.logout', 'main.privacy', 'main.privacy_policy',
-        'main.offline', 'main.offline_html', 'static', 'favicon',
+        'main.offline', 'main.offline_html', 'static', 'favicon', 
         'main.service_worker', 'main.manifest', 'main.version', 'main.contact', 'main.contact_submit',
         'main.subscription', 'main.subscription_plans', 'main.payment_success', 'main.payment_cancel',
-        'main.forgot_password', 'main.reset_password', 'main.demo',
+        'main.forgot_password', 'main.reset_password', 'main.demo', 'main.index',
         'stocks.index', 'stocks.search', 'analysis.index', 'main.referrals', 'main.send_referral',
         'pricing.pricing', 'pricing.index'
     }

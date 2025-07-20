@@ -70,7 +70,7 @@
                                             <button class="btn btn-sm btn-outline-primary add-to-watchlist" data-ticker="{{ ticker }}">
                                                 <i class="bi bi-star"></i>
                                             </button>
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-primary">
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-sm btn-primary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </td>

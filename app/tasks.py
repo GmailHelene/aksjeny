@@ -198,6 +198,9 @@ def send_email_alert(email: str, title: str, message: str):
         from flask_mail import Message
         from app.extensions import mail
         
+        # Fix f-string backslash issue by extracting the replace operation
+        message_html = message.replace('\n', '<br>')
+        
         msg = Message(
             subject=f"🚨 Aksjeradar Alert: {title}",
             recipients=[email],
@@ -211,7 +214,7 @@ def send_email_alert(email: str, title: str, message: str):
                 <div style="padding: 20px;">
                     <h2>{title}</h2>
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
-                        {message.replace('\n', '<br>')}
+                        {message_html}
                     </div>
                     <p style="margin-top: 20px; color: #666;">
                         <small>Dette varselet ble sendt fra Aksjeradar AI. Ikke investeringsrådgivning.</small>

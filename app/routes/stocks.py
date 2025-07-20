@@ -96,9 +96,9 @@ def list_currency():
     return list_stocks('currency')
 
 @stocks.route('/details/<symbol>')
-@demo_access
+@access_required
 def details(symbol):
-    """Stock details page"""
+    """Stock details page with all analysis and data"""
     try:
         # Get stock information
         stock_info = DataService.get_stock_info(symbol)

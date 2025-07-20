@@ -156,3 +156,29 @@ class SecurityUtils:
             return new_hash[32:] == stored_hash
         except Exception:
             return False
+
+
+def setup_security_headers(app):
+    """Setup security headers for the application"""
+    
+    @app.after_request
+    def set_security_headers(response):
+        # X-Content-Type-Options: Prevent MIME type sniffing
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        
+        # X-Frame-Options: Prevent clickjacking
+        response.headers['X-Frame-Options'] = 'DENY'
+        
+        # X-XSS-Protection: Enable XSS filtering
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        
+        # Strict-Transport-Security: Force HTTPS (only add in production)
+        if app.config.get('ENV') == 'production':
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        else:
+            # For development, use a shorter max-age
+            response.headers['Strict-Transport-Security'] = 'max-age=0'
+            
+        return response
+    
+    return app

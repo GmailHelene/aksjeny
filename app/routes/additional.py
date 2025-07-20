@@ -33,13 +33,4 @@ def privacy():
         'content': 'Personvernerklæring for Aksjeradar'
     })
 
-@additional_routes.route('/terms')
-@additional_routes.route('/terms/')
-def terms():
-    """Terms of service page"""
-    return jsonify({
-        'status': 'OK',
-        'page': 'terms',
-        'message': 'Vilkår-side fungerer!',
-        'content': 'Vilkår for bruk av Aksjeradar'
-    })
+

@@ -165,47 +165,53 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h5>Gratis</h5>
-                        <div class="price">0 NOK<span>/mnd</span></div>
+                        <h5>Månedlig</h5>
+                        <div class="price">399 NOK<span>/mnd</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li>Begrenset markedsdata</li>
-                        <li>Grunnleggende charts</li>
-                        <li>5 overvåkningslister</li>
+                        <li>Full tilgang til alle funksjoner</li>
+                        <li>Sanntids markedsdata</li>
+                        <li>Avanserte charts og analyser</li>
+                        <li>Ubegrensede overvåkningslister</li>
+                        <li>E-post varsler og rapporter</li>
+                        <li>API tilgang</li>
+                        <li>Prioritert support</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-block">Start gratis</a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-block">Velg Månedlig</a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="pricing-card featured">
                     <div class="pricing-header">
-                        <h5>Premium</h5>
-                        <div class="price">299 NOK<span>/mnd</span></div>
+                        <h5>Årlig</h5>
+                        <div class="price">2999 NOK<span>/år</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li>Sanntids markedsdata</li>
-                        <li>Avanserte charts og indikatorer</li>
-                        <li>Ubegrensede overvåkningslister</li>
-                        <li>E-post varsler</li>
-                        <li>Teknisk analyse</li>
+                        <li>Alt fra månedlig plan</li>
+                        <li>Spar 1789 NOK per år</li>
+                        <li>Eksklusive markedsrapporter</li>
+                        <li>Beta-tilgang til nye funksjoner</li>
+                        <li>Prioritert kundesupport</li>
+                        <li>Kvartalsvis konsultasjon</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-block">Velg Premium</a>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-block">Velg Årlig (Spar 25%)</a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h5>Pro</h5>
-                        <div class="price">599 NOK<span>/mnd</span></div>
+                        <h5>Teams</h5>
+                        <div class="price">Kontakt<span> oss</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li>Alt i Premium</li>
-                        <li>API tilgang</li>
-                        <li>Fundamental analyse</li>
-                        <li>Porteføljeanalyse</li>
-                        <li>Prioritert support</li>
+                        <li>Alt fra årlig plan</li>
+                        <li>Flere brukere per konto</li>
+                        <li>Sentralisert administrasjon</li>
+                        <li>Tilpassede rapporter</li>
+                        <li>Dedikert kundeservice</li>
+                        <li>On-premise løsning tilgjengelig</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-block">Velg Pro</a>
+                    <a href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement" class="btn btn-outline-primary btn-block">Kontakt oss</a>
                 </div>
             </div>
         </div>
@@ -217,7 +223,7 @@
         <h2>Klar for å starte?</h2>
         <p class="lead">Bli med tusenvis av investorer som allerede bruker Aksjeradar</p>
         {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Start gratis i dag</a>
+            <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">Start gratis i dag</a>
         {% endif %}
     </div>
 </div>
@@ -251,6 +257,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     text-align: center;
+    color: #333; /* Ensure dark text on white background */
 }
 
 .market-data .price {
@@ -274,6 +281,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     height: 100%;
+    color: #333; /* Ensure dark text on white background */
 }
 
 .feature-icon {
@@ -287,6 +295,7 @@
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: #333; /* Ensure dark text on white background */
 }
 
 .pricing-card {
@@ -296,6 +305,7 @@
     padding: 2rem;
     text-align: center;
     height: 100%;
+    color: #333; /* Ensure dark text on white background */
 }
 
 .pricing-card.featured {
