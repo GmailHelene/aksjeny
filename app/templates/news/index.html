@@ -10,31 +10,19 @@
 
     <!-- Category filter -->
     <div class="mb-4">
-        <div class="btn-group" role="group">
-            <a href="{{ url_for('news.news_index', category='all') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'all' %}active{% endif %}">
-                Alle nyheter
-            </a>
-            <a href="{{ url_for('news.news_index', category='norwegian') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'norwegian' %}active{% endif %}">
-                Norge
-            </a>
-            <a href="{{ url_for('news.news_index', category='international') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'international' %}active{% endif %}">
-                Internasjonalt
-            </a>
-            <a href="{{ url_for('news.news_index', category='energy') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'energy' %}active{% endif %}">
-                Energi
-            </a>
-            <a href="{{ url_for('news.news_index', category='tech') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'tech' %}active{% endif %}">
-                Teknologi
-            </a>
-            <a href="{{ url_for('news.news_index', category='crypto') }}" 
-               class="btn btn-outline-primary {% if selected_category == 'crypto' %}active{% endif %}">
-                Krypto
-            </a>
+                <div class="d-flex gap-2 mb-4 flex-wrap">
+            <a href="{{ url_for('news_bp.index', category='all') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'all' else 'btn-outline-primary' }}">Alle</a>
+            <a href="{{ url_for('news_bp.index', category='norwegian') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'norwegian' else 'btn-outline-primary' }}">Norske</a>
+            <a href="{{ url_for('news_bp.index', category='international') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'international' else 'btn-outline-primary' }}">Internasjonale</a>
+            <a href="{{ url_for('news_bp.index', category='energy') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'energy' else 'btn-outline-primary' }}">Energi</a>
+            <a href="{{ url_for('news_bp.index', category='tech') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'tech' else 'btn-outline-primary' }}">Tech</a>
+            <a href="{{ url_for('news_bp.index', category='crypto') }}" 
+               class="btn btn-sm {{ 'btn-primary' if current_category == 'crypto' else 'btn-outline-primary' }}">Crypto</a>
         </div>
     </div>
 

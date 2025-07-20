@@ -3,6 +3,63 @@
 {% block title %}Aksjeradar - Norges ledende aksjeanalyse{% endblock %}
 
 {% block content %}
+<style>
+.dashboard-frame {
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 20px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.dashboard-frame img {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.hero-image:hover .dashboard-frame img {
+    transform: scale(1.02);
+}
+
+.floating-badge {
+    animation: float 3s ease-in-out infinite;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.floating-badge:nth-child(2) {
+    animation-delay: -1.5s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 768px) {
+    .dashboard-frame {
+        padding: 15px;
+        margin: 0 10px;
+    }
+    .floating-badge {
+        display: none;
+    }
+}
+</style>
+
 <div class="hero-section">
     <div class="container">
         <div class="row align-items-center">
@@ -19,8 +76,20 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="hero-image">
-                    <img src="{{ url_for('static', filename='img/dashboard-preview.png') }}" alt="Aksjeradar Dashboard" class="img-fluid rounded shadow">
+                <div class="hero-image position-relative">
+                    <div class="dashboard-frame shadow-lg">
+                        <img src="{{ url_for('static', filename='img/dashboard-preview.png') }}" 
+                             alt="Aksjeradar Dashboard Preview - AI-drevet aksjeanalyse" 
+                             class="img-fluid rounded-3 border border-light"
+                             style="max-width: 100%; height: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                    </div>
+                    <!-- Floating elements for visual appeal -->
+                    <div class="floating-badge badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">
+                        <i class="fas fa-chart-line me-1"></i>Live Data
+                    </div>
+                    <div class="floating-badge badge bg-primary position-absolute bottom-0 start-0 m-3 px-3 py-2">
+                        <i class="fas fa-brain me-1"></i>AI-Powered
+                    </div>
                 </div>
             </div>
         </div>
