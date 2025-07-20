@@ -251,8 +251,10 @@ def load_user(user_id):
     if user_id is None or user_id == 'None':
         return None
     try:
-        return User.query.get(int(user_id))
-    except (ValueError, TypeError):
+        from sqlalchemy.exc import SQLAlchemyError
+        return db.session.get(User, int(user_id))
+    except (ValueError, TypeError, SQLAlchemyError):
+        db.session.rollback()
         return None
 
 # Ensure the database is updated with the new column

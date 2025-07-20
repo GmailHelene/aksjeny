@@ -16,7 +16,7 @@ class ReferralService:
         """Create a new referral"""
         try:
             # Check if referrer exists
-            referrer = User.query.get(referrer_id)
+            referrer = db.session.get(User, referrer_id)
             if not referrer:
                 return False, "Referrer ikke funnet"
             
@@ -93,7 +93,7 @@ class ReferralService:
             
             if not referral:
                 # Check if we can find by email if user_id not set
-                user = User.query.get(user_id)
+                user = db.session.get(User, user_id)
                 if user:
                     referral = Referral.query.filter_by(
                         email_used=user.email,
@@ -123,8 +123,8 @@ class ReferralService:
             db.session.commit()
             
             # Send notification to referrer
-            referrer = User.query.get(referral.referrer_id)
-            referred_user = User.query.get(user_id)
+            referrer = db.session.get(User, referral.referrer_id)
+            referred_user = db.session.get(User, user_id)
             if referrer and referred_user:
                 ReferralService.send_referral_success_email(referrer, referred_user)
             

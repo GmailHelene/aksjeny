@@ -126,8 +126,9 @@ def send_price_alert_notification(alert_id: int, current_price: float):
     """Send notification for triggered price alert"""
     try:
         from app.models.notifications import PriceAlert
+        from app import db
         
-        alert = PriceAlert.query.get(alert_id)
+        alert = db.session.get(PriceAlert, alert_id)
         if not alert or not alert.user:
             return
         
@@ -164,7 +165,8 @@ def send_price_alert_notification(alert_id: int, current_price: float):
 def send_integration_alert(user_id: int, symbol: str, alert_type: str, data: dict):
     """Send alert to user's configured integrations"""
     try:
-        user = User.query.get(user_id)
+        from app import db
+        user = db.session.get(User, user_id)
         if not user:
             return
         

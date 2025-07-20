@@ -199,7 +199,7 @@ def handle_checkout_session(session):
     user_id = int(session.metadata.get('user_id'))
     subscription_type = session.metadata.get('subscription_type')
     
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if not user:
         current_app.logger.error(f'User not found: {user_id}')
         return

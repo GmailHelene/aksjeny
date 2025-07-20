@@ -285,6 +285,26 @@ def setup_error_handlers(app):
         db.session.rollback()
         return render_template('errors/500.html'), 500
     
+    # Add database error handler
+    from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
+    @app.errorhandler(SQLAlchemyError)
+    def database_error(error):
+        app.logger.error(f'Database error: {error}')
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+    
+    @app.errorhandler(IntegrityError)
+    def integrity_error(error):
+        app.logger.error(f'Database integrity error: {error}')
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+    
+    @app.errorhandler(OperationalError)
+    def operational_error(error):
+        app.logger.error(f'Database operational error: {error}')
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+    
     # Add TemplateNotFound error handler
     from jinja2 import TemplateNotFound
     @app.errorhandler(TemplateNotFound)

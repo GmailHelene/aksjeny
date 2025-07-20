@@ -7,6 +7,7 @@ import requests
 import feedparser
 import asyncio
 import aiohttp
+import concurrent.futures
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 import re
@@ -35,40 +36,19 @@ class NewsService:
     
     def __init__(self):
         self.news_sources = {
-            # Norwegian financial sources
-            'dn': {
-                'name': 'Dagens Næringsliv',
-                'rss': 'https://www.dn.no/rss/',
-                'base_url': 'https://www.dn.no',
-                'priority': 10,
-                'category': 'norwegian'
-            },
-            'finansavisen': {
-                'name': 'Finansavisen',
-                'rss': 'https://finansavisen.no/feed/',
-                'base_url': 'https://finansavisen.no',
-                'priority': 9,
-                'category': 'norwegian'
-            },
+            # Working Norwegian financial sources
             'e24': {
                 'name': 'E24',
                 'rss': 'https://e24.no/rss',
                 'base_url': 'https://e24.no',
-                'priority': 9,
+                'priority': 10,
                 'category': 'norwegian'
             },
             'kapital': {
                 'name': 'Kapital',
                 'rss': 'https://kapital.no/rss',
                 'base_url': 'https://kapital.no',
-                'priority': 8,
-                'category': 'norwegian'
-            },
-            'shifter': {
-                'name': 'Shifter',
-                'rss': 'https://shifter.no/feed',
-                'base_url': 'https://shifter.no',
-                'priority': 7,
+                'priority': 9,
                 'category': 'norwegian'
             },
             'hegnar': {
@@ -78,15 +58,17 @@ class NewsService:
                 'priority': 8,
                 'category': 'norwegian'
             },
-            'newsinenglish': {
-                'name': 'News in English',
-                'rss': 'https://www.newsinenglish.no/feed/',
-                'base_url': 'https://www.newsinenglish.no',
-                'priority': 6,
+            
+            # Updated DN URL
+            'dn': {
+                'name': 'Dagens Næringsliv',
+                'rss': 'https://services.dn.no/tools/rss',
+                'base_url': 'https://www.dn.no',
+                'priority': 9,
                 'category': 'norwegian'
             },
             
-            # International financial sources  
+            # International financial sources that should work
             'reuters_business': {
                 'name': 'Reuters Business',
                 'rss': 'https://feeds.reuters.com/reuters/businessNews',
@@ -94,31 +76,10 @@ class NewsService:
                 'priority': 10,
                 'category': 'international'
             },
-            'bloomberg': {
-                'name': 'Bloomberg Markets',
-                'rss': 'https://feeds.bloomberg.com/markets/news.rss',
-                'base_url': 'https://www.bloomberg.com',
-                'priority': 10,
-                'category': 'international'
-            },
-            'cnbc': {
-                'name': 'CNBC',
-                'rss': 'https://www.cnbc.com/id/100003114/device/rss/rss.html',
-                'base_url': 'https://www.cnbc.com',
-                'priority': 8,
-                'category': 'international'
-            },
             'ft': {
                 'name': 'Financial Times',
-                'rss': 'https://www.ft.com/rss/world',
+                'rss': 'https://www.ft.com/news-feed',
                 'base_url': 'https://www.ft.com',
-                'priority': 9,
-                'category': 'international'
-            },
-            'wsj': {
-                'name': 'Wall Street Journal',
-                'rss': 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml',
-                'base_url': 'https://www.wsj.com',
                 'priority': 9,
                 'category': 'international'
             },
@@ -126,210 +87,8 @@ class NewsService:
                 'name': 'MarketWatch',
                 'rss': 'https://feeds.marketwatch.com/marketwatch/topstories/',
                 'base_url': 'https://www.marketwatch.com',
-                'priority': 7,
-                'category': 'international'
-            },
-            'seeking_alpha': {
-                'name': 'Seeking Alpha',
-                'rss': 'https://seekingalpha.com/feed.xml',
-                'base_url': 'https://seekingalpha.com',
-                'priority': 7,
-                'category': 'international'
-            },
-            'yahoo_finance': {
-                'name': 'Yahoo Finance',
-                'rss': 'https://feeds.finance.yahoo.com/rss/2.0/headline',
-                'base_url': 'https://finance.yahoo.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'investing_com': {
-                'name': 'Investing.com',
-                'rss': 'https://www.investing.com/rss/news.rss',
-                'base_url': 'https://www.investing.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'economics_times': {
-                'name': 'Economic Times',
-                'rss': 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms',
-                'base_url': 'https://economictimes.indiatimes.com',
-                'priority': 5,
-                'category': 'international'
-            },
-            'the_economist': {
-                'name': 'The Economist',
-                'rss': 'https://www.economist.com/finance-and-economics/rss.xml',
-                'base_url': 'https://www.economist.com',
                 'priority': 8,
                 'category': 'international'
-            },
-            
-            # Additional Norwegian sources
-            'nordlys': {
-                'name': 'Nordlys',
-                'rss': 'https://www.nordlys.no/rss/',
-                'base_url': 'https://www.nordlys.no',
-                'priority': 5,
-                'category': 'norwegian'
-            },
-            'aftenposten': {
-                'name': 'Aftenposten Økonomi',
-                'rss': 'https://www.aftenposten.no/rss/nyheter/okonomi',
-                'base_url': 'https://www.aftenposten.no',
-                'priority': 7,
-                'category': 'norwegian'
-            },
-            'vg': {
-                'name': 'VG Økonomi',
-                'rss': 'https://www.vg.no/rss/okonomi.rss',
-                'base_url': 'https://www.vg.no',
-                'priority': 6,
-                'category': 'norwegian'
-            },
-            'dagbladet': {
-                'name': 'Dagbladet Økonomi',
-                'rss': 'https://www.dagbladet.no/rss/okonomi',
-                'base_url': 'https://www.dagbladet.no',
-                'priority': 6,
-                'category': 'norwegian'
-            },
-            'tu': {
-                'name': 'Teknisk Ukeblad',
-                'rss': 'https://www.tu.no/rss',
-                'base_url': 'https://www.tu.no',
-                'priority': 7,
-                'category': 'norwegian'
-            },
-            'digi': {
-                'name': 'Digi.no',
-                'rss': 'https://www.digi.no/rss',
-                'base_url': 'https://www.digi.no',
-                'priority': 6,
-                'category': 'norwegian'
-            },
-            'intrafish': {
-                'name': 'IntraFish',
-                'rss': 'https://www.intrafish.com/rss',
-                'base_url': 'https://www.intrafish.com',
-                'priority': 8,
-                'category': 'norwegian'
-            },
-            'upstream': {
-                'name': 'Upstream',
-                'rss': 'https://www.upstreamonline.com/rss',
-                'base_url': 'https://www.upstreamonline.com',
-                'priority': 8,
-                'category': 'norwegian'
-            },
-            'tradingsat': {
-                'name': 'TradingSat',
-                'rss': 'https://www.tradingsat.com/rss/news-analyse.xml',
-                'base_url': 'https://www.tradingsat.com',
-                'priority': 6,
-                'category': 'norwegian'
-            },
-            
-            # Additional international sources
-            'barrons': {
-                'name': "Barron's",
-                'rss': 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml',
-                'base_url': 'https://www.barrons.com',
-                'priority': 8,
-                'category': 'international'
-            },
-            'forbes': {
-                'name': 'Forbes',
-                'rss': 'https://www.forbes.com/innovation/feed2/',
-                'base_url': 'https://www.forbes.com',
-                'priority': 7,
-                'category': 'international'
-            },
-            'motley_fool': {
-                'name': 'The Motley Fool',
-                'rss': 'https://www.fool.com/feeds/index.aspx',
-                'base_url': 'https://www.fool.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'zacks': {
-                'name': 'Zacks',
-                'rss': 'https://www.zacks.com/rss/articles',
-                'base_url': 'https://www.zacks.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'morningstar': {
-                'name': 'Morningstar',
-                'rss': 'https://www.morningstar.com/rss/news',
-                'base_url': 'https://www.morningstar.com',
-                'priority': 7,
-                'category': 'international'
-            },
-            'benzinga': {
-                'name': 'Benzinga',
-                'rss': 'https://www.benzinga.com/feed',
-                'base_url': 'https://www.benzinga.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'alphaseek': {
-                'name': 'AlphaSeek',
-                'rss': 'https://www.alphaseek.com/feed',
-                'base_url': 'https://www.alphaseek.com',
-                'priority': 5,
-                'category': 'international'
-            },
-            'thestreet': {
-                'name': 'TheStreet',
-                'rss': 'https://www.thestreet.com/feeds/rss/economy',
-                'base_url': 'https://www.thestreet.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            'investor_place': {
-                'name': 'InvestorPlace',
-                'rss': 'https://investorplace.com/feed/',
-                'base_url': 'https://investorplace.com',
-                'priority': 5,
-                'category': 'international'
-            },
-            'guru_focus': {
-                'name': 'GuruFocus',
-                'rss': 'https://www.gurufocus.com/rss_feed.php',
-                'base_url': 'https://www.gurufocus.com',
-                'priority': 6,
-                'category': 'international'
-            },
-            
-            # Nordic sources
-            'borsen_dk': {
-                'name': 'Børsen (DK)',
-                'rss': 'https://borsen.dk/rss',
-                'base_url': 'https://borsen.dk',
-                'priority': 7,
-                'category': 'nordic'
-            },
-            'di_se': {
-                'name': 'Dagens Industri (SE)',
-                'rss': 'https://www.di.se/rss',
-                'base_url': 'https://www.di.se',
-                'priority': 7,
-                'category': 'nordic'
-            },
-            'kauppalehti': {
-                'name': 'Kauppalehti (FI)',
-                'rss': 'https://www.kauppalehti.fi/rss/tuoreimmat',
-                'base_url': 'https://www.kauppalehti.fi',
-                'priority': 6,
-                'category': 'nordic'
-            },
-            'taloussanomat': {
-                'name': 'Taloussanomat (FI)',
-                'rss': 'https://www.is.fi/taloussanomat/rss.xml',
-                'base_url': 'https://www.is.fi/taloussanomat',
-                'priority': 6,
-                'category': 'nordic'
             }
         }
         
@@ -818,29 +577,35 @@ def get_latest_news_sync(limit: int = 10, category: Optional[str] = None) -> Lis
         if cached_result:
             return cached_result
         
-        # Create new event loop to avoid conflicts
+        # Try to get the existing event loop first
         try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If loop is running, create task in thread
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(_run_async_news_fetch, limit, category)
+                    result = future.result(timeout=12.0)
+            else:
+                # Loop exists but not running, can use it
+                result = loop.run_until_complete(
+                    asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
+                )
+        except RuntimeError:
+            # No event loop, create new one
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            
-            # Use asyncio.wait_for to add additional timeout protection
-            result = loop.run_until_complete(
-                asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
-            )
-            
-            # Cache the result
-            simple_cache.set(cache_key, result, 'news')
-            
-            return result
-            
-        finally:
-            # Clean up the event loop
             try:
+                result = loop.run_until_complete(
+                    asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
+                )
+            finally:
                 loop.close()
-            except:
-                pass
-                
-    except asyncio.TimeoutError:
+        
+        # Cache the result
+        simple_cache.set(cache_key, result, 'news')
+        return result
+        
+    except (asyncio.TimeoutError, concurrent.futures.TimeoutError):
         logger.warning("Sync news fetch timed out")
         # Try to return cached fallback
         fallback_key = f"news_fallback_{category or 'all'}_{limit}"
@@ -848,6 +613,19 @@ def get_latest_news_sync(limit: int = 10, category: Optional[str] = None) -> Lis
         return fallback if fallback else []
     except Exception as e:
         logger.error(f"Error in sync news fetch: {e}")
+        # Return empty list instead of None to avoid template errors
+        return []
+
+def _run_async_news_fetch(limit: int, category: Optional[str]) -> List[NewsArticle]:
+    """Helper function to run async news fetch in new thread"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(
+            asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
+        )
+    finally:
+        loop.close()
         return []
 
 def get_company_news_sync(company_symbol: str, limit: int = 5) -> List[NewsArticle]:

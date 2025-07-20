@@ -85,7 +85,7 @@ class AuthenticationManager:
                     'error': 'Invalid or expired token'
                 }
             
-            user = User.query.get(user_id)
+            user = db.session.get(User, user_id)
             if not user:
                 return {
                     'success': False,
@@ -192,7 +192,7 @@ class AuthenticationManager:
     def _log_successful_login(self, user_id, request_info):
         """Log successful login"""
         try:
-            user = User.query.get(user_id)
+            user = db.session.get(User, user_id)
             attempt = LoginAttempt(
                 email=user.email,
                 user_id=user_id,

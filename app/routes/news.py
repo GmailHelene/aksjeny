@@ -104,12 +104,27 @@ def api_latest_news():
         limit = request.args.get('limit', 10, type=int)
         category = request.args.get('category', 'all')
         
-        news_articles = NewsService.get_latest_news(limit=limit, category=category)
+        # Use the sync function for API calls
+        from ..services.news_service import get_latest_news_sync
+        news_articles = get_latest_news_sync(limit=limit, category=category)
+        
+        # Convert dataclass objects to dictionaries for JSON serialization
+        articles_data = []
+        for article in news_articles:
+            articles_data.append({
+                'title': article.title,
+                'summary': article.summary,
+                'link': article.link,
+                'source': article.source,
+                'published': article.published.isoformat() if article.published else None,
+                'image_url': article.image_url,
+                'relevance_score': article.relevance_score
+            })
         
         return jsonify({
             'success': True,
-            'articles': news_articles,
-            'total': len(news_articles)
+            'articles': articles_data,
+            'total': len(articles_data)
         })
         
     except Exception as e:
