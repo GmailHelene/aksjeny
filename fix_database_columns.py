@@ -16,15 +16,17 @@ def migrate_database():
     
     with app.app_context():
         try:
-            # Check what columns exist
-            result = db.engine.execute(text("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = 'users'
-                ORDER BY column_name
-            """))
-            existing_columns = [row[0] for row in result]
-            print("Existing columns:", existing_columns)
+            # Check what columns exist using proper SQLAlchemy syntax
+            with db.engine.connect() as connection:
+                result = connection.execute(text("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'users' AND table_schema = 'public'
+                    ORDER BY column_name
+                """))
+                
+                existing_columns = {row[0] for row in result}
+                print(f"📋 Existing columns: {sorted(existing_columns)}")
             
             # List of columns that should exist
             required_columns = [
@@ -40,26 +42,32 @@ def migrate_database():
                 ('login_count', 'INTEGER DEFAULT 0')
             ]
             
-            # Add missing columns
-            for column_name, column_type in required_columns:
-                if column_name not in existing_columns:
-                    try:
-                        sql = f"ALTER TABLE users ADD COLUMN {column_name} {column_type}"
-                        print(f"Adding column: {sql}")
-                        db.engine.execute(text(sql))
-                        print(f"✅ Added column: {column_name}")
-                    except Exception as e:
-                        print(f"❌ Failed to add column {column_name}: {e}")
-                else:
-                    print(f"✅ Column {column_name} already exists")
+            print(f"🔍 Checking {len(required_columns)} required columns...")
             
-            # Commit changes
-            db.session.commit()
-            print("✅ Database migration completed successfully!")
+            # Add missing columns
+            columns_added = 0
+            with db.engine.connect() as connection:
+                for column_name, column_type in required_columns:
+                    if column_name not in existing_columns:
+                        try:
+                            sql = f"ALTER TABLE users ADD COLUMN {column_name} {column_type}"
+                            print(f"➕ Adding column: {sql}")
+                            connection.execute(text(sql))
+                            connection.commit()
+                            print(f"✅ Added column: {column_name}")
+                            columns_added += 1
+                        except Exception as e:
+                            print(f"❌ Failed to add column {column_name}: {e}")
+                            connection.rollback()
+                    else:
+                        print(f"✅ Column {column_name} already exists")
+            
+            print(f"🎉 Migration completed! Added {columns_added} new columns.")
             
         except Exception as e:
             print(f"❌ Migration failed: {e}")
-            db.session.rollback()
+            import traceback
+            traceback.print_exc()
             raise
 
 if __name__ == "__main__":

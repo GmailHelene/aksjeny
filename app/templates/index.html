@@ -44,6 +44,75 @@
     animation-delay: -1.5s;
 }
 
+.market-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e3e6f0;
+    transition: transform 0.2s ease;
+    height: 100%;
+}
+
+.market-card:hover {
+    transform: translateY(-2px);
+}
+
+.market-card h6, .market-card h5 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.market-data {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.market-data .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: auto;
+}
+
+.market-data .change {
+    font-weight: 600;
+}
+
+.feature-card, .pricing-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover, .pricing-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.premium-features .card {
+    transition: transform 0.2s ease;
+}
+
+.premium-features .card:hover {
+    transform: translateY(-2px);
+}
+
 @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -56,6 +125,16 @@
     }
     .floating-badge {
         display: none;
+    }
+    
+    .market-data {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .market-data .price {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
     }
 }
 </style>
@@ -96,6 +175,97 @@
     </div>
 </div>
 
+{% if current_user.is_authenticated %}
+<!-- Premium User Market Overview -->
+<div class="market-overview py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Ditt Markedsoversikt</h2>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('main.financial_dashboard') }}" class="btn btn-primary">
+                    <i class="bi bi-speedometer2"></i> Full Dashboard
+                </a>
+                <a href="{{ url_for('portfolio.overview') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-briefcase"></i> Min Portefølje
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="market-card bg-primary text-white">
+                    <h6><i class="bi bi-graph-up"></i> Oslo Børs (OSEBX)</h6>
+                    <div class="market-data">
+                        <span class="price">{{ osebx_price|default('1,234.56') }}</span>
+                        <span class="change">+1.2%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="market-card bg-success text-white">
+                    <h6><i class="bi bi-arrow-up-circle"></i> Topp Vinner</h6>
+                    <div class="market-data">
+                        <span class="stock-name">{{ top_gainer_name|default('EQUI') }}</span>
+                        <span class="change">+{{ top_gainer_change|default('15.3') }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="market-card bg-info text-white">
+                    <h6><i class="bi bi-activity"></i> Høyest Volum</h6>
+                    <div class="market-data">
+                        <span class="stock-name">{{ top_volume_name|default('DNB') }}</span>
+                        <span class="volume">{{ top_volume|default('2.5M') }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="market-card bg-warning text-dark">
+                    <h6><i class="bi bi-star"></i> Dine Favoritter</h6>
+                    <div class="market-data">
+                        <span class="stock-name">{{ user_favorites_count|default('5') }} aksjer</span>
+                        <span class="change">Se alle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Action Cards for Premium Users -->
+        <div class="row mt-4">
+            <div class="col-lg-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-search display-4 text-primary mb-3"></i>
+                        <h5>Aksjesøk & Analyse</h5>
+                        <p class="text-muted">Søk og analyser aksjer med AI-drevet innsikt</p>
+                        <a href="{{ url_for('stocks.search') }}" class="btn btn-primary">Søk Aksjer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up-arrow display-4 text-success mb-3"></i>
+                        <h5>Teknisk Analyse</h5>
+                        <p class="text-muted">Avanserte charts og tekniske indikatorer</p>
+                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-success">Start Analyse</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bell display-4 text-warning mb-3"></i>
+                        <h5>Prisvarsler</h5>
+                        <p class="text-muted">Sett opp automatiske varsler for dine aksjer</p>
+                        <a href="{{ url_for('portfolio.watchlist') }}" class="btn btn-warning">Lag Varsler</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Demo Market Overview for Guests -->
 <div class="market-overview py-5">
     <div class="container">
         <h2 class="text-center mb-5">Markedsoversikt</h2>
@@ -130,7 +300,9 @@
         </div>
     </div>
 </div>
+{% endif %}
 
+{% if not current_user.is_authenticated %}
 <div id="demo" class="features-section py-5 bg-light">
     <div class="container">
         <h2 class="text-center mb-5">Kraftige analyseverktøy</h2>
@@ -174,7 +346,64 @@
         </div>
     </div>
 </div>
+{% else %}
+<!-- Premium User Features Overview -->
+<div class="premium-features py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-8">
+                <h2>Velkommen tilbake, {{ current_user.username }}!</h2>
+                <p class="lead">Du har full tilgang til alle våre profesjonelle analyseverktøy</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <span class="badge bg-success px-3 py-2 fs-6">
+                    <i class="bi bi-check-circle"></i> Premium Bruker
+                </span>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="bi bi-graph-up text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Markedsanalyse</h5>
+                                <small class="text-muted">Siste markedsoppdateringer</small>
+                            </div>
+                        </div>
+                        <p>Få tilgang til sanntids markedsdata og AI-drevne analyser for å ta bedre investeringsbeslutninger.</p>
+                        <a href="{{ url_for('analysis.market_overview') }}" class="btn btn-primary btn-sm">Se Markedsanalyse</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-3 me-3">
+                                <i class="bi bi-briefcase text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Min Portefølje</h5>
+                                <small class="text-muted">Oversikt og ytelse</small>
+                            </div>
+                        </div>
+                        <p>Følg ytelsen til din portefølje med detaljerte rapporter og analyser av dine investeringer.</p>
+                        <a href="{{ url_for('portfolio.overview') }}" class="btn btn-success btn-sm">Åpne Portefølje</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
+{% if not current_user.is_authenticated %}
 <div class="demo-section py-5">
     <div class="container">
         <h2 class="text-center mb-5">Prøv Aksjeradar gratis</h2>
@@ -286,12 +515,166 @@
         </div>
     </div>
 </div>
+{% else %}
+<!-- Premium User Recent Activity Section -->
+<div class="user-activity py-5">
+    <div class="container">
+        <h3 class="mb-4">Din aktivitet</h3>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Populære aksjer på Oslo Børs</h6>
+                        <small class="text-muted">Sanntidsdata oppdatert</small>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Aksje</th>
+                                        <th>Pris</th>
+                                        <th>Endring</th>
+                                        <th>Volum</th>
+                                        <th>Handling</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stock in demo_stocks|default([
+                                        {'symbol': 'DNB', 'name': 'DNB Bank', 'price': '185.40', 'change': '+2.1', 'volume': '2.1M'},
+                                        {'symbol': 'EQUI', 'name': 'Equinor', 'price': '312.50', 'change': '+1.8', 'volume': '1.8M'},
+                                        {'symbol': 'TEL', 'name': 'Telenor', 'price': '145.20', 'change': '-0.5', 'volume': '0.9M'},
+                                        {'symbol': 'NHY', 'name': 'Norsk Hydro', 'price': '78.90', 'change': '+3.2', 'volume': '1.5M'}
+                                    ]) %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ stock.symbol }}</strong><br>
+                                            <small class="text-muted">{{ stock.name }}</small>
+                                        </td>
+                                        <td>{{ stock.price }} NOK</td>
+                                        <td>
+                                            <span class="badge {% if stock.change.startswith('+') %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ stock.change }}%
+                                            </span>
+                                        </td>
+                                        <td>{{ stock.volume }}</td>
+                                        <td>
+                                            <a href="{{ url_for('stocks.details', symbol=stock.symbol) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> Analyser
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Hurtiglenker</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('portfolio.create_portfolio') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Opprett Portefølje
+                            </a>
+                            <a href="{{ url_for('portfolio.create_watchlist') }}" class="btn btn-success">
+                                <i class="bi bi-star"></i> Ny Overvåkingsliste
+                            </a>
+                            <a href="{{ url_for('analysis.screener') }}" class="btn btn-info">
+                                <i class="bi bi-funnel"></i> Aksjescreener
+                            </a>
+                            <a href="{{ url_for('main.financial_dashboard') }}" class="btn btn-warning">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="pricing-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Velg din plan</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h5>Månedlig</h5>
+                        <div class="price">399 NOK<span>/mnd</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Full tilgang til alle funksjoner</li>
+                        <li>Sanntids markedsdata</li>
+                        <li>Avanserte charts og analyser</li>
+                        <li>Ubegrensede overvåkningslister</li>
+                        <li>E-post varsler og rapporter</li>
+                        <li>API tilgang</li>
+                        <li>Prioritert support</li>
+                    </ul>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-block">Velg Månedlig</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h5>Årlig</h5>
+                        <div class="price">2999 NOK<span>/år</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Alt fra månedlig plan</li>
+                        <li>Spar 1789 NOK per år</li>
+                        <li>Eksklusive markedsrapporter</li>
+                        <li>Beta-tilgang til nye funksjoner</li>
+                        <li>Prioritert kundesupport</li>
+                        <li>Kvartalsvis konsultasjon</li>
+                    </ul>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-block">Velg Årlig (Spar 25%)</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h5>Teams</h5>
+                        <div class="price">Kontakt<span> oss</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Alt fra årlig plan</li>
+                        <li>Flere brukere per konto</li>
+                        <li>Sentralisert administrasjon</li>
+                        <li>Tilpassede rapporter</li>
+                        <li>Dedikert kundeservice</li>
+                        <li>On-premise løsning tilgjengelig</li>
+                    </ul>
+                    <a href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement" class="btn btn-outline-primary btn-block">Kontakt oss</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="cta-section py-5">
     <div class="container text-center">
-        <h2>Klar for å starte?</h2>
-        <p class="lead">Bli med tusenvis av investorer som allerede bruker Aksjeradar</p>
-        {% if not current_user.is_authenticated %}
+        {% if current_user.is_authenticated %}
+            <h2>Klar for å analysere?</h2>
+            <p class="lead">Utforsk alle våre verktøy for å maksimere dine investeringer</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{{ url_for('main.financial_dashboard') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-speedometer2"></i> Gå til Dashboard
+                </a>
+                <a href="{{ url_for('analysis.index') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-graph-up"></i> Start Analyse
+                </a>
+            </div>
+        {% else %}
+            <h2>Klar for å starte?</h2>
+            <p class="lead">Bli med tusenvis av investorer som allerede bruker Aksjeradar</p>
             <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">Start gratis i dag</a>
         {% endif %}
     </div>

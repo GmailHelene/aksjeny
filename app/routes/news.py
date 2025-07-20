@@ -48,11 +48,11 @@ def get_company_news_sync(symbol, limit=5):
     return mock_articles[:limit]
 
 def get_latest_news_sync(limit=10, category='all'):
-    """Get latest news synchronously with mock data"""
+    """Get latest news synchronously with comprehensive mock data"""
     mock_articles = [
         type('Article', (), {
-            'title': 'Oslo Børs stiger på bred front',
-            'summary': 'Hovedindeksen stiger 1,2% i åpningen.',
+            'title': 'Oslo Børs stiger på bred front - OSEBX opp 1,2%',
+            'summary': 'Hovedindeksen stiger 1,2% i åpningen etter positive signaler fra USA og sterke kvartalstall fra Equinor.',
             'link': 'https://aksjeradar.trade/news/oslo-bors-stiger',
             'source': 'Dagens Næringsliv',
             'published': datetime.now(),
@@ -61,14 +61,94 @@ def get_latest_news_sync(limit=10, category='all'):
             'categories': ['norwegian', 'market']
         })(),
         type('Article', (), {
-            'title': 'Teknologi-aksjer i vinden',
-            'summary': 'Tech-sektoren viser sterk utvikling.',
-            'link': 'https://aksjeradar.trade/news/tech-aksjer-vinden',
-            'source': 'TechCrunch',
+            'title': 'Equinor leverer sterke kvartalstall',
+            'summary': 'Oljeselskapet Equinor rapporterer overskudd på 4,9 milliarder dollar i tredje kvartal.',
+            'link': 'https://aksjeradar.trade/news/equinor-kvartalstall',
+            'source': 'E24',
+            'published': datetime.now() - timedelta(hours=1),
+            'image_url': None,
+            'relevance_score': 0.9,
+            'categories': ['norwegian', 'energy']
+        })(),
+        type('Article', (), {
+            'title': 'DNB Bank øker utbytte etter solid resultat',
+            'summary': 'Norges største bank øker kvartalsutbyttet til 2,70 kroner per aksje.',
+            'link': 'https://aksjeradar.trade/news/dnb-utbytte',
+            'source': 'Finansavisen',
             'published': datetime.now() - timedelta(hours=2),
             'image_url': None,
             'relevance_score': 0.8,
+            'categories': ['norwegian', 'banking']
+        })(),
+        type('Article', (), {
+            'title': 'Teknologi-aksjer i vinden på Wall Street',
+            'summary': 'NASDAQ stiger 2,1% på grunn av sterke tall fra teknologiselskaper.',
+            'link': 'https://aksjeradar.trade/news/tech-aksjer-vinden',
+            'source': 'Reuters',
+            'published': datetime.now() - timedelta(hours=3),
+            'image_url': None,
+            'relevance_score': 0.8,
             'categories': ['international', 'tech']
+        })(),
+        type('Article', (), {
+            'title': 'Bitcoin klatrer over $45,000',
+            'summary': 'Kryptovalutaen Bitcoin fortsetter oppgangen og har nå steget 15% denne uken.',
+            'link': 'https://aksjeradar.trade/news/bitcoin-stiger',
+            'source': 'CoinDesk',
+            'published': datetime.now() - timedelta(hours=4),
+            'image_url': None,
+            'relevance_score': 0.7,
+            'categories': ['crypto', 'international']
+        })(),
+        type('Article', (), {
+            'title': 'Norsk Hydro med solid margin på aluminium',
+            'summary': 'Aluminiumsprodusenten drar nytte av høye priser og sterk etterspørsel.',
+            'link': 'https://aksjeradar.trade/news/hydro-aluminium',
+            'source': 'Hegnar Online',
+            'published': datetime.now() - timedelta(hours=5),
+            'image_url': None,
+            'relevance_score': 0.8,
+            'categories': ['norwegian', 'materials']
+        })(),
+        type('Article', (), {
+            'title': 'Fed holder renten uendret',
+            'summary': 'Den amerikanske sentralbanken holder styringsrenten i området 5,25-5,50 prosent.',
+            'link': 'https://aksjeradar.trade/news/fed-rente',
+            'source': 'Financial Times',
+            'published': datetime.now() - timedelta(hours=6),
+            'image_url': None,
+            'relevance_score': 0.9,
+            'categories': ['international', 'monetary']
+        })(),
+        type('Article', (), {
+            'title': 'Telenor vurderer salg av asiatiske eiendeler',
+            'summary': 'Telekomgiganten ser på strategiske alternativer for sine investeringer i Asia.',
+            'link': 'https://aksjeradar.trade/news/telenor-asia',
+            'source': 'Dagens Næringsliv',
+            'published': datetime.now() - timedelta(hours=7),
+            'image_url': None,
+            'relevance_score': 0.7,
+            'categories': ['norwegian', 'telecom']
+        })(),
+        type('Article', (), {
+            'title': 'Renewable Energy ETF ser stor tilstrømming',
+            'summary': 'Investorer strømmer til fornybar energi-fond etter nye klimamål.',
+            'link': 'https://aksjeradar.trade/news/renewable-etf',
+            'source': 'MarketWatch',
+            'published': datetime.now() - timedelta(hours=8),
+            'image_url': None,
+            'relevance_score': 0.6,
+            'categories': ['international', 'energy']
+        })(),
+        type('Article', (), {
+            'title': 'Mowi med sterk laksepris i Q3',
+            'summary': 'Verdens største lakseoppdrettsselskap drar nytte av høye laksepriser.',
+            'link': 'https://aksjeradar.trade/news/mowi-laksepris',
+            'source': 'IntraFish',
+            'published': datetime.now() - timedelta(hours=9),
+            'image_url': None,
+            'relevance_score': 0.7,
+            'categories': ['norwegian', 'seafood']
         })()
     ]
     
@@ -82,17 +162,22 @@ def get_latest_news_sync(limit=10, category='all'):
 def index():
     """Main news page"""
     try:
-        # Get latest Norwegian financial news
-        news_articles = NewsService.get_latest_news(limit=20, category='norwegian')
+        # Get category from query parameters
+        category = request.args.get('category', 'all')
+        
+        # Use local mock data for reliability
+        news_articles = get_latest_news_sync(limit=20, category=category)
         
         return render_template('news/index.html', 
                              news_articles=news_articles,
+                             current_category=category,
                              total_articles=len(news_articles))
                              
     except Exception as e:
         logger.error(f"Error loading news: {e}")
         return render_template('news/index.html', 
                              news_articles=[],
+                             current_category='all',
                              total_articles=0,
                              error="Kunne ikke laste nyheter. Prøv igjen senere.")
 
