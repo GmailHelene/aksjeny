@@ -340,6 +340,15 @@ class NewsService:
         
         return True  # Default to include all sources
 
+    def get_news_by_category(self, category: str, limit: int = 20) -> List[NewsArticle]:
+        """Get news articles filtered by category (synchronous wrapper)"""
+        try:
+            # Use the async method with proper event loop handling
+            return get_latest_news_sync(limit=limit, category=category)
+        except Exception as e:
+            logger.error(f"Error getting news by category {category}: {e}")
+            return []
+
     async def get_company_news(self, company_symbol: str, limit: int = 10) -> List[NewsArticle]:
         """Get news specifically related to a company"""
         try:
