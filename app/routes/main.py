@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from ..utils.market_open import is_market_open
 import logging
 from datetime import datetime
-from werkzeug.urls import url_parse
+from urllib.parse import urlparse
 
 main = Blueprint('main', __name__)
 logger = logging.getLogger(__name__)
@@ -426,7 +426,7 @@ def login():
                 login_user(user, remember=form.remember_me.data)
                 
                 next_page = request.args.get('next')
-                if not next_page or url_parse(next_page).netloc != '':
+                if not next_page or urlparse(next_page).netloc != '':
                     next_page = url_for('main.index')
                 
                 flash('Innlogging vellykket!', 'success')
