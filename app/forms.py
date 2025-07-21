@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, EmailField
+from wtforms import StringField, PasswordField, SubmitField, EmailField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Regexp, ValidationError
 import re
 
@@ -20,8 +20,9 @@ class SimpleEmail(object):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Brukernavn', validators=[DataRequired()])
+    email = EmailField('E-post', validators=[DataRequired()])
     password = PasswordField('Passord', validators=[DataRequired()])
+    remember_me = BooleanField('Husk meg')
     submit = SubmitField('Logg inn')
 
 
