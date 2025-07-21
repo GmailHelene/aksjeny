@@ -203,30 +203,58 @@ def index():
 @portfolio.route('/tips', methods=['GET', 'POST'])
 @access_required
 def stock_tips():
-    if request.method == 'POST':
-        ticker = request.form.get('ticker')
-        tip_type = request.form.get('tip_type')
-        confidence = request.form.get('confidence')
-        analysis = request.form.get('analysis')
+    """Stock tips page with enhanced error handling"""
+    try:
+        if request.method == 'POST':
+            try:
+                ticker = request.form.get('ticker', '').strip().upper()
+                tip_type = request.form.get('tip_type', '').strip()
+                confidence = request.form.get('confidence', '').strip()
+                analysis = request.form.get('analysis', '').strip()
 
-        if not ticker or not tip_type or not confidence or not analysis:
-            flash('Alle felt må fylles ut.', 'danger')
-            return redirect(url_for('portfolio.stock_tips'))
+                # Validate inputs
+                if not all([ticker, tip_type, confidence, analysis]):
+                    flash('Alle felt må fylles ut.', 'warning')
+                    return redirect(url_for('portfolio.stock_tips'))
 
-        tip = StockTip(
-            ticker=ticker,
-            tip_type=tip_type,
-            confidence=confidence,
-            analysis=analysis,
-            user_id=current_user.id
-        )
-        db.session.add(tip)
-        db.session.commit()
-        flash('Aksjetips er lagt til!', 'success')
-        return redirect(url_for('portfolio.stock_tips'))
+                # Validate ticker format
+                if not ticker or len(ticker) < 2:
+                    flash('Ugyldig ticker-symbol.', 'warning')
+                    return redirect(url_for('portfolio.stock_tips'))
 
-    tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
-    return render_template('portfolio/tips.html', tips=tips)
+                # Create new tip
+                tip = StockTip(
+                    ticker=ticker,
+                    tip_type=tip_type,
+                    confidence=confidence,
+                    analysis=analysis,
+                    user_id=current_user.id
+                )
+                
+                db.session.add(tip)
+                db.session.commit()
+                flash('Aksjetips er lagt til!', 'success')
+                return redirect(url_for('portfolio.stock_tips'))
+                
+            except Exception as post_error:
+                current_app.logger.error(f"Error creating stock tip: {post_error}")
+                db.session.rollback()
+                flash('Feil ved lagring av tips. Prøv igjen.', 'error')
+        
+        # GET request - load tips
+        try:
+            tips = StockTip.query.order_by(StockTip.created_at.desc()).limit(10).all()
+        except Exception as db_error:
+            current_app.logger.error(f"Database error loading tips: {db_error}")
+            tips = []
+            flash('Kunne ikke laste aksjetips fra databasen.', 'warning')
+        
+        return render_template('portfolio/tips.html', tips=tips)
+        
+    except Exception as e:
+        current_app.logger.error(f"Critical error in stock_tips route: {e}")
+        flash('Siden kunne ikke lastes. Prøv igjen senere.', 'error')
+        return render_template('portfolio/tips.html', tips=[], error="Feil ved lasting av siden")
 
 
 @portfolio.route('/create', methods=['GET', 'POST'])

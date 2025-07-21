@@ -671,34 +671,28 @@ def contact_submit():
         flash('Det oppstod en feil. Vennligst prøv igjen senere.', 'error')
         return redirect(url_for('main.contact'))
 
+@main.route('/subscription')
+@main.route('/subscription/')
+def subscription():
+    """Subscription management page"""
+    try:
+        # Redirect to pricing page for subscription plans
+        return redirect(url_for('pricing.index'))
+    except Exception as e:
+        current_app.logger.error(f"Error redirecting to pricing: {e}")
+        flash('Kunne ikke laste prissiden.', 'error')
+        return redirect(url_for('main.index'))
+
 @main.route('/subscription/plans')
 def subscription_plans():
-    """API endpoint for subscription plans"""
-    plans = [
-        {
-            'id': 'monthly',
-            'name': 'Månedlig',
-            'price': 199,
-            'features': [
-                'Full tilgang til alle funksjoner',
-                'Sanntids markedsdata',
-                'AI-drevne analyser',
-                'Ubegrenset porteføljer'
-            ]
-        },
-        {
-            'id': 'yearly',
-            'name': 'Årlig',
-            'price': 1990,
-            'features': [
-                'Alt i månedlig plan',
-                'Spar 2 måneder',
-                'Prioritert support',
-                'Eksklusive rapporter'
-            ]
-        }
-    ]
-    return jsonify(plans)
+    """Subscription plans page"""
+    try:
+        # Redirect to pricing page since that's where plans are shown
+        return redirect(url_for('pricing.index'))
+    except Exception as e:
+        current_app.logger.error(f"Error redirecting to pricing: {e}")
+        flash('Kunne ikke laste prissiden.', 'error')
+        return redirect(url_for('main.index'))
 
 @main.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():

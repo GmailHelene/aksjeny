@@ -59,6 +59,55 @@
         opacity: 0.1;
     }
 
+    /* Enhanced Dropdown Toggle Styling for PC */
+    @media (min-width: 769px) {
+        .navbar-nav .dropdown-toggle {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .navbar-nav .dropdown-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+        }
+        
+        .navbar-nav .dropdown-toggle[aria-expanded="true"] {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .navbar-nav .dropdown-menu {
+            margin-top: 0;
+            border-top: 3px solid #007bff;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Hover indicator */
+        .navbar-nav .dropdown-toggle::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #007bff;
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-nav .dropdown-toggle:hover::before,
+        .navbar-nav .dropdown-toggle[aria-expanded="true"]::before {
+            width: 80%;
+        }
+    }
+
     /* Fix mobile menu padding for logged-in users */
     @media (max-width: 768px) {
         .navbar-nav {
@@ -130,6 +179,23 @@
         margin-bottom: 0.5rem !important;
         padding: 0.5rem 1rem !important;
     }
+    
+    /* Navigation hint for PC users */
+    @media (min-width: 769px) {
+        .navbar-nav .dropdown-toggle {
+            position: relative;
+        }
+        
+        .navbar-nav .dropdown-toggle::after {
+            content: ' ⏷';
+            font-size: 0.8em;
+            margin-left: 3px;
+        }
+        
+        .navbar-nav .dropdown-toggle[aria-expanded="true"]::after {
+            content: ' ⏶';
+        }
+    }
     </style>
 </head>
 <body>
@@ -146,7 +212,7 @@
                 <ul class="navbar-nav me-auto">
                     <!-- Aksjer Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('stocks.index') }}" id="stocksDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Aksjer
                         </a>
                         <ul class="dropdown-menu">
@@ -190,7 +256,7 @@
 
                     <!-- Analyser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('analysis.index') }}" id="analysisDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Analyser
                         </a>
                         <ul class="dropdown-menu">
@@ -249,7 +315,7 @@
                     <!-- Portefølje Dropdown (for logged in users) -->
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('portfolio.index') }}" id="portfolioDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Portefølje
                         </a>
                         <ul class="dropdown-menu">
@@ -278,7 +344,7 @@
 
                     <!-- Nyheter Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('news_bp.index') }}" id="newsDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="newsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Nyheter
                         </a>
                         <ul class="dropdown-menu">
@@ -323,7 +389,7 @@
 
                     <!-- Priser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('pricing.index') }}" id="pricingDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pricingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Priser
                         </a>
                         <ul class="dropdown-menu">
@@ -354,7 +420,7 @@
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
                         </a>
                         <ul class="dropdown-menu">
@@ -425,6 +491,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropdown-navigation.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

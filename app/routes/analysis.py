@@ -146,55 +146,100 @@ def market_overview():
 @analysis.route('/warren-buffett', methods=['GET', 'POST'])
 @demo_access
 def warren_buffett():
-    """Warren Buffett analysis - fix Method Not Allowed"""
-    if request.method == 'POST':
-        try:
-            symbol = request.form.get('symbol')
-            if symbol:
-                analysis_data = AnalysisService.get_warren_buffett_analysis(symbol)
-                return render_template('analysis/warren_buffett.html',
-                                     symbol=symbol,
-                                     analysis_data=analysis_data,
-                                     show_results=True)
-            else:
-                flash('Vennligst velg en aksje.', 'warning')
-        except Exception as e:
-            logger.error(f"Error in Warren Buffett analysis: {e}")
-            flash('Feil ved analyse. Prøv igjen senere.', 'error')
-    
-    # GET request or fallback
+    """Warren Buffett analysis with improved error handling"""
     try:
-        # Get popular stocks from Oslo Børs data
-        oslo_stocks = DataService.get_oslo_bors_overview() or {}
-        popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
-        return render_template('analysis/warren_buffett.html',
-                             popular_stocks=popular_stocks,
-                             show_results=False)
+        ticker = request.args.get('ticker') or request.form.get('ticker')
+        
+        if ticker and request.method in ['GET', 'POST']:
+            try:
+                # Import the service here to avoid circular imports
+                from ..services.buffett_analysis_service import BuffettAnalysisService
+                analysis_data = BuffettAnalysisService.analyze_stock(ticker)
+                
+                if analysis_data:
+                    return render_template('analysis/warren_buffett.html',
+                                         analysis=analysis_data,
+                                         ticker=ticker)
+                else:
+                    flash(f'Kunne ikke analysere {ticker}. Prøv en annen aksje.', 'warning')
+            except ImportError:
+                logger.error("BuffettAnalysisService not available")
+                flash('Analyse-tjenesten er midlertidig utilgjengelig.', 'error')
+            except Exception as e:
+                logger.error(f"Error in Warren Buffett analysis for {ticker}: {e}")
+                flash('Feil ved analyse. Prøv igjen senere.', 'error')
+        
+        # Show selection page
+        try:
+            oslo_stocks = DataService.get_oslo_bors_overview() or {}
+            global_stocks = DataService.get_global_stocks_overview() or {}
+            
+            return render_template('analysis/warren_buffett.html',
+                                 oslo_stocks=oslo_stocks,
+                                 global_stocks=global_stocks,
+                                 analysis=None)
+        except Exception as e:
+            logger.error(f"Error loading Warren Buffett selection page: {e}")
+            # Return minimal safe template
+            return render_template('analysis/warren_buffett.html',
+                                 oslo_stocks={},
+                                 global_stocks={},
+                                 analysis=None,
+                                 error="Kunne ikke laste aksjedata")
+                                 
     except Exception as e:
-        logger.error(f"Error loading Warren Buffett page: {e}")
-        return render_template('analysis/warren_buffett.html',
-                             popular_stocks=[],
-                             error="Kunne ikke laste siden")
+        logger.error(f"Critical error in Warren Buffett route: {e}")
+        flash('Siden kunne ikke lastes. Prøv igjen senere.', 'error')
+        return redirect(url_for('analysis.index'))
 
 @analysis.route('/benjamin-graham', methods=['GET', 'POST'])
 @demo_access
 def benjamin_graham():
-    """Benjamin Graham analysis - fix reload problem"""
-    if request.method == 'POST':
+    """Benjamin Graham analysis with improved error handling"""
+    try:
+        ticker = request.args.get('ticker') or request.form.get('ticker')
+        
+        if ticker and request.method in ['GET', 'POST']:
+            try:
+                # Import the service here to avoid circular imports
+                from ..services.graham_analysis_service import GrahamAnalysisService
+                analysis_data = GrahamAnalysisService.analyze_stock(ticker)
+                
+                if analysis_data:
+                    return render_template('analysis/benjamin_graham.html',
+                                         analysis=analysis_data,
+                                         ticker=ticker)
+                else:
+                    flash(f'Kunne ikke analysere {ticker}. Prøv en annen aksje.', 'warning')
+            except ImportError:
+                logger.error("GrahamAnalysisService not available")
+                flash('Analyse-tjenesten er midlertidig utilgjengelig.', 'error')
+            except Exception as e:
+                logger.error(f"Error in Benjamin Graham analysis for {ticker}: {e}")
+                flash('Feil ved analyse. Prøv igjen senere.', 'error')
+        
+        # Show selection page
         try:
-            symbol = request.form.get('symbol')
-            if symbol:
-                analysis_data = AnalysisService.get_benjamin_graham_analysis(symbol)
-                return render_template('analysis/benjamin_graham.html',
-                                     symbol=symbol,
-                                     analysis_data=analysis_data,
-                                     show_results=True)
-            else:
-                flash('Vennligst velg en aksje.', 'warning')
-                return redirect(url_for('analysis.benjamin_graham'))
+            oslo_stocks = DataService.get_oslo_bors_overview() or {}
+            global_stocks = DataService.get_global_stocks_overview() or {}
+            
+            return render_template('analysis/benjamin_graham.html',
+                                 oslo_stocks=oslo_stocks,
+                                 global_stocks=global_stocks,
+                                 analysis=None)
         except Exception as e:
-            logger.error(f"Error in Benjamin Graham analysis: {e}")
-            flash('Feil ved analyse. Prøv igjen senere.', 'error')
+            logger.error(f"Error loading Benjamin Graham selection page: {e}")
+            # Return minimal safe template
+            return render_template('analysis/benjamin_graham.html',
+                                 oslo_stocks={},
+                                 global_stocks={},
+                                 analysis=None,
+                                 error="Kunne ikke laste aksjedata")
+                                 
+    except Exception as e:
+        logger.error(f"Critical error in Benjamin Graham route: {e}")
+        flash('Siden kunne ikke lastes. Prøv igjen senere.', 'error')
+        return redirect(url_for('analysis.index'))
     
     # GET request
     try:

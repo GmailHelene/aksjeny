@@ -125,7 +125,7 @@ setInterval(updateTimer, 1000);
                     <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary mb-3 w-100" style="color: #0d6efd !important; border-color: #0d6efd !important;">
                         <i class="bi bi-box-arrow-in-right"></i> Logg inn her
                     </a>
-                    <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-success btn-lg w-100" style="color: #198754 !important; border-color: #198754 !important;">
+                    <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-success btn-lg w-100" style="color: #198754 !important; border-color: #198754 !important;">
                         <i class="bi bi-diamond"></i> Se abonnementer
                     </a>
                 </div>
@@ -206,7 +206,7 @@ setInterval(updateTimer, 1000);
                                 <i class="bi bi-star-fill text-success h1"></i>
                                 <h5 class="card-title">3. Velg abonnement</h5>
                                 <p class="card-text">Fra kun 399 kr/måned<br>Ubegrenset tilgang</p>
-                                <a href="{{ url_for('main.subscription') }}" class="btn btn-success">Se priser</a>
+                                <a href="{{ url_for('pricing.index') }}" class="btn btn-success">Se priser</a>
                             </div>
                         </div>
                     </div>
@@ -350,7 +350,7 @@ setInterval(updateTimer, 1000);
                             <a href="{{ url_for('main.register') }}" class="btn btn-primary">
                                 <i class="bi bi-person-plus"></i> Registrer deg gratis
                             </a>
-                            <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-primary">
+                            <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-primary">
                                 Se abonnement
                             </a>
                         </div>
@@ -728,7 +728,7 @@ function showTrialExpiredPopup() {
                         <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">
                             <i class="bi bi-person-plus"></i> Opprett gratis konto
                         </a>
-                        <a href="{{ url_for('main.subscription') }}" class="btn btn-outline-primary">
+                        <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-primary">
                             <i class="bi bi-star"></i> Se abonnementer fra 399kr/mnd
                         </a>
                         <a href="{{ url_for('main.login') }}" class="btn btn-link text-muted">

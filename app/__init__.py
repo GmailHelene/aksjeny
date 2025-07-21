@@ -291,6 +291,19 @@ def setup_error_handlers(app):
         db.session.rollback()
         return render_template('errors/500.html'), 500
     
+    @app.errorhandler(429)
+    def rate_limit_error(error):
+        """Handle rate limit errors"""
+        app.logger.warning(f'Rate limit exceeded: {error}')
+        if request.path.startswith('/api/'):
+            return jsonify({
+                'error': 'Rate limit exceeded',
+                'status_code': 429,
+                'retry_after': 60
+            }), 429
+        else:
+            return render_template('errors/500.html'), 429
+    
     # Add database error handler
     from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
     @app.errorhandler(SQLAlchemyError)

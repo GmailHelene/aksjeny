@@ -11,6 +11,8 @@ import warnings
 from contextlib import redirect_stdout, redirect_stderr
 from io import StringIO
 import functools
+from .enhanced_rate_limiter import enhanced_rate_limiter
+from .yfinance_retry import yfinance_retry, rate_limiter, get_fallback_data
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -940,10 +942,11 @@ FALLBACK_STOCK_INFO = {
 class DataService:
     @staticmethod
     def get_stock_info(ticker):
-        """Get stock info with caching and improved fallback"""
+        """Get stock info with enhanced rate limiting and circuit breaker"""
+        cache_key = f"stock_info_{ticker}"
+        
         # Check cache first with longer cache time
         if get_cache_service:
-            cache_key = f"stock_info_{ticker}"
             cached_data = get_cache_service().get(cache_key)
             if cached_data:
                 return cached_data
@@ -951,22 +954,35 @@ class DataService:
         # Always try fallback first to reduce API calls
         fallback_data = DataService.get_fallback_stock_info(ticker)
         
-        # Only try Yahoo Finance for high-priority requests
+        # Only try Yahoo Finance for high-priority requests with enhanced error handling
         if ticker in ['TSLA', 'AAPL', 'GOOGL', 'MSFT', 'EQNR.OL', 'DNB.OL', 'TEL.OL']:
             try:
-                # Very strict rate limiting
+                # Check circuit breaker first
+                if hasattr(rate_limiter, 'is_circuit_open') and rate_limiter.is_circuit_open('yfinance'):
+                    logging.warning(f"Circuit breaker OPEN for Yahoo Finance, using fallback for {ticker}")
+                    if get_cache_service:
+                        get_cache_service().set(cache_key, fallback_data, ttl=300)  # Short cache
+                    return fallback_data
+                
+                # Very strict rate limiting with enhanced checks
                 can_request, wait_time = rate_limiter.can_make_request('yfinance')
                 if not can_request:
-                    logging.info(f"Rate limited for {ticker}, using fallback data")
+                    logging.info(f"Rate limited for {ticker}, using fallback data (wait: {wait_time}s)")
                     if get_cache_service:
-                        get_cache_service().set(cache_key, fallback_data)
+                        get_cache_service().set(cache_key, fallback_data, ttl=180)  # Short cache for rate limits
                     return fallback_data
                 
                 rate_limiter.wait_if_needed('yfinance')
                 
-                # Suppress yfinance output
+                # Suppress yfinance output and add timeout
                 with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
                     stock = yf.Ticker(ticker)
+                    # Set a reasonable timeout to prevent hanging
+                    import requests
+                    session = requests.Session()
+                    session.request = lambda method, url, **kwargs: requests.request(method, url, timeout=10, **kwargs)
+                    stock.session = session
+                    
                     info = stock.info
                 
                 # Validate the data quality
@@ -977,12 +993,29 @@ class DataService:
                     
                     # Cache the successful result for longer
                     if get_cache_service:
-                        get_cache_service().set(cache_key, merged_data)
+                        get_cache_service().set(cache_key, merged_data, ttl=600)  # 10 minutes for successful calls
+                    
+                    # Record successful request to reset circuit breaker
+                    if hasattr(rate_limiter, 'record_success'):
+                        rate_limiter.record_success('yfinance')
+                    
                     return merged_data
+                else:
+                    logging.warning(f"Invalid or empty Yahoo Finance response for {ticker}")
                     
             except Exception as e:
-                logging.warning(f"YFinance failed for {ticker}: {str(e)}")
-                # Don't call record_failure if method doesn't exist
+                error_msg = str(e).lower()
+                if '429' in error_msg or 'too many requests' in error_msg:
+                    logging.error(f"Yahoo Finance rate limit (429) for {ticker}: {e}")
+                    # Record failure to trigger circuit breaker
+                    if hasattr(rate_limiter, 'record_failure'):
+                        rate_limiter.record_failure('yfinance')
+                elif 'timeout' in error_msg or 'timed out' in error_msg:
+                    logging.warning(f"Yahoo Finance timeout for {ticker}: {e}")
+                else:
+                    logging.warning(f"YFinance failed for {ticker}: {str(e)}")
+                
+                # Record failure for circuit breaker
                 if hasattr(rate_limiter, 'record_failure'):
                     rate_limiter.record_failure('yfinance')
         
@@ -1871,6 +1904,122 @@ class DataService:
             'crypto': DataService.get_crypto_overview(),
             'currency': DataService.get_currency_overview()
         }
+    
+    @staticmethod
+    def get_trending_oslo_stocks(limit=10):
+        """Get trending Oslo Børs stocks based on volume and price change"""
+        try:
+            oslo_data = DataService.get_oslo_bors_overview()
+            if not oslo_data:
+                # Return fallback trending stocks
+                return [
+                    {'ticker': 'EQNR.OL', 'name': 'Equinor ASA', 'change_percent': 1.2, 'volume': 2500000, 'last_price': 342.50},
+                    {'ticker': 'DNB.OL', 'name': 'DNB Bank ASA', 'change_percent': -0.5, 'volume': 1800000, 'last_price': 198.50},
+                    {'ticker': 'TEL.OL', 'name': 'Telenor ASA', 'change_percent': -0.8, 'volume': 1200000, 'last_price': 132.80},
+                    {'ticker': 'NHY.OL', 'name': 'Norsk Hydro ASA', 'change_percent': 0.3, 'volume': 3100000, 'last_price': 66.85},
+                    {'ticker': 'MOWI.OL', 'name': 'Mowi ASA', 'change_percent': 1.7, 'volume': 675000, 'last_price': 198.30}
+                ][:limit]
+            
+            # Sort by volume and change percentage to get trending stocks
+            trending = []
+            for ticker, data in oslo_data.items():
+                try:
+                    volume = data.get('volume', 0)
+                    if isinstance(volume, str):
+                        volume = float(volume.replace(',', '').replace(' ', '')) if volume else 0
+                    
+                    if volume > 500000:  # High volume stocks
+                        trending.append({
+                            'ticker': ticker,
+                            'name': data.get('name', ticker),
+                            'change_percent': float(data.get('change_percent', 0)) if data.get('change_percent') else 0,
+                            'volume': volume,
+                            'last_price': float(data.get('last_price', 0)) if data.get('last_price') else 0
+                        })
+                except (ValueError, TypeError):
+                    # Skip stocks with invalid data
+                    continue
+            
+            # Sort by volume descending, then by change percentage descending
+            trending.sort(key=lambda x: (x['volume'], abs(x['change_percent'])), reverse=True)
+            return trending[:limit] if trending else [
+                {'ticker': 'EQNR.OL', 'name': 'Equinor ASA', 'change_percent': 1.2, 'volume': 2500000, 'last_price': 342.50}
+            ][:limit]
+            
+        except Exception as e:
+            logger.error(f"Error getting trending Oslo stocks: {e}")
+            # Return safe fallback data
+            return [
+                {'ticker': 'EQNR.OL', 'name': 'Equinor ASA', 'change_percent': 1.2, 'volume': 2500000, 'last_price': 342.50},
+                {'ticker': 'DNB.OL', 'name': 'DNB Bank ASA', 'change_percent': -0.5, 'volume': 1800000, 'last_price': 198.50}
+            ][:limit]
+    
+    @staticmethod
+    def get_trending_global_stocks(limit=10):
+        """Get trending global stocks based on volume and price change"""
+        try:
+            global_data = DataService.get_global_stocks_overview()
+            if not global_data:
+                return []
+            
+            # Sort by volume and change percentage to get trending stocks
+            trending = []
+            for ticker, data in global_data.items():
+                if data.get('volume', 0) > 10000000:  # High volume stocks
+                    trending.append({
+                        'ticker': ticker,
+                        'name': data.get('name', ticker),
+                        'change_percent': data.get('change_percent', 0),
+                        'volume': data.get('volume', 0),
+                        'last_price': data.get('last_price', 0)
+                    })
+            
+            # Sort by volume descending, then by change percentage descending
+            trending.sort(key=lambda x: (x['volume'], abs(x['change_percent'])), reverse=True)
+            return trending[:limit]
+            
+        except Exception as e:
+            logger.error(f"Error getting trending global stocks: {e}")
+            return []
+    
+    @staticmethod
+    def get_most_active_stocks(limit=10):
+        """Get most active stocks by volume across all markets"""
+        try:
+            oslo_data = DataService.get_oslo_bors_overview()
+            global_data = DataService.get_global_stocks_overview()
+            
+            all_stocks = []
+            
+            # Add Oslo stocks
+            for ticker, data in (oslo_data or {}).items():
+                all_stocks.append({
+                    'ticker': ticker,
+                    'name': data.get('name', ticker),
+                    'volume': data.get('volume', 0),
+                    'last_price': data.get('last_price', 0),
+                    'change_percent': data.get('change_percent', 0),
+                    'market': 'Oslo Børs'
+                })
+            
+            # Add global stocks
+            for ticker, data in (global_data or {}).items():
+                all_stocks.append({
+                    'ticker': ticker,
+                    'name': data.get('name', ticker),
+                    'volume': data.get('volume', 0),
+                    'last_price': data.get('last_price', 0),
+                    'change_percent': data.get('change_percent', 0),
+                    'market': 'Global'
+                })
+            
+            # Sort by volume descending
+            all_stocks.sort(key=lambda x: x['volume'], reverse=True)
+            return all_stocks[:limit]
+            
+        except Exception as e:
+            logger.error(f"Error getting most active stocks: {e}")
+            return []
     
     @staticmethod
     def search_ticker(query):

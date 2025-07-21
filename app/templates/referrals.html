@@ -44,7 +44,7 @@
             <div class="alert alert-success border-0 mb-4">
                 <h5 class="alert-heading"><i class="bi bi-gift"></i> Du har rabatter tilgjengelig!</h5>
                 <p class="mb-3">Du har {{ available_discounts|length }} rabatt(er) på 20% som kan brukes på årlige abonnement.</p>
-                <a href="{{ url_for('main.subscription') }}" class="btn btn-success">Bruk rabatt nå</a>
+                <a href="{{ url_for('pricing.index') }}" class="btn btn-success">Bruk rabatt nå</a>
             </div>
             {% endif %}
 

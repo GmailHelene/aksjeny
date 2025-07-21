@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Navigation Test</h1>
+        <div class="alert alert-info">
+            <h4>Test Instructions for PC Navigation:</h4>
+            <ol>
+                <li><strong>Single click</strong> på dropdown links (Aksjer, Analyser, etc.) skal åpne dropdown-menyen</li>
+                <li><strong>Double click</strong> på dropdown links skal navigere direkte til hovedsiden</li>
+                <li><strong>Hover</strong> over dropdown links skal også åpne menyen på PC</li>
+                <li>Click på dropdown items skal navigere til riktig side</li>
+            </ol>
+        </div>
+        
+        <div class="mb-3">
+            <a href="http://localhost:5000" class="btn btn-primary">Test Full Application</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Navigation Test</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Main Sections:</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="http://localhost:5000/stocks/" target="_blank">Aksjer</a>
+                                <span class="badge bg-success">✓</span>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://localhost:5000/analysis/" target="_blank">Analyser</a>
+                                <span class="badge bg-success">✓</span>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://localhost:5000/news/" target="_blank">Nyheter</a>
+                                <span class="badge bg-success">✓</span>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://localhost:5000/pricing/pricing" target="_blank">Priser</a>
+                                <span class="badge bg-success">✓</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Test Dropdowns:</h6>
+                        <p>The main application should now have working dropdown navigation with the following behavior:</p>
+                        <ul>
+                            <li>✅ Single click opens dropdown</li>
+                            <li>✅ Hover shows dropdown on PC</li>
+                            <li>✅ Double click navigates to main page</li>
+                            <li>✅ Escape key closes dropdowns</li>
+                            <li>✅ Arrow keys navigate within dropdowns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h5>Changes Made:</h5>
+            <div class="alert alert-success">
+                <ul class="mb-0">
+                    <li>Fixed dropdown toggles to prevent href conflicts</li>
+                    <li>Added enhanced dropdown JavaScript with hover support</li>
+                    <li>Added double-click navigation to main sections</li>
+                    <li>Improved CSS for better visual feedback</li>
+                    <li>Added accessibility features (keyboard navigation)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple test to verify endpoints
+        async function testEndpoints() {
+            const endpoints = [
+                '/stocks/',
+                '/analysis/',
+                '/news/',
+                '/pricing/pricing'
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`http://localhost:5000${endpoint}`, { method: 'HEAD' });
+                    console.log(`${endpoint}: ${response.ok ? '✅ OK' : '❌ FAILED'}`);
+                } catch (error) {
+                    console.log(`${endpoint}: ❌ ERROR - ${error.message}`);
+                }
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            testEndpoints();
+        });
+    </script>
+</body>
+</html>

@@ -1,37 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}500 - Serverfeil{% endblock %}
+{% block title %}Teknisk feil - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <i class="bi bi-exclamation-octagon text-danger" style="font-size: 4rem;"></i>
-            
-            <h1 class="mt-4">500 - Serverfeil</h1>
-            
-            <p class="lead text-muted mb-4">
-                Beklager, det oppstod en teknisk feil.
-            </p>
-            
-            <p class="text-muted">
-                Vårt team har blitt varslet og jobber med å løse problemet.
-            </p>
-            
-            <div class="d-flex gap-2 justify-content-center mt-4">
-                <a href="{{ url_for('main.index') }}" class="btn btn-primary">
-                    <i class="bi bi-house"></i> Gå til forsiden
-                </a>
-                <button onclick="location.reload()" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-clockwise"></i> Prøv igjen
-                </button>
-            </div>
-            
-            <div class="mt-5">
-                <p class="text-muted small">
-                    Hvis problemet vedvarer, kontakt oss på 
-                    <a href="mailto:support@aksjeradar.no">support@aksjeradar.no</a>
-                </p>
+        <div class="col-md-6 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-danger">500</h1>
+                <h2>Teknisk feil</h2>
+                <p class="lead">Det oppstod en teknisk feil. Vi jobber med å løse problemet.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                        <i class="bi bi-house"></i> Tilbake til forsiden
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Tilbake
+                    </button>
+                </div>
             </div>
         </div>
     </div>
