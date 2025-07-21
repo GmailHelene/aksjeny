@@ -131,58 +131,71 @@
         }
     }
     
-    /* Navigation optimizations */
+    /* Navigation optimizations - ULTIMATE MOBILE PADDING MINIMIZATION */
     .navbar {
-        padding: 0.5rem 0;
+        padding: 0.05rem 0; /* Extreme reduction */
     }
     
     .navbar-brand {
-        font-size: 1.1rem;
-        padding: 0.25rem 0;
+        font-size: 0.95rem;
+        padding: 0.05rem 0; /* Almost no padding */
     }
     
     .navbar-brand img {
-        height: 25px;
-    }
-    
-    .navbar-nav .nav-link {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-        margin-bottom: 0.25rem;
+        height: 18px; /* Even smaller on mobile */
     }
     
     .navbar-toggler {
-        padding: 0.4rem 0.6rem;
+        padding: 0.1rem 0.2rem; /* Ultra-small padding */
         border: none;
-        border-radius: 6px;
-        margin-left: 0.5rem;
+        border-radius: 3px;
+        margin-left: 0.1rem; /* Ultra-minimal margin */
+        font-size: 0.8rem; /* Even smaller toggler */
     }
     
     .navbar-collapse {
-        margin-top: 0.75rem;
-        padding-top: 0.5rem;
+        margin-top: 0.1rem; /* Ultra-reduced */
+        padding-top: 0.05rem; /* Almost no top padding */
         border-top: 1px solid rgba(255,255,255,0.1);
     }
     
-    /* Better spacing for mobile menu items */
+    /* Main nav links in collapsed menu - ULTRA COMPACT FOR ALL USERS */
+    .navbar-nav .nav-link {
+        padding: 0.15rem 0.3rem !important; /* Even more reduced */
+        font-size: 0.8rem;
+        margin-bottom: 0; /* No margin */
+        line-height: 1.1; /* Tighter line height */
+    }
+    
+    /* Better spacing for mobile menu items - EXTREME MINIMAL SPACING */
     @media (max-width: 991.98px) {
         .navbar-nav .nav-item {
-            margin-bottom: 0.1rem; /* Reduced from 0.25rem */
+            margin-bottom: 0; /* No margin at all */
         }
         
         .navbar-nav .dropdown-menu {
-            margin-left: 0.5rem; /* Reduced from 1rem */
-            margin-top: 0.1rem; /* Reduced from 0.25rem */
-            margin-bottom: 0.2rem; /* Reduced from 0.5rem */
+            margin-left: 0.05rem; /* Ultra-minimal margin */
+            margin-top: 0; /* No top margin */
+            margin-bottom: 0; /* No bottom margin */
+            padding: 0 0; /* No dropdown padding */
         }
         
         .navbar-nav .dropdown-menu .dropdown-item {
-            padding: 0.35rem 0.75rem; /* Reduced padding */
-            font-size: 0.85rem;
+            padding: 0.1rem 0.3rem !important; /* Ultra-reduced padding */
+            font-size: 0.75rem;
+            line-height: 1.1; /* Even tighter line height */
         }
         
         .navbar-nav .nav-link {
-            padding: 0.4rem 0.75rem; /* Reduced padding */
+            padding: 0.15rem 0.3rem !important; /* Ultra-reduced padding */
+            margin-bottom: 0; /* No bottom margin */
+        }
+        
+        /* Collapse dropdown menus better on mobile */
+        .navbar-collapse .dropdown-menu {
+            box-shadow: none;
+            border: none;
+            background-color: rgba(248, 249, 250, 0.95);
         }
     }
     

@@ -139,12 +139,47 @@
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
-                        <h5>Ingen resultater</h5>
-                        <p class="text-muted">Prøv å justere filterkriteriene dine</p>
-                    </div>
-                    {% endif %}
+
+    <!-- Sidebar -->
+    <div class="col-lg-3">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Hurtigfiltre</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>Verdiaksjer</h6>
+                    <small class="text-muted">Lav P/E, høyt utbytte</small>
+                </div>
+                <div class="mb-3">
+                    <h6>Vekstaksjer</h6>
+                    <small class="text-muted">Høy omsetningsvekst, lav utbytte</small>
+                </div>
+                <div class="mb-3">
+                    <h6>Utbytteaksjer</h6>
+                    <small class="text-muted">Høy og stabil utbytteavkastning</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Andre analysetyper</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('analysis.warren_buffett') }}" class="btn btn-outline-primary btn-sm">
+                        Warren Buffett Analyse
+                    </a>
+                    <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-success btn-sm">
+                        Benjamin Graham Analyse
+                    </a>
+                    <a href="{{ url_for('analysis.sentiment_view') }}" class="btn btn-outline-info btn-sm">
+                        Sentiment Analyse
+                    </a>
+                    <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-warning btn-sm">
+                        Teknisk Analyse
+                    </a>
                 </div>
             </div>
         </div>
@@ -156,44 +191,4 @@ function resetForm() {
     document.querySelector('form').reset();
 }
 </script>
-{% endblock %}
-                    <div class="mb-3">
-                        <h6>Verdiaksjer</h6>
-                        <small class="text-muted">Lav P/E, høyt utbytte</small>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Vekstaksjer</h6>
-                        <small class="text-muted">Høy omsetningsvekst, lav utbytte</small>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Utbytteaksjer</h6>
-                        <small class="text-muted">Høy og stabil utbytteavkastning</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5>Andre analysetyper</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('analysis.warren_buffett') }}" class="btn btn-outline-primary btn-sm">
-                            Warren Buffett Analyse
-                        </a>
-                        <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-success btn-sm">
-                            Benjamin Graham Analyse
-                        </a>
-                        <a href="{{ url_for('analysis.sentiment') }}" class="btn btn-outline-info btn-sm">
-                            Sentiment Analyse
-                        </a>
-                        <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-warning btn-sm">
-                            Teknisk Analyse
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}

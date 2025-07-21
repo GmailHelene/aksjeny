@@ -15,7 +15,7 @@ stocks = Blueprint('stocks', __name__)
 logger = logging.getLogger(__name__)
 
 @stocks.route('/')
-@demo_access
+@access_required
 def index():
     """Main stocks page"""
     try:
@@ -32,7 +32,7 @@ def index():
 
 @stocks.route('/list')
 @stocks.route('/list/<category>')
-@demo_access
+@access_required
 def list_stocks(category='all'):
     """List stocks by category"""
     try:
@@ -175,7 +175,7 @@ def list_stocks(category='all'):
         return render_template('stocks/list.html', stocks={}, title="Feil")
 
 @stocks.route('/list/oslo', strict_slashes=False)
-@demo_access
+@access_required
 def list_oslo():
     """List Oslo Stock Exchange stocks"""
     try:
@@ -200,19 +200,19 @@ def list_oslo():
                              error=True)
 
 @stocks.route('/list/global')
-@demo_access
+@access_required
 def global_list():
     """Global stocks"""
     return list_stocks('global')
 
 @stocks.route('/list/crypto')
-@demo_access
+@access_required
 def list_crypto():
     """Crypto currencies"""
     return list_stocks('crypto')
 
 @stocks.route('/list/currency')
-@demo_access
+@access_required
 def list_currency():
     """Currency rates"""
     return list_stocks('currency')
@@ -257,7 +257,7 @@ def details(symbol):
             return redirect(url_for('stocks.index'))
 
 @stocks.route('/search')
-@demo_access
+@access_required
 def search():
     """Search for stocks - primary search function"""
     query = request.args.get('q', '').strip()
@@ -325,7 +325,7 @@ def search():
                              error="Søket kunne ikke fullføres. Prøv igjen senere.")
 
 @stocks.route('/api/search')
-@demo_access
+@access_required
 def api_search():
     """API endpoint for stock search"""
     query = request.args.get('q', '').strip()
@@ -363,7 +363,7 @@ def add_to_favorites():
         return jsonify({'error': 'Failed to add to favorites'}), 500
 
 @stocks.route('/compare')
-@demo_access
+@access_required
 def compare():
     """Stock comparison page"""
     symbols = request.args.getlist('symbols')
@@ -386,7 +386,7 @@ def compare():
         return render_template('stocks/compare.html', stocks=[])
 
 @stocks.route('/prices')
-@demo_access
+@access_required
 def prices():
     """Stock prices overview"""
     try:

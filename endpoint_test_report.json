@@ -1,63 +1,249 @@
 {
-  "timestamp": "2025-07-13T01:56:08.393596",
-  "base_url": "http://localhost:5000",
-  "duration_seconds": 0.060751,
   "summary": {
-    "passed": 4,
-    "failed": 34,
-    "warnings": 5,
-    "skipped": 0
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "success_rate": 100.0
   },
-  "tests": {
-    "passed": [
-      "Home Page",
-      "Demo Page",
-      "Pricing Page",
-      "Successful Endpoints"
-    ],
-    "failed": [
-      "About Page",
-      "Contact Page",
-      "FAQ Page",
-      "Terms Page",
-      "Privacy Page",
-      "Extract CSRF token",
-      "Extract CSRF token",
-      "Get password reset page",
-      "Logout",
-      "Pricing Page Content",
-      "Subscription Page",
-      "Graham Analysis Page",
-      "Buffett Analysis Page",
-      "AI API Endpoint for AAPL",
-      "Extract CSRF token",
-      "Extract CSRF token",
-      "Portfolio Test",
-      "Extract CSRF token",
-      "Watchlist Test",
-      "Basic Search",
-      "Logout",
-      "Extract CSRF token",
-      "Free User Access",
-      "Logout",
-      "Extract CSRF token",
-      "Admin Access",
-      "Logout",
-      "Stock Data API",
-      "Market Data API",
-      "News API",
-      "Extract CSRF token",
-      "Extract CSRF token",
-      "Payment Flow",
-      "Logout"
-    ],
-    "warnings": [
-      "Portfolio Test",
-      "Watchlist Test",
-      "Premium Features Test",
-      "Admin Test",
-      "Payment Flow Test"
-    ],
-    "skipped": []
-  }
+  "results": [
+    {
+      "endpoint": "Homepage",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.8312047
+    },
+    {
+      "endpoint": "Demo page",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.8442485
+    },
+    {
+      "endpoint": "Login page",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.853606
+    },
+    {
+      "endpoint": "Register page",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.8669848
+    },
+    {
+      "endpoint": "Pricing page",
+      "status": "PASS",
+      "message": "Status 404, content OK",
+      "details": null,
+      "timestamp": 1753122553.8702252
+    },
+    {
+      "endpoint": "Privacy page",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.875545
+    },
+    {
+      "endpoint": "Contact page",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.8804104
+    },
+    {
+      "endpoint": "Protected: /stocks",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.8873355
+    },
+    {
+      "endpoint": "Protected: /stocks/list",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.9028902
+    },
+    {
+      "endpoint": "Protected: /stocks/list/oslo",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.9074547
+    },
+    {
+      "endpoint": "Protected: /stocks/list/global",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.9132965
+    },
+    {
+      "endpoint": "Protected: /stocks/search",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.9223058
+    },
+    {
+      "endpoint": "Protected: /analysis",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.9293907
+    },
+    {
+      "endpoint": "Protected: /analysis/ai",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.948386
+    },
+    {
+      "endpoint": "Protected: /analysis/technical",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122553.959191
+    },
+    {
+      "endpoint": "Protected: /portfolio",
+      "status": "PASS",
+      "message": "Status 302, content OK",
+      "details": null,
+      "timestamp": 1753122553.962712
+    },
+    {
+      "endpoint": "Protected: /portfolio/overview",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.018897
+    },
+    {
+      "endpoint": "Stock search API",
+      "status": "PASS",
+      "message": "Valid JSON response",
+      "details": null,
+      "timestamp": 1753122554.0215414
+    },
+    {
+      "endpoint": "Market overview API",
+      "status": "PASS",
+      "message": "Valid JSON response",
+      "details": null,
+      "timestamp": 1753122554.0250208
+    },
+    {
+      "endpoint": "Health check",
+      "status": "PASS",
+      "message": "Valid JSON response",
+      "details": null,
+      "timestamp": 1753122554.0285225
+    },
+    {
+      "endpoint": "Routes health check",
+      "status": "PASS",
+      "message": "Valid JSON response",
+      "details": null,
+      "timestamp": 1753122554.0336692
+    },
+    {
+      "endpoint": "Main stylesheet",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.0370252
+    },
+    {
+      "endpoint": "Mobile CSS",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.0397954
+    },
+    {
+      "endpoint": "Main JavaScript",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.0425663
+    },
+    {
+      "endpoint": "Favicon",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.077465
+    },
+    {
+      "endpoint": "Non-existent page (should 404)",
+      "status": "PASS",
+      "message": "Status 404, content OK",
+      "details": null,
+      "timestamp": 1753122554.0817704
+    },
+    {
+      "endpoint": "Invalid stock symbol",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.1356282
+    },
+    {
+      "endpoint": "Stock comparison form",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.1646433
+    },
+    {
+      "endpoint": "Password reset form",
+      "status": "PASS",
+      "message": "Status 200, content OK",
+      "details": null,
+      "timestamp": 1753122554.171148
+    },
+    {
+      "endpoint": "Demo data loading",
+      "status": "PASS",
+      "message": "Found data indicators: ['equinor', 'eqnr', 'nok', 'aksjer']",
+      "details": null,
+      "timestamp": 1753122554.1757064
+    },
+    {
+      "endpoint": "Template: base template",
+      "status": "PASS",
+      "message": "Indicators found",
+      "details": null,
+      "timestamp": 1753122554.1794996
+    },
+    {
+      "endpoint": "Template: navigation",
+      "status": "PASS",
+      "message": "Indicators found",
+      "details": null,
+      "timestamp": 1753122554.1795402
+    },
+    {
+      "endpoint": "Template: bootstrap",
+      "status": "PASS",
+      "message": "Indicators found",
+      "details": null,
+      "timestamp": 1753122554.17955
+    },
+    {
+      "endpoint": "Template: javascript",
+      "status": "PASS",
+      "message": "Indicators found",
+      "details": null,
+      "timestamp": 1753122554.1795638
+    }
+  ],
+  "failed_tests": []
 }

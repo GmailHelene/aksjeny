@@ -11,9 +11,12 @@ from app import create_app
 from app.extensions import db
 from sqlalchemy import text
 import logging
+import psycopg2
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+RAILWAY_DATABASE_URL = "postgresql://postgres:PsOJBeRqPAAcXyOXYCJvidJqMOpSzhqN@crossover.proxy.rlwy.net:17830/railway"
 
 def add_missing_columns():
     """Add missing columns to users table"""
@@ -24,35 +27,53 @@ def add_missing_columns():
         try:
             logger.info("🔧 Adding missing database columns...")
             
-            # List of columns to add with their SQL definitions
-            columns_to_add = [
-                'reset_token VARCHAR(100)',
-                'reset_token_expires TIMESTAMP',
-                'language VARCHAR(10) DEFAULT \'no\'',
-                'notification_settings TEXT',
-                'two_factor_enabled BOOLEAN DEFAULT FALSE',
-                'two_factor_secret VARCHAR(32)',
-                'email_verified BOOLEAN DEFAULT TRUE',
-                'is_locked BOOLEAN DEFAULT FALSE',
-                'last_login TIMESTAMP',
-                'login_count INTEGER DEFAULT 0'
+            db_url = os.getenv('DATABASE_URL') or RAILWAY_DATABASE_URL
+            
+            # Columns that should exist
+            required_columns = [
+                ("password", "VARCHAR(255)"),
+                ("username", "VARCHAR(100)"),
+                ("created_at", "TIMESTAMP DEFAULT NOW()"),
+                ("reset_token", "VARCHAR(255)"),
+                ("reset_token_expires", "TIMESTAMP")
             ]
             
-            for column_def in columns_to_add:
-                column_name = column_def.split()[0]
-                try:
-                    # Use SQLAlchemy's text() for raw SQL execution
-                    sql = f'ALTER TABLE users ADD COLUMN {column_def}'
-                    db.session.execute(text(sql))
-                    db.session.commit()
-                    logger.info(f"✅ Added column: {column_name}")
-                except Exception as e:
-                    if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
-                        logger.info(f"ℹ️ Column {column_name} already exists")
-                    else:
-                        logger.warning(f"⚠️ Could not add column {column_name}: {e}")
-                    db.session.rollback()
-            
+            try:
+                conn = psycopg2.connect(db_url)
+                cursor = conn.cursor()
+                
+                for col_name, col_type in required_columns:
+                    try:
+                        # Try to add the column
+                        cursor.execute(f"ALTER TABLE users ADD COLUMN IF NOT EXISTS {col_name} {col_type};")
+                        logger.info(f"✅ Added/verified column: {col_name}")
+                    except Exception as e:
+                        logger.warning(f"⚠️ Issue with column {col_name}: {e}")
+                
+                conn.commit()
+                logger.info("\n✅ All required columns added!")
+                
+                # Verify the structure
+                cursor.execute("""
+                    SELECT column_name, data_type 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'users'
+                    ORDER BY ordinal_position;
+                """)
+                
+                columns = cursor.fetchall()
+                logger.info(f"\n📋 Updated users table structure ({len(columns)} columns):")
+                for col_name, col_type in columns:
+                    logger.info(f"  - {col_name}: {col_type}")
+                
+            except Exception as e:
+                logger.error(f"❌ Error adding columns: {e}")
+            finally:
+                if 'cursor' in locals():
+                    cursor.close()
+                if 'conn' in locals():
+                    conn.close()
+
             logger.info("🎉 Database column migration completed!")
             return True
             

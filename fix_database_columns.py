@@ -10,34 +10,33 @@ from app import create_app
 from app.extensions import db
 from sqlalchemy import text
 import logging
+import psycopg2
 
 def migrate_database():
     app = create_app()
     
     with app.app_context():
         try:
-            # Check what columns exist using proper SQLAlchemy syntax
+            # Check what columns exist using SQLite syntax
             with db.engine.connect() as connection:
-                result = connection.execute(text("""
-                    SELECT column_name 
-                    FROM information_schema.columns 
-                    WHERE table_name = 'users' AND table_schema = 'public'
-                    ORDER BY column_name
-                """))
-                
-                existing_columns = {row[0] for row in result}
+                # For SQLite, use PRAGMA table_info to get column information
+                result = connection.execute(text("PRAGMA table_info(users)"))
+                existing_columns = {row[1] for row in result}  # row[1] is column name
                 print(f"📋 Existing columns: {sorted(existing_columns)}")
             
             # List of columns that should exist
             required_columns = [
-                ('reset_token', 'VARCHAR(100)'),
+                ('password', 'VARCHAR(255)'),
+                ('username', 'VARCHAR(100)'),
+                ('created_at', 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'),
+                ('reset_token', 'VARCHAR(255)'),
                 ('reset_token_expires', 'TIMESTAMP'),
                 ('language', 'VARCHAR(10) DEFAULT \'no\''),
                 ('notification_settings', 'TEXT'),
-                ('two_factor_enabled', 'BOOLEAN DEFAULT FALSE'),
+                ('two_factor_enabled', 'BOOLEAN DEFAULT 0'),
                 ('two_factor_secret', 'VARCHAR(32)'),
-                ('email_verified', 'BOOLEAN DEFAULT TRUE'),
-                ('is_locked', 'BOOLEAN DEFAULT FALSE'),
+                ('email_verified', 'BOOLEAN DEFAULT 1'),
+                ('is_locked', 'BOOLEAN DEFAULT 0'),
                 ('last_login', 'TIMESTAMP'),
                 ('login_count', 'INTEGER DEFAULT 0')
             ]
@@ -70,5 +69,63 @@ def migrate_database():
             traceback.print_exc()
             raise
 
+def fix_database_connection():
+    """Fix database connection and add missing columns"""
+    # Use the correct Railway PostgreSQL URL
+    database_url = "postgresql://postgres:PsOJBeRqPAAcXyOXYCJvidJqMOpSzhqN@crossover.proxy.rlwy.net:17830/railway"
+    
+    print("🔧 Fixing database columns...")
+    print(f"🗄️ Connecting to Railway PostgreSQL...")
+    
+    try:
+        conn = psycopg2.connect(database_url)
+        cursor = conn.cursor()
+        
+        print("✅ Connected to database successfully")
+        
+        # Add all missing columns
+        columns_to_add = [
+            ("password", "VARCHAR(255)"),
+            ("username", "VARCHAR(100)"),
+            ("created_at", "TIMESTAMP DEFAULT NOW()"),
+            ("reset_token", "VARCHAR(255)"),
+            ("reset_token_expires", "TIMESTAMP")
+        ]
+        
+        for col_name, col_type in columns_to_add:
+            try:
+                cursor.execute(f"ALTER TABLE users ADD COLUMN IF NOT EXISTS {col_name} {col_type};")
+                print(f"✅ Added/verified column: {col_name}")
+            except Exception as e:
+                print(f"⚠️ Issue with column {col_name}: {e}")
+        
+        conn.commit()
+        
+        # Verify all columns exist
+        cursor.execute("""
+            SELECT column_name, data_type 
+            FROM information_schema.columns 
+            WHERE table_name = 'users'
+            ORDER BY ordinal_position;
+        """)
+        
+        columns = cursor.fetchall()
+        print(f"\n📋 Current users table structure ({len(columns)} columns):")
+        for col_name, col_type in columns:
+            print(f"  - {col_name}: {col_type}")
+        
+        print("\n✅ Database columns fixed successfully!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error fixing database: {e}")
+        return False
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals():
+            conn.close()
+
 if __name__ == "__main__":
     migrate_database()
+    fix_database_connection()

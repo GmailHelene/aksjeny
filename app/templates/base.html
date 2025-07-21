@@ -108,24 +108,24 @@
         }
     }
 
-    /* Fix mobile menu padding issues - completely revised */
+    /* Fix mobile menu padding issues - completely revised for ALL users */
     @media (max-width: 768px) {
         .navbar-toggler {
             border: none;
-            padding: 0.25rem 0.5rem;
+            padding: 0.1rem 0.2rem !important; /* Ultra-reduced */
         }
         
         .navbar-collapse {
-            padding: 0;
-            margin: 0;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         
         .navbar-nav {
-            padding: 0.5rem 0 !important;
+            padding: 0.2rem 0 !important; /* Much reduced */
             margin: 0 !important;
             background: #343a40;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem !important;
+            border-radius: 0.3rem;
+            margin-top: 0.2rem !important; /* Reduced */
         }
         
         .navbar-nav .nav-item {
@@ -139,9 +139,10 @@
         }
         
         .navbar-nav .nav-link {
-            padding: 0.75rem 1rem !important;
+            padding: 0.3rem 0.5rem !important; /* Significantly reduced */
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
+            font-size: 0.85rem !important; /* Smaller font */
         }
         
         .navbar-nav .nav-link:hover {
@@ -151,7 +152,7 @@
         
         .navbar-nav .dropdown-toggle::after {
             float: right;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem; /* Reduced */
         }
         
         .navbar-nav .dropdown-menu {
@@ -167,11 +168,11 @@
         }
         
         .navbar-nav .dropdown-item {
-            padding: 0.5rem 1.5rem !important;
+            padding: 0.25rem 1rem !important; /* Reduced from 0.5rem 1.5rem */
             margin: 0 !important;
             color: rgba(255,255,255,0.8) !important;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
+            font-size: 0.8rem !important; /* Smaller font */
         }
         
         .navbar-nav .dropdown-item:hover {
@@ -181,18 +182,18 @@
         }
         
         .navbar-nav .dropdown-header {
-            padding: 0.5rem 1.5rem 0.25rem !important;
+            padding: 0.25rem 1rem 0.1rem !important; /* Much reduced */
             color: rgba(255,255,255,0.6) !important;
             background: transparent;
             margin: 0;
             border: none;
-            font-size: 0.75rem;
+            font-size: 0.7rem !important; /* Smaller font */
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
         .navbar-nav .dropdown-divider {
-            margin: 0.25rem 0;
+            margin: 0.1rem 0; /* Reduced */
             border-color: rgba(255,255,255,0.2);
         }
         
@@ -240,6 +241,64 @@
         
         .navbar-nav .dropdown-toggle[aria-expanded="true"]::after {
             content: ' ⏶';
+        }
+    }
+
+    /* Hamburger menu fixes for mobile */
+    @media (max-width: 991.98px) {
+        .navbar-toggler {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 1rem !important;
+            border: 1px solid #dee2e6 !important;
+            margin-right: 0.5rem;
+        }
+        
+        .navbar-collapse {
+            padding: 0 !important;
+            margin-top: 0.5rem;
+        }
+        
+        .navbar-nav {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem !important;
+            color: #212529 !important;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #0d6efd !important;
+        }
+        
+        .navbar-nav .dropdown-menu {
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+            background: none;
+        }
+        
+        .navbar-nav .dropdown-item {
+            padding: 0.5rem 1.5rem !important;
+            color: #6c757d !important;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .navbar-nav .dropdown-item:hover {
+            background-color: #e9ecef !important;
+            color: #0d6efd !important;
+        }
+    }
+
+    /* Desktop hamburger menu should be hidden */
+    @media (min-width: 992px) {
+        .navbar-toggler {
+            display: none !important;
         }
     }
     </style>

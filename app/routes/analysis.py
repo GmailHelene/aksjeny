@@ -32,7 +32,7 @@ def get_all_available_stocks():
 analysis = Blueprint('analysis', __name__, url_prefix='/analysis')
 
 @analysis.route('/')
-@demo_access
+@access_required
 def index():
     """Analysis main page - prevent redirect loops"""
     try:
@@ -47,7 +47,7 @@ def index():
 
 @analysis.route('/technical')
 @analysis.route('/technical/')
-@demo_access  
+@access_required  
 def technical():
     """Technical analysis main page with overview"""
     try:
@@ -85,7 +85,7 @@ def technical():
                              error="Kunne ikke laste teknisk analyse")
 
 @analysis.route('/market-overview')
-@demo_access
+@access_required
 def market_overview():
     """Market overview page with fixed styling"""
     try:
@@ -144,7 +144,7 @@ def market_overview():
                              error="Kunne ikke laste markedsdata")
 
 @analysis.route('/warren-buffett', methods=['GET', 'POST'])
-@demo_access
+@access_required
 def warren_buffett():
     """Warren Buffett analysis with improved error handling"""
     try:
@@ -193,7 +193,7 @@ def warren_buffett():
         return redirect(url_for('analysis.index'))
 
 @analysis.route('/benjamin-graham', methods=['GET', 'POST'])
-@demo_access
+@access_required
 def benjamin_graham():
     """Benjamin Graham analysis with improved error handling"""
     try:
@@ -289,63 +289,64 @@ def sentiment_view():
         flash("En feil oppstod ved lasting av sentiment-analysen.", "error")
         return redirect(url_for('analysis.index'))
 
+@analysis.route('/screener')
+@access_required  
+def screener():
+    """Redirect to screener view"""
+    return redirect(url_for('analysis.screener_view'))
+
 @analysis.route('/screener-view')
-@access_required
+@demo_access
 def screener_view():
     """Stock screening tool"""
-    try:
-        # Get screening parameters
-        min_market_cap = request.args.get('min_market_cap', type=float, default=0)
-        max_pe = request.args.get('max_pe', type=float, default=50)
-        min_roe = request.args.get('min_roe', type=float, default=0)
-        sector = request.args.get('sector', default='all')
-        
-        # Mock screened stocks
-        screened_stocks = [
-            {
-                'symbol': 'EQNR.OL',
-                'name': 'Equinor ASA',
-                'price': 342.55,
-                'market_cap': 1087000000000,
-                'pe_ratio': 12.5,
-                'roe': 15.2,
-                'sector': 'Energy',
-                'score': 85
-            },
-            {
-                'symbol': 'DNB.OL', 
-                'name': 'DNB Bank ASA',
-                'price': 212.8,
-                'market_cap': 328000000000,
-                'pe_ratio': 8.9,
-                'roe': 12.8,
-                'sector': 'Financial',
-                'score': 78
-            },
-            {
-                'symbol': 'AAPL',
-                'name': 'Apple Inc.',
-                'price': 185.25,
-                'market_cap': 2870000000000,
-                'pe_ratio': 28.5,
-                'roe': 24.1,
-                'sector': 'Technology',
-                'score': 92
-            }
-        ]
-        
-        return render_template('analysis/screener.html', 
-                             screened_stocks=screened_stocks,
-                             filters={
-                                 'min_market_cap': min_market_cap,
-                                 'max_pe': max_pe, 
-                                 'min_roe': min_roe,
-                                 'sector': sector
-                             })
-    except Exception as e:
-        logger.error(f"Error in screener: {e}")
-        flash("En feil oppstod ved lasting av screeneren.", "error")
-        return redirect(url_for('analysis.index'))
+    # Get screening parameters
+    min_market_cap = request.args.get('min_market_cap', type=float, default=0)
+    max_pe = request.args.get('max_pe', type=float, default=50)
+    min_roe = request.args.get('min_roe', type=float, default=0)
+    sector = request.args.get('sector', default='all')
+    
+    # Mock screened stocks
+    screened_stocks = [
+        {
+            'symbol': 'EQNR.OL',
+            'name': 'Equinor ASA',
+            'price': 342.55,
+            'market_cap': 1087000000000,
+            'pe_ratio': 12.5,
+            'roe': 15.2,
+            'sector': 'Energy',
+            'score': 85
+        },
+        {
+            'symbol': 'DNB.OL', 
+            'name': 'DNB Bank ASA',
+            'price': 212.8,
+            'market_cap': 328000000000,
+            'pe_ratio': 8.9,
+            'roe': 12.8,
+            'sector': 'Financial',
+            'score': 78
+        },
+        {
+            'symbol': 'AAPL',
+            'name': 'Apple Inc.',
+            'price': 185.25,
+            'market_cap': 2870000000000,
+            'pe_ratio': 28.5,
+            'roe': 24.1,
+            'sector': 'Technology',
+            'score': 92
+        }
+    ]
+    
+    return render_template('analysis/screener.html', 
+                         screened_stocks=screened_stocks,
+                         filters={
+                             'min_market_cap': min_market_cap,
+                             'max_pe': max_pe, 
+                             'min_roe': min_roe,
+                             'sector': sector
+                         })
 
 @analysis.route('/short-analysis-view')
 @access_required
@@ -755,7 +756,7 @@ def short_analysis():
                          available_stocks=available_stocks)
 
 @analysis.route('/fundamental', methods=['GET', 'POST'])
-@demo_access
+@access_required
 def fundamental():
     """Fundamental analysis page"""
     if request.method == 'POST':
@@ -786,7 +787,7 @@ def fundamental():
                          analysis_score=None)
 
 @analysis.route('/sentiment')
-@demo_access
+@access_required
 def sentiment():
     """Market sentiment analysis with fixed dropdown"""
     try:
@@ -816,7 +817,7 @@ def sentiment():
                              error="Kunne ikke laste sentiment data")
 
 @analysis.route('/api/sentiment/<symbol>')
-@demo_access
+@access_required
 def api_sentiment(symbol):
     """API endpoint for sentiment data"""
     try:

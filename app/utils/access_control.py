@@ -182,6 +182,17 @@ def pro_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def is_exempt_user(user=None):
+    """Check if a user is exempt from access restrictions"""
+    if user is None:
+        user = current_user
+    
+    if not user or not user.is_authenticated:
+        return False
+        
+    user_email = getattr(user, 'email', None)
+    return user_email in EXEMPT_EMAILS
+
 def demo_access(f):
     """Demo access decorator - allows access without login for demonstration purposes"""
     @wraps(f)
@@ -396,3 +407,42 @@ def is_trial_active():
     
     trial_status = _check_trial_access()
     return trial_status['active']
+
+def check_access_and_redirect():
+    """Check access and redirect if necessary - FIXED"""
+    from flask import request, redirect, url_for
+    from flask_login import current_user
+    
+    # Always allow access to exempt users
+    if current_user.is_authenticated and is_exempt_user():
+        return None
+    
+    # Public endpoints that should always be accessible
+    public_endpoints = {
+        'main.index', 'main.demo', 'main.login', 'main.register', 
+        'main.about', 'main.contact', 'main.terms', 'main.privacy',
+        'health.health_check', 'static', 'main.landing'
+    }
+    
+    # API endpoints that should be accessible
+    api_endpoints = {
+        'api.get_crypto_trending', 'api.get_economic_indicators',
+        'api.get_market_sectors', 'api.search_stocks', 'api.market_data',
+        'api.get_currency_rates', 'health.health_check'
+    }
+    
+    if request.endpoint in public_endpoints or request.endpoint in api_endpoints:
+        return None
+    
+    # Redirect unauthorized users to demo for protected endpoints
+    protected_endpoints = {
+        'stocks.stock_detail', 'analysis.benjamin_graham', 'analysis.warren_buffett',
+        'analysis.technical_analysis', 'portfolio.index', 'portfolio.view',
+        'news_bp.news_index', 'news_bp.category', 'news_bp.search',
+        'pricing.pricing', 'features.features'
+    }
+    
+    if not current_user.is_authenticated and request.endpoint in protected_endpoints:
+        return redirect(url_for('main.demo'))
+    
+    return None

@@ -311,8 +311,26 @@ def before_request():
         return
 
 @main.route('/')
+@main.route('/index')
 def index():
-    """Homepage with different content for premium vs demo users"""
+    """Enhanced homepage with access control"""
+    from ..utils.access_control import is_exempt_user, check_access_and_redirect
+    
+    # Check access and potentially redirect
+    redirect_response = check_access_and_redirect()
+    if redirect_response:
+        return redirect_response
+    
+    if current_user.is_authenticated and is_exempt_user():
+        # Exempt users get full access
+        restricted = False
+    elif current_user.is_authenticated and has_active_subscription():
+        # Subscribed users get full access  
+        restricted = False
+    else:
+        # Non-authenticated or trial users get limited access
+        restricted = True
+    
     try:
         if current_user.is_authenticated:
             # Check if user is premium
@@ -352,10 +370,40 @@ def index():
 
 # Ensure demo functions are accessible without login or subscription
 @main.route('/demo')
-@login_required
 def demo():
-    """Demo page for users"""
-    return render_template('demo.html')  # Ensure demo page is accessible
+    """Demo page with full functionality preview"""
+    demo_data = {
+        'demo_mode': True,
+        'stocks': [
+            {'symbol': 'EQNR.OL', 'name': 'Equinor ASA', 'price': 285.50, 'change': '+2.4%', 'signal': 'KJØP', 'analysis': 'Sterk teknisk momentum'},
+            {'symbol': 'DNB.OL', 'name': 'DNB Bank ASA', 'price': 245.80, 'change': '+1.8%', 'signal': 'HOLD', 'analysis': 'Stabil utvikling'},
+            {'symbol': 'TEL.OL', 'name': 'Telenor ASA', 'price': 138.20, 'change': '-0.5%', 'signal': 'SELG', 'analysis': 'Svak momentum'}
+        ],
+        'analysis': {
+            'recommendation': 'KJØP',
+            'confidence': '85%',
+            'target_price': '320 NOK',
+            'risk_level': 'Moderat',
+            'time_horizon': '6-12 måneder',
+            'signals': [
+                'Sterk teknisk momentum',
+                'Positiv fundamental utvikling', 
+                'Økende institusjonell interesse'
+            ]
+        },
+        'portfolio': {
+            'total_value': 850000,
+            'daily_change': 12500,
+            'daily_change_percent': '1.5',
+            'holdings': [
+                {'symbol': 'EQNR.OL', 'name': 'Equinor', 'quantity': 100, 'value': 285000, 'change': '+2.4%'},
+                {'symbol': 'DNB.OL', 'name': 'DNB Bank', 'quantity': 200, 'value': 491600, 'change': '+1.8%'},
+                {'symbol': 'TEL.OL', 'name': 'Telenor', 'quantity': 50, 'value': 69100, 'change': '-0.5%'}
+            ]
+        }
+    }
+    
+    return render_template('demo.html', **demo_data)
 
 # Fixing the error handling for portfolio loading
 @main.route('/portfolio')
