@@ -8,7 +8,7 @@
         <h1 class="display-4 mb-3">Aksjeradar</h1>
         <p class="lead mb-4">Komplett aksje- og kryptoanalyse for smarte investeringsbeslutninger. Få sanntidsdata, teknisk analyse og AI-drevne anbefalinger for Oslo Børs og globale markeder.</p>
         <div class="d-flex gap-2">
-          <a href="{{ url_for('stocks.list') }}" class="btn btn-primary btn-lg">Utforsk aksjer</a>
+          <a href="{{ url_for('stocks.list_stocks') }}" class="btn btn-primary btn-lg">Utforsk aksjer</a>
           <a href="{{ url_for('analysis.index') }}" class="btn btn-outline-light btn-lg">Analyser</a>
         </div>
       </div>
@@ -124,7 +124,7 @@
             </table>
           </div>
           <div class="card-footer text-center py-2">
-            <a href="{{ url_for('stocks.list') }}" class="text-decoration-none">Se alle aksjer →</a>
+            <a href="{{ url_for('stocks.list_stocks') }}" class="text-decoration-none">Se alle aksjer →</a>
           </div>
         </div>
       </div>
@@ -158,7 +158,7 @@
           </div>
         </div>
         <div class="card-footer text-center py-2">
-          <a href="{{ url_for('stocks.list') }}" class="text-decoration-none">Se alle Oslo Børs aksjer →</a>
+          <a href="{{ url_for('stocks.list_oslo') }}" class="text-decoration-none">Se alle Oslo Børs aksjer →</a>
         </div>
       </div>
     </div>
@@ -187,7 +187,7 @@
           </div>
         </div>
         <div class="card-footer text-center py-2">
-          <a href="{{ url_for('stocks.list') }}" class="text-decoration-none">Se alle globale aksjer →</a>
+          <a href="{{ url_for('stocks.global_list') }}" class="text-decoration-none">Se alle globale aksjer →</a>
         </div>
       </div>
     </div>
@@ -220,7 +220,7 @@
           </div>
         </div>
         <div class="card-footer text-center py-2">
-          <a href="{{ url_for('stocks.list') }}" class="text-decoration-none">Se alle kryptovalutaer →</a>
+          <a href="{{ url_for('stocks.list_crypto') }}" class="text-decoration-none">Se alle kryptovalutaer →</a>
         </div>
       </div>
     </div>
