@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from ..utils.market_open import is_market_open
 import logging
 from datetime import datetime
+from werkzeug.urls import url_parse
 
 main = Blueprint('main', __name__)
 logger = logging.getLogger(__name__)
@@ -406,88 +407,38 @@ def prices():
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login page with proper form handling"""
+    from flask import request
+    from ..models import User
+    from ..forms import LoginForm
+    from werkzeug.security import check_password_hash
+    
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     
-    # Lazy import forms and User model
-    LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm = get_forms()
-    User = get_user_model()
-    
     form = LoginForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            # Use raw SQL to avoid column errors
-            try:
-                user_data = db.session.execute(
-                    text("SELECT id, username, email, password_hash, has_subscription, subscription_type FROM users WHERE username = :username OR email = :email LIMIT 1"),
-                    {'username': form.username.data, 'email': form.username.data}
-                ).fetchone()
+    
+    if form.validate_on_submit():
+        try:
+            user = User.query.filter_by(email=form.email.data).first()
+            
+            if user and check_password_hash(user.password_hash, form.password.data):
+                login_user(user, remember=form.remember_me.data)
                 
-                if user_data and check_password_hash(user_data[3], form.password.data):
-                    # Create a minimal user object for login
-                    user = User()
-                    user.id = user_data[0]
-                    user.username = user_data[1]
-                    user.email = user_data[2]
-                    user.password_hash = user_data[3]
-                    user.has_subscription = user_data[4] if user_data[4] is not None else True
-                    user.subscription_type = user_data[5] if user_data[5] is not None else 'monthly'
-                    
-                    # Ensure exempt users always have correct permissions
-                    if user.email in EXEMPT_EMAILS:
-                        user.has_subscription = True
-                        user.subscription_type = 'lifetime'
-                        user.is_admin = True
-                    
-                    # Clear all session data before login to ensure clean state
-                    session.clear()
-                    
-                    # Login user with remember me for persistent login
-                    login_user(user, remember=True, duration=timedelta(days=30))
-                    current_app.logger.info(f'User logged in: {user.email}')
-                    
-                    # Set session to permanent for proper login persistence
-                    session.permanent = True
-                    
-                    # Set session flags for consistency across all pages
-                    session['user_logged_in'] = True
-                    session['user_id'] = user.id
-                    session['user_email'] = user.email
-                    
-                    # Flash login success message that will only show on homepage
-                    flash('Du er nå logget inn!', 'success')
-                    
-                    # Always redirect to home page after login for consistent experience
-                    response = make_response(redirect(url_for('main.index')))
-                    
-                    # Force complete cache refresh to ensure login state updates
-                    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0, private'
-                    response.headers['Pragma'] = 'no-cache'
-                    response.headers['Expires'] = '0'
-                    response.headers['Last-Modified'] = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
-                    response.headers['Vary'] = '*'
-                    response.headers['Clear-Site-Data'] = '"cache"'
-                    
-                    # Set secure cookie for login state with immediate expiry to force refresh
-                    response.set_cookie('user_logged_in', 'true', max_age=30*24*60*60, secure=False, httponly=False, samesite='Lax')
-                    response.set_cookie('login_refresh', str(datetime.utcnow().timestamp()), max_age=60, secure=False, httponly=False, samesite='Lax')
-                    
-                    return response
-                else:
-                    flash('Ugyldig brukernavn eller passord', 'danger')
-            except Exception as e:
-                current_app.logger.error(f'Login error: {e}')
-                flash('En feil oppstod under innlogging. Prøv igjen senere.', 'danger')
-        else:
-            # Handle form validation errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    if 'CSRF' in error:
-                        # Don't show CSRF error to user - just log it
-                        current_app.logger.warning(f'CSRF token error on login: {error}')
-                    else:
-                        flash(f'{getattr(form, field).label.text}: {error}', 'danger')
-    return render_template('login.html', form=form)
+                next_page = request.args.get('next')
+                if not next_page or url_parse(next_page).netloc != '':
+                    next_page = url_for('main.index')
+                
+                flash('Innlogging vellykket!', 'success')
+                return redirect(next_page)
+            else:
+                flash('Ugyldig e-post eller passord.', 'danger')
+                
+        except Exception as e:
+            current_app.logger.error(f'Login error: {e}')
+            flash('En feil oppstod under innloggingen. Prøv igjen.', 'danger')
+    
+    return render_template('login.html', title='Logg inn', form=form)
 
 @main.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -527,74 +478,45 @@ login_manager.unauthorized_handler(unauthorized_handler)
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
+    """Registration page with proper form handling"""
+    from flask import request
+    from ..models import User
+    from ..extensions import db
+    from ..forms import RegistrationForm
+    from werkzeug.security import generate_password_hash
+    
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     
-    # Lazy import forms and models
-    LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm = get_forms()
-    User = get_user_model()
-    
     form = RegistrationForm()
-    referral_code = request.args.get('ref')
-    if referral_code and request.method == 'GET':
-        form.referral_code.data = referral_code
-
-    try:
-        if request.method == 'POST':
-            if form.validate_on_submit():
-                existing_user = User.query.filter(
-                    (User.email == form.email.data) | 
-                    (User.username == form.username.data)
-                ).first()
-                
-                if existing_user:
-                    if existing_user.email == form.email.data:
-                        flash('E-post er allerede registrert.', 'danger')
-                    else:
-                        flash('Brukernavn er allerede tatt.', 'danger')
-                    return render_template('register.html', form=form)
-
-                user = User(username=form.username.data, email=form.email.data)
-                user.set_password(form.password.data)
-                user.trial_used = False
-                user.trial_start = None
-                db.session.add(user)
-                
-                try:
-                    db.session.commit()
-                    current_app.logger.info(f'New user registered: {user.email}')
-                    
-                    # Process referral if provided
-                    referral_code = form.referral_code.data or request.args.get('ref')
-                    if referral_code:
-                        ReferralService = get_referral_service()
-                        ReferralService.process_registration_with_referral(user, referral_code)
-                        flash('Du har registrert deg med en invitasjonskode!', 'info')
-                    
-                    flash('Registrering fullført! Du kan nå logge inn med dine opplysninger.', 'success')
-                    
-                    # Redirect to login page instead of auto-login
-                    return redirect(url_for('main.login'))
-                    
-                except Exception as e:
-                    db.session.rollback()
-                    current_app.logger.error(f'Feil ved lagring av bruker: {str(e)}')
-                    flash('Det oppstod en feil ved lagring av brukeren. Prøv igjen senere.', 'danger')
-                    return render_template('register.html', form=form)
-            else:
-                # Handle form validation errors
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        if 'CSRF' in error:
-                            # Don't show CSRF error to user - just log it
-                            current_app.logger.warning(f'CSRF token error on register: {error}')
-                        else:
-                            flash(f'{getattr(form, field).label.text}: {error}', 'danger')
-    except Exception as e:
-        current_app.logger.error(f'Unexpected error in registration route: {str(e)}')
-        flash('Det oppstod en uventet feil. Vennligst prøv igjen senere.', 'danger')
-        
-    return render_template('register.html', form=form)
+    
+    if form.validate_on_submit():
+        try:
+            # Check if user already exists
+            existing_user = User.query.filter_by(email=form.email.data).first()
+            if existing_user:
+                flash('En bruker med denne e-postadressen eksisterer allerede.', 'danger')
+                return render_template('register.html', title='Registrer deg', form=form)
+            
+            # Create new user
+            user = User(
+                username=form.username.data,
+                email=form.email.data,
+                password_hash=generate_password_hash(form.password.data)
+            )
+            
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Registreringen var vellykket! Du kan nå logge inn.', 'success')
+            return redirect(url_for('main.login'))
+            
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f'Registration error: {e}')
+            flash('En feil oppstod under registreringen. Prøv igjen.', 'danger')
+    
+    return render_template('register.html', title='Registrer deg', form=form)
 
 @main.route('/share-target')
 @access_required

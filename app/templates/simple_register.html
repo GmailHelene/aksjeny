@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Registrer deg - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Opprett konto</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.register') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Brukernavn</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">E-post</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Passord</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Registrer deg</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Har allerede konto? <a href="{{ url_for('main.login') }}">Logg inn</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
