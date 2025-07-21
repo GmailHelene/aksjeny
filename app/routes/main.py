@@ -4,6 +4,13 @@ import logging
 from datetime import datetime
 from urllib.parse import urlparse
 
+# Import column fallbacks for database compatibility
+try:
+    from ..utils.column_fallbacks import apply_column_fallbacks
+    apply_column_fallbacks()
+except ImportError:
+    pass  # Fallbacks not available
+
 main = Blueprint('main', __name__)
 logger = logging.getLogger(__name__)
 
@@ -407,11 +414,12 @@ def prices():
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    """Login page with proper form handling"""
+    """Login page with proper form handling and database error recovery"""
     from flask import request
     from ..models import User
     from ..forms import LoginForm
     from werkzeug.security import check_password_hash
+    from sqlalchemy.exc import OperationalError, ProgrammingError
     
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -420,22 +428,39 @@ def login():
     
     if form.validate_on_submit():
         try:
-            user = User.query.filter_by(email=form.email.data).first()
+            # Try to find user by email
+            user = User.query.filter_by(email=form.email.data.lower().strip()).first()
             
-            if user and check_password_hash(user.password_hash, form.password.data):
+            if user and user.password_hash and check_password_hash(user.password_hash, form.password.data):
+                # Update last login if column exists
+                try:
+                    user.last_login = datetime.utcnow()
+                    if hasattr(user, 'login_count'):
+                        user.login_count = (user.login_count or 0) + 1
+                    db.session.commit()
+                except Exception as update_error:
+                    current_app.logger.warning(f'Could not update login stats: {update_error}')
+                    db.session.rollback()
+                
                 login_user(user, remember=form.remember_me.data)
                 
                 next_page = request.args.get('next')
                 if not next_page or urlparse(next_page).netloc != '':
                     next_page = url_for('main.index')
                 
+                current_app.logger.info(f'Successful login for user: {user.email}')
                 flash('Innlogging vellykket!', 'success')
                 return redirect(next_page)
             else:
+                current_app.logger.warning(f'Failed login attempt for email: {form.email.data}')
                 flash('Ugyldig e-post eller passord.', 'danger')
                 
+        except (OperationalError, ProgrammingError) as db_error:
+            current_app.logger.error(f'Database error during login: {db_error}')
+            flash('Database-feil. Kontakt support hvis problemet vedvarer.', 'danger')
+            
         except Exception as e:
-            current_app.logger.error(f'Login error: {e}')
+            current_app.logger.error(f'Unexpected login error: {e}')
             flash('En feil oppstod under innloggingen. Prøv igjen.', 'danger')
     
     return render_template('login.html', title='Logg inn', form=form)

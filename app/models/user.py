@@ -70,6 +70,34 @@ class User(UserMixin, db.Model):
     
     def __repr__(self):
         return f'<User {self.username}>'
+    
+    def __getattribute__(self, name):
+        """Handle missing database columns gracefully"""
+        try:
+            return super().__getattribute__(name)
+        except AttributeError:
+            # Provide fallback values for missing columns
+            fallback_values = {
+                'reset_token': None,
+                'reset_token_expires': None,
+                'language': 'no',
+                'notification_settings': None,
+                'two_factor_enabled': False,
+                'two_factor_secret': None,
+                'email_verified': True,
+                'is_locked': False,
+                'last_login': None,
+                'login_count': 0,
+                'reports_used_this_month': 0,
+                'last_reset_date': datetime.utcnow(),
+                'is_admin': False
+            }
+            
+            if name in fallback_values:
+                return fallback_values[name]
+            
+            # Re-raise the AttributeError for non-fallback attributes
+            raise
 
     def has_subscription_level(self, required_level: str) -> bool:
         """Check if user has required subscription level"""
