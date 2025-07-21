@@ -104,7 +104,7 @@ def index():
         if current_user.is_authenticated:
             user_subscription = getattr(current_user, 'subscription_type', None)
         
-        return render_template('pricing.html',
+        return render_template('pricing/pricing.html',
                              plans=plans,
                              user_subscription=user_subscription,
                              title='Priser og Abonnementer')

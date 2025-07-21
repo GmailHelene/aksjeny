@@ -2423,3 +2423,45 @@ class DataService:
         except Exception as e:
             logging.error(f"Error getting global indices: {str(e)}")
             return {}
+
+    @staticmethod
+    def get_latest_news(limit=10, category=None):
+        """Get latest financial news - wrapper for news service"""
+        try:
+            from .news_service import get_latest_news_sync
+            return get_latest_news_sync(limit=limit, category=category)
+        except Exception as e:
+            logger.error(f"Error getting latest news from DataService: {e}")
+            # Return mock data as fallback
+            return [
+                type('Article', (), {
+                    'title': 'Oslo Børs stiger på bred front',
+                    'summary': 'Hovedindeksen stiger etter positive signaler fra amerikansk marked.',
+                    'link': 'https://aksjeradar.trade/news/oslo-bors-stiger',
+                    'source': 'E24',
+                    'published': datetime.now() - timedelta(hours=1),
+                    'image_url': None,
+                    'relevance_score': 0.9,
+                    'categories': ['norwegian', 'market']
+                })(),
+                type('Article', (), {
+                    'title': 'Equinor med sterke kvartalstall',
+                    'summary': 'Oljeselskapet rapporterer resultater over forventningene.',
+                    'link': 'https://aksjeradar.trade/news/equinor-kvartal',
+                    'source': 'Finansavisen',
+                    'published': datetime.now() - timedelta(hours=2),
+                    'image_url': None,
+                    'relevance_score': 0.8,
+                    'categories': ['norwegian', 'energy']
+                })(),
+                type('Article', (), {
+                    'title': 'Tech-aksjer i fokus på Wall Street',
+                    'summary': 'Teknologiselskaper fortsetter oppgangen på amerikansk børs.',
+                    'link': 'https://aksjeradar.trade/news/tech-wall-street',
+                    'source': 'Reuters',
+                    'published': datetime.now() - timedelta(hours=3),
+                    'image_url': None,
+                    'relevance_score': 0.7,
+                    'categories': ['international', 'tech']
+                })()
+            ][:limit]

@@ -41,34 +41,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if stocks %}
+                                                {% if stocks %}
                             {% for ticker, crypto in stocks.items() %}
                             <tr class="text-dark">
                                 <td><strong>{{ ticker }}</strong></td>
                                 <td>{{ crypto['name'] }}</td>
-                                <td>${{ "{:,.2f}".format(crypto['last_price']) }}</td>
+                                <td>${{ "{:,.2f}".format(crypto['price']) }}</td>
                                 <td class="{% if crypto['change'] > 0 %}text-success{% elif crypto['change'] < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                    ${{ "{:+,.2f}".format(crypto['change']) }}
+                                    {% if crypto['change'] > 0 %}+{% endif %}{{ crypto['change'] }}
                                 </td>
-                                <td class="{% if crypto['change_percent'] > 0 %}text-success{% elif crypto['change_percent'] < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                    {{ "{:+.2f}".format(crypto['change_percent']) }}%
+                                <td class="{% if crypto.get('change_percent', 0) > 0 %}text-success{% elif crypto.get('change_percent', 0) < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    {% if crypto.get('change_percent', 0) > 0 %}+{% endif %}{{ "{:.2f}".format(crypto.get('change_percent', 0)) }}%
                                 </td>
+                                <td>{{ crypto.get('volume', 'N/A') }}</td>
                                 <td>
-                                    {% if crypto['volume'] >= 1000000000 %}
-                                        ${{ "{:.1f}".format(crypto['volume'] / 1000000000) }}B
-                                    {% elif crypto['volume'] >= 1000000 %}
-                                        ${{ "{:.1f}".format(crypto['volume'] / 1000000) }}M
+                                    {% if crypto.get('change_percent', 0) > 2 %}
+                                        <span class="badge bg-success">KJØP</span>
+                                    {% elif crypto.get('change_percent', 0) < -2 %}
+                                        <span class="badge bg-danger">SELG</span>
                                     {% else %}
-                                        ${{ "{:,.0f}".format(crypto['volume']) }}
+                                        <span class="badge bg-warning">HOLD</span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <span class="badge {% if crypto['signal'] == 'BUY' %}bg-success{% elif crypto['signal'] == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
-                                        {{ crypto['signal'] }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-graph-up"></i> Detaljer
                                     </a>
                                 </td>
@@ -76,16 +72,16 @@
                             {% endfor %}
                         {% else %}
                             <!-- Static fallback data -->
-                            <tr class="text-dark"><td>BTC-USD</td><td>Bitcoin</td><td>65,432.10</td><td>+1200</td><td class="text-success">+1.87%</td><td>10000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='BTC-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>ETH-USD</td><td>Ethereum</td><td>3,456.78</td><td>+56.78</td><td class="text-success">+1.67%</td><td>8000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='ETH-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>XRP-USD</td><td>Ripple</td><td>0.5432</td><td>-0.012</td><td class="text-danger">-2.16%</td><td>5000</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='XRP-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>LTC-USD</td><td>Litecoin</td><td>78.12</td><td>+1.23</td><td class="text-success">+1.60%</td><td>2000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='LTC-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>ADA-USD</td><td>Cardano</td><td>0.4321</td><td>+0.008</td><td class="text-success">+1.89%</td><td>3500</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='ADA-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>SOL-USD</td><td>Solana</td><td>145.67</td><td>+2.34</td><td class="text-success">+1.63%</td><td>1800</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='SOL-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>BNB-USD</td><td>Binance Coin</td><td>590.12</td><td>-4.56</td><td class="text-danger">-0.77%</td><td>2200</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', ticker='BNB-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>DOT-USD</td><td>Polkadot</td><td>6.78</td><td>+0.12</td><td class="text-success">+1.80%</td><td>900</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='DOT-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>AVAX-USD</td><td>Avalanche</td><td>28.45</td><td>-0.34</td><td class="text-danger">-1.18%</td><td>700</td><td><span class="badge bg-danger">SELL</span></td><td><a href="{{ url_for('stocks.details', ticker='AVAX-USD') }}">Detaljer</a></td></tr>
-                            <tr class="text-dark"><td>LINK-USD</td><td>Chainlink</td><td>14.23</td><td>+0.21</td><td class="text-success">+1.50%</td><td>600</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', ticker='LINK-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>BTC-USD</td><td>Bitcoin</td><td>65,432.10</td><td>+1200</td><td class="text-success">+1.87%</td><td>10000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='BTC-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>ETH-USD</td><td>Ethereum</td><td>3,456.78</td><td>+56.78</td><td class="text-success">+1.67%</td><td>8000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='ETH-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>XRP-USD</td><td>Ripple</td><td>0.5432</td><td>-0.012</td><td class="text-danger">-2.16%</td><td>5000</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', symbol='XRP-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>LTC-USD</td><td>Litecoin</td><td>78.12</td><td>+1.23</td><td class="text-success">+1.60%</td><td>2000</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='LTC-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>ADA-USD</td><td>Cardano</td><td>0.4321</td><td>+0.008</td><td class="text-success">+1.89%</td><td>3500</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', symbol='ADA-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>SOL-USD</td><td>Solana</td><td>145.67</td><td>+2.34</td><td class="text-success">+1.63%</td><td>1800</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='SOL-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>BNB-USD</td><td>Binance Coin</td><td>590.12</td><td>-4.56</td><td class="text-danger">-0.77%</td><td>2200</td><td><span class="badge bg-warning">HOLD</span></td><td><a href="{{ url_for('stocks.details', symbol='BNB-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>DOT-USD</td><td>Polkadot</td><td>6.78</td><td>+0.12</td><td class="text-success">+1.80%</td><td>900</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='DOT-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>AVAX-USD</td><td>Avalanche</td><td>28.45</td><td>-0.34</td><td class="text-danger">-1.18%</td><td>700</td><td><span class="badge bg-danger">SELL</span></td><td><a href="{{ url_for('stocks.details', symbol='AVAX-USD') }}">Detaljer</a></td></tr>
+                            <tr class="text-dark"><td>LINK-USD</td><td>Chainlink</td><td>14.23</td><td>+0.21</td><td class="text-success">+1.50%</td><td>600</td><td><span class="badge bg-success">BUY</span></td><td><a href="{{ url_for('stocks.details', symbol='LINK-USD') }}">Detaljer</a></td></tr>
                         {% endif %}
                     </tbody>
                 </table>

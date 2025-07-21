@@ -18,6 +18,47 @@
     <meta name="theme-color" content="#1a1a2e">
     
     <style>
+    /* Enhanced Navigation Styling */
+    .navbar-nav .dropdown-menu {
+        border: none;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        padding: 0.5rem 0;
+        min-width: 280px;
+    }
+    
+    .navbar-nav .dropdown-header {
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.5rem 1rem 0.25rem;
+    }
+    
+    .navbar-nav .dropdown-item {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+    
+    .navbar-nav .dropdown-item:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transform: translateX(5px);
+        color: #0d6efd;
+    }
+    
+    .navbar-nav .dropdown-item i {
+        width: 16px;
+        text-align: center;
+        opacity: 0.7;
+    }
+    
+    .navbar-nav .dropdown-divider {
+        margin: 0.5rem 0;
+        opacity: 0.1;
+    }
+
     /* Fix mobile menu padding for logged-in users */
     @media (max-width: 768px) {
         .navbar-nav {
@@ -37,11 +78,36 @@
         .navbar-nav .dropdown-menu {
             padding: 0.5rem 0 !important;
             margin: 0 !important;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            background: #f8f9fa;
+            min-width: auto;
+            width: 100%;
         }
         
         .navbar-nav .dropdown-item {
-            padding: 0.5rem 1rem !important;
+            padding: 0.5rem 1.5rem !important;
             margin: 0 !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .navbar-nav .dropdown-item:hover {
+            background: #e9ecef;
+            transform: none;
+        }
+        
+        .navbar-nav .dropdown-header {
+            padding: 0.75rem 1.5rem 0.25rem !important;
+            background: #ffffff;
+            margin: 0.25rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .navbar-nav .dropdown-divider {
+            margin: 0;
+            border-color: rgba(0,0,0,0.1);
         }
     }
 
@@ -78,32 +144,211 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('stocks.index') }}">Aksjer</a>
-                    </li>
+                    <!-- Aksjer Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('stocks.index') }}" id="stocksDropdown" role="button" data-bs-toggle="dropdown">
+                            Aksjer
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.index') }}">
+                                <i class="bi bi-house me-2"></i>Aksjer hjem
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Markeder</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.list_oslo') }}">
+                                <i class="bi bi-flag me-2"></i>Oslo Børs
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.list_stocks', category='global') }}">
+                                <i class="bi bi-globe me-2"></i>Globale aksjer
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.list_crypto') }}">
+                                <i class="bi bi-currency-bitcoin me-2"></i>Kryptovaluta
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.list_currency') }}">
+                                <i class="bi bi-currency-exchange me-2"></i>Valutakurser
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Verktøy</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.search') }}">
+                                <i class="bi bi-search me-2"></i>Søk aksjer
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.compare') }}">
+                                <i class="bi bi-arrows-angle-expand me-2"></i>Sammenlign
+                            </a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{{ url_for('stocks.prices') }}">
+                                <i class="bi bi-graph-up me-2"></i>Kurslister
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Min watchlist</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}">
+                                <i class="bi bi-heart me-2"></i>Favoritter
+                            </a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    <!-- Analyser Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('analysis.index') }}" id="analysisDropdown" role="button" data-bs-toggle="dropdown">
                             Analyser
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}">Alle analyser</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.technical') }}">Teknisk analyse</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}">Markedsoversikt</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}">Warren Buffett</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}">Benjamin Graham</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.sentiment_view') }}">Sentiment analyse</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}">
+                                <i class="bi bi-house me-2"></i>Alle analyser
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Teknisk analyse</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.technical') }}">
+                                <i class="bi bi-graph-up me-2"></i>Teknisk analyse
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.screener_view') }}">
+                                <i class="bi bi-funnel me-2"></i>Aksje screener
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis_view') }}">
+                                <i class="bi bi-graph-down me-2"></i>Short analyse
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.prediction') }}">
+                                <i class="bi bi-cpu me-2"></i>Prisprediksjon
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Fundamental analyse</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}">
+                                <i class="bi bi-person-badge me-2"></i>Warren Buffett
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}">
+                                <i class="bi bi-book me-2"></i>Benjamin Graham
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Marked & Sentiment</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}">
+                                <i class="bi bi-bar-chart me-2"></i>Markedsoversikt
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.sentiment_view') }}">
+                                <i class="bi bi-emoji-smile me-2"></i>Sentiment analyse
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.currency_overview') }}">
+                                <i class="bi bi-currency-dollar me-2"></i>Valutaoversikt
+                            </a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">AI & Prediksjoner</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.prediction') }}">
+                                <i class="bi bi-cpu me-2"></i>AI Prediksjoner
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.ai') }}">
+                                <i class="bi bi-robot me-2"></i>AI Assistant
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.recommendation') }}">
+                                <i class="bi bi-star me-2"></i>Anbefalinger
+                            </a></li>
+                            {% endif %}
                         </ul>
                     </li>
+
+                    <!-- Portefølje Dropdown (for logged in users) -->
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('portfolio.index') }}">Portefølje</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('portfolio.index') }}" id="portfolioDropdown" role="button" data-bs-toggle="dropdown">
+                            Portefølje
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.index') }}">
+                                <i class="bi bi-briefcase me-2"></i>Min portefølje
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.overview') }}">
+                                <i class="bi bi-list-task me-2"></i>Portefølje oversikt
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}">
+                                <i class="bi bi-eye me-2"></i>Watchlist
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Handlinger</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.create_portfolio') }}">
+                                <i class="bi bi-plus-circle me-2"></i>Ny portefølje
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Analyse & Tips</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.stock_tips') }}">
+                                <i class="bi bi-lightbulb me-2"></i>Aksjetips
+                            </a></li>
+                        </ul>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('news_bp.index') }}">Nyheter</a>
+
+                    <!-- Nyheter Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('news_bp.index') }}" id="newsDropdown" role="button" data-bs-toggle="dropdown">
+                            Nyheter
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.index') }}">
+                                <i class="bi bi-newspaper me-2"></i>Alle nyheter
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Kategorier</h6></li>
+                                                        <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='aksjer') }}">
+                                <i class="bi bi-graph-up me-2"></i>Aksjenyheter
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='økonomi') }}">
+                                <i class="bi bi-currency-dollar me-2"></i>Økonomi
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='marked') }}">
+                                <i class="bi bi-bar-chart me-2"></i>Markedsnyheter
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='crypto') }}">
+                                <i class="bi bi-currency-bitcoin me-2"></i>Krypto nyheter
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='teknologi') }}">
+                                <i class="bi bi-cpu me-2"></i>Teknologi
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='energi') }}">
+                                <i class="bi bi-lightning me-2"></i>Energi
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Spesial</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.search') }}">
+                                <i class="bi bi-search me-2"></i>Søk nyheter
+                            </a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.widget') }}">
+                                <i class="bi bi-widget me-2"></i>Nyhets-widget
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.embed') }}">
+                                <i class="bi bi-code me-2"></i>Integrer nyheter
+                            </a></li>
+                            {% endif %}
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('pricing.index') }}">Priser</a>
+
+                    <!-- Priser Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('pricing.index') }}" id="pricingDropdown" role="button" data-bs-toggle="dropdown">
+                            Priser
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
+                                <i class="bi bi-tags me-2"></i>Alle planer
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Abonnementer</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
+                                <i class="bi bi-credit-card me-2"></i>Månedlig (199 kr)
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
+                                <i class="bi bi-star me-2"></i>Premium (399 kr)
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
+                                <i class="bi bi-diamond me-2"></i>Årlig (3499 kr)
+                            </a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Min konto</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.subscription') }}">
+                                <i class="bi bi-person-circle me-2"></i>Mitt abonnement
+                            </a></li>
+                            {% endif %}
+                        </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -113,10 +358,19 @@
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">Profil</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.register') }}">Konto</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">
+                                <i class="bi bi-person me-2"></i>Min profil
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.index') }}">
+                                <i class="bi bi-briefcase me-2"></i>Min portefølje
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pricing.subscription') }}">
+                                <i class="bi bi-credit-card me-2"></i>Mitt abonnement
+                            </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.logout') }}">Logg ut</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.logout') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logg ut
+                            </a></li>
                         </ul>
                     </li>
                     {% else %}

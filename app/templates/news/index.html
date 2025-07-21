@@ -28,13 +28,6 @@
 
     <!-- News articles -->
     <div class="row" id="newsContainer">
-        <!-- Debug info -->
-        <div class="col-12 mb-3">
-            <div class="alert alert-info">
-                <small>Debug: news_articles length = {{ news_articles|length }}</small>
-            </div>
-        </div>
-        
         {% if news_articles %}
             {% for article in news_articles %}
             <div class="col-md-6 mb-4">

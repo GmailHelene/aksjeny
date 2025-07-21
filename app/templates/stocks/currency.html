@@ -23,7 +23,7 @@
             </div>
             {% endif %}
 
-            {% if currencies %}
+            {% if stocks %}
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -49,56 +49,42 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for symbol, data in currencies.items() %}
+                                        {% for symbol, data in stocks.items() %}
                                         <tr>
                                             <td>
-                                                <strong>{{ data.name if data.name else symbol }}</strong>
+                                                <strong>{{ data.get('name', symbol) }}</strong>
                                                 <br>
                                                 <small class="text-muted">{{ symbol }}</small>
                                             </td>
                                             <td>
-                                                <span class="fw-bold">{{ "%.4f"|format(data.last_price) }}</span>
+                                                <span class="fw-bold">{{ "%.4f"|format(data.get('price', 0)) }}</span>
                                             </td>
                                             <td>
-                                                <span class="{% if data.change > 0 %}text-success{% elif data.change < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                                    {{ "%.4f"|format(data.change) }}
+                                                <span class="{% if data.get('change', 0) > 0 %}text-success{% elif data.get('change', 0) < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                                    {{ "%.4f"|format(data.get('change', 0)) }}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="{% if data.change_percent > 0 %}text-success{% elif data.change_percent < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                                    {{ "%.2f"|format(data.change_percent) }}%
+                                                <span class="{% if data.get('change_percent', 0) > 0 %}text-success{% elif data.get('change_percent', 0) < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                                    {{ "%.2f"|format(data.get('change_percent', 0)) }}%
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">N/A</small>
                                             </td>
                                             <td>
                                                 <small class="text-muted">
-                                                    {% if data.volume %}
-                                                        {% if data.volume >= 1000000000 %}
-                                                            {{ "%.1f"|format(data.volume / 1000000000) }}B
-                                                        {% elif data.volume >= 1000000 %}
-                                                            {{ "%.1f"|format(data.volume / 1000000) }}M
-                                                        {% elif data.volume >= 1000 %}
-                                                            {{ "%.1f"|format(data.volume / 1000) }}K
-                                                        {% else %}
-                                                            {{ data.volume }}
-                                                        {% endif %}
-                                                    {% else %}
-                                                        N/A
-                                                    {% endif %}
+                                                    {{ "%.4f"|format(data.get('high', 0)) if data.get('high') else 'N/A' }} / 
+                                                    {{ "%.4f"|format(data.get('low', 0)) if data.get('low') else 'N/A' }}
                                                 </small>
                                             </td>
                                             <td>
-                                                <small class="text-muted">
-                                                    {{ "%.4f"|format(data.high) if data.high else 'N/A' }} / 
-                                                    {{ "%.4f"|format(data.low) if data.low else 'N/A' }}
-                                                </small>
-                                            </td>
-                                            <td>
-                                                {% if data.signal %}
-                                                <span class="badge {% if data.signal == 'BUY' %}bg-success{% elif data.signal == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
-                                                    {{ data.signal }}
-                                                </span>
+                                                {% if data.get('change_percent', 0) > 0.1 %}
+                                                <span class="badge bg-success">STYRKET</span>
+                                                {% elif data.get('change_percent', 0) < -0.1 %}
+                                                <span class="badge bg-danger">SVEKKET</span>
                                                 {% else %}
-                                                <span class="badge bg-secondary">HOLD</span>
+                                                <span class="badge bg-secondary">STABIL</span>
                                                 {% endif %}
                                             </td>
                                             <td>

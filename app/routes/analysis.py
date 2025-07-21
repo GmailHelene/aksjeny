@@ -65,7 +65,9 @@ def technical():
                                  show_analysis=True)
         else:
             # Show technical analysis overview with popular stocks
-            popular_stocks = DataService.get_popular_stocks() or []
+            # Get popular stocks from Oslo Børs data
+            oslo_stocks = DataService.get_oslo_bors_overview() or {}
+            popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
             market_overview = {
                 'oslo_trending': DataService.get_trending_oslo_stocks() or [],
                 'global_trending': DataService.get_trending_global_stocks() or [],
@@ -162,7 +164,9 @@ def warren_buffett():
     
     # GET request or fallback
     try:
-        popular_stocks = DataService.get_popular_stocks() or []
+        # Get popular stocks from Oslo Børs data
+        oslo_stocks = DataService.get_oslo_bors_overview() or {}
+        popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
         return render_template('analysis/warren_buffett.html',
                              popular_stocks=popular_stocks,
                              show_results=False)
@@ -194,7 +198,9 @@ def benjamin_graham():
     
     # GET request
     try:
-        popular_stocks = DataService.get_popular_stocks() or []
+        # Get popular stocks from Oslo Børs data
+        oslo_stocks = DataService.get_oslo_bors_overview() or {}
+        popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
         return render_template('analysis/benjamin_graham.html',
                              popular_stocks=popular_stocks,
                              show_results=False)
@@ -747,8 +753,9 @@ def sentiment():
         else:
             sentiment_data = AnalysisService.get_market_sentiment_overview()
         
-        # Get popular stocks for dropdown
-        popular_stocks = DataService.get_popular_stocks() or []
+        # Get popular stocks for dropdown from Oslo Børs data
+        oslo_stocks = DataService.get_oslo_bors_overview() or {}
+        popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
         
         return render_template('analysis/sentiment.html',
                              sentiment_data=sentiment_data,

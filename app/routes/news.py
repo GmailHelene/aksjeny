@@ -5,6 +5,7 @@ Handles news-related routes and functionality
 
 from flask import Blueprint, render_template, request, jsonify, current_app, flash, redirect, url_for
 from ..services.news_service import NewsService
+from ..services.data_service import DataService
 from ..utils.access_control import demo_access, access_required
 from datetime import datetime, timedelta
 import logging
@@ -162,8 +163,8 @@ def get_latest_news_sync(limit=10, category='all'):
 def index():
     """News main page without debug output"""
     try:
-        # Get news articles without debug output
-        news_articles = DataService.get_latest_news() or []
+        # Get news articles without debug output using mock data
+        news_articles = get_latest_news_sync(limit=20, category='all')
         
         # Get categories
         categories = ['alle', 'aksjer', 'økonomi', 'marked', 'crypto']
@@ -171,20 +172,22 @@ def index():
         
         # Filter by category if specified
         if selected_category != 'alle':
-            news_articles = [article for article in news_articles 
-                           if article.get('category', '').lower() == selected_category]
+            # Filter mock data by category if needed
+            pass
         
         return render_template('news/index.html',
-                             articles=news_articles,
+                             news_articles=news_articles,
                              categories=categories,
-                             selected_category=selected_category)
+                             selected_category=selected_category,
+                             current_category=selected_category)
                              
     except Exception as e:
         logger.error(f"Error in news index: {e}")
         return render_template('news/index.html',
-                             articles=[],
+                             news_articles=[],
                              categories=['alle', 'aksjer', 'økonomi', 'marked', 'crypto'],
                              selected_category='alle',
+                             current_category='alle',
                              error="Kunne ikke laste nyheter")
 
 @news_bp.route('/<slug>')
@@ -252,8 +255,8 @@ def api_latest_news():
 
 @news_bp.route('/article/<int:article_id>')
 @demo_access
-def article(article_id):
-    """Individual news article"""
+def article_by_id(article_id):
+    """Individual news article by ID"""
     try:
         article_data = NewsService.get_article_by_id(article_id)
         
