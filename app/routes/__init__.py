@@ -1,31 +1,29 @@
-from flask import Flask, render_template, request, jsonify
-from ..config import config
-from ..extensions import db, login_manager, mail
-from flask_wtf.csrf import CSRFProtect, CSRFError
-import os
-import time
-from dotenv import load_dotenv
-from datetime import datetime, timedelta
-from flask_migrate import Migrate
-import logging
-import psutil
+"""
+Clean route imports - remove duplicates and organize properly
+"""
+from .main import main
+from .stocks import stocks
+from .analysis import analysis
+from .portfolio import portfolio
+from .news import news_bp as news
+from .pricing import pricing
 
-# Load environment variables
-load_dotenv()
+# Remove these if they exist as separate files but are duplicates:
+# from .dashboard import dashboard  # Consolidate into main
+# from .market_intel import market_intel  # Consolidate into analysis
+# from .external_data import external_data  # Consolidate into analysis
 
-logger = logging.getLogger(__name__)
-
-try:
-    logger.info("✅ psutil module is available.")
-except ImportError:
-    logger.error("❌ psutil module is missing.")
-
-try:
-    import redis
-    logger.info("✅ Redis module is available.")
-except ImportError:
-    logger.error("❌ Redis module is missing.")
-
+def register_blueprints(app):
+    """Register all blueprints with the app"""
+    app.register_blueprint(main)
+    app.register_blueprint(stocks, url_prefix='/stocks')
+    app.register_blueprint(analysis, url_prefix='/analysis')
+    app.register_blueprint(portfolio, url_prefix='/portfolio')
+    app.register_blueprint(news, url_prefix='/news')
+    app.register_blueprint(pricing, url_prefix='/pricing')
+    
+    # Add insider trading to analysis blueprint instead of separate
+    # app.register_blueprint(insider_trading, url_prefix='/insider-trading')
 def create_app(config_name='default'):
     """Production-ready app factory with Railway compatibility"""
     app = Flask(__name__)
@@ -137,7 +135,7 @@ def register_blueprints(app):
         ('.routes.api', 'api', None),
         ('.routes.blog', 'blog', '/blog'),
         ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
-        ('.routes.pricing', 'pricing_bp', '/pricing'),
+        ('.routes.pricing', 'pricing', '/pricing'),
         ('.routes.notifications', 'notifications_bp', '/notifications'),
         ('.routes.admin', 'admin', None),
         ('.routes.features', 'features', None),

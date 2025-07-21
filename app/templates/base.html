@@ -1,499 +1,176 @@
-{% include 'cookie_banner.html' %}
 <!DOCTYPE html>
-<html lang="{{ current_language or 'no' }}">
+<html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() if csrf_token else '' }}">
-    
-    <!-- Updated: Fixed all navigation route issues for production deployment -->
-    <!-- Prevent white line/gap on mobile -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-        }
-        /* iOS Safari specific fixes */
-        @supports (-webkit-touch-callout: none) {
-            body {
-                padding-top: constant(safe-area-inset-top);
-                padding-top: env(safe-area-inset-top);
-            }
-        }
-        
-        /* Mobile navigation improvements */
-        @media (max-width: 991.98px) {
-            .navbar-nav .dropdown-menu {
-                border: none;
-                box-shadow: none;
-                background-color: #495057;
-                margin-left: 1rem;
-            }
-            .navbar-nav .dropdown-item {
-                color: #fff;
-                padding: 0.5rem 1rem;
-            }
-            .navbar-nav .dropdown-item:hover,
-            .navbar-nav .dropdown-item:focus {
-                background-color: #6c757d;
-                color: #fff;
-            }
-            .navbar-nav .dropdown-divider {
-                border-color: #6c757d;
-                margin: 0.25rem 1rem;
-            }
-            .navbar-toggler {
-                border: 1px solid rgba(255,255,255,.1);
-                padding: 0.25rem 0.5rem;
-            }
-            .navbar-toggler:focus {
-                box-shadow: 0 0 0 0.2rem rgba(255,255,255,.25);
-            }
-        }
-    </style>
-    
-    <!-- SEO Meta Tags - Enhanced for Google Norge -->
-    <title>{% block title %}Aksjeradar - Din aksje- og finansassistent{% endblock %}</title>
-    <meta name="description" content="{% block description %}Få AI-drevet aksjeanalyse, teknisk analyse, porteføljeverktøy og markedsinsikt. Følg norske og internasjonale aksjer med sanntidsdata og ekspertanalyse.{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}aksjer, aksjekurser, børs, oslo børs, teknisk analyse, AI analyse, portefølje, investering, aksjetips, markedsanalyse, sanntidsdata, Norge, norske aksjer, finans Norge{% endblock %}">
-    <meta name="author" content="Aksjeradar">
-    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
-    <meta name="language" content="Norwegian">
-    <meta name="geo.region" content="NO">
-    <meta name="geo.country" content="Norway">
-    <meta name="geo.placename" content="Norge">
-    <meta name="ICBM" content="60.472024, 8.468946">
-    <meta name="DC.title" content="Aksjeradar - Norges beste aksjeanalyse">
-    <meta name="DC.creator" content="Aksjeradar">
-    <meta name="DC.subject" content="Aksjer, børs, finans, investering, Norge">
-    <meta name="DC.description" content="AI-drevet aksjeanalyse for norske og internasjonale markeder">
-    <meta name="DC.language" content="no">
-    <meta name="DC.coverage" content="Norge">
-    <meta name="distribution" content="global">
-    <meta name="rating" content="general">
-    <meta name="revisit-after" content="1 days">
-    <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
-    
-    <!-- Google Norge specific -->
-    <meta name="google" content="notranslate">
-    <meta name="google-site-verification" content="">
-    <meta name="msvalidate.01" content="">
-    <meta name="yandex-verification" content="">
-    
-    <!-- Norwegian Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FinancialService",
-        "name": "Aksjeradar",
-        "alternateName": "Aksjeradar Norge",
-        "description": "Norges fremste plattform for AI-drevet aksjeanalyse og markedsinsikt",
-        "url": "{{ request.url_root }}",
-        "logo": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
-        "image": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
-        "sameAs": [],
-        "areaServed": {
-            "@type": "Country",
-            "name": "Norge"
-        },
-        "serviceType": "Finansielle tjenester",
-        "provider": {
-            "@type": "Organization",
-            "name": "Aksjeradar",
-            "url": "{{ request.url_root }}"
-        },
-        "audience": {
-            "@type": "Audience",
-            "geographicArea": {
-                "@type": "Country",
-                "name": "Norge"
-            }
-        },
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "Kundeservice",
-            "email": "kontakt@aksjeradar.trade",
-            "availableLanguage": ["Norwegian", "English"]
-        },
-        "keywords": "aksjer, børs, Oslo Børs, teknisk analyse, AI analyse, portefølje, investering, Norge",
-        "inLanguage": "no"
-    }
-    </script>
-    
-    <!-- Norwegian Business Schema -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Aksjeradar",
-        "url": "{{ request.url_root }}",
-        "description": "AI-drevet aksjeanalyse for norske investorer",
-        "inLanguage": "no",
-        "audience": {
-            "@type": "Audience",
-            "geographicArea": {
-                "@type": "Country",
-                "name": "Norge"
-            }
-        },
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "{{ request.url_root }}search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
-    
-    <!-- Enhanced Norwegian Business Schema -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Aksjeradar",
-        "url": "{{ request.url_root }}",
-        "logo": "{{ url_for('static', filename='images/logo-512.png', _external=True) }}",
-        "description": "Norges fremste plattform for AI-drevet aksjeanalyse og finansdata",
-        "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "NO"
-        },
-        "foundingDate": "2025",
-        "knowsAbout": [
-            "Aksjeanalyse",
-            "Oslo Børs", 
-            "Teknisk analyse",
-            "Porteføljeoptimalisering",
-            "Finansdata",
-            "Investering Norge"
-        ],
-        "audience": {
-            "@type": "Audience",
-            "geographicArea": {
-                "@type": "Country",
-                "name": "Norge"
-            }
-        }
-    }
-    </script>
-    
-    <!-- BreadcrumbList Schema -->
-    {% if request.endpoint != 'main.index' %}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Hjem",
-                "item": "{{ url_for('main.index', _external=True) }}"
-            }
-            {% if request.endpoint == 'stocks.details' %}
-            ,{
-                "@type": "ListItem", 
-                "position": 2,
-                "name": "Aksjer",
-                "item": "{{ url_for('main.index', _external=True) }}#stocks"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "{{ ticker if ticker else 'Aksjedetaljer' }}",
-                "item": "{{ request.url }}"
-            }
-            {% endif %}
-        ]
-    }
-    </script>
-    {% endif %}
-    
-    <!-- Performance hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="//query1.finance.yahoo.com">
-    <link rel="dns-prefetch" href="//finnhub.io">
-    
-    <!-- Performance and SEO optimizations -->
-    <meta name="theme-color" content="#0d6efd" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0d6efd" media="(prefers-color-scheme: dark)">
-    <meta name="color-scheme" content="light dark">
-    
-    <!-- Open Graph / Facebook - Norwegian focused -->
-    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/logo-512.png', _external=True) }}{% endblock %}">
-    <meta property="og:site_name" content="Aksjeradar">
-    <meta property="og:locale" content="no_NO">
-    <meta property="og:locale:alternate" content="en_US">
-    <meta property="og:country-name" content="Norge">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
-    <meta property="twitter:description" content="{% block twitter_description %}{{ self.description() }}{% endblock %}">
-    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/logo-512.png', _external=True) }}{% endblock %}">
-    
-    <!-- Enhanced PWA Meta Tags -->
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}?v={{ g.current_time }}">
-    <meta name="theme-color" content="#0d6efd">
-    <meta name="msapplication-TileColor" content="#0d6efd">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Aksjeradar">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Aksjeradar">
-    
-    <!-- Enhanced PWA Support -->
-    <meta name="apple-touch-fullscreen" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Icons for all platforms -->
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/logo-192.png') }}">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='images/logo-512.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo-192.png') }}">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='images/logo-192.png') }}">
-    <link rel="apple-touch-icon" sizes="512x512" href="{{ url_for('static', filename='images/logo-512.png') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='images/logo-192.png') }}" color="#0d6efd">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo-192.png') }}">
-    
-    <!-- Windows specific -->
-    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='images/logo-192.png') }}">
-    <meta name="msapplication-config" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/loading-states.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
-    <!-- Page specific styles -->
-    {% block styles %}{% endblock %}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <style>
+    /* Fix mobile menu padding for logged-in users */
+    @media (max-width: 768px) {
+        .navbar-nav {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .navbar-nav .nav-item {
+            padding: 0.25rem 0 !important;
+            margin: 0 !important;
+        }
+        
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .navbar-nav .dropdown-menu {
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
+        }
+        
+        .navbar-nav .dropdown-item {
+            padding: 0.5rem 1rem !important;
+            margin: 0 !important;
+        }
+    }
+
+    /* Fix overlay issues on analysis pages */
+    .analysis-page .navbar-overlay,
+    .market-overview-page .navbar-overlay,
+    .duplicate-nav-overlay {
+        display: none !important;
+    }
+
+    /* Fix pricing banner margin */
+    .pricing-card .badge {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    /* Fix "Mest populær" banner cropping */
+    .pricing-monthly .badge {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <i class="bi bi-graph-up-arrow"></i> Aksjeradar
+                <i class="bi bi-graph-up"></i> Aksjeradar
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index') }}">
-                            <i class="bi bi-house"></i> Hjem
+                        <a class="nav-link" href="{{ url_for('stocks.index') }}">Aksjer</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown">
+                            Analyser
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}">Alle analyser</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.technical') }}">Teknisk analyse</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}">Markedsoversikt</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett') }}">Warren Buffett</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}">Benjamin Graham</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.sentiment_view') }}">Sentiment analyse</a></li>
+                        </ul>
                     </li>
                     {% if current_user.is_authenticated %}
-                        <!-- User Account Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> Min Aksjeradar
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('main.profile') }}"><i class="bi bi-person-circle"></i> Min profil</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('portfolio.overview') }}"><i class="bi bi-briefcase"></i> Portefølje</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('portfolio.watchlist') }}"><i class="bi bi-star"></i> Favoritter</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.subscription') }}">
-                                    <i class="bi bi-credit-card"></i> Abonnement
-                                    {% if current_user.subscription_status == 'trial' %}
-                                    <span class="badge bg-warning ms-1">Prøve</span>
-                                    {% elif current_user.subscription_status == 'premium' %}
-                                    <span class="badge bg-success ms-1">Premium</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary ms-1">Gratis</span>
-                                    {% endif %}
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('pricing.pricing') }}"><i class="bi bi-tags"></i> Priser</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Logg ut</a></li>
-                            </ul>
-                        </li>
-                        
-                        <!-- Stocks Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-graph-up"></i> Aksjer
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="stocksDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.index') }}"><i class="bi bi-grid"></i> Oversikt</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_oslo') }}"><i class="bi bi-bar-chart"></i> Oslo Børs</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.global_list') }}"><i class="bi bi-globe"></i> Globale Aksjer</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_crypto') }}"><i class="bi bi-currency-bitcoin"></i> Krypto</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.list_currency') }}"><i class="bi bi-currency-exchange"></i> Valuta</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('stocks.search') }}"><i class="bi bi-search"></i> Søk aksjer</a></li>
-                            </ul>
-                        </li>
-                        <!-- Analysis Dropdown with enhanced submenu -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-graph-up"></i> Analyse
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="analysisDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.index') }}"><i class="bi bi-grid"></i> Analyseoversikt</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.financial_dashboard') }}"><i class="bi bi-speedometer2"></i> Finansiell Dashboard</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><h6 class="dropdown-header">Teknisk Analyse</h6></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.technical') }}"><i class="bi bi-graph-down"></i> Teknisk Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.ai') }}"><i class="bi bi-robot"></i> AI-Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.market_overview') }}"><i class="bi bi-bar-chart"></i> Markedsoversikt</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.currency_overview') }}"><i class="bi bi-currency-exchange"></i> Valutaoversikt</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><h6 class="dropdown-header">Fundamental Analyse</h6></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.warren_buffett_analysis') }}"><i class="bi bi-lightbulb"></i> Warren Buffett</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.benjamin_graham') }}"><i class="bi bi-book"></i> Benjamin Graham</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><h6 class="dropdown-header">Spesialiserad Analyse</h6></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.sentiment') }}"><i class="bi bi-heart"></i> Sentiment</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.screener') }}"><i class="bi bi-funnel"></i> Screener</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}"><i class="bi bi-arrow-down-circle"></i> Short-Analyse</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.insider_trading') }}"><i class="bi bi-eye"></i> Innsidehandel</a></li>
-                            </ul>
-                        </li>
-                        
-                        <!-- Nyheter -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('news_bp.index') }}">
-                                <i class="bi bi-newspaper"></i> Nyheter
-                            </a>
-                        </li>
-                        
-                        {% if current_user.is_pro %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('pro_tools.index') }}"><i class="bi bi-tools"></i> Pro-verktøy</a></li>
-                        {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio.index') }}">Portefølje</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('news_bp.index') }}">Nyheter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('pricing.index') }}">Priser</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.settings') }}">Innstillinger</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.logout') }}">Logg ut</a></li>
+                        </ul>
+                    </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.demo') }}"><i class="bi bi-eye"></i> Demo</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('pricing.pricing') }}"><i class="bi bi-tag"></i> Priser</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.login') }}"><i class="bi bi-box-arrow-in-right"></i> Logg inn</a></li>
-                        <li class="nav-item"><a class="nav-link btn btn-primary text-white ms-2" href="{{ url_for('main.register') }}"><i class="bi bi-person-plus"></i> Registrer</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.login') }}">Logg inn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-2" href="{{ url_for('main.register') }}">Registrer</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Flash messages -->
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="container mt-3">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     {% endwith %}
 
-    <!-- Main content -->
-    <main>
+    <!-- Main Content -->
+    <main class="py-4">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer with language switcher -->
-    <footer class="footer mt-auto py-3 bg-dark text-white">
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-4">
         <div class="container">
             <div class="row">
-                <div class="col-md-3">
-                    <h5>Språk / Language</h5>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light dropdown-toggle btn-sm" type="button" id="footerLanguageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe"></i>
-                            <span id="footer-current-language">{{ 'NO' if (current_language or 'no') == 'no' else 'EN' }}</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="#" onclick="switchLanguage('no'); return false;">
-                                <i class="bi bi-flag"></i> Norsk
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">
-                                <i class="bi bi-flag-fill"></i> English
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
                 <div class="col-md-6">
-                    <h5>Aksjeradar</h5>
-                    <p class="mb-0">Din komplette aksje- og finansassistent</p>
+                    <p>&copy; 2024 Aksjeradar. Alle rettigheter reservert.</p>
                 </div>
-                <div class="col-md-3 text-md-end">
-                    <p class="mb-0">© 2025 Aksjeradar. Alle rettigheter forbeholdt.</p>
-                    <a href="{{ url_for('main.privacy') }}" class="text-white-50">Personvern</a>
-                    <button class="btn btn-outline-light btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#feedbackModal">Gi tilbakemelding</button>
+                <div class="col-md-6 text-end">
+                    <a href="{{ url_for('main.privacy') }}" class="text-white me-3">Personvern</a>
+                    <a href="{{ url_for('main.terms') }}" class="text-white me-3">Vilkår</a>
+                    <a href="{{ url_for('main.contact') }}" class="text-white">Kontakt</a>
                 </div>
             </div>
         </div>
     </footer>
-    <!-- Feedback Modal -->
-    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="feedbackModalLabel">Gi tilbakemelding</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Lukk"></button>
-          </div>
-          <div class="modal-body">
-            <form id="feedbackForm">
-              <div class="mb-3">
-                <label for="feedbackText" class="form-label">Din tilbakemelding</label>
-                <textarea class="form-control" id="feedbackText" rows="4" required minlength="5"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Send</button>
-              <span id="feedbackStatus" class="ms-3"></span>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script>
-    document.getElementById('feedbackForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const text = document.getElementById('feedbackText').value;
-      fetch('/api/feedback', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({feedback: text})
-      })
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById('feedbackStatus').textContent = data.success ? 'Takk for tilbakemeldingen!' : (data.error || 'Noe gikk galt');
-        if (data.success) document.getElementById('feedbackText').value = '';
-        setTimeout(() => document.getElementById('feedbackStatus').textContent = '', 3000);
-      });
-    });
-    </script>
-    <!-- Scripts before closing body tag -->
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}?v={{ config.VERSION }}"></script>
-    
-    <!-- Only include enhanced-realtime.js if it exists in app/static/js -->
-    <script src="{{ url_for('static', filename='js/enhanced-realtime.js') }}?v={{ config.VERSION }}"></script>
-    
-    <!-- Custom Scripts -->
-    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/norwegian-formatter.js') }}"></script>
-    
-    <!-- Page specific scripts -->
-    {% block scripts %}{% endblock %}
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

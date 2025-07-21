@@ -61,6 +61,11 @@ def list_stocks(category='all'):
                                  global_stocks=global_stocks,
                                  title="Alle Aksjer")
         
+        # Ensure stocks_data is not None
+        if stocks_data is None:
+            stocks_data = {}
+            flash(f'Ingen data tilgjengelig for {title}', 'warning')
+        
         return render_template(template,
                              stocks=stocks_data,
                              title=title,
@@ -71,11 +76,30 @@ def list_stocks(category='all'):
         flash('Kunne ikke laste aksjedata. Prøv igjen senere.', 'error')
         return render_template('stocks/list.html', stocks={}, title="Feil")
 
-@stocks.route('/list/oslo')
+@stocks.route('/list/oslo', strict_slashes=False)
 @demo_access
 def list_oslo():
-    """Oslo Børs stocks"""
-    return list_stocks('oslo')
+    """List Oslo Stock Exchange stocks"""
+    try:
+        # Get Oslo stocks from data service
+        stocks = DataService.get_oslo_bors_overview()
+        
+        if not stocks:
+            flash('Kunne ikke laste Oslo Børs aksjer. Prøv igjen senere.', 'warning')
+            stocks = {}  # Changed from [] to {} to match expected format
+            
+        return render_template('stocks/list.html',
+                             stocks=stocks,
+                             market='Oslo Børs',
+                             market_type='oslo')
+    except Exception as e:
+        current_app.logger.error(f"Error loading Oslo stocks: {str(e)}")
+        flash('Kunne ikke laste aksjedata. Prøv igjen senere.', 'error')
+        return render_template('stocks/list.html',
+                             stocks={},  # Changed from [] to {} 
+                             market='Oslo Børs',
+                             market_type='oslo',
+                             error=True)
 
 @stocks.route('/list/global')
 @demo_access
@@ -109,15 +133,30 @@ def details(symbol):
         # Get additional analysis data
         technical_data = AnalysisService.get_technical_analysis(symbol)
         
-        return render_template('stocks/detail.html',
-                             symbol=symbol,
-                             stock_info=stock_info,
-                             technical_data=technical_data)
+        # Try detail.html first, fallback to details.html if it doesn't exist
+        try:
+            return render_template('stocks/detail.html',
+                                 symbol=symbol,
+                                 stock_info=stock_info,
+                                 technical_data=technical_data)
+        except Exception:
+            # Fallback to details.html
+            return render_template('stocks/details.html',
+                                 symbol=symbol,
+                                 stock_info=stock_info,
+                                 technical_data=technical_data)
                              
     except Exception as e:
         logger.error(f"Error in stock details for {symbol}: {e}")
         flash('Kunne ikke laste aksjedetaljer. Prøv igjen senere.', 'error')
-        return redirect(url_for('stocks.index'))
+        # More specific redirect based on referrer
+        referrer = request.referrer
+        if referrer and 'oslo' in referrer:
+            return redirect(url_for('stocks.list_oslo'))
+        elif referrer and 'global' in referrer:
+            return redirect(url_for('stocks.global_list'))
+        else:
+            return redirect(url_for('stocks.index'))
 
 @stocks.route('/search')
 @demo_access
@@ -266,6 +305,10 @@ def prices():
                              
     except Exception as e:
         logger.error(f"Error in prices overview: {e}")
-        flash('Kunne inte laste prisdata.', 'error')
-        return render_template('stocks/prices.html')
+        flash('Kunne ikke laste prisdata.', 'error')
+        return render_template('stocks/prices.html',
+                             oslo_stocks={},
+                             global_stocks={},
+                             crypto_data={},
+                             currency_data={})
 

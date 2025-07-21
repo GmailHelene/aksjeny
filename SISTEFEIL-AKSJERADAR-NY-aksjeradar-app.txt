@@ -1,13 +1,209 @@
-# Remaining issues to address:
-# 1. Benjamin Graham analysis form functionality
-# 2. Warren Buffett analysis page (showing white page)
-# 3. Stock details 500 errors
-# 4. Mobile navigation spacing
-# 5. News loading issues
-# 6. Analysis market-overview page errors
-# 7. Portfolio tips feedback endpoint
-# 8. Currency list page data
-# 9. Database migrations
-# 10. Remaining template and route issues
+# Oppdatert Status på Fiks av Problemer
 
-# TODO: Implement fixes for the above issues as per priority.
+## ✅ Fikset:
+1. Mobilmeny padding
+2. Duplikat "Velg din plan" på forsiden
+3. Profilside 500-feil
+4. Stocks routing problemer - fikset redirect loops
+
+## 🔄 Under arbeid:
+5. Template audit og cleanup (pågår nå)
+   - Identifisere duplikater (detail.html vs details.html)
+   - Fjerne conflicting warren buffett templates
+   - Rydde opp i analysis templates med random tokens
+   - Standardisere template-struktur
+
+## ⏳ Gjenstående problemer:
+6. Portfolio lastingsfeil
+7. Analysis redirect loop
+8. Financial dashboard problemer
+9. Technical analysis hovedside
+10. Market overview styling
+11. Innsidehandel data
+12. Screener funksjoner
+13. Sentiment analyse dropdown
+14. Warren Buffett analyse Method Not Allowed
+15. Benjamin Graham analyse reload problem
+16. Nyhetsseksjon feil
+17. Pricing banner cropping
+
+## Template Cleanup Strategy:
+- IKKE lag nye templates før audit er ferdig
+- Fjern duplikater først
+- Fiks eksisterende templates
+- Standardiser navngivning
+- Sørg for at routes peker til riktige templates
+
+Skal jeg fortsette med template-audit og cleanup først, før jeg lager nye templates?
+
+
+
+-----------------------------------
+
+
+
+(old:)
+Som innlogget bruker: På mobil så fungerer lenkene i hovednavigasjonen, men på pc, så er det bare masse #, så ingen av lenkene utenom News i hovednavigasjonen egentlig er trykkbare/og med riktig urlendepunkt.
+
+
+---
+
+
+Det er en del sider (templates) som enten jeg ikke finner,eller som ikke fungerer enda, som
+f.eks disse:
+templates/analysis: Advanced.html,fundamental.html, ai_form.html, ai_html, analysis_nav.html, buffet_select.html, currency_overview.html, insider_trading.html, recommendation_select.html, recommendation.html, screener.html, sentiment.html, short_select.html,
+short-analysis.html, short.html, technical_html, warren_buffet.html, warren-buffet.html (Det er blant annet flere nesten like navn når det gjelder buffet og Graham templates også, rydd opp i dette samtidig)
+templates/external_data: comprehensive_analysis.html 
+tempaltes/features: ai_predicitons.html, market_news_sentiment.html,  analyst_recommendations.html, 
+Notifications.html, social_sentiment.html, technical_analysis.html
+templates/market: overview.html
+templates/market_intel: insider_trading.html
+templates/Portfolio: Advanced.html, create.html, tips.html, transactions.html, view.html, watchlist.html
+templates/pro: alerts.html, export.html, portfoluo_anayzer.html, screener.html
+templates/Resources: analysis_tools.html, guides.html, tool_comparison.html
+templates/Stocks: compare_form.html, compare.html, details.html, detail.html (regner med vi kun trenger en av disse to siste)..
+templates/seo: blog_index.html, blog_post.html, investment_gudie.html, investment_guides.html
+templates: technical.html, features.html, profile.html
+FIKS alle disse, så alle fungerer som de skal til de brukerne det gjelder, og er synlige i appen (ligger på logiske steder, i navigasjonen (pc og mobil) osv) Er det noe som ligger på feil plass eller er duplisert, /neste kopi osv, så rydd opp i det samtidig.
+
+---
+
+På forsiden for demo/uinnlogget: Det er duplikat av "Velg din plan" og de ulike planene, det kommer 2 ganger på rad (Velg din plan, og månedlig, årlig, teams osv)
+
+
+Det er fortsatt MASSSE Space/padding i mobilmeny som INNLOGGET bruker (det ser riktig ut som ikke innlogget bruker).
+
+
+Når jeg trykker på "Hjem" , / går til forsiden , som innlogget premium bruker,
+Så står dette på forsiden:
+"Velkommen tilbake, helene721!
+Du har full tilgang til alle våre profesjonelle analyseverktøy
+ Premium Bruker" Dette bør komme opp på "Min profil" side i stedet.
+Det gjelder egentlgi ALT jeg ser på forsiden som innlogget Premium bruker, alt
+dette hører mye mer til på en side under "Min profil"
+Utenom. "Velg din plan" seksjonen, det burde fjernes for betalte brukere, at de ikke ser dette.
+OGSÅ ønsker jeg at forsiden, som innlogget betalende bruker, heller skal være slik den var tidligere;
+Med mange tabeller for Oslo børs, Globale aksjer, Krypto, Valuta, osvosv, hvis du ser tidligere versjoner av forsiden (FØR lillabanner osv) så er det slik jeg ønsker at forsiden er for betalende brukere.
+
+Når jeg trykker på Min profil og kommer hit /profile/, så står det:
+"500 - Serverfeil
+Beklager, det oppstod en teknisk feil.
+Vårt team har blitt varslet og jobber med å løse problemet.
+"
+Går jeg på "Portefølje" får jeg feilen:
+"Det oppstod en feil ved lasting av porteføljer."
+
+/stocks/list/oslo
+Kunne ikke laste aksjedetaljer. Prøv igjen senere."
+og når jeg prøver gå på detaljer på en hvilken som helst aksje på siden
+her så blir jeg b are sendt bak til der jeg var (Stocks/list/oslo)
+
+Det samme gjelder her:
+/stocks/list/global
+Kunne ikke laste aksjedata. Prøv igjen senere.
+Når jeg prøver se på en globale aksjer her ved å trykke på detaljer, blir jeg sendt til
+Stocks/list/oslo
+
+/stocks/list/crypto
+Her får jeg "feil, ingen aksjer tilgjengelig"
+
+/stocks/list/currency
+Her får jeg:
+"Ingen valutakurser tilgjengelig
+Valutaer er ikke tilgjengelige for øyeblikket."
+
+/analysis/
+"Denne siden fungerer ikke... err_too_many_redirects"
+
+
+v/financial-dashboard/
+Ingen av tabbene her ser ut til å fungere som de skal...
+Innsidehandel-tabben viser "feil ved lasting av data" når jeg tester den
+Tabben nyheter: Når jeg forsøker les mer, så kom jeg til en side som ikke finnes hos e24.no
+Tabben Valuta viser ikke noe informasjon ,altså ingen valtuakurser..
+Tabben krypto vuiser ingen krypto og står bare å laster...
+Tabben Aksjer viser ingen aksjer
+Den første tabben "Oversikt" viser veldig lite, svært mangelfull
+
+/analysis/technical
+Her står det fortsatt "velg en aksje for å se teknisk analyse" og ingen ting annet
+Dette må fikses til å være en fungerende start/hovedside for teknisk analyse
+
+/analysis/market-overview
+Denne siden viser veldig lite, ignenmting under "Oslo børs" ,ingenting under "Kryptovaluta", Ingenting under "Gobale aksjer markedsoversikt"
+og ignenting under "Valuta Markedsoversikt"
+Også er det noe galt med stylingen her, det ligger en slags kopi av hamburgermenyen og "Analyse" med mørkegrått overlay
+øverst på denne siden, det må fjernes/fikses
+
+/insider-trading/
+Denne siden fugerer ikke som den skal,"Ingen innsidehandel data funnet for de valgte kriteriene." står det når
+jeg søker på en aksje, og ellers mangelfull info (ingen info) der det egentlig skal være
+info på denne siden.
+Samme problem her også som med forrige når det gjelder styling; Det er noe galt med stylingen her, det ligger en slags kopi av hamburgermenyen og "Analyse" med mørkegrått overlay
+øverst på denne siden, det må fjernes/fikses
+
+
+/analysis/screener
+Her er det masse rare tegn øverst
+" Aksje Screener
+Finn aksjer basert på dine investeringskriterier
+IjY0ZmQ4Nzk0YmU1MDdmMWM2Yjk1ZDA1YjIxZWU3MTRmMDJhMWNiMDUi.aH1kwQ.ZWgfkF0mJHiBIEo_bw-g47vCaMM"
+og når jeg tester funksjonene her så blir jeg bare sendt til forsiden av aksjeradar.trade
+
+/analysis/sentiment
+Her er det masse rare tegn øverst
+"Analyser markedsstemning og investor sentiment for aksjer
+IjY0ZmQ4Nzk0YmU1MDdmMWM2Yjk1ZDA1YjIxZWU3MTRmMDJhMWNiMDUi.aH1kvw.g8TcJ9M-P9hQzr9NsXcVU1K4Bgc"
+og dropdownen for valg fungerer ikke, og heller ikke selve funksjonen da, så dett emå også fikses
+
+
+/analysis/warren-buffett
+"Method Not Allowed
+The method is not allowed for the requested URL."
+Får jeg her
+
+/analysis/benjamin-Graham
+når jeg tester , velger en aksje og "Analyser" på denne siden, så blir jeg bare reloadet,uten at noe info kommer opp
+
+/news/
+"Debug: news_articles length = 10" ser jeg øverst her (på alle tabbene)
+og hvis jeg tester "Les mer" her på en nyehtssak, blir jeg sendt til f.eks hit:
+/news/bitcoin-stiger, men får denne feilmeldingen is tedet for faktisk nyheter om "bitcoin stiger" som det burde vært
+ "Beklager, en feil oppsto
+Vi jobber med å løse problemet. Prøv igjen senere.
+Tekniske detaljer (for utviklere)
+Kunne ikke laste artikkel: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again."
+
+
+/pricing/
+I banneret her for "Månedlig", så har det blitt croppet "Mest populær", så dikke hele synes, mangler tydeligvis noe margin/padding over "Mest populær" i Månedlig blokken
+
+# TODO: Review and fix the following issues in the application:
+
+# 1. Navigation links on PC are not functioning correctly, only News link works.
+# 2. Check for missing or non-functional templates:
+#    - templates/analysis: Advanced.html, fundamental.html, ai_form.html, ai_html, analysis_nav.html, buffet_select.html, currency_overview.html, insider_trading.html, recommendation_select.html, recommendation.html, screener.html, sentiment.html, short_select.html, short-analysis.html, short.html, technical_html, warren_buffet.html, warren-buffet.html
+#    - templates/external_data: comprehensive_analysis.html
+#    - templates/features: ai_predicitons.html, market_news_sentiment.html, analyst_recommendations.html, Notifications.html, social_sentiment.html, technical_analysis.html
+#    - templates/market: overview.html
+#    - templates/market_intel: insider_trading.html
+#    - templates/Portfolio: Advanced.html, create.html, tips.html, transactions.html, view.html, watchlist.html
+#    - templates/pro: alerts.html, export.html, portfoluo_anayzer.html, screener.html
+#    - templates/Resources: analysis_tools.html, guides.html, tool_comparison.html
+#    - templates/Stocks: compare_form.html, compare.html, details.html, detail.html
+#    - templates/seo: blog_index.html, blog_post.html, investment_gudie.html, investment_guides.html
+#    - templates: technical.html, features.html, profile.html
+# 3. Remove duplicate "Velg din plan" section on demo/unlogged homepage.
+# 4. Adjust padding in mobile menu for logged-in users.
+# 5. Move welcome message for premium users to "Min profil" page.
+# 6. Fix 500 server error on /profile/ page.
+# 7. Resolve loading issues for portfolio and stock details.
+# 8. Fix errors on /analysis/ and /financial-dashboard/ pages.
+# 9. Address styling issues on various pages, including overlays and missing data.
+# 10. Ensure all features work as intended, including sentiment analysis and stock screener.
+# 11. Fix 404 errors on news articles and ensure correct URLs are used.
+# 12. Adjust margins/padding in pricing banner for "Månedlig" section.
+
+# This is a comprehensive list of issues that need to be addressed in the application.
+
+

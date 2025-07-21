@@ -23,55 +23,95 @@ portfolio = Blueprint('portfolio', __name__, url_prefix='/portfolio')
 def overview():
     """Portfolio overview page"""
     try:
-        # Get user portfolios
-        user_portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+        # Get user portfolios with error handling
+        try:
+            user_portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+        except Exception as db_error:
+            current_app.logger.error(f"Database error in portfolio overview: {str(db_error)}")
+            user_portfolios = []
+            flash('Kunne ikke laste porteføljedata fra databasen.', 'warning')
         
-        # Calculate total portfolio value
+        # Initialize totals
         total_value = 0
         total_gain_loss = 0
         portfolio_data = []
+        data_service = get_data_service()
         
+        # Process each portfolio
         for portfolio_obj in user_portfolios:
-            portfolio_value = 0
-            portfolio_gain_loss = 0
-            
-            for stock in portfolio_obj.stocks:
-                try:
-                    # Get current stock price
-                    current_data = get_data_service().get_stock_info(stock.ticker)
-                    current_price = current_data.get('regularMarketPrice', stock.purchase_price)
-                    
-                    value = current_price * stock.shares
-                    investment = stock.purchase_price * stock.shares
-                    gain_loss = value - investment
-                    
-                    portfolio_value += value
-                    portfolio_gain_loss += gain_loss
-                except Exception as e:
-                    current_app.logger.warning(f"Could not get price for {stock.ticker}: {e}")
-                    # Use purchase price as fallback
-                    value = stock.purchase_price * stock.shares
-                    portfolio_value += value
-            
-            total_value += portfolio_value
-            total_gain_loss += portfolio_gain_loss
-            
-            portfolio_data.append({
-                'portfolio': portfolio_obj,
-                'value': portfolio_value,
-                'gain_loss': portfolio_gain_loss,
-                'gain_loss_percent': (portfolio_gain_loss / (portfolio_value - portfolio_gain_loss)) * 100 if (portfolio_value - portfolio_gain_loss) > 0 else 0
-            })
+            try:
+                portfolio_value = 0
+                portfolio_gain_loss = 0
+                stock_data = []
+                
+                # Process stocks in portfolio
+                for stock in portfolio_obj.stocks:
+                    try:
+                        # Try to get current price with fallback
+                        try:
+                            current_data = data_service.get_stock_info(stock.ticker)
+                            current_price = current_data.get('regularMarketPrice', stock.purchase_price)
+                        except Exception as price_error:
+                            current_app.logger.warning(f"Price fetch error for {stock.ticker}: {str(price_error)}")
+                            current_price = stock.purchase_price
+                            
+                        # Calculate values
+                        value = current_price * stock.shares
+                        investment = stock.purchase_price * stock.shares
+                        gain_loss = value - investment
+                        percent_change = ((current_price - stock.purchase_price) / stock.purchase_price) * 100
+                        
+                        stock_data.append({
+                            'ticker': stock.ticker,
+                            'shares': stock.shares,
+                            'purchase_price': stock.purchase_price,
+                            'current_price': current_price,
+                            'value': value,
+                            'gain_loss': gain_loss,
+                            'percent_change': percent_change
+                        })
+                        
+                        portfolio_value += value
+                        portfolio_gain_loss += gain_loss
+                        
+                    except Exception as stock_error:
+                        current_app.logger.warning(f"Error processing stock {stock.ticker}: {str(stock_error)}")
+                        continue
+                
+                # Add portfolio data
+                total_value += portfolio_value
+                total_gain_loss += portfolio_gain_loss
+                
+                portfolio_data.append({
+                    'portfolio': portfolio_obj,
+                    'value': portfolio_value,
+                    'gain_loss': portfolio_gain_loss,
+                    'gain_loss_percent': (portfolio_gain_loss / (portfolio_value - portfolio_gain_loss)) * 100 if (portfolio_value - portfolio_gain_loss) > 0 else 0,
+                    'stocks': stock_data
+                })
+                
+            except Exception as portfolio_error:
+                current_app.logger.error(f"Error processing portfolio {portfolio_obj.id}: {str(portfolio_error)}")
+                continue
+        
+        # Calculate percentages safely
+        try:
+            total_gain_loss_percent = (total_gain_loss / (total_value - total_gain_loss)) * 100 if (total_value - total_gain_loss) > 0 else 0
+        except ZeroDivisionError:
+            total_gain_loss_percent = 0
         
         return render_template('portfolio/overview.html',
                              portfolios=portfolio_data,
                              total_value=total_value,
                              total_gain_loss=total_gain_loss,
-                             total_gain_loss_percent=(total_gain_loss / (total_value - total_gain_loss)) * 100 if (total_value - total_gain_loss) > 0 else 0)
+                             total_gain_loss_percent=total_gain_loss_percent)
+                             
     except Exception as e:
-        current_app.logger.error(f"Error in portfolio overview: {str(e)}")
-        flash('Det oppstod en feil ved lasting av porteføljer.', 'error')
-        return redirect(url_for('main.index'))
+        current_app.logger.error(f"Critical error in portfolio overview: {str(e)}")
+        flash('Det oppstod en teknisk feil ved lasting av porteføljer. Vennligst prøv igjen senere.', 'error')
+        return render_template('portfolio/overview.html',
+                             error=True,
+                             message='Kunne ikke laste porteføljedata.')
 
 @portfolio.route('/watchlist')
 @access_required
@@ -109,19 +149,56 @@ def watchlist():
         flash('Det oppstod en feil ved lasting av favoritter.', 'error')
         return redirect(url_for('main.index'))
 
-@portfolio.route('/', endpoint='portfolio_index')
+@portfolio.route('/')
 @login_required
-@access_required
-def portfolio_index():
-    """Portfolio overview with pagination and lazy loading"""
+def index():
+    """Portfolio main page with better error handling"""
     try:
-        # The actual portfolio loading is done via AJAX
-        # Just render the template with skeleton loaders
-        return render_template('portfolio/index.html')
+        # Get user's portfolios with proper error handling
+        portfolios = []
+        if current_user and current_user.is_authenticated:
+            try:
+                # Safely get portfolios with database connection check
+                from ..models.portfolio import Portfolio
+                portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+            except Exception as db_error:
+                logger.error(f"Database error getting portfolios for user {current_user.id}: {db_error}")
+                portfolios = []
+        
+        # Calculate total portfolio value safely
+        total_value = 0
+        portfolio_data = []
+        
+        for p in portfolios:
+            try:
+                portfolio_value = p.calculate_total_value() if hasattr(p, 'calculate_total_value') else 0
+                total_value += portfolio_value
+                portfolio_data.append({
+                    'id': p.id,
+                    'name': p.name,
+                    'value': portfolio_value,
+                    'created_at': p.created_at
+                })
+            except Exception as calc_error:
+                logger.error(f"Error calculating portfolio value for {p.name}: {calc_error}")
+                portfolio_data.append({
+                    'id': p.id,
+                    'name': p.name,
+                    'value': 0,
+                    'created_at': p.created_at
+                })
+        
+        return render_template('portfolio/index.html',
+                             portfolios=portfolio_data,
+                             total_value=total_value)
+                             
     except Exception as e:
-        current_app.logger.error(f"Error in portfolio index: {str(e)}")
+        logger.error(f"Error in portfolio index: {e}")
         flash('Det oppstod en feil ved lasting av porteføljer.', 'error')
-        return redirect(url_for('main.index'))
+        return render_template('portfolio/index.html',
+                             portfolios=[],
+                             total_value=0,
+                             error="Det oppstod en feil ved lasting av porteføljer.")
 
 @portfolio.route('/tips', methods=['GET', 'POST'])
 @access_required

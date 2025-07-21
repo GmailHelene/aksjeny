@@ -64,8 +64,7 @@ def create_test_users():
             print("✅ Test users created/updated successfully!")
             
             # Test login for both users
-            print("
-Testing user authentication...")
+            print("\nTesting user authentication...")
             
             # Test helene login
             test_user = User.query.filter(
@@ -83,8 +82,7 @@ Testing user authentication...")
             if test_user2:
                 print(f"✅ eirik found: {test_user2.username} ({test_user2.email})")
                 
-            print("
-🎉 Database is now ready for login!")
+            print("\n🎉 Database is now ready for login!")
             return True
             
         except Exception as e:

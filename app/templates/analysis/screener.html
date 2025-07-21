@@ -1,112 +1,126 @@
 {% extends "base.html" %}
 
-{% block title %}Aksje Screener | Aksjeradar{% endblock %}
+{% block title %}Aksje Screener - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<div class="container-fluid mt-4">
     <div class="row">
-        <div class="col-md-9">
-            <div class="card shadow-sm mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3">Aksje Screener</h1>
+                    <p class="text-muted">Finn aksjer basert på dine investeringskriterier</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+                        <li class="breadcrumb-item active">Screener</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
                 <div class="card-header">
-                    <h2><i class="bi bi-funnel"></i> Aksje Screener</h2>
-                    <p class="mb-0">Finn aksjer basert på dine investeringskriterier</p>
+                    <h5 class="mb-0">Filtrer Aksjer</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Screening Form -->
-                    <form method="POST" action="{{ url_for('analysis.screener') }}" class="mb-4">
-                        {{ csrf_token() }}
+                    <form method="GET" action="{{ url_for('analysis.screener') }}">
                         <div class="row">
-                            <div class="col-md-3">
-                                <label for="min_market_cap" class="form-label">Min. markedsverdi (NOK)</label>
-                                <select name="min_market_cap" class="form-select">
-                                    <option value="0">Alle størrelser</option>
-                                    <option value="1000000000">1 milliard+</option>
-                                    <option value="10000000000">10 milliarder+</option>
-                                    <option value="100000000000">100 milliarder+</option>
-                                </select>
+                            <div class="col-md-3 mb-3">
+                                <label for="market_cap_min" class="form-label">Min. Markedsverdi (mill.)</label>
+                                <input type="number" class="form-control" id="market_cap_min" name="market_cap_min" 
+                                       value="{{ filters.market_cap_min or '' }}" placeholder="0">
                             </div>
-                            <div class="col-md-3">
-                                <label for="max_pe_ratio" class="form-label">Maks P/E ratio</label>
-                                <select name="max_pe_ratio" class="form-select">
-                                    <option value="50">Alle</option>
-                                    <option value="10">Under 10</option>
-                                    <option value="15">Under 15</option>
-                                    <option value="20">Under 20</option>
-                                    <option value="25">Under 25</option>
-                                </select>
+                            <div class="col-md-3 mb-3">
+                                <label for="market_cap_max" class="form-label">Maks. Markedsverdi (mill.)</label>
+                                <input type="number" class="form-control" id="market_cap_max" name="market_cap_max" 
+                                       value="{{ filters.market_cap_max or '' }}" placeholder="Ingen grense">
                             </div>
-                            <div class="col-md-3">
-                                <label for="min_dividend_yield" class="form-label">Min. utbytteavkastning (%)</label>
-                                <select name="min_dividend_yield" class="form-select">
-                                    <option value="0">Alle</option>
-                                    <option value="2">2%+</option>
-                                    <option value="4">4%+</option>
-                                    <option value="6">6%+</option>
-                                </select>
+                            <div class="col-md-3 mb-3">
+                                <label for="pe_ratio_max" class="form-label">Maks. P/E Ratio</label>
+                                <input type="number" class="form-control" id="pe_ratio_max" name="pe_ratio_max" 
+                                       value="{{ filters.pe_ratio_max or '' }}" step="0.1" placeholder="50">
                             </div>
-                            <div class="col-md-3">
-                                <label for="sector" class="form-label">Sektor</label>
-                                <select name="sector" class="form-select">
-                                    <option value="all">Alle sektorer</option>
-                                    <option value="Energy">Energi</option>
-                                    <option value="Financial">Finans</option>
-                                    <option value="Technology">Teknologi</option>
-                                    <option value="Healthcare">Helse</option>
-                                    <option value="Materials">Råvarer</option>
-                                    <option value="Consumer">Forbruker</option>
-                                </select>
+                            <div class="col-md-3 mb-3">
+                                <label for="dividend_yield_min" class="form-label">Min. Utbytteavkastning (%)</label>
+                                <input type="number" class="form-control" id="dividend_yield_min" name="dividend_yield_min" 
+                                       value="{{ filters.dividend_yield_min or '' }}" step="0.1" placeholder="0">
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search"></i> Filtrer aksjer
-                                </button>
-                                <button type="reset" class="btn btn-outline-secondary ms-2">
-                                    <i class="bi bi-arrow-counterclockwise"></i> Nullstill
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="sector" class="form-label">Sektor</label>
+                                <select class="form-select" id="sector" name="sector">
+                                    <option value="">Alle sektorer</option>
+                                    {% for sector in sectors %}
+                                    <option value="{{ sector }}" {% if filters.sector == sector %}selected{% endif %}>{{ sector }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="market" class="form-label">Marked</label>
+                                <select class="form-select" id="market" name="market">
+                                    <option value="all" {% if filters.market == 'all' %}selected{% endif %}>Alle markeder</option>
+                                    <option value="oslo" {% if filters.market == 'oslo' %}selected{% endif %}>Oslo Børs</option>
+                                    <option value="global" {% if filters.market == 'global' %}selected{% endif %}>Globale</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-filter"></i> Filtrer Aksjer
                                 </button>
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Results -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Screeningresultater</h5>
+                </div>
+                <div class="card-body">
                     {% if results %}
-                    <!-- Results Table -->
                     <div class="table-responsive">
-                        <h4>Screeningresultater ({{ results|length }} aksjer funnet)</h4>
-                        <table class="table table-striped table-hover">
-                            <thead class="table-dark">
+                        <table class="table table-hover">
+                            <thead>
                                 <tr>
-                                    <th>Ticker</th>
-                                    <th>Selskap</th>
-                                    <th>Sektor</th>
+                                    <th>Symbol</th>
+                                    <th>Navn</th>
                                     <th>Pris</th>
-                                    <th>Endring</th>
                                     <th>Markedsverdi</th>
-                                    <th>P/E</th>
+                                    <th>P/E Ratio</th>
                                     <th>Utbytte</th>
-                                    <th>Handling</th>
+                                    <th>Endring %</th>
+                                    <th>Handlinger</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for stock in results %}
                                 <tr>
-                                    <td><strong>{{ stock.ticker }}</strong></td>
+                                    <td><strong>{{ stock.symbol }}</strong></td>
                                     <td>{{ stock.name }}</td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ stock.sector }}</span>
+                                    <td>{{ stock.price }} {{ 'kr' if 'OL' in stock.symbol else '$' }}</td>
+                                    <td>{{ stock.market_cap }} mill</td>
+                                    <td>{{ stock.pe_ratio or 'N/A' }}</td>
+                                    <td>{{ stock.dividend_yield }}%</td>
+                                    <td class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                        {{ "{:+.1f}".format(stock.change_percent) }}%
                                     </td>
-                                    <td>{{ "%.2f"|format(stock.price) }} NOK</td>
                                     <td>
-                                        <span class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                            {{ "%.2f"|format(stock.change_percent) }}%
-                                        </span>
-                                    </td>
-                                    <td>{{ "%.1f"|format(stock.market_cap / 1000000000) }} mrd</td>
-                                    <td>{{ "%.1f"|format(stock.pe_ratio) }}</td>
-                                    <td>{{ "%.1f"|format(stock.dividend_yield) }}%</td>
-                                    <td>
-                                        <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i> Detaljer
+                                        <a href="{{ url_for('stocks.details', symbol=stock.symbol) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> Detaljer
                                         </a>
                                     </td>
                                 </tr>
@@ -114,49 +128,35 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Criteria Summary -->
-                    <div class="mt-4">
-                        <h5>Anvendte kriterier:</h5>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Min. markedsverdi:</strong><br>
-                                {{ "%.0f"|format(criteria.min_market_cap|float / 1000000000) if criteria.min_market_cap|float > 0 else "Alle" }} 
-                                {% if criteria.min_market_cap|float > 0 %}mrd NOK{% endif %}
-                            </div>
-                            <div class="col-md-3">
-                                <strong>Maks P/E:</strong><br>
-                                {{ criteria.max_pe_ratio }}
-                            </div>
-                            <div class="col-md-3">
-                                <strong>Min. utbytte:</strong><br>
-                                {{ criteria.min_dividend_yield }}%
-                            </div>
-                            <div class="col-md-3">
-                                <strong>Sektor:</strong><br>
-                                {{ "Alle sektorer" if criteria.sector == "all" else criteria.sector }}
-                            </div>
-                        </div>
-                    </div>
                     {% else %}
-                    <!-- No Results / Initial State -->
                     <div class="text-center py-5">
-                        <i class="bi bi-funnel display-1 text-muted"></i>
-                        <h4 class="mt-3">Bruk screeneren for å finne aksjer</h4>
-                        <p class="text-muted">Sett dine kriterier ovenfor og klikk "Filtrer aksjer" for å se resultater</p>
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5>Ingen resultater</h5>
+                        <p class="text-muted">Juster filtreringsparametrene for å finne aksjer som matcher kriteriene dine.</p>
                     </div>
                     {% endif %}
                 </div>
             </div>
         </div>
-
-        <!-- Sidebar -->
-        <div class="col-md-3">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>Populære screener-kriterier</h5>
+    </div>
+</div>
+{% endblock %}
+                        <h5>Ingen resultater</h5>
+                        <p class="text-muted">Prøv å justere filterkriteriene dine</p>
+                    </div>
+                    {% endif %}
                 </div>
-                <div class="card-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetForm() {
+    document.querySelector('form').reset();
+}
+</script>
+{% endblock %}
                     <div class="mb-3">
                         <h6>Verdiaksjer</h6>
                         <small class="text-muted">Lav P/E, høyt utbytte</small>

@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Finansiell Dashboard - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">Finansiell Dashboard</h1>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'overview' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#overview" type="button">Oversikt</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'stocks' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#stocks" type="button">Aksjer</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'crypto' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#crypto" type="button">Krypto</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'currency' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#currency" type="button">Valuta</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'news' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#news" type="button">Nyheter</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link {{ 'active' if active_tab == 'insider' else '' }}" 
+                    data-bs-toggle="tab" data-bs-target="#insider" type="button">Innsidehandel</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'overview' else '' }}" id="overview">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Oslo Børs Oversikt</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if data.overview.oslo_stocks %}
+                                {% for symbol, stock in data.overview.oslo_stocks.items()[:5] %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>{{ symbol }}</span>
+                                    <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                        {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
+                                    </span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Ingen data tilgjengelig</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Globale Markeder</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if data.overview.global_stocks %}
+                                {% for symbol, stock in data.overview.global_stocks.items()[:5] %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>{{ symbol }}</span>
+                                    <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                        {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
+                                    </span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Ingen data tilgjengelig</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Markedssammendrag</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">Dashboard viser oversikt over alle markeder og instrumenter.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stocks Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'stocks' else '' }}" id="stocks">
+            {% if data.stocks %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Navn</th>
+                            <th>Pris</th>
+                            <th>Endring %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for symbol, stock in data.stocks.items() %}
+                        <tr>
+                            <td><strong>{{ symbol }}</strong></td>
+                            <td>{{ stock.name|default(symbol) }}</td>
+                            <td>{{ stock.last_price|default('N/A') }} kr</td>
+                            <td class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">Ingen aksjedata tilgjengelig for øyeblikket.</div>
+            {% endif %}
+        </div>
+
+        <!-- Crypto Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'crypto' else '' }}" id="crypto">
+            {% if data.crypto %}
+            <div class="row">
+                {% for symbol, crypto in data.crypto.items() %}
+                <div class="col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>{{ symbol }}</h5>
+                            <h4>${{ crypto.price|default('N/A') }}</h4>
+                            <span class="{{ 'text-success' if crypto.change_24h >= 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format(crypto.change_24h|default(0)) }}% (24h)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Laster...</span>
+                </div>
+                <p class="mt-2">Laster kryptovaluta data...</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Currency Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'currency' else '' }}" id="currency">
+            {% if data.currency %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Valutapar</th>
+                            <th>Kurs</th>
+                            <th>Endring</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pair, currency in data.currency.items() %}
+                        <tr>
+                            <td><strong>{{ pair }}</strong></td>
+                            <td>{{ currency.rate|default('N/A') }}</td>
+                            <td class="{{ 'text-success' if currency.change >= 0 else 'text-danger' }}">
+                                {{ "{:+.4f}".format(currency.change|default(0)) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">Ingen valutakurser tilgjengelige for øyeblikket.</div>
+            {% endif %}
+        </div>
+
+        <!-- News Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'news' else '' }}" id="news">
+            {% if data.news %}
+            <div class="row">
+                {% for article in data.news %}
+                <div class="col-lg-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>{{ article.title|default('Ukjent tittel') }}</h6>
+                            <p class="text-muted small">{{ article.summary|default('Ingen sammendrag tilgjengelig') }}</p>
+                            <a href="{{ article.url|default('#') }}" class="btn btn-sm btn-outline-primary" target="_blank">Les mer</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">Ingen nyheter tilgjengelige for øyeblikket.</div>
+            {% endif %}
+        </div>
+
+        <!-- Insider Trading Tab -->
+        <div class="tab-pane fade {{ 'show active' if active_tab == 'insider' else '' }}" id="insider">
+            <div class="alert alert-info">Feil ved lasting av data. Ingen innsidehandel informasjon tilgjengelig.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Person</th>
+                            <th>Transaksjon</th>
+                            <th>Dato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in data.insider_trading %}
+                        <tr>
+                            <td><strong>{{ trade.symbol|default('N/A') }}</strong></td>
+                            <td>{{ trade.person|default('Ukjent') }}</td>
+                            <td>{{ trade.transaction_type|default('N/A') }}</td>
+                            <td>{{ trade.date|default('N/A') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">Feil ved lasting av data. Ingen innsidehandel informasjon tilgjengelig.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

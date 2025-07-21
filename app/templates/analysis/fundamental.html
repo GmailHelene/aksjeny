@@ -1,113 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Fundamental Analyse - {{ ticker }}{% endblock %}
+
+{% block title %}Fundamental Analyse - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <h1 class="mb-4">Fundamental Analyse</h1>
-    
-    {% if ticker and fundamental_data %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Fundamental Analyse</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+                        <li class="breadcrumb-item active">Fundamental</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    {% if symbol and analysis_data %}
+    <!-- Analysis Results -->
     <div class="row">
         <div class="col-lg-8">
-            <!-- Key Metrics -->
+            <!-- Financial Metrics -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
-                    <h4 class="mb-0">Nøkkeltall for {{ ticker }}</h4>
+                    <h5 class="mb-0">Finansielle Nøkkeltall - {{ symbol }}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <h6 class="text-muted">P/E Forhold</h6>
-                            <h4>{{ "{:.2f}".format(fundamental_data.pe_ratio|default(0)).replace('.', ',') }}</h4>
-                            <small class="text-muted">
-                                {% if fundamental_data.pe_ratio < 15 %}
-                                    Lav verdsettelse
-                                {% elif fundamental_data.pe_ratio > 25 %}
-                                    Høy verdsettelse
-                                {% else %}
-                                    Moderat verdsettelse
-                                {% endif %}
-                            </small>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="text-muted">P/B Forhold</h6>
-                            <h4>{{ "{:.2f}".format(fundamental_data.pb_ratio|default(0)).replace('.', ',') }}</h4>
-                            <small class="text-muted">
-                                Pris / Bokført verdi
-                            </small>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="text-muted">Utbytteavkastning</h6>
-                            <h4>{{ "{:.2f}".format((fundamental_data.dividend_yield|default(0)) * 100).replace('.', ',') }}%</h4>
-                            <small class="text-muted">
-                                Årlig utbytte
-                            </small>
-                        </div>
-                    </div>
-                    
-                    <hr class="my-4">
-                    
-                    <!-- Profitability Metrics -->
-                    <h5 class="mb-3">Lønnsomhet</h5>
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>ROE:</span>
-                                <strong>{{ "{:.1f}".format((fundamental_data.roe|default(0)) * 100).replace('.', ',') }}%</strong>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>ROA:</span>
-                                <strong>{{ "{:.1f}".format((fundamental_data.roa|default(0)) * 100).replace('.', ',') }}%</strong>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>Profittmargin:</span>
-                                <strong>{{ "{:.1f}".format((fundamental_data.profit_margin|default(0)) * 100).replace('.', ',') }}%</strong>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <hr class="my-4">
-                    
-                    <!-- Financial Health -->
-                    <h5 class="mb-3">Finansiell Helse</h5>
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>Gjeld/Egenkapital:</span>
-                                <strong>{{ "{:.2f}".format(fundamental_data.debt_to_equity|default(0)).replace('.', ',') }}</strong>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>Likviditetsgrad:</span>
-                                <strong>{{ "{:.2f}".format(fundamental_data.current_ratio|default(0)).replace('.', ',') }}</strong>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <span>Quick Ratio:</span>
-                                <strong>{{ "{:.2f}".format(fundamental_data.quick_ratio|default(0)).replace('.', ',') }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Revenue & Earnings -->
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4 class="mb-0">Inntekter og Resultat</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
+                    <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-muted">Total Inntekt</h6>
+                            <h6 class="text-muted">Omsetning (TTM)</h6>
                             <h4>
-                                {% if fundamental_data.revenue %}
-                                    {% set revenue = fundamental_data.revenue %}
+                                {% if analysis_data.revenue %}
+                                    {% set revenue = analysis_data.revenue %}
                                     {% if revenue >= 1000000000 %}
                                         kr {{ "{:.1f}".format(revenue / 1000000000).replace('.', ',') }} mrd
                                     {% elif revenue >= 1000000 %}
@@ -119,15 +46,15 @@
                                     -
                                 {% endif %}
                             </h4>
-                            <small class="{{ 'text-success' if fundamental_data.revenue_growth > 0 else 'text-danger' }}">
-                                {{ "{:+.1f}".format((fundamental_data.revenue_growth|default(0)) * 100).replace('.', ',') }}% vekst
+                            <small class="{{ 'text-success' if analysis_data.revenue_growth > 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format((analysis_data.revenue_growth|default(0)) * 100).replace('.', ',') }}% vekst
                             </small>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted">Nettoresultat</h6>
                             <h4>
-                                {% if fundamental_data.net_income %}
-                                    {% set income = fundamental_data.net_income %}
+                                {% if analysis_data.net_income %}
+                                    {% set income = analysis_data.net_income %}
                                     {% if income >= 1000000000 %}
                                         kr {{ "{:.1f}".format(income / 1000000000).replace('.', ',') }} mrd
                                     {% elif income >= 1000000 %}
@@ -139,11 +66,65 @@
                                     -
                                 {% endif %}
                             </h4>
-                            <small class="{{ 'text-success' if fundamental_data.earnings_growth > 0 else 'text-danger' }}">
-                                {{ "{:+.1f}".format((fundamental_data.earnings_growth|default(0)) * 100).replace('.', ',') }}% vekst
+                            <small class="{{ 'text-success' if analysis_data.earnings_growth > 0 else 'text-danger' }}">
+                                {{ "{:+.1f}".format((analysis_data.earnings_growth|default(0)) * 100).replace('.', ',') }}% vekst
                             </small>
                         </div>
                     </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6>Verdivurdering</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>P/E Ratio:</td>
+                                    <td>{{ analysis_data.get('pe_ratio', 'N/A') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>P/B Ratio:</td>
+                                    <td>{{ analysis_data.get('pb_ratio', 'N/A') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>EPS:</td>
+                                    <td>{{ analysis_data.get('eps', 'N/A') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>ROE:</td>
+                                    <td>{{ analysis_data.get('roe', 'N/A') }}%</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6>Finansiell Helse</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Gjeldsgrad:</td>
+                                    <td>{{ analysis_data.get('debt_ratio', 'N/A') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Likviditetsgrad:</td>
+                                    <td>{{ analysis_data.get('current_ratio', 'N/A') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Omsetningsvekst:</td>
+                                    <td>{{ analysis_data.get('revenue_growth', 'N/A') }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fortjenestemargin:</td>
+                                    <td>{{ analysis_data.get('profit_margin', 'N/A') }}%</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if analysis_data.get('recommendation') %}
+                    <div class="alert alert-info">
+                        <h6>Anbefaling:</h6>
+                        <p>{{ analysis_data.recommendation }}</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -152,7 +133,7 @@
             <!-- Stock Info Card -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">{{ stock_info.longName|default(ticker) }}</h5>
+                    <h5 class="mb-0">{{ stock_info.longName|default(symbol) }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -233,7 +214,7 @@
                             <span>{{ analysis_score.financial_health }}/25</span>
                         </div>
                         <div class="progress" style="height: 5px;">
-                            <div class="progress-bar" style="width: {{ (analysis_score.financial_health / 25 * 100)|int }}%"></div>
+                            <div class="progress-bar" style="width: {{ ((analysis_score.financial_health / 25 * 100)|int) }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -242,9 +223,31 @@
         </div>
     </div>
     {% else %}
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle me-2"></i>
-        Velg en aksje for å se fundamental analyse.
+    <!-- No Analysis Selected -->
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Velg Aksje for Analyse</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('analysis.fundamental') }}">
+                        <div class="mb-3">
+                            <label for="symbol" class="form-label">Aksjesymbol</label>
+                            <input type="text" class="form-control" id="symbol" name="symbol" 
+                                   placeholder="f.eks. AAPL, TSLA, NOK" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Analyser</button>
+                    </form>
+                    
+                    <div class="mt-4 text-center">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <h5>Velg en aksje for fundamental analyse</h5>
+                        <p class="text-muted">Skriv inn et aksjesymbol i søkefeltet over for å starte analysen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>

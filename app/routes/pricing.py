@@ -1,125 +1,165 @@
-from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app
-from flask_login import login_required, current_user
-import stripe
-import os
-from datetime import datetime, timedelta
-from ..models.user import User
-from ..extensions import db
-from ..services.integrations import ConsultantReportService
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, current_app
+from flask_login import current_user, login_required
 import logging
 
-logger = logging.getLogger(__name__)
-
-# Initialize Stripe
-stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-
-pricing_bp = Blueprint('pricing', __name__)
-
-# Pricing tiers
+# Define pricing tiers and their limits
 PRICING_TIERS = {
     'free': {
         'name': 'Gratis',
-        'price': 0,
-        'features': [
-            'Begrensede aksje-analyser (5/dag)',
-            'Grunnleggende AI-score',
-            'Demo-tilgang til alle funksjoner',
-            'Begrenset watchlist (5 aksjer)'
-        ],
         'limits': {
-            'daily_analyses': 5,
-            'watchlist_size': 5,
-            'advanced_features': False
+            'daily_analyses': 3,
+            'portfolio_stocks': 10,
+            'price_alerts': 5,
+            'export_reports': 1
         }
     },
     'basic': {
         'name': 'Basic',
-        'price': 199,
-        'stripe_price_id': os.getenv('STRIPE_BASIC_PRICE_ID'),
-        'features': [
-            'Ubegrensede aksje-analyser',
-            'Full AI-analyse med signaler',
-            'Avansert porteføljeanalyse',
-            'E-postvarsler og ukentlig rapport',
-            'Watchlist inntil 50 aksjer',
-            'Discord/Slack-integrasjon'
-        ],
         'limits': {
-            'daily_analyses': -1,  # Unlimited
-            'watchlist_size': 50,
-            'advanced_features': True,
-            'email_alerts': True,
-            'integrations': True
+            'daily_analyses': 20,
+            'portfolio_stocks': 50,
+            'price_alerts': 25,
+            'export_reports': 10
         }
     },
     'pro': {
         'name': 'Pro',
-        'price': 399,
-        'stripe_price_id': os.getenv('STRIPE_PRO_PRICE_ID'),
-        'features': [
-            'Alt fra Basic +',
-            'Avansert backtest og strategibygger',
-            'Monte Carlo-simulering',
-            'Ubegrenset watchlist',
-            'Prioritert AI-prosessering',
-            'Konsulent-rapporter (2/måned gratis)',
-            'API-tilgang'
-        ],
         'limits': {
-            'daily_analyses': -1,
-            'watchlist_size': -1,  # Unlimited
-            'advanced_features': True,
-            'email_alerts': True,
-            'integrations': True,
-            'backtest': True,
-            'consultant_reports': 2,
-            'api_access': True
+            'daily_analyses': -1,  # Unlimited
+            'portfolio_stocks': -1,
+            'price_alerts': -1,
+            'export_reports': -1
         }
     },
-    'yearly': {
-        'name': 'Årlig Pro',
-        'price': 2999,
-        'yearly': True,
-        'stripe_price_id': os.getenv('STRIPE_YEARLY_PRICE_ID'),
-        'features': [
-            'Alt fra Pro +',
-            'Spar 25% på årlig betaling',
-            'Prioritert kundeservice',
-            'Eksklusiv markedsrapporter',
-            'Tidlig tilgang til nye funksjoner',
-            'Personlig konsultasjon (1/år gratis)'
-        ],
+    'enterprise': {
+        'name': 'Enterprise',
         'limits': {
             'daily_analyses': -1,
-            'watchlist_size': -1,
-            'advanced_features': True,
-            'email_alerts': True,
-            'integrations': True,
-            'backtest': True,
-            'consultant_reports': 12,  # Monthly
-            'api_access': True,
-            'priority_support': True
+            'portfolio_stocks': -1,
+            'price_alerts': -1,
+            'export_reports': -1
         }
     }
 }
 
-@pricing_bp.route('/')
-def pricing():
-    """Show pricing page"""
-    return render_template('pricing/index.html', 
-                         pricing_tiers=PRICING_TIERS,
-                         current_tier=get_user_tier())
+pricing = Blueprint('pricing', __name__)
+logger = logging.getLogger(__name__)
 
-@pricing_bp.route('/upgrade/<tier>')
-@login_required
-def upgrade(tier):
-    """Initiate upgrade process"""
-    if tier not in PRICING_TIERS or tier == 'free':
-        flash('Ugyldig abonnement valgt.', 'error')
-        return redirect(url_for('pricing.pricing'))
-    
-    tier_info = PRICING_TIERS[tier]
-    
+@pricing.route('/pricing')
+@pricing.route('/pricing/')
+def index():
+    """Pricing page showing subscription plans"""
+    try:
+        # Define subscription plans
+        plans = [
+            {
+                'name': 'Basic',
+                'price': '199 kr/mnd',
+                'price_yearly': '1990 kr/år',
+                'features': [
+                    'Grunnleggende aksjeanalyse',
+                    'Porteføljetracking',
+                    'Tekniske indikatorer',
+                    'Daglige markedsoppdateringer',
+                    'Begrenset til 10 analyser per måned'
+                ],
+                'color': 'primary',
+                'recommended': False
+            },
+            {
+                'name': 'Pro',
+                'price': '399 kr/mnd', 
+                'price_yearly': '3499 kr/år',
+                'features': [
+                    'Alt i Basic +',
+                    'AI-drevne anbefalinger',
+                    'Ubegrensede analyser',
+                    'Avanserte tekniske verktøy',
+                    'Sanntidsdata',
+                    'Porteføljeoptimalisering',
+                    'Prioritert support'
+                ],
+                'color': 'success',
+                'recommended': True
+            },
+            {
+                'name': 'Enterprise',
+                'price': 'Kontakt oss',
+                'price_yearly': 'Tilpasset pris',
+                'features': [
+                    'Alt i Pro +',
+                    'API-tilgang',
+                    'Dedikert support',
+                    'Tilpassede rapporter',
+                    'Team-administrasjon',
+                    'Prioritert databehandling'
+                ],
+                'color': 'dark',
+                'recommended': False
+            }
+        ]
+        
+        # Check if user is authenticated and has a subscription
+        user_subscription = None
+        if current_user.is_authenticated:
+            user_subscription = getattr(current_user, 'subscription_type', None)
+        
+        return render_template('pricing.html',
+                             plans=plans,
+                             user_subscription=user_subscription,
+                             title='Priser og Abonnementer')
+                             
+    except Exception as e:
+        logger.error(f"Error in pricing page: {e}")
+        flash('En feil oppstod ved lasting av prissiden.', 'error')
+        return redirect(url_for('main.index'))
+
+@pricing.route('/subscription')
+@pricing.route('/subscription/')
+def subscription():
+    """Redirect to pricing page for consistency"""
+    return redirect(url_for('pricing.index'))
+
+@pricing.route('/api/pricing/plans')
+def api_pricing_plans():
+    """API endpoint for pricing plans"""
+    try:
+        plans = [
+            {
+                'id': 'basic',
+                'name': 'Basic',
+                'price_monthly': 199,
+                'price_yearly': 1990,
+                'currency': 'NOK'
+            },
+            {
+                'id': 'pro',
+                'name': 'Pro',
+                'price_monthly': 399,
+                'price_yearly': 3499,
+                'currency': 'NOK'
+            },
+            {
+                'id': 'enterprise',
+                'name': 'Enterprise',
+                'price_monthly': None,
+                'price_yearly': None,
+                'currency': 'NOK',
+                'contact_sales': True
+            }
+        ]
+        
+        return jsonify({
+            'status': 'OK',
+            'plans': plans
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in pricing API: {e}")
+        return jsonify({
+            'status': 'ERROR',
+            'message': 'Kunne ikke hente prisplaner'
+        }), 500
     if not tier_info.get('stripe_price_id'):
         flash('Dette abonnementet er ikke tilgjengelig for øyeblikket.', 'error')
         return redirect(url_for('pricing.pricing'))
@@ -149,7 +189,7 @@ def upgrade(tier):
         flash('Det oppstod en feil ved opprettelse av betaling. Prøv igjen senere.', 'error')
         return redirect(url_for('pricing.pricing'))
 
-@pricing_bp.route('/subscription/success')
+@pricing.route('/subscription/success')
 @login_required
 def subscription_success():
     """Handle successful subscription"""
@@ -185,7 +225,7 @@ def subscription_success():
     
     return redirect(url_for('main.dashboard'))
 
-@pricing_bp.route('/buy-report', methods=['POST'])
+@pricing.route('/buy-report', methods=['POST'])
 @login_required
 def buy_report():
     """Buy a single consultant report"""
@@ -236,7 +276,7 @@ def buy_report():
         logger.error(f"Report purchase error: {e}")
         return jsonify({'error': 'Feil ved opprettelse av betaling'}), 500
 
-@pricing_bp.route('/report/success')
+@pricing.route('/report/success')
 @login_required
 def report_success():
     """Handle successful report purchase"""
@@ -285,7 +325,7 @@ def generate_and_deliver_report(symbols: list, free: bool = False) -> str:
     
     return redirect(url_for('main.dashboard'))
 
-@pricing_bp.route('/webhook', methods=['POST'])
+@pricing.route('/webhook', methods=['POST'])
 def stripe_webhook():
     """Handle Stripe webhooks"""
     payload = request.get_data()

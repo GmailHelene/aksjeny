@@ -4,7 +4,7 @@ from ..services.analysis_service import AnalysisService
 from ..services.ai_service import AIService
 from ..services.data_service import DataService, OSLO_BORS_TICKERS, GLOBAL_TICKERS
 from ..services.usage_tracker import usage_tracker
-from ..utils.access_control import access_required
+from ..utils.access_control import access_required, demo_access
 from ..models.user import User
 from ..models.portfolio import Portfolio, PortfolioStock
 import random
@@ -32,147 +32,177 @@ def get_all_available_stocks():
 analysis = Blueprint('analysis', __name__, url_prefix='/analysis')
 
 @analysis.route('/')
-@login_required
-@access_required
+@demo_access
 def index():
-    oslo_stocks = DataService.get_oslo_bors_overview()
-    global_stocks = DataService.get_global_stocks_overview()
-    crypto = DataService.get_crypto_overview()
-    currency = DataService.get_currency_overview()
-
-    # Tell signalene
-    buy_signals = sum(1 for d in oslo_stocks.values() if d.get('signal') == 'BUY')
-    buy_signals += sum(1 for d in global_stocks.values() if d.get('signal') == 'BUY')
-    sell_signals = sum(1 for d in oslo_stocks.values() if d.get('signal') == 'SELL')
-    sell_signals += sum(1 for d in global_stocks.values() if d.get('signal') == 'SELL')
-    neutral_signals = sum(1 for d in oslo_stocks.values() if d.get('signal') not in ['BUY', 'SELL'])
-    neutral_signals += sum(1 for d in global_stocks.values() if d.get('signal') not in ['BUY', 'SELL'])
-
-    # Markedssentiment (velg selv logikk, her: flest signaler vinner)
-    if buy_signals > sell_signals and buy_signals > neutral_signals:
-        market_sentiment = "Bullish"
-    elif sell_signals > buy_signals and sell_signals > neutral_signals:
-        market_sentiment = "Bearish"
-    elif neutral_signals > 0:
-        market_sentiment = "Neutral"
-    else:
-        market_sentiment = "Nøytral"
-
-    # Determine if banner should be shown
-    EXEMPT_EMAILS = {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'}
-    show_banner = False
+    """Analysis main page - prevent redirect loops"""
     try:
-        if current_user.is_authenticated:
-            # Exempt emails never see banners
-            if current_user.email in EXEMPT_EMAILS:
-                show_banner = False
-            elif hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription():
-                # Active subscription - no banner
-                show_banner = False
-            else:
-                # No subscription - hide banner (trial period removed)
-                show_banner = False
+        return render_template('analysis/index.html',
+                             page_title="Analyse")
+    except Exception as e:
+        logger.error(f"Error in analysis index: {e}")
+        flash('Kunne ikke laste analysesiden.', 'error')
+        return render_template('analysis/index.html',
+                             page_title="Analyse",
+                             error="Siden kunne ikke lastes")
+
+@analysis.route('/technical')
+@analysis.route('/technical/')
+@demo_access  
+def technical():
+    """Technical analysis main page with overview"""
+    try:
+        symbol = request.args.get('symbol')
+        
+        if symbol:
+            # If symbol provided, show analysis for that symbol
+            technical_data = AnalysisService.get_technical_analysis(symbol)
+            stock_info = DataService.get_stock_info(symbol)
+            
+            return render_template('analysis/technical.html',
+                                 symbol=symbol,
+                                 technical_data=technical_data,
+                                 stock_info=stock_info,
+                                 show_analysis=True)
         else:
-            # Not logged in - hide banner (trial period removed)
-            show_banner = False
-    except Exception:
-        show_banner = False
+            # Show technical analysis overview with popular stocks
+            popular_stocks = DataService.get_popular_stocks() or []
+            market_overview = {
+                'oslo_trending': DataService.get_trending_oslo_stocks() or [],
+                'global_trending': DataService.get_trending_global_stocks() or [],
+                'most_active': DataService.get_most_active_stocks() or []
+            }
+            
+            return render_template('analysis/technical.html',
+                                 popular_stocks=popular_stocks,
+                                 market_overview=market_overview,
+                                 show_analysis=False)
+                                 
+    except Exception as e:
+        logger.error(f"Error in technical analysis: {e}")
+        return render_template('analysis/technical.html',
+                             error="Kunne ikke laste teknisk analyse")
 
-    return render_template(
-        'analysis/index.html',
-        oslo_stocks=oslo_stocks,
-        global_stocks=global_stocks,
-        crypto=crypto,
-        currency=currency,
-        buy_signals=buy_signals,
-        sell_signals=sell_signals,
-        neutral_signals=neutral_signals,
-        market_sentiment=market_sentiment,
-        show_banner=show_banner
-    )
+@analysis.route('/market-overview')
+@demo_access
+def market_overview():
+    """Market overview page with fixed styling"""
+    try:
+        # Get all market data
+        oslo_data = DataService.get_oslo_bors_overview() or {}
+        global_data = DataService.get_global_stocks_overview() or {}
+        crypto_data = DataService.get_crypto_overview() or {}
+        currency_data = DataService.get_currency_overview() or {}
+        
+        # Get market summaries with proper structure for template
+        from types import SimpleNamespace
+        market_summaries = SimpleNamespace()
+        market_summaries.oslo = SimpleNamespace(
+            index_value=1567.8,
+            change=12.4,
+            change_percent=0.8
+        )
+        market_summaries.global_market = SimpleNamespace(
+            index_value=4592.1,
+            change=-23.7,
+            change_percent=-0.5
+        )
+        market_summaries.crypto = SimpleNamespace(
+            change_percent=2.3,
+            change=15.4,
+            total_market_cap=2500000000000
+        )
+        market_summaries.currency = SimpleNamespace(
+            usd_nok=10.8,
+            usd_nok_change=0.05
+        )
+        
+        return render_template('analysis/market_overview.html',
+                             oslo_stocks=oslo_data,
+                             global_stocks=global_data,
+                             crypto_data=crypto_data,
+                             currency_data=currency_data,
+                             market_summaries=market_summaries)
+                             
+    except Exception as e:
+        logger.error(f"Error in market overview: {e}")
+        # Create proper fallback SimpleNamespace objects for error handling
+        from types import SimpleNamespace
+        fallback_summaries = SimpleNamespace()
+        fallback_summaries.oslo = SimpleNamespace(index_value=0, change=0, change_percent=0)
+        fallback_summaries.global_market = SimpleNamespace(index_value=0, change=0, change_percent=0)
+        fallback_summaries.crypto = SimpleNamespace(change_percent=0, change=0, total_market_cap=0)
+        fallback_summaries.currency = SimpleNamespace(usd_nok=0, usd_nok_change=0)
+        
+        return render_template('analysis/market_overview.html',
+                             oslo_stocks={},
+                             global_stocks={},
+                             crypto_data={},
+                             currency_data={},
+                             market_summaries=fallback_summaries,
+                             error="Kunne ikke laste markedsdata")
 
-@analysis.route('/warren-buffett')
-@access_required
+@analysis.route('/warren-buffett', methods=['GET', 'POST'])
+@demo_access
 def warren_buffett():
-    """Warren Buffett analysis style"""
+    """Warren Buffett analysis - fix Method Not Allowed"""
+    if request.method == 'POST':
+        try:
+            symbol = request.form.get('symbol')
+            if symbol:
+                analysis_data = AnalysisService.get_warren_buffett_analysis(symbol)
+                return render_template('analysis/warren_buffett.html',
+                                     symbol=symbol,
+                                     analysis_data=analysis_data,
+                                     show_results=True)
+            else:
+                flash('Vennligst velg en aksje.', 'warning')
+        except Exception as e:
+            logger.error(f"Error in Warren Buffett analysis: {e}")
+            flash('Feil ved analyse. Prøv igjen senere.', 'error')
+    
+    # GET request or fallback
     try:
-        ticker = request.args.get('ticker')
-        
-        if ticker:
-            # Return analysis for specific ticker with Warren Buffett criteria
-            analysis_data = {
-                'ticker': ticker.upper(),
-                'company_name': ticker.upper(),
-                'buffett_score': random.uniform(60, 90),
-                'quality_score': random.choice(['Excellent', 'Good', 'Average', 'Poor']),
-                'moat': {
-                    'brand_strength': random.randint(60, 95),
-                    'market_position': random.randint(55, 90),
-                    'type': random.choice(['Brand Moat', 'Network Effect', 'Cost Advantage', 'Regulatory Moat']),
-                    'advantages': random.sample(['Strong brand', 'Market leadership', 'Cost efficiency', 'Network effects', 'High switching costs', 'Regulatory protection'], 3)
-                },
-                'metrics': {
-                    'roe': round(random.uniform(12, 25), 1),
-                    'profit_margin': round(random.uniform(15, 35), 1), 
-                    'revenue_growth': round(random.uniform(2, 12), 1),
-                    'debt_ratio': round(random.uniform(10, 40), 1)
-                },
-                'management': {
-                    'capital_allocation': random.randint(60, 95),
-                    'shareholder_friendly': random.randint(65, 95),
-                    'assessment': random.choice(['Excellent capital allocators with strong track record', 'Good management with clear strategy', 'Average management performance', 'Some concerns about capital allocation'])
-                },
-                'recommendation': random.choice(['Strong Buy', 'Buy', 'Hold', 'Sell']),
-                'fair_value': round(random.uniform(150, 450), 2),
-                'confidence': random.randint(70, 95),
-                'analysis_date': datetime.now().strftime('%Y-%m-%d')
-            }
-            return render_template('analysis/warren_buffett.html', 
-                                 analysis=analysis_data, 
-                                 ticker=ticker)
-        
-        return render_template('analysis/warren_buffett.html')
+        popular_stocks = DataService.get_popular_stocks() or []
+        return render_template('analysis/warren_buffett.html',
+                             popular_stocks=popular_stocks,
+                             show_results=False)
     except Exception as e:
-        logger.error(f"Error in Warren Buffett analysis: {e}")
-        flash("En feil oppstod ved lasting av Warren Buffett-analysen.", "error")
-        return redirect(url_for('analysis.index'))
+        logger.error(f"Error loading Warren Buffett page: {e}")
+        return render_template('analysis/warren_buffett.html',
+                             popular_stocks=[],
+                             error="Kunne ikke laste siden")
 
-@analysis.route('/benjamin-graham-view')
-@access_required  
-def benjamin_graham_view():
-    """Benjamin Graham analysis style"""
+@analysis.route('/benjamin-graham', methods=['GET', 'POST'])
+@demo_access
+def benjamin_graham():
+    """Benjamin Graham analysis - fix reload problem"""
+    if request.method == 'POST':
+        try:
+            symbol = request.form.get('symbol')
+            if symbol:
+                analysis_data = AnalysisService.get_benjamin_graham_analysis(symbol)
+                return render_template('analysis/benjamin_graham.html',
+                                     symbol=symbol,
+                                     analysis_data=analysis_data,
+                                     show_results=True)
+            else:
+                flash('Vennligst velg en aksje.', 'warning')
+                return redirect(url_for('analysis.benjamin_graham'))
+        except Exception as e:
+            logger.error(f"Error in Benjamin Graham analysis: {e}")
+            flash('Feil ved analyse. Prøv igjen senere.', 'error')
+    
+    # GET request
     try:
-        ticker = request.args.get('ticker')
-        
-        if ticker:
-            # Return analysis for specific ticker
-            analysis_data = {
-                'ticker': ticker.upper(),
-                'company_name': ticker.upper(),
-                'graham_score': random.uniform(50, 95),
-                'criteria': {
-                    'pe_ratio': round(random.uniform(10, 25), 2),
-                    'pb_ratio': round(random.uniform(0.8, 3.0), 2),
-                    'debt_equity': round(random.uniform(0.2, 1.5), 2),
-                    'current_ratio': round(random.uniform(1.0, 3.0), 2),
-                    'roe': round(random.uniform(8, 20), 1),
-                    'eps_growth': round(random.uniform(-5, 15), 1)
-                },
-                'value_score': random.choice(['Excellent Value', 'Good Value', 'Fair Value', 'Overpriced']),
-                'recommendation': random.choice(['Strong Buy', 'Buy', 'Hold', 'Sell']),
-                'intrinsic_value': round(random.uniform(80, 300), 2),
-                'margin_of_safety': round(random.uniform(-20, 40), 1),
-                'analysis_date': datetime.now().strftime('%Y-%m-%d')
-            }
-            return render_template('analysis/benjamin_graham.html', 
-                                 analysis=analysis_data, 
-                                 ticker=ticker)
-        
-        return render_template('analysis/benjamin_graham.html')
+        popular_stocks = DataService.get_popular_stocks() or []
+        return render_template('analysis/benjamin_graham.html',
+                             popular_stocks=popular_stocks,
+                             show_results=False)
     except Exception as e:
-        logger.error(f"Error in Benjamin Graham analysis: {e}")
-        flash("En feil oppstod ved lasting av Benjamin Graham-analysen.", "error")
-        return redirect(url_for('analysis.index'))
+        logger.error(f"Error loading Benjamin Graham page: {e}")
+        return render_template('analysis/benjamin_graham.html',
+                             popular_stocks=[],
+                             error="Kunne ikke laste siden")
 
 @analysis.route('/sentiment-view')
 @access_required
@@ -296,308 +326,25 @@ def short_analysis_view():
         flash("En feil oppstod ved lasting av short-analysen.", "error")
         return redirect(url_for('analysis.index'))
 
-@analysis.route('/market-overview')
-@access_required
-def market_overview():
-    """Market overview page with comprehensive fallback data"""
-    try:
-        # Get market data with fallbacks
-        oslo_data = {}
-        global_data = {}
-        crypto_data = {}
-        currency_data = {}
-        
-        try:
-            oslo_data = DataService.get_oslo_bors_overview() or {}
-        except Exception as e:
-            current_app.logger.warning(f"Could not get Oslo Børs data: {e}")
-            oslo_data = {
-                'EQNR.OL': {'name': 'Equinor ASA', 'last_price': 285.50, 'change_percent': 1.2},
-                'DNB.OL': {'name': 'DNB Bank ASA', 'last_price': 195.25, 'change_percent': 0.8},
-                'TEL.OL': {'name': 'Telenor ASA', 'last_price': 145.75, 'change_percent': -0.5}
-            }
-            
-        try:
-            global_data = DataService.get_global_stocks_overview() or {}
-        except Exception as e:
-            current_app.logger.warning(f"Could not get global data: {e}")
-            global_data = {
-                'AAPL': {'name': 'Apple Inc.', 'last_price': 180.50, 'change_percent': 1.5},
-                'GOOGL': {'name': 'Alphabet Inc.', 'last_price': 2750.25, 'change_percent': 0.9},
-                'MSFT': {'name': 'Microsoft Corp.', 'last_price': 335.75, 'change_percent': 1.1}
-            }
-            
-        try:
-            crypto_data = DataService.get_crypto_overview() or {}
-        except Exception as e:
-            current_app.logger.warning(f"Could not get crypto data: {e}")
-            crypto_data = {
-                'BTC-USD': {'name': 'Bitcoin', 'last_price': 45000.00, 'change_percent': 2.5},
-                'ETH-USD': {'name': 'Ethereum', 'last_price': 3200.00, 'change_percent': -1.2},
-                'BNB-USD': {'name': 'Binance Coin', 'last_price': 320.50, 'change_percent': 1.8}
-            }
-            
-        try:
-            currency_data = DataService.get_currency_overview() or {}
-        except Exception as e:
-            current_app.logger.warning(f"Could not get currency data: {e}")
-            currency_data = {
-                'USDNOK=X': {'name': 'USD/NOK', 'last_price': 10.45, 'change_percent': -0.3},
-                'EURNOK=X': {'name': 'EUR/NOK', 'last_price': 11.25, 'change_percent': 0.1},
-                'GBPNOK=X': {'name': 'GBP/NOK', 'last_price': 13.15, 'change_percent': 0.5}
-            }
-        
-        # Create market summary
-        market_summary = {
-            'oslo_stocks_count': len(oslo_data),
-            'global_stocks_count': len(global_data),
-            'crypto_count': len(crypto_data),
-            'currency_pairs_count': len(currency_data),
-            'total_instruments': len(oslo_data) + len(global_data) + len(crypto_data) + len(currency_data)
-        }
-        
-        # Enhanced market data for template
-        market_data = {
-            'sp500': {'value': '4,450.25', 'change': '+1.2'},
-            'nasdaq': {'value': '13,850.50', 'change': '+0.8'},
-            'dax': {'value': '15,725.30', 'change': '-0.3'},
-            'ftse': {'value': '7,420.15', 'change': '+0.5'},
-            'osebx': {'value': '1,285.75', 'change': '+0.9'}
-        }
-        
-        return render_template('analysis/market_overview.html',
-                             oslo_stocks=oslo_data,
-                             global_stocks=global_data,
-                             crypto_data=crypto_data,
-                             currency_data=currency_data,
-                             market_summary=market_summary,
-                             market_data=market_data,
-                             current_time=datetime.now())
-                             
-    except Exception as e:
-        current_app.logger.error(f"Error in market overview: {e}")
-        
-        # Ultimate fallback with minimal data
-        fallback_market_data = {
-            'sp500': {'value': 'N/A', 'change': '0.00'},
-            'nasdaq': {'value': 'N/A', 'change': '0.00'},
-            'dax': {'value': 'N/A', 'change': '0.00'},
-            'ftse': {'value': 'N/A', 'change': '0.00'},
-            'osebx': {'value': 'N/A', 'change': '0.00'}
-        }
-        
-        fallback_summary = {
-            'oslo_stocks_count': 0,
-            'global_stocks_count': 0,
-            'crypto_count': 0,
-            'currency_pairs_count': 0,
-            'total_instruments': 0
-        }
-        
-        return render_template('analysis/market_overview.html',
-                             oslo_stocks={},
-                             global_stocks={},
-                             crypto_data={},
-                             currency_data={},
-                             market_summary=fallback_summary,
-                             market_data=fallback_market_data,
-                             current_time=datetime.now(),
-                             error="Markedsdata er midlertidig utilgjengelig. Prøv igjen senere.")
-
 @analysis.route('/currency-overview')
 @access_required
 def currency_overview():
-    """Currency overview analysis"""
+    """Currency market overview page"""
     try:
-        currency_data = DataService.get_currency_overview() or {}
+        # Get currency data
+        currency_data = DataService.get_currency_overview()
         
-        # Expand currency data with more pairs
-        extended_currency_data = {
-            'USDNOK=X': {
-                'name': 'USD/NOK',
-                'last_price': 10.45,
-                'change': -0.15,
-                'change_percent': -1.42,
-                'signal': 'HOLD',
-                'volume': 2500000000
-            },
-            'EURNOK=X': {
-                'name': 'EUR/NOK',
-                'last_price': 11.32,
-                'change': 0.08,
-                'change_percent': 0.71,
-                'signal': 'BUY',
-                'volume': 1800000000
-            },
-            'GBPNOK=X': {
-                'name': 'GBP/NOK',
-                'last_price': 12.85,
-                'change': 0.05,
-                'change_percent': 0.39,
-                'signal': 'HOLD',
-                'volume': 950000000
-            },
-            'JPYNOK=X': {
-                'name': 'JPY/NOK',
-                'last_price': 0.071,
-                'change': -0.001,
-                'change_percent': -1.12,
-                'signal': 'SELL',
-                'volume': 450000000
-            },
-            'SEKNOM=X': {
-                'name': 'SEK/NOK',
-                'last_price': 0.98,
-                'change': 0.002,
-                'change_percent': 0.21,
-                'signal': 'HOLD',
-                'volume': 1200000000
-            },
-            'DKKNOK=X': {
-                'name': 'DKK/NOK',
-                'last_price': 1.52,
-                'change': 0.01,
-                'change_percent': 0.66,
-                'signal': 'BUY',
-                'volume': 800000000
-            }
-        }
-        
-        # Merge with existing data
-        currency_data.update(extended_currency_data)
+        # Get economic indicators that affect currencies
+        indicators = DataService.get_economic_indicators()
         
         return render_template('analysis/currency_overview.html',
-                             currency_data=currency_data)
+                             currency_data=currency_data,
+                             indicators=indicators)
+                             
     except Exception as e:
         logger.error(f"Error in currency overview: {e}")
-        flash("En feil oppstod ved lasting av valutaoversikten.", "error")
+        flash('Kunne ikke laste valutaoversikt.', 'error')
         return redirect(url_for('analysis.index'))
-
-@analysis.route('/technical')
-@access_required
-def technical(ticker=None):
-    """Technical analysis view"""
-    ticker = request.args.get('ticker', ticker)
-    market = request.args.get('market')
-    
-    if ticker:
-        # Handle specific ticker technical analysis
-        try:
-            # Get technical analysis data
-            technical_data = AnalysisService.get_technical_analysis(ticker)
-            stock_info = DataService.get_stock_info(ticker)
-            
-            if not technical_data:
-                flash(f'Ingen teknisk analyse tilgjengelig for {ticker}', 'warning')
-                return redirect(url_for('analysis.index'))
-            
-            return render_template('analysis/technical.html', 
-                                 ticker=ticker,
-                                 technical_data=technical_data,
-                                 stock_info=stock_info,
-                                 market=market,
-                                 analyses={ticker: technical_data})
-        except Exception as e:
-            current_app.logger.error(f"Error getting technical analysis for {ticker}: {str(e)}")
-            return render_template('analysis/technical.html', 
-                                 error=f"Kunne ikke hente teknisk analyse for {ticker}",
-                                 ticker=ticker,
-                                 market=market,
-                                 analyses={})
-    elif market:
-        # Handle market-wide technical analysis
-        try:
-            if market == 'global':
-                # Get global market analysis
-                market_data = {
-                    'market_type': 'global',
-                    'indices': ['S&P 500', 'NASDAQ', 'DOW JONES', 'FTSE 100', 'DAX'],
-                    'overview': 'Global market technical analysis showing mixed signals',
-                    'trend': 'bullish'
-                }
-            else:
-                # Default to Norwegian market
-                market_data = {
-                    'market_type': 'norwegian',
-                    'indices': ['OSEBX', 'OBX'],
-                    'overview': 'Norwegian market showing stable growth patterns',
-                    'trend': 'neutral'
-                }
-                
-            return render_template('analysis/technical.html', 
-                                 market_data=market_data,
-                                 market=market,
-                                 analyses={})
-        except Exception as e:
-            current_app.logger.error(f"Error getting market analysis for {market}: {str(e)}")
-            return render_template('analysis/technical.html', 
-                                 error=f"Kunne ikke hente markedsanalyse for {market}",
-                                 market=market,
-                                 analyses={})
-    
-    # Main technical analysis page - show overview and popular analyses
-    try:
-        # Get usage summary for template
-        usage_summary = usage_tracker.get_usage_summary()
-        
-        # Get sample analyses for popular tickers
-        sample_tickers = ['EQNR.OL', 'DNB.OL', 'AAPL', 'TSLA', 'MSFT']
-        sample_analyses = {}
-        
-        for ticker in sample_tickers:
-            try:
-                analysis = AnalysisService.get_technical_analysis(ticker)
-                if analysis:
-                    sample_analyses[ticker] = analysis
-            except Exception as e:
-                current_app.logger.error(f"Error getting sample analysis for {ticker}: {str(e)}")
-                continue
-        
-        # Create main page content
-        main_content = {
-            'title': 'Teknisk Analyse',
-            'description': 'Avansert teknisk analyse av aksjer, kryptovaluta og valuta',
-            'features': [
-                'Omfattende tekniske indikatorer',
-                'Støtte- og motstandsnivåer',
-                'Trendanalyse og signaler',
-                'Volum- og prisanalyse',
-                'Interaktive grafer'
-            ],
-            'markets': [
-                {'name': 'Oslo Børs', 'key': 'norwegian', 'description': 'Norske aksjer og indekser'},
-                {'name': 'Globale Markeder', 'key': 'global', 'description': 'Internasjonale aksjer og indekser'},
-                {'name': 'Kryptovaluta', 'key': 'crypto', 'description': 'Bitcoin, Ethereum og andre krypto'},
-                {'name': 'Valuta', 'key': 'currency', 'description': 'Valutapar og råvarer'}
-            ]
-        }
-        
-        return render_template('analysis/technical.html', 
-                             main_content=main_content,
-                             sample_analyses=sample_analyses,
-                             usage_summary=usage_summary,
-                             analyses=sample_analyses)
-    except Exception as e:
-        current_app.logger.error(f"Error in technical analysis main page: {str(e)}")
-        return render_template('analysis/technical.html', 
-                             error="Kunne ikke laste teknisk analyse",
-                             analyses={})
-
-@analysis.route('/technical/<path:ticker>')
-@access_required
-def technical_with_ticker(ticker):
-    """Technical analysis view for specific ticker"""
-    try:
-        # Get technical analysis data for the specific ticker
-        technical_data = AnalysisService.get_technical_analysis(ticker)
-        return render_template('analysis/technical.html', 
-                             technical_data=technical_data, 
-                             ticker=ticker)
-    except Exception as e:
-        current_app.logger.error(f"Error getting technical analysis for {ticker}: {str(e)}")
-        return render_template('analysis/technical.html', 
-                             error=f"Kunne ikke hente teknisk analyse for {ticker}",
-                             ticker=ticker)
 
 @analysis.route('/prediction', methods=['GET', 'POST'])
 @access_required
@@ -877,145 +624,6 @@ def download_file(filename):
     """Download exported files"""
     return send_from_directory(current_app.config['EXPORT_FOLDER'], filename, as_attachment=True)
 
-@analysis.route('/warren-buffett-analysis', methods=['GET', 'POST'])
-@access_required
-def warren_buffett_analysis():
-    """Warren Buffett investment analysis"""
-    if request.method == 'GET':
-        # Return form page with available stocks
-        available_stocks = {
-            'oslo_stocks': ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
-            'global_stocks': ['AAPL', 'MSFT', 'BRK-B', 'KO', 'JNJ', 'PG', 'WMT']
-        }
-        return render_template('analysis/warren-buffett.html', available_stocks=available_stocks)
-    
-    # Handle POST request
-    ticker = request.form.get('ticker')
-    if not ticker:
-        flash('Vennligst velg en aksje', 'error')
-        return redirect(url_for('analysis.warren_buffett_analysis'))
-    
-    try:
-        # Generate Buffett-style analysis with demo data
-        stock_data = {
-            'ticker': ticker,
-            'company_name': f"Selskap {ticker}",
-            'current_price': 150.25,
-            'intrinsic_value': 175.80,
-            'margin_of_safety': 14.5,
-            'roe': 15.2,
-            'debt_to_equity': 0.35,
-            'pe_ratio': 18.5,
-            'earnings_growth': 8.5,
-            'dividend_yield': 2.8,
-            'buffett_score': 78,
-            'recommendation': 'BUY' if ticker in ['AAPL', 'EQNR.OL', 'BRK-B'] else 'HOLD',
-            'analysis': {
-                'strengths': [
-                    'Sterkt økonomisk fundament',
-                    'Konsistent inntektsvekst',
-                    'Lav gjeldsgrad',
-                    'Stabile kontantstrømmer'
-                ],
-                'weaknesses': [
-                    'Høy verdsettelse',
-                    'Begrenset vekstpotensial',
-                    'Sektormessige risikoer'
-                ],
-                'buffett_principles': {
-                    'competitive_moat': 'Sterkt varemerke og markedsposisjon',
-                    'management_quality': 'Erfaren ledelse med god track record',
-                    'predictable_earnings': 'Stabile og forutsigbare inntekter',
-                    'reasonable_price': 'Akseptabel pris i forhold til verdi'
-                }
-            }
-        }
-        
-        available_stocks = {
-            'oslo_stocks': ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
-            'global_stocks': ['AAPL', 'MSFT', 'BRK-B', 'KO', 'JNJ', 'PG', 'WMT']
-        }
-        
-        return render_template('analysis/warren-buffett.html', 
-                             stock_data=stock_data, 
-                             available_stocks=available_stocks)
-    except Exception as e:
-        current_app.logger.error(f"Error in Warren Buffett analysis for {ticker}: {str(e)}")
-        flash('Kunne ikke hente data for denne aksjen', 'error')
-        return redirect(url_for('analysis.warren_buffett_analysis'))
-
-@analysis.route('/benjamin-graham', methods=['GET', 'POST'])
-@access_required
-def benjamin_graham():
-    """Benjamin Graham value analysis"""
-    if request.method == 'GET':
-        available_stocks = {
-            'oslo_stocks': ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
-            'global_stocks': ['AAPL', 'MSFT', 'JNJ', 'PG', 'KO', 'WMT', 'IBM']
-        }
-        return render_template('analysis/graham.html', available_stocks=available_stocks)
-    
-    # Handle POST request
-    ticker = request.form.get('ticker')
-    if not ticker:
-        flash('Vennligst velg en aksje', 'error')
-        return redirect(url_for('analysis.benjamin_graham'))
-    
-    try:
-        # Generate Graham-style analysis with demo data
-        stock_data = {
-            'ticker': ticker,
-            'company_name': f"Selskap {ticker}",
-            'current_price': 145.30,
-            'book_value': 125.40,
-            'price_to_book': 1.16,
-            'pe_ratio': 16.8,
-            'current_ratio': 2.1,
-            'debt_to_equity': 0.42,
-            'dividend_yield': 3.2,
-            'earnings_stability': 'Stabil',
-            'graham_number': 142.50,
-            'graham_score': 72,
-            'recommendation': 'BUY' if ticker in ['EQNR.OL', 'JNJ', 'KO'] else 'HOLD',
-            'analysis': {
-                'value_criteria': {
-                    'pe_ratio_check': True if 16.8 < 20 else False,
-                    'pb_ratio_check': True if 1.16 < 1.5 else False,
-                    'current_ratio_check': True if 2.1 > 2.0 else False,
-                    'debt_equity_check': True if 0.42 < 0.5 else False
-                },
-                'strengths': [
-                    'Lav P/E ratio under 20',
-                    'Akseptabel P/B ratio',
-                    'God likviditet',
-                    'Stabile utbytter'
-                ],
-                'concerns': [
-                    'Begrenset vekstpotensial',
-                    'Sektorspesifikke risikoer'
-                ],
-                'graham_principles': {
-                    'margin_of_safety': '15% margin under estimert verdi',
-                    'financial_strength': 'Solid balanse og likviditet',
-                    'earnings_record': 'Konsistent inntjening over tid',
-                    'dividend_record': 'Stabilt utbyttehistorikk'
-                }
-            }
-        }
-        
-        available_stocks = {
-            'oslo_stocks': ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
-            'global_stocks': ['AAPL', 'MSFT', 'JNJ', 'PG', 'KO', 'WMT', 'IBM']
-        }
-        
-        return render_template('analysis/graham.html', 
-                             stock_data=stock_data, 
-                             available_stocks=available_stocks)
-    except Exception as e:
-        current_app.logger.error(f"Error in Benjamin Graham analysis for {ticker}: {str(e)}")
-        flash('Kunne ikke hente data for denne aksjen', 'error')
-        return redirect(url_for('analysis.benjamin_graham'))
-
 @analysis.route('/short-analysis', methods=['GET', 'POST'])
 @access_required
 def short_analysis():
@@ -1095,178 +703,77 @@ def short_analysis():
                          stock_data=stock_data, 
                          available_stocks=available_stocks)
 
-@analysis.route('/fundamental')
-@login_required
-@access_required
+@analysis.route('/fundamental', methods=['GET', 'POST'])
+@demo_access
 def fundamental():
     """Fundamental analysis page"""
-    try:
-        ticker = request.args.get('ticker', 'EQNR.OL')
-        
-        # Get stock info and fundamentals
-        stock_info = DataService.get_stock_info(ticker)
-        if not stock_info:
-            flash(f'Kunne ikke finne data for {ticker}', 'error')
-            return redirect(url_for('analysis.index'))
-        
-        fundamental_data = AnalysisService.get_fundamental_data(ticker)
-        
-        # Format numbers for Norwegian display
-        if fundamental_data:
-            for key in ['market_cap', 'enterprise_value', 'revenue', 'ebitda']:
-                if key in fundamental_data and fundamental_data[key]:
-                    fundamental_data[f'{key}_formatted'] = "{:,.0f}".format(fundamental_data[key]).replace(',', ' ')
-        
-        return render_template('analysis/fundamental.html',
-                             ticker=ticker,
-                             stock_info=stock_info,
-                             fundamental_data=fundamental_data)
-    except Exception as e:
-        logger.error(f"Error in fundamental analysis for {ticker}: {str(e)}")
-        flash('Feil ved lasting av fundamental analyse. Vennligst prøv igjen senere.', 'error')
-        return redirect(url_for('analysis.index'))
+    if request.method == 'POST':
+        try:
+            symbol = request.form.get('symbol', '').strip().upper()
+            if symbol:
+                # Get fundamental analysis data
+                analysis_data = AnalysisService.get_fundamental_analysis(symbol)
+                stock_info = DataService.get_stock_info(symbol)
+                analysis_score = AnalysisService.calculate_fundamental_score(symbol)
+                
+                return render_template('analysis/fundamental.html',
+                                     symbol=symbol,
+                                     analysis_data=analysis_data,
+                                     stock_info=stock_info,
+                                     analysis_score=analysis_score)
+            else:
+                flash('Vennligst skriv inn et aksjesymbol.', 'warning')
+        except Exception as e:
+            logger.error(f"Error in fundamental analysis for {symbol}: {e}")
+            flash('Feil ved fundamental analyse. Prøv igjen senere.', 'error')
+    
+    # GET request or fallback
+    return render_template('analysis/fundamental.html',
+                         symbol=None,
+                         analysis_data=None,
+                         stock_info=None,
+                         analysis_score=None)
 
-@analysis.route('/sentiment', methods=['GET', 'POST'])
-@access_required
+@analysis.route('/sentiment')
+@demo_access
 def sentiment():
-    """Sentiment analyse for aksjer og markeder"""
+    """Market sentiment analysis with fixed dropdown"""
     try:
-        if request.method == 'POST':
-            ticker = request.form.get('ticker', '').upper()
-            
-            # Provide comprehensive fallback sentiment data
-            sentiment_data = {
-                'ticker': ticker,
-                'overall_sentiment': 'Bullish',
-                'sentiment_score': 0.72,
-                'news_sentiment': {
-                    'positive': 68,
-                    'neutral': 22,
-                    'negative': 10
-                },
-                'social_sentiment': {
-                    'twitter_mentions': 1247,
-                    'reddit_mentions': 89,
-                    'stocktwits_bullish': 73.5
-                },
-                'analyst_sentiment': {
-                    'buy_ratings': 12,
-                    'hold_ratings': 5,
-                    'sell_ratings': 2,
-                    'average_target': 450.0
-                },
-                'sentiment_history': [
-                    {'date': '2025-07-01', 'score': 0.65},
-                    {'date': '2025-07-05', 'score': 0.68},
-                    {'date': '2025-07-10', 'score': 0.71},
-                    {'date': '2025-07-14', 'score': 0.72}
-                ]
-            }
-            
-            return render_template('analysis/sentiment.html', 
-                                 sentiment_data=sentiment_data,
-                                 available_stocks=get_all_available_stocks())
+        selected_symbol = request.args.get('symbol', '')
         
-        # GET request - show sentiment form
-        return render_template('analysis/sentiment.html', 
-                             available_stocks=get_all_available_stocks())
+        # Get sentiment data
+        if selected_symbol:
+            sentiment_data = AnalysisService.get_sentiment_analysis(selected_symbol)
+        else:
+            sentiment_data = AnalysisService.get_market_sentiment_overview()
+        
+        # Get popular stocks for dropdown
+        popular_stocks = DataService.get_popular_stocks() or []
+        
+        return render_template('analysis/sentiment.html',
+                             sentiment_data=sentiment_data,
+                             popular_stocks=popular_stocks,
+                             selected_symbol=selected_symbol)
                              
     except Exception as e:
         logger.error(f"Error in sentiment analysis: {e}")
-        # Return template with error message instead of error page
-        return render_template('analysis/sentiment.html', 
-                             available_stocks=get_all_available_stocks(),
-                             error=f"Sentiment analyse feil: {e}")
+        return render_template('analysis/sentiment.html',
+                             sentiment_data={},
+                             popular_stocks=[],
+                             selected_symbol='',
+                             error="Kunne ikke laste sentiment data")
 
-@analysis.route('/screener', methods=['GET', 'POST'])
-@access_required  
-def screener():
-    """Aksje screener for å finne aksjer basert på kriterier"""
+@analysis.route('/api/sentiment/<symbol>')
+@demo_access
+def api_sentiment(symbol):
+    """API endpoint for sentiment data"""
     try:
-        if request.method == 'POST':
-            # Get form criteria
-            min_market_cap = request.form.get('min_market_cap', 0)
-            max_pe_ratio = request.form.get('max_pe_ratio', 50)
-            min_dividend_yield = request.form.get('min_dividend_yield', 0)
-            sector = request.form.get('sector', 'all')
-            
-            # Provide comprehensive fallback screener results
-            screener_results = [
-                {
-                    'ticker': 'EQNR.OL',
-                    'name': 'Equinor ASA',
-                    'sector': 'Energy',
-                    'market_cap': 1125000000000,
-                    'pe_ratio': 12.5,
-                    'dividend_yield': 5.8,
-                    'price': 342.55,
-                    'change_percent': 0.68
-                },
-                {
-                    'ticker': 'DNB.OL', 
-                    'name': 'DNB Bank ASA',
-                    'sector': 'Financial',
-                    'market_cap': 456000000000,
-                    'pe_ratio': 8.9,
-                    'dividend_yield': 7.2,
-                    'price': 212.8,
-                    'change_percent': -0.56
-                },
-                {
-                    'ticker': 'TEL.OL',
-                    'name': 'Telenor ASA',
-                    'sector': 'Telecommunications',
-                    'market_cap': 234000000000,
-                    'pe_ratio': 14.2,
-                    'dividend_yield': 6.1,
-                    'price': 178.9,
-                    'change_percent': 0.34
-                },
-                {
-                    'ticker': 'YAR.OL',
-                    'name': 'Yara International ASA', 
-                    'sector': 'Materials',
-                    'market_cap': 123000000000,
-                    'pe_ratio': 15.2,
-                    'dividend_yield': 4.1,
-                    'price': 456.2,
-                    'change_percent': 0.84
-                },
-                {
-                    'ticker': 'NHY.OL',
-                    'name': 'Norsk Hydro ASA',
-                    'sector': 'Materials',
-                    'market_cap': 178000000000,
-                    'pe_ratio': 11.8,
-                    'dividend_yield': 4.9,
-                    'price': 89.45,
-                    'change_percent': -0.23
-                },
-                {
-                    'ticker': 'MOWI.OL',
-                    'name': 'Mowi ASA',
-                    'sector': 'Consumer Staples',
-                    'market_cap': 145000000000,
-                    'pe_ratio': 18.7,
-                    'dividend_yield': 3.2,
-                    'price': 278.1,
-                    'change_percent': 1.15
-                }
-            ]
-            
-            return render_template('analysis/screener.html',
-                                 results=screener_results,
-                                 criteria={
-                                     'min_market_cap': min_market_cap,
-                                     'max_pe_ratio': max_pe_ratio,
-                                     'min_dividend_yield': min_dividend_yield,
-                                     'sector': sector
-                                 })
-        
-        # GET request - show screener form
-        return render_template('analysis/screener.html')
-        
+        sentiment_data = AnalysisService.get_sentiment_analysis(symbol)
+        return jsonify({
+            'success': True,
+            'data': sentiment_data,
+            'symbol': symbol
+        })
     except Exception as e:
-        logger.error(f"Error in screener: {e}")
-        # Return template with error message instead of error page
-        return render_template('analysis/screener.html', error=f"Screener feil: {e}")
+        logger.error(f"Error in sentiment API for {symbol}: {e}")
+        return jsonify({'error': 'Failed to get sentiment data'}), 500

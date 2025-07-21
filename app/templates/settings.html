@@ -85,7 +85,7 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <a href="{{ url_for('pricing.pricing') }}" class="btn btn-outline-primary">
+                            <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-primary">
                                 {% if current_user.subscription_status == 'premium' %}
                                     Administrer abonnement
                                 {% else %}

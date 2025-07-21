@@ -10,21 +10,57 @@ import logging
 import warnings
 from contextlib import redirect_stdout, redirect_stderr
 from io import StringIO
+import functools
 
-# Import rate limiter
+# Set up logging
+logger = logging.getLogger(__name__)
+
+def retry_with_backoff(retries=3, backoff_in_seconds=1):
+    """Retry decorator with exponential backoff"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            retry_count = 0
+            while retry_count < retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    retry_count += 1
+                    if retry_count == retries:
+                        logger.error(f"Failed after {retries} retries: {str(e)}")
+                        raise
+                    wait_time = (backoff_in_seconds * 2 ** retry_count) + random.uniform(0, 1)
+                    logger.warning(f"Attempt {retry_count} failed, retrying in {wait_time:.2f}s: {str(e)}")
+                    time.sleep(wait_time)
+            return None
+        return wrapper
+    return decorator
+
+# Import rate limiter and cache
 try:
     from .rate_limiter import rate_limiter
     from .simple_cache import simple_cache
 except ImportError:
-    # Fallback if rate limiter is not available
+    # Enhanced fallback if rate limiter is not available
     class DummyRateLimiter:
         def wait_if_needed(self, api_name='default'):
-            time.sleep(0.5)  # Simple fallback delay
+            time.sleep(0.1)  # Reduced fallback delay
     class DummyCache:
+        def __init__(self):
+            self._cache = {}
+            self._timestamps = {}
+        
         def get(self, key, cache_type='default'):
+            if key in self._cache:
+                timestamp = self._timestamps.get(key)
+                if timestamp and (datetime.now() - timestamp).total_seconds() < 300:  # 5 min cache
+                    return self._cache[key]
             return None
+            
         def set(self, key, value, cache_type='default'):
-            pass
+            self._cache[key] = value
+            self._timestamps[key] = datetime.now()
+    
     rate_limiter = DummyRateLimiter()
     simple_cache = DummyCache()
 import sys
@@ -978,37 +1014,79 @@ class DataService:
         return fallback_data
     
     @staticmethod
-    def get_stock_data(ticker, period='1mo', interval='1d'):
-        """Get stock data with caching"""
-        # Check cache first
-        if get_cache_service:
-            cache_key = f"stock_data_{ticker}_{period}_{interval}"
-            cached_data = get_cache_service().get(cache_key, max_age_minutes=5)
-            if cached_data:
-                # Convert back to DataFrame
-                return pd.DataFrame(cached_data)
+    @retry_with_backoff(retries=3, backoff_in_seconds=1)
+    def get_stock_data(ticker, period='1mo', interval='1d', fallback_to_cache=True):
+        """Get stock data with enhanced caching and error handling"""
+        cache_key = f"stock_data_{ticker}_{period}_{interval}"
+        
+        # Always try cache first for instant response
+        cached_data = simple_cache.get(cache_key)
+        if cached_data:
+            try:
+                return pd.DataFrame(json.loads(cached_data))
+            except Exception as e:
+                logger.warning(f"Cache data corrupt for {ticker}: {str(e)}")
         
         try:
             # Rate limiting
             rate_limiter.wait_if_needed('yfinance')
             
-            # Suppress yfinance output
+            # Suppress yfinance output and get data
             with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
                 stock = yf.Ticker(ticker)
                 data = stock.history(period=period, interval=interval)
             
             if not data.empty:
-                # Cache the successful result (convert DataFrame to dict)
-                if get_cache_service:
+                # Cache successful result
+                try:
                     cache_data = data.reset_index().to_dict('records')
-                    get_cache_service().set(cache_key, cache_data)
+                    simple_cache.set(cache_key, json.dumps(cache_data))
+                except Exception as cache_error:
+                    logger.warning(f"Failed to cache data for {ticker}: {str(cache_error)}")
                 return data
                 
         except Exception as e:
-            logging.error(f"Error fetching stock data for {ticker}: {str(e)}")
+            logger.error(f"Error fetching stock data for {ticker}: {str(e)}")
+            if fallback_to_cache and cached_data:
+                logger.info(f"Falling back to cached data for {ticker}")
+                try:
+                    return pd.DataFrame(json.loads(cached_data))
+                except:
+                    pass
+            
+            # Try fallback demo data for known tickers
+            if ticker in OSLO_BORS_TICKERS:
+                logger.info(f"Using demo data for {ticker}")
+                return DataService.get_demo_stock_data(ticker)
         
-        # Return empty DataFrame on error
+        # Return empty DataFrame only if all else fails
         return pd.DataFrame()
+
+    @staticmethod
+    def get_demo_stock_data(ticker):
+        """Generate demo stock data for testing and fallback"""
+        end_date = datetime.now()
+        dates = [end_date - timedelta(days=x) for x in range(30)]
+        
+        # Generate realistic looking price data
+        base_price = random.uniform(50, 500)
+        prices = []
+        for i in range(30):
+            change = random.uniform(-2, 2)
+            base_price += change
+            prices.append(max(1, base_price))
+        
+        # Create DataFrame
+        df = pd.DataFrame({
+            'Date': dates,
+            'Open': prices,
+            'High': [p + random.uniform(0, 1) for p in prices],
+            'Low': [p - random.uniform(0, 1) for p in prices],
+            'Close': [p + random.uniform(-0.5, 0.5) for p in prices],
+            'Volume': [int(random.uniform(100000, 1000000)) for _ in range(30)]
+        })
+        df.set_index('Date', inplace=True)
+        return df
 
     @staticmethod
     def get_fallback_chart_data(ticker):

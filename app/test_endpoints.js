@@ -90,7 +90,8 @@ const commonEndpoints = [
     { url: '/', method: 'GET' },
     { url: '/demo', method: 'GET' },
     { url: '/ai-explained', method: 'GET' },
-    { url: '/pricing', method: 'GET' },
+    { url: '/pricing', method: 'GET' },  // Now expects HTML response
+    { url: '/api/pricing/plans', method: 'GET' },  // JSON API endpoint
     { url: '/api/health', method: 'GET' },
     { url: '/api/version', method: 'GET' }
 ];

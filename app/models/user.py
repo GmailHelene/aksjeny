@@ -2,6 +2,7 @@ from ..extensions import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+from sqlalchemy import text
 
 # Import backup column handling
 try:
@@ -247,14 +248,32 @@ class User(UserMixin, db.Model):
 # User loader for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    """Load user by ID for Flask-Login"""
-    if user_id is None or user_id == 'None':
-        return None
+    """Load user for Flask-Login with error handling"""
     try:
-        from sqlalchemy.exc import SQLAlchemyError
-        return db.session.get(User, int(user_id))
-    except (ValueError, TypeError, SQLAlchemyError):
-        db.session.rollback()
+        # Use a simple query first to avoid column errors
+        user = db.session.execute(
+            text("SELECT id, username, email, password_hash, has_subscription FROM users WHERE id = :user_id"),
+            {'user_id': int(user_id)}
+        ).fetchone()
+        
+        if user:
+            # Create a minimal user object
+            user_obj = User()
+            user_obj.id = user[0]
+            user_obj.username = user[1] 
+            user_obj.email = user[2]
+            user_obj.password_hash = user[3]
+            user_obj.has_subscription = user[4] if user[4] is not None else False
+            
+            # Set safe defaults for other fields
+            user_obj.subscription_type = 'free'
+            user_obj.is_admin = False
+            user_obj.email_verified = True
+            
+            return user_obj
+        return None
+    except Exception as e:
+        print(f"Error loading user {user_id}: {e}")
         return None
 
 # Ensure the database is updated with the new column

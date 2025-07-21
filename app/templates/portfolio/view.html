@@ -1,304 +1,193 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}{{ portfolio.name }} - Portfolio{% endblock %}
+{% block title %}{{ portfolio.name }} - Portefølje | Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('portfolio.portfolio_index') }}">Portfolios</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ portfolio.name }}</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h3>{{ portfolio.name }}</h3>
-                <a href="{{ url_for('portfolio.add_stock', id=portfolio.id) }}" class="btn btn-light">
-                    <i class="bi bi-plus-circle"></i> Add Stock
-                </a>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3">{{ portfolio.name }}</h1>
+                    <p class="text-muted">{{ portfolio.description or 'Ingen beskrivelse' }}</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('portfolio.index') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Tilbake
+                    </a>
+                    <a href="{{ url_for('portfolio.edit', id=portfolio.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i> Rediger
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Total Value</h5>
-                                <div class="display-4 mb-3">
-                                  {% if total_value is not none %}
-                                    ${{ total_value|round(2) }}
-                                  {% else %}
-                                    $0.00
-                                  {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Total Investment</h5>
-                                <div class="display-4 mb-3">
-                                  {% if total_investment is not none %}
-                                    ${{ total_investment|round(2) }}
-                                  {% else %}
-                                    $0.00
-                                  {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Total Gain/Loss</h5>
-                                <div class="display-4 mb-3 {{ 'text-success' if total_gain_loss > 0 else 'text-danger' }}">
-                                  {% if total_gain_loss is not none %}
-                                    ${{ total_gain_loss|round(2) }}
-                                  {% else %}
-                                    $0.00
-                                  {% endif %}
-                                </div>
-                                <div class="badge bg-{{ 'success' if total_gain_loss_percent > 0 else 'danger' }} fs-6">
-                                  {% if total_gain_loss_percent is not none %}
-                                    {{ total_gain_loss_percent|round(2) }}%
-                                  {% else %}
-                                    0.00%
-                                  {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Portfolio Holdings</h5>
-                            </div>
-                            <div class="card-body">
-                                {% if stocks %}
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Ticker</th>
-                                                <th>Shares</th>
-                                                <th>Avg Price</th>
-                                                <th>Current Price</th>
-                                                <th>Value</th>
-                                                <th>Gain/Loss</th>
-                                                <th>Gain/Loss %</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for stock in stocks %}
-                                            <tr>
-                                                <td>
-                                                    {% if stock.ticker %}
-                                                        <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}">
-                                                            {{ stock.ticker }}
-                                                        </a>
-                                                    {% else %}
-                                                        Unknown
-                                                    {% endif %}
-                                                </td>
-                                                <td>{{ stock.shares }}</td>
-                                                <td>
-                                                  {% if stock.average_price is not none %}
-                                                    ${{ stock.average_price|round(2) }}
-                                                  {% else %}
-                                                    $0.00
-                                                  {% endif %}
-                                                </td>
-                                                <td>
-                                                  {% if stock.current_price is not none %}
-                                                    ${{ stock.current_price|round(2) }}
-                                                  {% else %}
-                                                    $0.00
-                                                  {% endif %}
-                                                </td>
-                                                <td>
-                                                  {% if stock.value is not none %}
-                                                    ${{ stock.value|round(2) }}
-                                                  {% else %}
-                                                    $0.00
-                                                  {% endif %}
-                                                </td>
-                                                <td class="{{ 'text-success' if stock.gain_loss > 0 else 'text-danger' }}">
-                                                  {% if stock.gain_loss is not none %}
-                                                    ${{ stock.gain_loss|round(2) }}
-                                                  {% else %}
-                                                    $0.00
-                                                  {% endif %}
-                                                </td>
-                                                <td class="{{ 'text-success' if stock.gain_loss_percent > 0 else 'text-danger' }}">
-                                                  {% if stock.gain_loss_percent is not none %}
-                                                    {{ stock.gain_loss_percent|round(2) }}%
-                                                  {% else %}
-                                                    0.00%
-                                                  {% endif %}
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        {% if stock.ticker %}
-                                                            <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-info">
-                                                                <i class="bi bi-info-circle"></i>
-                                                            </a>
-                                                            <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-primary">
-                                                                <i class="bi bi-graph-up"></i>
-                                                            </a>
-                                                        {% endif %}
-                                                        <!-- Slett-knapp som åpner modal -->
-                                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ stock.id }}">
-                                                          Slett
-                                                        </button>
+        </div>
+    </div>
 
-                                                        <!-- Modal (unik id per aksje) -->
-                                                        <div class="modal fade" id="confirmDeleteModal-{{ stock.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-{{ stock.id }}" aria-hidden="true">
-                                                          <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                              <div class="modal-header">
-                                                                <h5 class="modal-title" id="confirmDeleteModalLabel-{{ stock.id }}">Bekreft sletting</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                              </div>
-                                                              <div class="modal-body">
-                                                                Er du sikker på at du vil slette {{ stock.ticker }}?
-                                                              </div>
-                                                              <div class="modal-footer">
-                                                                <form method="post" action="{{ url_for('portfolio.remove_stock', id=portfolio.id, stock_id=stock.id) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                                  <button type="submit" class="btn btn-danger">Ja, slett</button>
-                                                                </form>
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-                                                              </div>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                {% else %}
-                                <div class="alert alert-info">
-                                    <p>No stocks in this portfolio. <a href="{{ url_for('portfolio.add_stock', id=portfolio.id) }}">Add stocks</a> to get started.</p>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+    <!-- Portfolio Summary -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Total verdi</h6>
+                    <h3 class="text-primary">
+                        {{ "{:,.0f}".format(portfolio.total_value|default(0)).replace(',', ' ') }} {{ portfolio.currency|default('NOK') }}
+                    </h3>
                 </div>
-                
-                {% if ai_recommendation %}
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header bg-dark text-white">
-                                <h5>AI Portfolio Recommendation</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h6>Overall Assessment</h6>
-                                        <p>{{ ai_recommendation.overall }}</p>
-                                        
-                                        {% if ai_recommendation.allocation_strategy %}
-                                        <h6>Allocation Strategy</h6>
-                                        <p>{{ ai_recommendation.allocation_strategy }}</p>
-                                        {% endif %}
-                                        
-                                        {% if ai_recommendation.risk_assessment %}
-                                        <h6>Risk Assessment</h6>
-                                        <p>{{ ai_recommendation.risk_assessment }}</p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h6>Recommended Allocation</h6>
-                                        <canvas id="allocationChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Total avkastning</h6>
+                    <h3 class="{{ 'text-success' if portfolio.total_return >= 0 else 'text-danger' }}">
+                        {{ "{:+,.0f}".format(portfolio.total_return|default(0)).replace(',', ' ') }} {{ portfolio.currency|default('NOK') }}
+                    </h3>
+                    <small class="{{ 'text-success' if portfolio.return_percentage >= 0 else 'text-danger' }}">
+                        {{ "{:+.1f}".format(portfolio.return_percentage|default(0)) }}%
+                    </small>
                 </div>
-                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Antall posisjoner</h6>
+                    <h3>{{ portfolio.holdings|length if portfolio.holdings else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Siste oppdatering</h6>
+                    <h6>{{ portfolio.updated_at.strftime('%d.%m.%Y') if portfolio.updated_at else 'N/A' }}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holdings Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Beholdninger</h5>
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addHoldingModal">
+                        <i class="fas fa-plus"></i> Legg til aksje
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if portfolio.holdings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Navn</th>
+                                    <th>Antall</th>
+                                    <th>Gjennomsnittspris</th>
+                                    <th>Nåværende pris</th>
+                                    <th>Markedsverdi</th>
+                                    <th>Avkastning</th>
+                                    <th>Avkastning %</th>
+                                    <th>Handlinger</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for holding in portfolio.holdings %}
+                                <tr>
+                                    <td><strong>{{ holding.symbol }}</strong></td>
+                                    <td>{{ holding.company_name|default(holding.symbol) }}</td>
+                                    <td>{{ holding.quantity }}</td>
+                                    <td>{{ "{:.2f}".format(holding.average_price).replace('.', ',') }} {{ portfolio.currency }}</td>
+                                    <td>{{ "{:.2f}".format(holding.current_price|default(0)).replace('.', ',') }} {{ portfolio.currency }}</td>
+                                    <td>{{ "{:,.0f}".format(holding.market_value|default(0)).replace(',', ' ') }} {{ portfolio.currency }}</td>
+                                    <td class="{{ 'text-success' if holding.unrealized_gain >= 0 else 'text-danger' }}">
+                                        {{ "{:+,.0f}".format(holding.unrealized_gain|default(0)).replace(',', ' ') }} {{ portfolio.currency }}
+                                    </td>
+                                    <td class="{{ 'text-success' if holding.unrealized_gain_percent >= 0 else 'text-danger' }}">
+                                        {{ "{:+.1f}".format(holding.unrealized_gain_percent|default(0)) }}%
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="editHolding('{{ holding.id }}')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deleteHolding('{{ holding.id }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                        <h5>Ingen beholdninger ennå</h5>
+                        <p class="text-muted">Klikk "Legg til aksje" for å begynne å bygge porteføljen din.</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
-{% if ai_recommendation and ai_recommendation.allocation %}
-<script type="application/json" id="allocation-data">
-    {{ ai_recommendation.allocation|tojson }}
-</script>
-{% endif %}
+
+<!-- Add Holding Modal -->
+<div class="modal fade" id="addHoldingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Legg til aksje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addHoldingForm">
+                    <div class="mb-3">
+                        <label for="symbol" class="form-label">Aksjesymbol</label>
+                        <input type="text" class="form-control" id="symbol" name="symbol" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Antall aksjer</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="purchase_price" class="form-label">Kjøpspris per aksje</label>
+                        <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="purchase_date" class="form-label">Kjøpsdato</label>
+                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                <button type="button" class="btn btn-primary" onclick="submitHolding()">Legg til</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    function confirmRemove(ticker, stockId) {
-        if (confirm('Are you sure you want to remove ' + ticker + ' from your portfolio?')) {
-            document.getElementById('remove-form-' + stockId).submit();
-        }
+function submitHolding() {
+    alert('Funksjonalitet kommer snart!');
+}
+
+function editHolding(holdingId) {
+    alert('Redigering kommer snart!');
+}
+
+function deleteHolding(holdingId) {
+    if (confirm('Er du sikker på at du vil slette denne beholdningen?')) {
+        alert('Sletting kommer snart!');
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Draw allocation chart if data exists
-        const allocationElem = document.getElementById('allocation-data');
-        const chartElem = document.getElementById('allocationChart');
-        if (allocationElem && chartElem) {
-            let allocation = {};
-            try {
-                allocation = JSON.parse(allocationElem.textContent);
-            } catch (e) {
-                allocation = {};
-            }
-            const tickers = Object.keys(allocation);
-            const percentages = Object.values(allocation);
-
-            new Chart(chartElem.getContext('2d'), {
-                type: 'pie',
-                data: {
-                    labels: tickers,
-                    datasets: [{
-                        data: percentages,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.7)',
-                            'rgba(54, 162, 235, 0.7)',
-                            'rgba(255, 206, 86, 0.7)',
-                            'rgba(75, 192, 192, 0.7)',
-                            'rgba(153, 102, 255, 0.7)',
-                            'rgba(255, 159, 64, 0.7)',
-                            'rgba(199, 199, 199, 0.7)',
-                            'rgba(83, 102, 255, 0.7)',
-                            'rgba(40, 159, 64, 0.7)',
-                            'rgba(210, 199, 199, 0.7)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.raw + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    });
+}
 </script>
 {% endblock %}

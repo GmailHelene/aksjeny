@@ -19,9 +19,17 @@ import redis
 # Load environment variables
 load_dotenv()
 
+# Export db for use in main.py
+__all__ = ['create_app', 'db']
+
 def create_app(config_class=None):
     """Application factory pattern"""
-    app = Flask(__name__)
+    app = Flask(__name__, 
+                template_folder=os.path.join(os.path.dirname(__file__), 'templates'),
+                static_folder=os.path.join(os.path.dirname(__file__), 'static'))
+    
+    # Set strict_slashes to False globally
+    app.url_map.strict_slashes = False
     
     # Set configuration
     if config_class is None:
@@ -162,16 +170,14 @@ def register_blueprints(app):
         ('.routes.seo_content', 'seo_content', '/content'),
         ('.routes.portfolio_advanced', 'portfolio_advanced', '/portfolio-advanced'),
         ('.routes.advanced_analytics', 'advanced_analytics', '/advanced-analytics'),
-        ('.routes.pricing', 'pricing_bp', '/pricing'),
+        ('.routes.pricing', 'pricing', '/pricing'),
         ('.routes.news', 'news_bp', '/news'),
         ('.routes.health', 'health', '/health'),
         ('.routes.admin', 'admin', '/admin'),
         ('.routes.features', 'features', '/features'),
         ('.routes.blog', 'blog', '/blog'),
         ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
-        ('.routes.notifications', 'notifications_bp', '/notifications'),
-        ('.routes.watchlist_advanced', 'watchlist_bp', '/watchlist'),
-        ('.seo', 'sitemap_bp', None),  # SEO sitemap and robots.txt
+        ('.routes.resources', 'resources_bp', '/resources'),
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:

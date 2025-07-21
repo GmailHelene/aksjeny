@@ -3,6 +3,24 @@
 {% block title %}Priser - Aksjeradar{% endblock %}
 
 {% block content %}
+<style>
+/* Fix pricing banner margin for "Mest populær" */
+.pricing-card .badge {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.pricing-card .card-header {
+    padding-top: 1.5rem !important;
+    position: relative;
+}
+
+.pricing-card .badge.position-absolute {
+    top: -0.5rem !important;
+}
+</style>
+
 <div class="container-fluid py-5">
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold">Velg din plan</h1>

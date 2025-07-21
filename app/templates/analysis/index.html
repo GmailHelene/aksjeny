@@ -1,239 +1,111 @@
 {% extends "base.html" %}
 
-{% block title %}Analyse | Aksjeradar{% endblock %}
+{% block title %}Analyser - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-3">
-                <i class="bi bi-graph-up-arrow"></i> Avansert Aksjeanalyse
-            </h1>
-            <p class="lead text-muted">
-                Utforsk våre kraftige analyseverktøy for å ta informerte investeringsbeslutninger
-            </p>
-        </div>
-    </div>
-
+<div class="container">
+    <h1 class="mb-4">Aksjeanalyser</h1>
+    
     <!-- Analysis Tools Grid -->
-    <div class="row g-4">
-        <!-- AI Analysis -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-robot text-primary" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">AI-analyse</h5>
-                            <small class="text-muted">Maskinlæring</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Få AI-drevne innsikter og prediksjoner basert på avanserte algoritmer og historiske data.
-                    </p>
-                    <a href="{{ url_for('analysis.ai') }}" class="btn btn-primary">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Start AI-analyse
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-robot text-primary"></i> AI Analyse
+                    </h5>
+                    <p class="card-text">Få AI-drevne anbefalinger og prediksjoner for aksjer.</p>
+                    <a href="{{ url_for('analysis.ai') }}" class="btn btn-primary">Start AI-analyse</a>
                 </div>
             </div>
         </div>
-
-        <!-- Warren Buffett Analysis -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-lightbulb text-success" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Warren Buffett</h5>
-                            <small class="text-muted">Verdiinvestering</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Analyser aksjer med Warren Buffetts investeringsprinsipper og finn undervurderte selskaper.
-                    </p>
-                    <a href="{{ url_for('analysis.warren_buffett') }}" class="btn btn-success">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Buffett-analyse
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-graph-up text-success"></i> Teknisk analyse
+                    </h5>
+                    <p class="card-text">Analyser kursmønstre og tekniske indikatorer.</p>
+                    <a href="{{ url_for('analysis.technical') }}" class="btn btn-success">Se teknisk analyse</a>
                 </div>
             </div>
         </div>
-
-        <!-- Benjamin Graham Analysis -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-book text-info" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Benjamin Graham</h5>
-                            <small class="text-muted">Fundamental analyse</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Bruk Benjamin Grahams tidløse prinsipper for å identifisere solide investeringsmuligheter.
-                    </p>
-                    <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-info">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Graham-analyse
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-bar-chart text-info"></i> Fundamental analyse
+                    </h5>
+                    <p class="card-text">Vurder selskapets økonomi og nøkkeltall.</p>
+                    <a href="{{ url_for('analysis.fundamental') }}" class="btn btn-info">Fundamental analyse</a>
                 </div>
             </div>
         </div>
-
-        <!-- Short Analysis -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-arrow-down-circle text-danger" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Short Analyse</h5>
-                            <small class="text-muted">Risikovurdering</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Identifiser potensielle svakheter og risikoer i selskaper før du investerer.
-                    </p>
-                    <a href="{{ url_for('analysis.short_analysis') }}" class="btn btn-danger">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Short-analyse
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-people text-warning"></i> Sentiment analyse
+                    </h5>
+                    <p class="card-text">Se markedets sentiment fra sosiale medier og nyheter.</p>
+                    <a href="{{ url_for('analysis.sentiment') }}" class="btn btn-warning">Sentiment analyse</a>
                 </div>
             </div>
         </div>
-
-        <!-- Technical Analysis -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-graph-up text-warning" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Teknisk Analyse</h5>
-                            <small class="text-muted">Trender & mønstre</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Analyser prisbevegelser, volum og tekniske indikatorer for timing av handler.
-                    </p>
-                    <a href="{{ url_for('analysis.technical') }}" class="btn btn-warning">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Teknisk analyse
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-search text-secondary"></i> Aksje-screener
+                    </h5>
+                    <p class="card-text">Finn aksjer basert på dine kriterier.</p>
+                    <a href="{{ url_for('analysis.screener_view') }}" class="btn btn-secondary">Åpne screener</a>
                 </div>
             </div>
         </div>
-
-        <!-- Market Overview -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-secondary bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-globe text-secondary" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Markedsoversikt</h5>
-                            <small class="text-muted">Global innsikt</small>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        Få oversikt over globale markeder, sektorer og makroøkonomiske trender.
-                    </p>
-                    <a href="{{ url_for('analysis.market_overview') }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Se markedsoversikt
-                    </a>
+                    <h5 class="card-title">
+                        <i class="bi bi-globe text-dark"></i> Markedsoversikt
+                    </h5>
+                    <p class="card-text">Få oversikt over globale markeder og trender.</p>
+                    <a href="{{ url_for('analysis.market_overview') }}" class="btn btn-dark">Markedsoversikt</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Features Section -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="mb-4">Hvorfor bruke våre analyseverktøy?</h3>
+    
+    <!-- Market Summary -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Markedssammendrag</h5>
         </div>
-        <div class="col-md-4">
-            <div class="d-flex mb-3">
-                <i class="bi bi-check-circle-fill text-success me-3" style="font-size: 1.5rem;"></i>
-                <div>
-                    <h5>Datadrevet innsikt</h5>
-                    <p class="text-muted">Basert på sanntidsdata og historiske trender fra pålitelige kilder.</p>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <h6>Kjøpssignaler</h6>
+                    <p class="text-success fs-3">{{ buy_signals }}</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="d-flex mb-3">
-                <i class="bi bi-shield-fill-check text-primary me-3" style="font-size: 1.5rem;"></i>
-                <div>
-                    <h5>Beprøvde metoder</h5>
-                    <p class="text-muted">Bruk anerkjente investeringsstrategier fra legendariske investorer.</p>
+                <div class="col-md-3">
+                    <h6>Salgssignaler</h6>
+                    <p class="text-danger fs-3">{{ sell_signals }}</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="d-flex mb-3">
-                <i class="bi bi-lightning-charge-fill text-warning me-3" style="font-size: 1.5rem;"></i>
-                <div>
-                    <h5>Rask analyse</h5>
-                    <p class="text-muted">Få omfattende analyser på sekunder, spar tid og ta bedre beslutninger.</p>
+                <div class="col-md-3">
+                    <h6>Nøytrale</h6>
+                    <p class="text-secondary fs-3">{{ neutral_signals }}</p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Tips -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="alert alert-info">
-                <h5 class="alert-heading">
-                    <i class="bi bi-lightbulb me-2"></i>Tips for best resultat
-                </h5>
-                <ul class="mb-0">
-                    <li>Kombiner flere analysemetoder for en helhetlig vurdering</li>
-                    <li>Sammenlign resultater over tid for å se trender</li>
-                    <li>Bruk teknisk analyse for timing og fundamental analyse for verdi</li>
-                    <li>Husk at ingen analyse garanterer fremtidig avkastning</li>
-                </ul>
+                <div class="col-md-3">
+                    <h6>Markedssentiment</h6>
+                    <p class="fs-3">{{ market_sentiment }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* Custom styles for analysis overview page */
-.card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-}
-
-.btn {
-    transition: all 0.2s ease-in-out;
-}
-
-.btn:hover {
-    transform: scale(1.05);
-}
-
-.rounded-circle {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-</style>
 {% endblock %}

@@ -1,70 +1,136 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Aksjeradar - Markedsoversikt{% endblock %}
+{% block title %}Aksjer - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <h1 class="mb-4 text-dark">Aksjer, Kryptovaluta og Valuta</h1>
-    <p class="lead text-dark">Utforsk aksjer på Oslo Børs, globale markeder, kryptovaluta og valutakurser samlet på ett sted.</p>
-    <div class="row g-4 mb-4">
+<div class="container">
+    <h1 class="mb-4">Aksjeoversikt</h1>
+    
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form action="{{ url_for('stocks.search') }}" method="GET" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Søk etter aksjer..." required>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Søk
+                </button>
+            </form>
+        </div>
         <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">Oslo Børs</h2>
-                </div>
-                <div class="card-body">
-                    <p>Se de mest omsatte aksjene og siste signaler fra Oslo Børs.</p>
-                    <a href="{{ url_for('stocks.list_oslo') }}" class="btn btn-primary">Se Oslo Børs</a>
+            <a href="{{ url_for('stocks.compare') }}" class="btn btn-outline-primary w-100">
+                <i class="bi bi-arrows-angle-expand"></i> Sammenlign aksjer
+            </a>
+        </div>
+    </div>
+    
+    <!-- Market Categories -->
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-flag-fill text-danger display-4"></i>
+                    <h5 class="mt-2">Oslo Børs</h5>
+                    <p class="text-muted">Norske aksjer</p>
+                    <a href="{{ url_for('stocks.list_stocks', market='oslo') }}" class="btn btn-sm btn-outline-primary">
+                        Se alle
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-header bg-success text-white">
-                    <h2 class="h5 mb-0">Globale aksjer</h2>
-                </div>
-                <div class="card-body">
-                    <p>Utforsk populære internasjonale aksjer og markedsdata.</p>
-                    <a href="{{ url_for('stocks.global_list') }}" class="btn btn-success">Se globale aksjer</a>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-globe text-primary display-4"></i>
+                    <h5 class="mt-2">Globale aksjer</h5>
+                    <p class="text-muted">Internasjonale markeder</p>
+                    <a href="{{ url_for('stocks.list_stocks', market='global') }}" class="btn btn-sm btn-outline-primary">
+                        Se alle
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-header bg-warning text-dark">
-                    <h2 class="h5 mb-0">Kryptovaluta</h2>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-bitcoin text-warning display-4"></i>
+                    <h5 class="mt-2">Kryptovaluta</h5>
+                    <p class="text-muted">Digitale valutaer</p>
+                    <a href="{{ url_for('stocks.list_stocks', market='crypto') }}" class="btn btn-sm btn-outline-primary">
+                        Se alle
+                    </a>
                 </div>
-                <div class="card-body">
-                    <p>Følg de største kryptovalutaene og deres utvikling.</p>
-                    <a href="{{ url_for('stocks.list_crypto') }}" class="btn btn-warning">Se kryptovaluta</a>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-exchange text-success display-4"></i>
+                    <h5 class="mt-2">Valuta</h5>
+                    <p class="text-muted">Valutakurser</p>
+                    <a href="{{ url_for('stocks.list_stocks', market='currency') }}" class="btn btn-sm btn-outline-primary">
+                        Se alle
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-header bg-info text-white">
-                    <h2 class="h5 mb-0">Valutakurser</h2>
-                </div>
-                <div class="card-body">
-                    <p>Se oppdaterte valutakurser og endringer mot NOK.</p>
-                    <a href="{{ url_for('stocks.list_currency') }}" class="btn btn-info">Se valutakurser</a>
-                </div>
-            </div>
+    
+    <!-- Popular Stocks -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Populære aksjer</h5>
         </div>
-        <div class="col-md-8">
-            <div class="card h-100">
-                <div class="card-header bg-secondary text-white">
-                    <h2 class="h5 mb-0">Søk etter aksje, krypto eller valuta</h2>
-                </div>
-                <div class="card-body">
-                    <form class="d-flex" action="{{ url_for('main.search') }}" method="get">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <input type="search" name="q" class="form-control me-2" placeholder="Søk etter ticker, navn eller sektor...">
-                        <button class="btn btn-primary" type="submit">Søk</button>
-                    </form>
-                </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Navn</th>
+                            <th>Pris</th>
+                            <th>Endring</th>
+                            <th>Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EQNR.OL</td>
+                            <td>Equinor ASA</td>
+                            <td>342.55 NOK</td>
+                            <td class="text-success">+2.1%</td>
+                            <td>
+                                <a href="{{ url_for('stocks.details', symbol='EQNR.OL') }}" class="btn btn-sm btn-primary">
+                                    Detaljer
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DNB.OL</td>
+                            <td>DNB Bank ASA</td>
+                            <td>234.10 NOK</td>
+                            <td class="text-success">+1.8%</td>
+                            <td>
+                                <a href="{{ url_for('stocks.details', symbol='DNB.OL') }}" class="btn btn-sm btn-primary">
+                                    Detaljer
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>AAPL</td>
+                            <td>Apple Inc.</td>
+                            <td>185.70 USD</td>
+                            <td class="text-danger">-0.5%</td>
+                            <td>
+                                <a href="{{ url_for('stocks.details', symbol='AAPL') }}" class="btn btn-sm btn-primary">
+                                    Detaljer
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

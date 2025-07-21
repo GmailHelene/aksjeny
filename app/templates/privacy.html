@@ -1,49 +1,49 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Personvernerklæring - Aksjeradar{% endblock %}
+{% block title %}Personvern - Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container mt-4">
     <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <div class="card border-0 shadow mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h1 class="h3 mb-0">Personvernerklæring for Aksjeradar</h1>
-                    <p class="small mb-0 text-white-50">Sist oppdatert: 19. juni 2025</p>
-                </div>
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Personvernerklæring</h1>
+            
+            <div class="card">
                 <div class="card-body">
-                    <h2 class="h4 mb-3">Introduksjon</h2>
-                    <p>Velkommen til Aksjeradar sin personvernerklæring. Ditt personvern er viktig for oss.</p>
-                    <p>Denne personvernerklæringen forklarer hvordan Aksjeradar ("vi", "oss", eller "vår") samler inn, bruker, lagrer, beskytter og deler personlig informasjon når du bruker vår mobilapplikasjon Aksjeradar ("Appen") og vår nettside aksjeradar.no ("Nettsiden").</p>
-
-                    <h2 class="h4 mb-3 mt-4">Aldersgrense</h2>
-                    <p>Vår tjeneste er ikke rettet mot personer under 18 år. Vi samler ikke bevisst inn personopplysninger fra barn under 18 år. Hvis du er en forelder eller foresatt og er klar over at ditt barn har gitt oss personopplysninger, vennligst kontakt oss. Hvis vi blir oppmerksomme på at vi har samlet inn personopplysninger fra barn uten verifisering av foreldresamtykke, vil vi ta skritt for å fjerne denne informasjonen fra våre servere.</p>
-
-                    <h2 class="h4 mb-3 mt-4">Informasjon vi samler inn</h2>
+                    <p class="lead">Sist oppdatert: {{ now.strftime('%d.%m.%Y') }}</p>
                     
-                    <h3 class="h5 mb-2">Informasjon du gir til oss</h3>
-                    <p>Når du registrerer en konto hos oss, kan vi samle inn følgende informasjon:</p>
+                    <h2 class="h4 mt-4">1. Innledning</h2>
+                    <p>Aksjeradar tar personvern på alvor. Denne personvernerklæringen forklarer hvordan vi samler inn, bruker og beskytter dine personopplysninger.</p>
+                    
+                    <h2 class="h4 mt-4">2. Informasjon vi samler inn</h2>
                     <ul>
-                        <li>Navn</li>
-                        <li>E-postadresse</li>
-                        <li>Passord (lagret i kryptert form)</li>
-                        <li>Profilinformasjon som du velger å dele</li>
+                        <li>Kontoinformasjon (navn, e-post)</li>
+                        <li>Brukerdata (porteføljer, søkehistorikk)</li>
+                        <li>Tekniske data (IP-adresse, nettlesertype)</li>
                     </ul>
                     
-                    <p>Når du bruker vår app, kan vi også samle inn:</p>
+                    <h2 class="h4 mt-4">3. Hvordan vi bruker informasjonen</h2>
+                    <p>Vi bruker dine data for å:</p>
                     <ul>
-                        <li>Informasjon om dine aksjebeholdninger og økonomiske interesser som du frivillig oppgir</li>
-                        <li>Innstillinger og preferanser for appen</li>
-                        <li>Tilbakemeldinger og kommunikasjon du sender oss</li>
+                        <li>Levere våre tjenester</li>
+                        <li>Forbedre brukeropplevelsen</li>
+                        <li>Sende viktige varsler</li>
+                        <li>Sikre plattformen</li>
                     </ul>
                     
-                    <h3 class="h5 mb-2 mt-3">Informasjon vi samler inn automatisk</h3>
-                    <p>Når du bruker vår app, kan vi automatisk samle inn:</p>
+                    <h2 class="h4 mt-4">4. Datasikkerhet</h2>
+                    <p>Vi bruker bransjestandarder for å beskytte dine data, inkludert kryptering og sikre servere.</p>
+                    
+                    <h2 class="h4 mt-4">5. Dine rettigheter</h2>
+                    <p>Du har rett til å:</p>
                     <ul>
-                        <li>Enhetsinformasjon (som enhetstype, operativsystem og versjon)</li>
-                        <li>Appbruksstatistikk og interaksjonsmønstre</li>
-                        <li>IP-adresse</li>
-                        <li>Tidspunkt og dato for besøk</li>
+                        <li>Be om innsyn i dine data</li>
+                        <li>Korrigere unøyaktige data</li>
+                        <li>Slette din konto</li>
+                        <li>Eksportere dine data</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">6. Kontakt oss</h2>
                         <li>Teknisk informasjon om hvordan du koblet til vår tjeneste</li>
                     </ul>
 

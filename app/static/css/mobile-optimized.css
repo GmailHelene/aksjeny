@@ -766,46 +766,46 @@
 
 /* Mobile Navigation Spacing Fixes */
 @media (max-width: 991.98px) {
-    /* Main navigation improvements */
+    /* Main navigation improvements - MINIMAL SPACING */
     .navbar-nav {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
+        padding-top: 0.15rem !important;
+        padding-bottom: 0.15rem !important;
     }
     
     .navbar-nav .nav-item {
-        margin-bottom: 0.05rem !important; /* Reduced spacing between items */
+        margin-bottom: 0.01rem !important; /* Minimal spacing between items */
     }
     
     .navbar-nav .nav-link {
-        padding: 0.4rem 0.75rem !important; /* Compact padding */
-        font-size: 0.9rem !important;
-        margin-bottom: 0.05rem !important;
+        padding: 0.25rem 0.5rem !important; /* Very compact padding */
+        font-size: 0.85rem !important;
+        margin-bottom: 0.01rem !important;
     }
     
     /* Dropdown menu spacing improvements */
     .navbar-nav .dropdown-menu {
-        margin-left: 0.5rem !important;
-        margin-top: 0.05rem !important;
-        margin-bottom: 0.1rem !important;
-        padding: 0.25rem 0 !important;
+        margin-left: 0.25rem !important;
+        margin-top: 0.01rem !important;
+        margin-bottom: 0.02rem !important;
+        padding: 0.05rem 0 !important;
     }
     
     .navbar-nav .dropdown-menu .dropdown-item {
-        padding: 0.3rem 0.75rem !important; /* Compact dropdown items */
-        font-size: 0.85rem !important;
-        margin-bottom: 0.025rem !important;
+        padding: 0.15rem 0.5rem !important; /* Very compact dropdown items */
+        font-size: 0.8rem !important;
+        margin-bottom: 0.005rem !important;
     }
     
     /* Dropdown header adjustments */
     .navbar-nav .dropdown-header {
-        padding: 0.25rem 0.75rem !important;
-        font-size: 0.75rem !important;
-        margin-bottom: 0.05rem !important;
+        padding: 0.1rem 0.5rem !important;
+        font-size: 0.7rem !important;
+        margin-bottom: 0.01rem !important;
     }
     
     /* Dropdown divider adjustments */
     .navbar-nav .dropdown-divider {
-        margin: 0.15rem 0 !important;
+        margin: 0.05rem 0 !important;
     }
     
     /* Register button spacing fix */
@@ -919,5 +919,49 @@
     
     .navbar-nav .dropdown-menu {
         margin-left: 0.25rem !important;
+    }
+    
+    /* Extra tight spacing for authenticated users with many menu items */
+    .navbar-nav .nav-item:not(:last-child) {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Authenticated user menu specific improvements */
+    .navbar-nav .nav-item .nav-link {
+        line-height: 1.4 !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    /* Extra compact dropdown for authenticated users */
+    .navbar-nav .dropdown-menu .dropdown-item {
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
+        padding: 0.4rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Minimize icon spacing in mobile */
+    .navbar-nav .nav-link i {
+        margin-right: 0.25rem !important;
+    }
+    
+    .dropdown-item i {
+        margin-right: 0.25rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* Dropdown header improvements */
+    .navbar-nav .dropdown-header {
+        padding: 0.05rem 0.5rem !important;
+        font-size: 0.65rem !important;
+        margin-bottom: 0.01rem !important;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    
+    /* Dropdown divider improvements */
+    .navbar-nav .dropdown-divider {
+        margin: 0.02rem 0 !important;
     }
 }

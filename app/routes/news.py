@@ -3,7 +3,7 @@ News Blueprint for Aksjeradar
 Handles news-related routes and functionality
 """
 
-from flask import Blueprint, render_template, request, jsonify, current_app
+from flask import Blueprint, render_template, request, jsonify, current_app, flash, redirect, url_for
 from ..services.news_service import NewsService
 from ..utils.access_control import demo_access, access_required
 from datetime import datetime, timedelta
@@ -160,26 +160,56 @@ def get_latest_news_sync(limit=10, category='all'):
 @news_bp.route('/')
 @demo_access
 def index():
-    """Main news page"""
+    """News main page without debug output"""
     try:
-        # Get category from query parameters
-        category = request.args.get('category', 'all')
+        # Get news articles without debug output
+        news_articles = DataService.get_latest_news() or []
         
-        # Use local mock data for reliability
-        news_articles = get_latest_news_sync(limit=20, category=category)
+        # Get categories
+        categories = ['alle', 'aksjer', 'økonomi', 'marked', 'crypto']
+        selected_category = request.args.get('category', 'alle')
         
-        return render_template('news/index.html', 
-                             news_articles=news_articles,
-                             current_category=category,
-                             total_articles=len(news_articles))
+        # Filter by category if specified
+        if selected_category != 'alle':
+            news_articles = [article for article in news_articles 
+                           if article.get('category', '').lower() == selected_category]
+        
+        return render_template('news/index.html',
+                             articles=news_articles,
+                             categories=categories,
+                             selected_category=selected_category)
                              
     except Exception as e:
-        logger.error(f"Error loading news: {e}")
-        return render_template('news/index.html', 
-                             news_articles=[],
-                             current_category='all',
-                             total_articles=0,
-                             error="Kunne ikke laste nyheter. Prøv igjen senere.")
+        logger.error(f"Error in news index: {e}")
+        return render_template('news/index.html',
+                             articles=[],
+                             categories=['alle', 'aksjer', 'økonomi', 'marked', 'crypto'],
+                             selected_category='alle',
+                             error="Kunne ikke laste nyheter")
+
+@news_bp.route('/<slug>')
+@demo_access
+def article(slug):
+    """Individual news article with proper routing"""
+    try:
+        # Get article by slug
+        article_data = DataService.get_news_article_by_slug(slug)
+        
+        if not article_data:
+            flash('Artikkelen ble ikke funnet.', 'error')
+            return redirect(url_for('news.index'))
+        
+        # Get related articles
+        related_articles = DataService.get_related_news(slug, limit=5) or []
+        
+        return render_template('news/article.html',
+                             article=article_data,
+                             related_articles=related_articles)
+                             
+    except Exception as e:
+        logger.error(f"Error loading news article {slug}: {e}")
+        flash('Beklager, en feil oppsto. Vi jobber med å løse problemet.', 'error')
+        return redirect(url_for('news.index'))
 
 @news_bp.route('/api/latest')
 @demo_access
@@ -660,6 +690,9 @@ def article_detail(slug):
         
         return render_template('news/article.html', article=article_data)
         
+    except Exception as e:
+        logger.error(f"Error loading news article {slug}: {e}")
+        return render_template('error.html', error=f"Kunne ikke laste artikkel: {e}")
     except Exception as e:
         logger.error(f"Error loading news article {slug}: {e}")
         return render_template('error.html', error=f"Kunne ikke laste artikkel: {e}")

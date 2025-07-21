@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Brukervilkår - Aksjeradar{% endblock %}
+{% block title %}Vilkår - Aksjeradar{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Vilkår for bruk</h1>
+            
             <div class="card">
                 <div class="card-body">
-                    <h1 class="card-title">Brukervilkår</h1>
-                    <p class="text-muted">Sist oppdatert: {{ datetime.now().strftime('%d.%m.%Y') }}</p>
+                    <p class="lead">Sist oppdatert: {{ now.strftime('%d.%m.%Y') }}</p>
                     
-                    <div class="terms-content">
-                        <h2>1. Aksept av vilkår</h2>
-                        <p>Ved å bruke Aksjeradar-tjenesten aksepterer du disse brukervilkårene. Hvis du ikke aksepterer vilkårene, skal du ikke bruke tjenesten.</p>
-                        
-                        <h2>2. Beskrivelse av tjenesten</h2>
-                        <p>Aksjeradar er en AI-drevet aksje- og investeringsanalysetjeneste som gir:</p>
-                        <ul>
-                            <li>Markedsanalyse og prisprognoser</li>
-                            <li>Porteføljeoptimalisering</li>
-                            <li>Teknisk og fundamental analyse</li>
-                            <li>Varsling og anbefalinger</li>
-                        </ul>
-                        
-                        <h2>3. Ansvarsfraskrivelse for investeringsrådgivning</h2>
-                        <div class="alert alert-warning">
-                            <strong>VIKTIG:</strong> Aksjeradar er ikke en autorisert finansiell rådgiver. All informasjon og analyser som tilbys er kun til informasjonsformål og skal ikke tolkes som investeringsrådgivning. Du tar alle investeringsbeslutninger på egen risiko.
-                        </div>
-                        
-                        <h2>4. Brukerforpliktelser</h2>
-                        <p>Som bruker forplikter du deg til å:</p>
-                        <ul>
-                            <li>Gi korrekt og oppdatert informasjon</li>
-                            <li>Holde dine påloggingsopplysninger konfidensielle</li>
-                            <li>Ikke misbruke tjenesten eller dele tilgang med andre</li>
+                    <h2 class="h4 mt-4">1. Aksept av vilkår</h2>
+                    <p>Ved å bruke Aksjeradar godtar du disse vilkårene. Hvis du ikke godtar vilkårene, vennligst ikke bruk tjenesten.</p>
+                    
+                    <h2 class="h4 mt-4">2. Beskrivelse av tjenesten</h2>
+                    <p>Aksjeradar tilbyr aksjeanalyse, markedsdata og investeringsverktøy. Tjenesten er kun ment som informasjon og ikke som investeringsrådgivning.</p>
+                    
+                    <h2 class="h4 mt-4">3. Ansvarsfraskrivelse</h2>
+                    <p><strong>Viktig:</strong> All informasjon på Aksjeradar er kun for informasjonsformål. Vi gir ikke investeringsråd. Du er selv ansvarlig for dine investeringsbeslutninger.</p>
+                    
+                    <h2 class="h4 mt-4">4. Brukerkontoer</h2>
+                    <ul>
+                        <li>Du må oppgi korrekt informasjon</li>
+                        <li>Du er ansvarlig for å holde passordet ditt sikkert</li>
+                        <li>Du kan ikke dele kontoen din med andre</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">5. Betaling og abonnement</h2>
+                    <p>Premium-abonnementer fornyes automatisk. Du kan avbryte når som helst.</p>
+                    
+                    <h2 class="h4 mt-4">6. Immaterielle rettigheter</h2>
+                    <p>Alt innhold på Aksjeradar er beskyttet av opphavsrett. Du kan ikke kopiere eller redistribuere innhold uten tillatelse.</p>
+                    
+                    <h2 class="h4 mt-4">7. Endringer i vilkårene</h2>
                             <li>Følge alle gjeldende lover og forskrifter</li>
                         </ul>
                         

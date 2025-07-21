@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Innsidehandel - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Innsidehandel</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                        <li class="breadcrumb-item active">Innsidehandel</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Søk etter innsidehandel</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('insider_trading.search') }}">
+                        <div class="mb-3">
+                            <label for="symbol" class="form-label">Aksjesymbol</label>
+                            <input type="text" class="form-control" id="symbol" name="symbol" 
+                                   placeholder="f.eks. NOK, TEL" value="{{ selected_symbol or '' }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Søk</button>
+                    </form>
+                    
+                    {% if popular_stocks %}
+                    <div class="mt-3">
+                        <small class="text-muted">Populære aksjer:</small>
+                        <div class="mt-2">
+                            {% for stock in popular_stocks[:8] %}
+                            <a href="{{ url_for('insider_trading.search', symbol=stock.symbol) }}" 
+                               class="badge bg-light text-dark me-1 mb-1">{{ stock.symbol }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    {% if selected_symbol %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Innsidehandel for {{ selected_symbol }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if insider_data %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Dato</th>
+                                    <th>Person/Rolle</th>
+                                    <th>Transaksjon</th>
+                                    <th>Antall</th>
+                                    <th>Pris</th>
+                                    <th>Verdi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trade in insider_data %}
+                                <tr>
+                                    <td>{{ trade.date|default('N/A') }}</td>
+                                    <td>
+                                        <div>{{ trade.person|default('Ukjent') }}</div>
+                                        <small class="text-muted">{{ trade.role|default('') }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if trade.transaction_type == 'KJØP' else 'danger' if trade.transaction_type == 'SALG' else 'secondary' }}">
+                                            {{ trade.transaction_type|default('N/A') }}
+                                        </span>
+                                    </td>
+                                    <td>{{ trade.quantity|default('N/A') }}</td>
+                                    <td>{{ trade.price|default('N/A') }} kr</td>
+                                    <td>{{ trade.total_value|default('N/A') }} kr</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">Ingen innsidehandel data funnet for {{ selected_symbol }}.</p>
+                        <p class="small text-muted">Dette kan bety at det ikke er registrert innsidehandel for denne aksjen nylig.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Recent Insider Trading -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Nylig innsidehandel</h5>
+                </div>
+                <div class="card-body">
+                    {% if insider_data %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Dato</th>
+                                    <th>Person</th>
+                                    <th>Transaksjon</th>
+                                    <th>Verdi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trade in insider_data[:20] %}
+                                <tr>
+                                    <td><strong>{{ trade.symbol|default('N/A') }}</strong></td>
+                                    <td>{{ trade.date|default('N/A') }}</td>
+                                    <td>{{ trade.person|default('Ukjent') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if trade.transaction_type == 'KJØP' else 'danger' if trade.transaction_type == 'SALG' else 'secondary' }}">
+                                            {{ trade.transaction_type|default('N/A') }}
+                                        </span>
+                                    </td>
+                                    <td>{{ trade.total_value|default('N/A') }} kr</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-line fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">Ingen innsidehandel data tilgjengelig for øyeblikket.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

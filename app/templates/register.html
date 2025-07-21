@@ -1,212 +1,92 @@
-{% extends 'base.html' %}
-{% block title %}Registrer deg - Aksjeradar{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Registrer - Aksjeradar{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <!-- Referral info section if arriving via referral -->
-    {% if request.args.get('ref') %}
-    <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
-            <div class="alert alert-success border-0 shadow-sm">
-                <div class="text-center">
-                    <h4 class="mb-2"><i class="bi bi-gift-fill"></i> Du har blitt invitert!</h4>
-                    <p class="mb-2">En venn har invitert deg til Aksjeradar med kode: <strong>{{ request.args.get('ref') }}</strong></p>
-                    <p class="small mb-0">
-                        <i class="bi bi-check-circle text-success"></i> Når du tegner et årlig abonnement får vennen din 20% rabatt!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    
-    <!-- Intro section with benefits -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-10 text-center">
-            <h1 class="display-4 mb-4 text-primary">⚡ Bli medlem av Norges smarteste aksjeplattform!</h1>
-            <p class="lead mb-4">Aksjeradar.trade gir deg AI-drevet aksjeanalyse og professionelle investeringsverktøy som vanligvis koster tusener av kroner.</p>
-            
-            <div class="alert alert-info border-0 mb-4">
-                <h5 class="mb-2">💡 <strong>Ny på Aksjeradar?</strong></h5>
-                <p class="mb-0">Registrer deg og få tilgang til kraftige analyseverkøy!</p>
-            </div>
-            
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card border-0 h-100 bg-light">
-                        <div class="card-body text-center">
-                            <i class="fas fa-brain fa-3x text-primary mb-3"></i>
-                            <h5>AI Aksjeanalyse</h5>
-                            <p class="small">Få smarte anbefalinger basert på avanserte algoritmer og markedsdata</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card border-0 h-100 bg-light">
-                        <div class="card-body text-center">
-                            <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-                            <h5>Teknisk Analyse</h5>
-                            <p class="small">Profesjonelle tekniske indikatorer og trendanalyse for alle aksjer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card border-0 h-100 bg-light">
-                        <div class="card-body text-center">
-                            <i class="fas fa-briefcase fa-3x text-warning mb-3"></i>
-                            <h5>Porteføljeverktøy</h5>
-                            <p class="small">Spor og optimaliser investeringene dine med avanserte analyser</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card border-0 shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Registrer deg</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Opprett konto</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" novalidate>
+                    <form method="POST" action="{{ url_for('main.register') }}">
                         {{ form.hidden_tag() }}
+                        
                         <div class="mb-3">
-                            <label for="username" class="form-label">Brukernavn</label>
-                            {{ form.username(class="form-control", id="username") }}
-                            {% for error in form.username.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">E-post</label>
-                            {{ form.email(class="form-control", id="email") }}
-                            {% for error in form.email.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Passord</label>
-                            {{ form.password(class="form-control", id="password") }}
-                            {% for error in form.password.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">Bekreft passord</label>
-                            {{ form.confirm_password(class="form-control", id="confirm_password") }}
-                            {% for error in form.confirm_password.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control", placeholder="Velg et brukernavn") }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.username.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                         
-                        <!-- Referral code field -->
                         <div class="mb-3">
-                            <label for="referral_code" class="form-label">
-                                Invitasjonskode <small class="text-muted">(valgfritt)</small>
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control", placeholder="din@epost.no") }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control", placeholder="Velg et sikkert passord") }}
+                            {% if form.password.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password2.label(class="form-label") }}
+                            {{ form.password2(class="form-control", placeholder="Gjenta passordet") }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password2.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.referral_code %}
+                        <div class="mb-3">
+                            {{ form.referral_code.label(class="form-label") }}
+                            {{ form.referral_code(class="form-control", placeholder="Valgfritt") }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                Jeg godtar <a href="{{ url_for('main.terms') }}" target="_blank">vilkårene</a> og 
+                                <a href="{{ url_for('main.privacy') }}" target="_blank">personvernreglene</a>
                             </label>
-                            {{ form.referral_code(class="form-control", id="referral_code", placeholder="Skriv inn venns invitasjonskode") }}
-                            {% for error in form.referral_code.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                            <div class="form-text">
-                                <i class="bi bi-gift-fill text-success"></i> 
-                                <strong>Har du fått en invitasjonskode fra en venn?</strong> Skriv den inn her!<br>
-                                <i class="bi bi-percent text-primary"></i> 
-                                <strong>Bonus:</strong> Når du tegner et årlig abonnement får vennen din <span class="badge bg-success">20% rabatt</span> på sitt neste abonnement!
-                            </div>
-                        </div>
-                        
-                        <!-- Referral info box -->
-                        <div class="alert alert-info border-0 mb-3">
-                            <h6 class="mb-2"><i class="bi bi-people-fill"></i> Vil du også invitere venner?</h6>
-                            <p class="small mb-2">
-                                Når du registrerer deg får du din egen invitasjonskode som du kan dele med venner. 
-                                For hver venn som tegner årlig abonnement får du <strong>20% rabatt</strong> på ditt neste abonnement!
-                            </p>
-                            <p class="small mb-0 text-muted">
-                                <i class="bi bi-envelope"></i> Du finner din invitasjonskode og kan sende invitasjoner på din profilside etter registrering.
-                            </p>
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Registrer deg</button>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="text-center">
+                            <p>Har du allerede konto? <a href="{{ url_for('main.login') }}">Logg inn her</a></p>
                         </div>
                     </form>
-                </div>
-                <div class="card-footer bg-light">
-                    <p class="mb-0">Har du allerede en konto? <a href="{{ url_for('main.login') }}">Logg inn her</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Subscription offers section -->
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-10">
-            <div class="card border-primary">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3 class="mb-0">💎 Oppgrader til Premium for full tilgang!</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-header text-center bg-light">
-                                    <h5 class="mb-0">Pro Månedlig</h5>
-                                </div>
-                <div class="card-body text-center">
-                    <h4 class="text-primary">399 kr<small class="text-muted">/måned</small></h4>
-                    <ul class="list-unstyled small">
-                        <li>✅ Ubegrensede aksje-analyser</li>
-                        <li>✅ Full AI-analyse med signaler</li>
-                        <li>✅ Porteføljeanalyse</li>
-                        <li>✅ E-postvarsler</li>
-                    </ul>
-                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100 border-warning shadow">
-                                <div class="card-header text-center bg-warning">
-                                    <h5 class="mb-0">Pro Årlig</h5>
-                                    <span class="badge bg-dark">Mest populær!</span>
-                                </div>
-                                <div class="card-body text-center">
-                                    <h4 class="text-success">2999 kr<small class="text-muted">/år</small></h4>
-                                    <p class="text-success small"><strong>Spar 27%!</strong></p>
-                                    <ul class="list-unstyled small">
-                                        <li>✅ Full tilgang til alle funksjoner</li>
-                                        <li>✅ Avanserte analyser</li>
-                                        <li>✅ Prioritert support</li>
-                                        <li>✅ Kun 67 kr/mnd</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100 border-info shadow-sm">
-                                <div class="card-header text-center bg-info text-white">
-                                    <h5 class="mb-0">Team</h5>
-                                </div>
-                                <div class="card-body text-center">
-                                    <h4 class="text-info">Kontakt<small class="text-muted"> for pris</small></h4>
-                                    <ul class="list-unstyled small">
-                                        <li>✅ Alt fra Pro årlig</li>
-                                        <li>✅ Flere brukere per konto</li>
-                                        <li>✅ Sentralisert admin-panel</li>
-                                        <li>✅ Dedikert kundeservice</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="{{ url_for('main.subscription') }}" class="btn btn-success btn-lg">
-                            🎯 Se alle abonnementer og kjøp nå!
-                        </a>
-                        <p class="small text-muted mt-2">Bli med i Aksjeradars community i dag!</p>
-                    </div>
                 </div>
             </div>
         </div>
