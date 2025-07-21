@@ -14,30 +14,49 @@ function initializeDropdownNavigation() {
     const dropdownToggles = document.querySelectorAll('.navbar-nav .dropdown-toggle');
     
     dropdownToggles.forEach(function(toggle) {
-        // Make sure dropdowns work on click
+        // Make sure dropdowns work on click/hover, but allow direct navigation
         toggle.addEventListener('click', function(e) {
-            const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
-            
-            // On mobile, let Bootstrap handle it normally
+            // On mobile, let Bootstrap handle it normally (show dropdown)
             if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
+                
+                // Toggle the dropdown
+                if (this.getAttribute('aria-expanded') === 'true') {
+                    dropdown.hide();
+                } else {
+                    hideAllDropdowns();
+                    dropdown.show();
+                }
                 return;
             }
             
-            // On PC, prevent default href navigation and show dropdown
-            e.preventDefault();
-            e.stopPropagation();
+            // On PC: Check if click was on dropdown arrow or the link itself
+            const rect = this.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const linkWidth = rect.width;
             
-            // Toggle the dropdown
-            if (this.getAttribute('aria-expanded') === 'true') {
-                dropdown.hide();
-            } else {
-                // Hide other dropdowns first
-                hideAllDropdowns();
-                dropdown.show();
+            // If click is in the last 30px (arrow area), show dropdown
+            if (clickX > linkWidth - 30) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
+                
+                // Toggle the dropdown
+                if (this.getAttribute('aria-expanded') === 'true') {
+                    dropdown.hide();
+                } else {
+                    hideAllDropdowns();
+                    dropdown.show();
+                }
             }
+            // Otherwise, let the link navigate normally (don't prevent default)
         });
-        
-        // Add hover functionality on PC
+    });
+    
+    // Add hover functionality on PC
+    dropdownToggles.forEach(function(toggle) {
         if (window.innerWidth > 768) {
             const parentLi = toggle.closest('li.dropdown');
             
@@ -55,15 +74,6 @@ function initializeDropdownNavigation() {
                 }
             });
         }
-    });
-    
-    // Add double-click navigation to main sections on PC
-    dropdownToggles.forEach(function(toggle) {
-        toggle.addEventListener('dblclick', function(e) {
-            if (window.innerWidth > 768) {
-                navigateToMainPage(this.id);
-            }
-        });
     });
     
     // Close dropdowns when clicking outside

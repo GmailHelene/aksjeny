@@ -106,6 +106,19 @@
         .navbar-nav .dropdown-toggle[aria-expanded="true"]::before {
             width: 80%;
         }
+        
+        /* Visual cue for clickable arrow area */
+        .navbar-nav .dropdown-toggle::after {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            padding: 2px 4px;
+            margin-left: 8px;
+            transition: background 0.2s ease;
+        }
+        
+        .navbar-nav .dropdown-toggle:hover::after {
+            background: rgba(255,255,255,0.3);
+        }
     }
 
     /* Fix mobile menu padding issues - completely revised for ALL users */
@@ -317,7 +330,7 @@
                 <ul class="navbar-nav me-auto">
                     <!-- Aksjer Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('stocks.index') }}" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Aksjer
                         </a>
                         <ul class="dropdown-menu">
@@ -361,7 +374,7 @@
 
                     <!-- Analyser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('analysis.index') }}" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Analyser
                         </a>
                         <ul class="dropdown-menu">
@@ -420,7 +433,7 @@
                     <!-- Portefølje Dropdown (for logged in users) -->
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('portfolio.index') }}" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Portefølje
                         </a>
                         <ul class="dropdown-menu">
@@ -449,7 +462,7 @@
 
                     <!-- Nyheter Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="newsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('news_bp.index') }}" id="newsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Nyheter
                         </a>
                         <ul class="dropdown-menu">
@@ -494,7 +507,7 @@
 
                     <!-- Priser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="pricingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('pricing.index') }}" id="pricingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Priser
                         </a>
                         <ul class="dropdown-menu">
@@ -525,7 +538,7 @@
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('main.profile') }}" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
                         </a>
                         <ul class="dropdown-menu">

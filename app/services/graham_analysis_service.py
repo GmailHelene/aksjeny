@@ -56,7 +56,7 @@ class GrahamAnalysisService:
     }
     
     @staticmethod
-    def analyze(ticker):
+    def analyze_stock(ticker):
         """
         Perform Benjamin Graham style analysis on a stock
         Returns comprehensive value analysis

@@ -95,8 +95,38 @@ def market_overview():
         crypto_data = DataService.get_crypto_overview() or {}
         currency_data = DataService.get_currency_overview() or {}
         
-        # Get market summaries with proper structure for template
+        # Convert dictionaries to objects with attributes for template compatibility
         from types import SimpleNamespace
+        
+        # Convert crypto data to have proper attributes
+        converted_crypto = {}
+        for symbol, data in crypto_data.items():
+            if isinstance(data, dict):
+                converted_crypto[symbol] = SimpleNamespace(
+                    price=data.get('price', 0),
+                    change_24h=data.get('change_24h', data.get('change_percent', 0)),
+                    volume=data.get('volume', 0),
+                    signal=data.get('signal', 'HOLD')
+                )
+            else:
+                converted_crypto[symbol] = data
+                
+        # Convert currency data to have proper attributes  
+        converted_currency = {}
+        for symbol, data in currency_data.items():
+            if isinstance(data, dict):
+                converted_currency[symbol] = SimpleNamespace(
+                    last_price=data.get('last_price', 0),
+                    change_24h=data.get('change_24h', data.get('change_percent', 0)),
+                    change=data.get('change', 0),
+                    volume=data.get('volume', 0),
+                    signal=data.get('signal', 'HOLD'),
+                    name=data.get('name', symbol)
+                )
+            else:
+                converted_currency[symbol] = data
+        
+        # Get market summaries with proper structure for template
         market_summaries = SimpleNamespace()
         market_summaries.oslo = SimpleNamespace(
             index_value=1567.8,
@@ -121,8 +151,8 @@ def market_overview():
         return render_template('analysis/market_overview.html',
                              oslo_stocks=oslo_data,
                              global_stocks=global_data,
-                             crypto_data=crypto_data,
-                             currency_data=currency_data,
+                             crypto_data=converted_crypto,
+                             currency_data=converted_currency,
                              market_summaries=market_summaries)
                              
     except Exception as e:
@@ -134,14 +164,6 @@ def market_overview():
         fallback_summaries.global_market = SimpleNamespace(index_value=0, change=0, change_percent=0)
         fallback_summaries.crypto = SimpleNamespace(change_percent=0, change=0, total_market_cap=0)
         fallback_summaries.currency = SimpleNamespace(usd_nok=0, usd_nok_change=0)
-        
-        return render_template('analysis/market_overview.html',
-                             oslo_stocks={},
-                             global_stocks={},
-                             crypto_data={},
-                             currency_data={},
-                             market_summaries=fallback_summaries,
-                             error="Kunne ikke laste markedsdata")
 
 @analysis.route('/warren-buffett', methods=['GET', 'POST'])
 @access_required

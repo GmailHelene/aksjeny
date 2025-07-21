@@ -342,7 +342,7 @@ def category(category):
                 })() for i in range(1, 6)
             ]
         
-        return render_template('news/category.html',
+        return render_template('news/category_simple.html',
                              news_articles=news_articles,
                              category=category)
                              
@@ -361,7 +361,7 @@ def category(category):
                 'categories': [category]
             })()
         ]
-        return render_template('news/category.html',
+        return render_template('news/category_simple.html',
                              news_articles=mock_articles,
                              category=category,
                              error="Feil ved lasting av kategori - viser demo-data")

@@ -39,7 +39,7 @@ class BuffettAnalysisService:
     }
     
     @staticmethod
-    def analyze(ticker):
+    def analyze_stock(ticker):
         """
         Perform Warren Buffett style analysis on a stock
         Returns comprehensive analysis with scores and recommendations
