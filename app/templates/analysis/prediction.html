@@ -52,7 +52,7 @@
                                 {% for ticker, pred in predictions_oslo.items() %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none fw-bold">
+                                        <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="text-decoration-none fw-bold">
                                             {{ ticker }}
                                         </a>
                                         <div class="small text-muted">
@@ -81,7 +81,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>
@@ -121,7 +121,7 @@
                                 {% for ticker, pred in predictions_global.items() %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none fw-bold">
+                                        <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="text-decoration-none fw-bold">
                                             {{ ticker }}
                                         </a>
                                         <div class="small text-muted">
@@ -150,7 +150,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>
@@ -205,7 +205,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker=BTC-USD" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker='BTC-USD') }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol='BTC-USD') }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>
@@ -224,7 +224,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker=ETH-USD" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker='ETH-USD') }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol='ETH-USD') }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>
@@ -243,7 +243,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker=XRP-USD" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker='XRP-USD') }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol='XRP-USD') }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>
@@ -262,7 +262,7 @@
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker=ADA-USD" class="btn btn-outline-primary">
                                                 <i class="bi bi-graph-up"></i> Analyse
                                             </a>
-                                            <a href="{{ url_for('stocks.details', ticker='ADA-USD') }}" class="btn btn-outline-secondary">
+                                            <a href="{{ url_for('stocks.details', symbol='ADA-USD') }}" class="btn btn-outline-secondary">
                                                 <i class="bi bi-info-circle"></i> Detaljer
                                             </a>
                                         </div>

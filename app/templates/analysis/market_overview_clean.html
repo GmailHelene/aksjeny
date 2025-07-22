@@ -75,7 +75,7 @@
                                     <td class="text-end">{{ stock.volume|default('1000000') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
                                         </div>
                                     </td>
@@ -145,7 +145,7 @@
                                     <td class="text-end">{{ stock.volume|default('1000000') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se aksjeinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
                                         </div>
                                     </td>
@@ -206,7 +206,7 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se detaljinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
+                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Se detaljinformasjon og grafer"><i class="bi bi-graph-up"></i></a>
                                             <a href="{{ url_for('analysis.recommendation') }}?ticker={{ ticker }}" class="btn btn-outline-info" data-bs-toggle="tooltip" title="Se handelsanbefaling"><i class="bi bi-bar-chart"></i></a>
                                         </div>
                                     </td>

@@ -35,7 +35,7 @@
                 <tbody>
                     {% for result in results %}
                     <tr>
-                        <td><a href="{{ url_for('stocks.details', ticker=result.ticker) }}">{{ result.ticker }}</a></td>
+                        <td><a href="{{ url_for('stocks.details', symbol=result.ticker) }}">{{ result.ticker }}</a></td>
                         <td>{{ result.name }}</td>
                         <td>{{ result.exchange }}</td>
                         <td>{{ result.price }}</td>
@@ -43,7 +43,7 @@
                             {{ result.change }}%
                         </td>
                         <td>
-                            <a href="{{ url_for('stocks.details', ticker=result.ticker) }}" class="btn btn-sm btn-primary">Vis detaljer</a>
+                            <a href="{{ url_for('stocks.details', symbol=result.ticker) }}" class="btn btn-sm btn-primary">Vis detaljer</a>
                         </td>
                     </tr>
                     {% endfor %}

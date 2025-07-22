@@ -111,7 +111,7 @@
                     <tbody>
                         {% for ticker in tickers %}
                         <tr>
-                            <td><a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
+                            <td><a href="{{ url_for('stocks.details', symbol=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
                             <td>{{ ticker_names.get(ticker, ticker) }}</td>
                             <td>{{ "%.2f"|format(current_prices.get(ticker, 0)) }}</td>
                             <td class="{% if price_changes.get(ticker, 0) > 0 %}text-success{% elif price_changes.get(ticker, 0) < 0 %}text-danger{% endif %}">
@@ -151,7 +151,7 @@
                     <tbody>
                         {% for ticker in tickers %}
                         <tr>
-                            <td><a href="{{ url_for('stocks.details', ticker=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
+                            <td><a href="{{ url_for('stocks.details', symbol=ticker) }}" class="text-decoration-none">{{ ticker }}</a></td>
                             <td>
                                 <span class="badge {% if rsi.get(ticker, 50) > 70 %}bg-danger{% elif rsi.get(ticker, 50) < 30 %}bg-success{% else %}bg-secondary{% endif %}">
                                     {{ "%.1f"|format(rsi.get(ticker, 50)) }}

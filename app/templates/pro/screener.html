@@ -137,7 +137,7 @@
                                     <td>{{ stock.dividend }}%</td>
                                     <td>{{ stock.market_cap }}M</td>
                                     <td>
-                                        <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-outline-primary">Detaljer</a>
+                                        <a href="{{ url_for('stocks.details', symbol=stock.ticker) }}" class="btn btn-sm btn-outline-primary">Detaljer</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

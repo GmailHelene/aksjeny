@@ -87,7 +87,7 @@
                             <div class="card-body">
                                 <div class="d-flex gap-2">
                                     {% if ticker %}
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-primary">
+                                        <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-primary">
                                             <i class="bi bi-graph-up"></i> Technical Analysis
                                         </a>
                                         <button class="btn btn-success" id="add-to-portfolio" data-ticker="{{ ticker }}">
@@ -96,7 +96,7 @@
                                         <button class="btn btn-info" id="add-to-watchlist" data-ticker="{{ ticker }}">
                                             <i class="bi bi-eye"></i> Add to Watchlist
                                         </button>
-                                        <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-secondary">
+                                        <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-secondary">
                                             <i class="bi bi-info-circle"></i> Stock Details
                                         </a>
                                     {% endif %}

@@ -37,7 +37,7 @@
                 {% for tip in tips %}
                 <tr>
                   <td>
-                    <a href="{{ url_for('stocks.details', ticker=tip.ticker) }}" class="text-decoration-none">
+                    <a href="{{ url_for('stocks.details', symbol=tip.ticker) }}" class="text-decoration-none">
                       <strong>{{ tip.ticker }}</strong>
                     </a>
                   </td>

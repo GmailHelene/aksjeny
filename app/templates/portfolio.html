@@ -87,7 +87,7 @@
                                             {% for stock in stocks %}
                                             <tr>
                                                 <td>
-                                                    <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}">
+                                                    <a href="{{ url_for('stocks.details', symbol=stock.ticker) }}">
                                                         {{ stock.ticker }}
                                                     </a>
                                                 </td>
@@ -103,9 +103,9 @@
                                                 </td>
                                                 <td>
                                                     <div class="btn-group" role="group">
-                                                        <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-info">
+                                                        <a href="{{ url_for('stocks.details', symbol=stock.ticker) }}" class="btn btn-sm btn-info">
                                                             <i class="bi bi-info-circle"></i>
-                                                        </a>                                        <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-primary">
+                                                        </a>                                        <a href="{{ url_for('stocks.details', symbol=stock.ticker) }}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-graph-up"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-danger" onclick="confirmRemove('{{ stock.ticker }}', '{{ stock.id }}')">

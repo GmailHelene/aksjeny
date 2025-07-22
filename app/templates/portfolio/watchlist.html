@@ -38,7 +38,7 @@
             {% endif %}
           </td>
           <td>
-            <a href="{{ url_for('stocks.details', ticker=stock.ticker) }}" class="btn btn-sm btn-info">Detaljer</a>
+            <a href="{{ url_for('stocks.details', symbol=stock.ticker) }}" class="btn btn-sm btn-info">Detaljer</a>
           </td>
         </tr>
         {% endfor %}

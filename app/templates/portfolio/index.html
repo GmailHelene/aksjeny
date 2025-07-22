@@ -71,7 +71,7 @@
                   {{ data.profit_loss_percent|round(2) }}%
                 </td>
                 <td>                  <div class="btn-group" role="group">
-                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-sm btn-outline-primary">Detaljer</a>
+                    <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-sm btn-outline-primary">Detaljer</a>
                     <a href="{{ url_for('portfolio.edit_stock', id=portfolio.id, stock_id=data.stock_id) }}" class="btn btn-sm btn-outline-secondary">Rediger</a>
                     <a href="{{ url_for('portfolio.remove_stock', id=portfolio.id, stock_id=data.stock_id) }}" class="btn btn-sm btn-outline-danger">Fjern</a>
                   </div>

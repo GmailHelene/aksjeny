@@ -44,7 +44,7 @@
                 <p>{{ details or 'Ingen ytterligere begrunnelse tilgjengelig.' }}</p>
                 <div class="mt-4">
                     {% if ticker and ticker != '' %}
-                    <a href="{{ url_for('stocks.details', ticker=ticker) }}" class="btn btn-outline-primary">
+                    <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-outline-primary">
                         <i class="bi bi-graph-up"></i> Se aksjedetaljer
                     </a>
                     <a href="{{ url_for('analysis.technical') }}?ticker={{ ticker }}" class="btn btn-outline-info">
