@@ -511,7 +511,55 @@
         transform: translateX(var(--swipe-offset, 0));
     }
     
-    /* Fast scroll optimization */
+    /* Desktop Navigation Improvements - Fix hidden scrollbar issues */
+@media (min-width: 769px) {
+    /* Ensure all navigation elements are properly visible and accessible */
+    .navbar-nav {
+        overflow: visible !important;
+        position: static !important;
+    }
+    
+    .navbar-collapse {
+        overflow: visible !important;
+        position: static !important;
+    }
+    
+    .dropdown-menu {
+        overflow: visible !important;
+        position: absolute !important;
+    }
+    
+    /* Remove any hidden or problematic scrollbars */
+    .navbar-nav::-webkit-scrollbar,
+    .navbar-collapse::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .navbar-nav {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    
+    /* Ensure dropdown menus are easily accessible */
+    .navbar-nav .dropdown-toggle {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .navbar-nav .dropdown-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+    
+    /* Better visual feedback for interactive elements */
+    .navbar-nav .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+}
+
+/* Fast scroll optimization */
     .fast-scroll {
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;

@@ -5,144 +5,160 @@
 {% block content %}
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Velg din plan</h1>
-        <p class="lead text-muted">Velg den planen som passer deg best</p>
+        <h1 class="display-4 fw-bold">Spar mer med årlig betaling</h1>
+        <p class="lead text-muted">Velg mellom månedlig og årlig abonnement - årlig gir deg kraftig rabatt</p>
     </div>
 
-    <!-- Pricing Cards -->
+    <!-- Savings Highlight -->
+    <div class="alert alert-success mb-5" role="alert">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4 class="alert-heading mb-2">💰 Stor besparelse med årlig betaling!</h4>
+                <p class="mb-0">Velg årlig abonnement og spar <strong>kr 1,789</strong> sammenlignet med månedlig betaling. Det tilsvarer 37% rabatt!</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="badge bg-success fs-5 px-3 py-2">
+                    <i class="bi bi-piggy-bank me-2"></i>Spar kr 1,789
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Comparison -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h2 class="mb-0">Månedlig vs Årlig - Se forskjellen</h2>
+                </div>
+                <div class="card-body p-5">
+                    <div class="row text-center">
+                        <!-- Monthly Option -->
+                        <div class="col-md-6">
+                            <div class="border rounded p-4 h-100" style="border-color: #dc3545 !important; border-width: 2px !important;">
+                                <i class="bi bi-calendar-month text-danger" style="font-size: 3rem;"></i>
+                                <h3 class="mt-3 text-danger">Månedlig</h3>
+                                <div class="mb-3">
+                                    <span class="display-4 fw-bold">kr 399</span>
+                                    <span class="text-muted h5">/mnd</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong class="text-danger">Totalt per år: kr 4,788</strong>
+                                </div>
+                                <ul class="list-unstyled text-start mb-4">
+                                    <li class="mb-2">✓ Full tilgang til alle funksjoner</li>
+                                    <li class="mb-2">✓ Ingen bindingstid</li>
+                                    <li class="mb-2">✓ Kanseller når som helst</li>
+                                    <li class="mb-2 text-danger">✗ Dyrere på lang sikt</li>
+                                </ul>
+                                <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-danger btn-lg w-100">
+                                    Velg månedlig
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Annual Option -->
+                        <div class="col-md-6">
+                            <div class="border rounded p-4 h-100 position-relative" style="border-color: #28a745 !important; border-width: 3px !important; background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);">
+                                <div class="position-absolute top-0 start-50 translate-middle">
+                                    <span class="badge bg-success px-4 py-2 fs-6">💎 BEST VERDI</span>
+                                </div>
+                                <i class="bi bi-calendar-check text-success" style="font-size: 3rem;"></i>
+                                <h3 class="mt-3 text-success">Årlig</h3>
+                                <div class="mb-3">
+                                    <span class="display-4 fw-bold text-success">kr 2,999</span>
+                                    <span class="text-muted h5">/år</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong class="text-success">Du sparer kr 1,789!</strong>
+                                    <br><small class="text-muted">Kun kr 250/mnd</small>
+                                </div>
+                                <ul class="list-unstyled text-start mb-4">
+                                    <li class="mb-2">✓ Full tilgang til alle funksjoner</li>
+                                    <li class="mb-2">✓ Ingen bindingstid</li>
+                                    <li class="mb-2">✓ Kanseller når som helst</li>
+                                    <li class="mb-2 text-success"><strong>✓ Spar kr 1,789 per år</strong></li>
+                                </ul>
+                                <a href="{{ url_for('pricing.index') }}" class="btn btn-success btn-lg w-100 shadow">
+                                    <i class="bi bi-star-fill me-2"></i>Velg årlig - Spar penger!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enterprise Option -->
     <div class="row justify-content-center">
-        <!-- Monthly Plan -->
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header text-center py-4">
-                    <h3 class="mb-0">Månedlig</h3>
-                    <p class="text-muted mb-0">Månedlig betaling</p>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center py-4 bg-light">
+                    <h3 class="mb-0">Teams & Bedrifter</h3>
+                    <p class="text-muted mb-0">Tilpassede løsninger</p>
                 </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr 399</span>
-                        <span class="text-muted">/mnd</span>
-                    </div>
-                    <ul class="list-unstyled">
-                        <li>Full tilgang til alle funksjoner</li>
-                        <li>Ingen bindingstid</li>
-                        <li>Kanseller når som helst</li>
-                    </ul>
-                </div>
-                <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="{{ url_for('pricing.index') }}" class="btn btn-primary w-100">
-                        Velg månedlig
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pro Plan -->
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100 shadow border-primary">
-                <div class="position-absolute top-0 start-50 translate-middle">
-                    <span class="badge bg-primary px-3 py-2">Mest populær</span>
-                </div>
-                <div class="card-header text-center py-4 bg-primary text-white">
-                    <h3 class="mb-0">Årlig</h3>
-                    <p class="mb-0">For aktive investorer</p>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <span class="display-5 fw-bold">kr 2999/år</span>
-                        <div class="small text-muted">Spar 1789 kr per år</div>
-                    </div>
-                    <ul class="list-unstyled">
-                        <li>Alle analyseverktøy</li>
-                        <li>Varsler og watchlist</li>
-                        <li>AI-anbefalinger</li>
-                        <li>Portefølje og transaksjoner</li>
-                    </ul>
-                </div>
-                <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="{{ url_for('pricing.index') }}" class="btn btn-primary w-100">
-                        Velg Årlig
-                    </a>
-                    <p class="text-center text-muted small mt-2 mb-0">
-                        Ingen bindingstid. Avslutt når som helst.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Enterprise Plan -->
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header text-center py-4">
-                    <h3 class="mb-0">Teams</h3>
-                    <p class="text-muted mb-0">For bedrifter</p>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-building text-primary" style="font-size: 3rem;"></i>
+                    <div class="mt-3 mb-4">
                         <span class="display-5 fw-bold">Kontakt oss</span>
+                        <p class="text-muted">For skreddersydde løsninger</p>
                     </div>
-                    <ul class="list-unstyled">
-                        <li>Alt fra årlig plan</li>
-                        <li>Flere brukere per konto</li>
-                        <li>Sentralisert administrasjon</li>
-                        <li>Tilpassede rapporter</li>
-                        <li>Dedikert kundeservice</li>
+                    <ul class="list-unstyled mb-4">
+                        <li>✓ Alt fra årlig plan</li>
+                        <li>✓ Flere brukere per konto</li>
+                        <li>✓ Sentralisert administrasjon</li>
+                        <li>✓ Tilpassede rapporter</li>
+                        <li>✓ Dedikert kundeservice</li>
                     </ul>
-                </div>
-                <div class="card-footer bg-transparent border-0 p-4">
-                    <a href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement" class="btn btn-primary w-100">
-                        Kontakt oss
+                    <a href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-envelope me-2"></i>Kontakt oss
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Comparison Table -->
+    <!-- Savings Comparison -->
     <div class="mt-5">
-        <h2 class="text-center mb-4">Sammenlign planer</h2>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Funksjon</th>
-                        <th>Pro</th>
-                        <th>Enterprise</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Analyseverktøy</td>
-                        <td>✔️</td>
-                        <td>✔️</td>
-                    </tr>
-                    <tr>
-                        <td>Varsler</td>
-                        <td>✔️</td>
-                        <td>✔️</td>
-                    </tr>
-                    <tr>
-                        <td>AI-anbefalinger</td>
-                        <td>✔️</td>
-                        <td>✔️</td>
-                    </tr>
-                    <tr>
-                        <td>Portefølje</td>
-                        <td>✔️</td>
-                        <td>✔️</td>
-                    </tr>
-                    <tr>
-                        <td>API-tilgang</td>
-                        <td>-</td>
-                        <td>✔️</td>
-                    </tr>
-                    <tr>
-                        <td>Dedikert support</td>
-                        <td>-</td>
-                        <td>✔️</td>
-                    </tr>
-                </tbody>
-            </table>
+        <h2 class="text-center mb-4">Spar penger med årlig abonnement</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <h4 class="text-success mb-3">Årlig vs. Månedlig Besparelse</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded">
+                                    <h5 class="text-muted">Månedlig</h5>
+                                    <div class="h4">kr 399 × 12 = <span class="text-danger">kr 4,788</span></div>
+                                    <small class="text-muted">Per år med månedlig betaling</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-success text-white rounded">
+                                    <h5>Årlig</h5>
+                                    <div class="h4">kr 2,999</div>
+                                    <small>Betalt årlig</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="h3 text-success">Du sparer kr 1,789 per år!</div>
+                            <p class="text-muted">Det tilsvarer 37% rabatt sammenlignet med månedlig betaling</p>
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar bg-success" style="width: 63%;">
+                                    Årlig: kr 2,999
+                                </div>
+                                <div class="progress-bar bg-danger" style="width: 37%;">
+                                    Du sparer: kr 1,789
+                                </div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">Sammenligning av totalkostnad per år</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
