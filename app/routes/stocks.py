@@ -366,19 +366,36 @@ def add_to_favorites():
 @access_required
 def compare():
     """Stock comparison page"""
-    symbols = request.args.getlist('symbols')
+    # Support both 'symbols' and 'tickers' parameters for backward compatibility
+    symbols = request.args.getlist('symbols') or request.args.getlist('tickers')
     
     if not symbols:
-        return render_template('stocks/compare.html', stocks=[])
+        return render_template('stocks/compare.html', tickers=[], stocks=[])
     
     try:
         stocks_data = []
-        for symbol in symbols:
+        comparison_data = {}
+        
+        for symbol in symbols[:4]:  # Max 4 stocks
             stock_info = DataService.get_stock_info(symbol)
             if stock_info:
                 stocks_data.append(stock_info)
+                comparison_data[symbol] = {
+                    'name': stock_info.get('longName', symbol),
+                    'price': stock_info.get('regularMarketPrice', 0),
+                    'change': stock_info.get('regularMarketChange', 0),
+                    'change_percent': stock_info.get('regularMarketChangePercent', 0),
+                    'volume': stock_info.get('regularMarketVolume', 0),
+                    'market_cap': stock_info.get('marketCap', 0),
+                    'pe_ratio': stock_info.get('trailingPE', 0),
+                    'dividend_yield': stock_info.get('dividendYield', 0)
+                }
         
-        return render_template('stocks/compare.html', stocks=stocks_data)
+        return render_template('stocks/compare.html', 
+                             tickers=symbols,
+                             stocks=stocks_data,
+                             ticker_names={s: comparison_data.get(s, {}).get('name', s) for s in symbols},
+                             comparison_data=comparison_data)
         
     except Exception as e:
         logger.error(f"Error in stock comparison: {e}")
@@ -395,11 +412,21 @@ def prices():
         crypto_data = DataService.get_crypto_overview()
         currency_data = DataService.get_currency_overview()
         
+        # Calculate statistics
+        stats = {
+            'total_stocks': len(oslo_stocks) + len(global_stocks),
+            'total_crypto': len(crypto_data) if crypto_data else 0,
+            'total_currency': len(currency_data) if currency_data else 0,
+            'total_instruments': len(oslo_stocks) + len(global_stocks) + len(crypto_data or {}) + len(currency_data or {})
+        }
+        
         return render_template('stocks/prices.html',
-                             oslo_stocks=oslo_stocks,
-                             global_stocks=global_stocks,
-                             crypto_data=crypto_data,
-                             currency_data=currency_data)
+                             oslo_stocks=oslo_stocks or {},
+                             global_stocks=global_stocks or {},
+                             crypto_data=crypto_data or {},
+                             currency_data=currency_data or {},
+                             stats=stats,
+                             error=False)
                              
     except Exception as e:
         logger.error(f"Error in prices overview: {e}")
@@ -408,5 +435,7 @@ def prices():
                              oslo_stocks={},
                              global_stocks={},
                              crypto_data={},
-                             currency_data={})
+                             currency_data={},
+                             stats={'total_stocks': 0, 'total_crypto': 0, 'total_currency': 0, 'total_instruments': 0},
+                             error=True)
 

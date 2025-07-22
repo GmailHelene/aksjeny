@@ -17,7 +17,7 @@
         </ol>
     </nav>
     
-    <h1 class="mb-4">{{ title if title else (category|default('Alle')) }}</h1>
+    <h1 class="mb-4">{% if category == 'oslo' %}Oslo Børs{% else %}{{ title if title else (category|default('Alle')) }}{% endif %}</h1>
     
     <div class="row">
         <div class="col-12">

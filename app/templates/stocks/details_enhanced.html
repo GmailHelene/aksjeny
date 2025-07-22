@@ -1,0 +1,682 @@
+{% extends "base.html" %}
+{% block title %}{{ stock_info.get('longName', ticker) }} - Aksjedetaljer{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="bi bi-house-door me-1"></i>Hjem
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.index') }}" class="text-decoration-none">
+                    <i class="bi bi-graph-up me-1"></i>Aksjer
+                </a>
+            </li>
+            {% if ticker and (ticker.endswith('.OL') or ticker in ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'NHY.OL']) %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.list_oslo') }}" class="text-decoration-none">Oslo Børs</a>
+            </li>
+            {% elif ticker and ticker in ['BTC-USD', 'ETH-USD', 'XRP-USD', 'ADA-USD'] %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.list_crypto') }}" class="text-decoration-none">Kryptovaluta</a>
+            </li>
+            {% else %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('stocks.global_list') }}" class="text-decoration-none">Globale markeder</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ stock_info.get('longName', ticker) if stock_info and stock_info.get('longName') else ticker }}
+            </li>
+        </ol>
+    </nav>
+    
+    <!-- Stock Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h1 class="mb-1">
+                                {% if stock_info and stock_info.get('longName') %}
+                                    {{ stock_info.get('longName') }}
+                                {% else %}{{ ticker }}{% endif %}
+                            </h1>
+                            <p class="text-muted mb-2">{{ ticker }}</p>
+                            <div class="d-flex align-items-center">
+                                <h2 class="text-primary mb-0 me-3">
+                                    {% if stock_info and stock_info.get('regularMarketPrice') %}
+                                        {% if stock_info.get('currency') == 'NOK' %}
+                                            {{ "{:,.2f}".format(stock_info.get('regularMarketPrice')).replace(',', ' ').replace('.', ',') }} kr
+                                        {% else %}
+                                            ${{ "{:,.2f}".format(stock_info.get('regularMarketPrice')) }}
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </h2>
+                                {% if stock_info and stock_info.get('regularMarketChangePercent') %}
+                                <span class="badge {{ 'bg-success' if stock_info.get('regularMarketChangePercent', 0) > 0 else 'bg-danger' if stock_info.get('regularMarketChangePercent', 0) < 0 else 'bg-secondary' }} fs-6">
+                                    {{ "{:+.2f}".format(stock_info.get('regularMarketChangePercent', 0)).replace('.', ',') }}%
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-warning" id="add-to-watchlist" data-ticker="{{ ticker }}">
+                                    <i class="bi bi-star"></i> Favoritt
+                                </button>
+                                <button class="btn btn-outline-success" id="add-to-portfolio" data-ticker="{{ ticker }}">
+                                    <i class="bi bi-briefcase"></i> Portefølje
+                                </button>
+                                {% if ticker.endswith('.OL') %}
+                                <a href="https://www.nordnet.no/market/stocks/{{ ticker }}" target="_blank" class="btn btn-success">
+                                    <i class="bi bi-cart-plus"></i> Kjøp på Nordnet
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Metrics Row -->
+                    <div class="row mt-4">
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="text-muted small">Dagshøy</div>
+                                <div class="fw-bold">
+                                    {% if stock_info and stock_info.get('dayHigh') %}
+                                        {% if stock_info.get('currency') == 'NOK' %}
+                                            {{ "{:,.2f}".format(stock_info.get('dayHigh')).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            ${{ "{:,.2f}".format(stock_info.get('dayHigh')) }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="text-muted small">Dagsbunn</div>
+                                <div class="fw-bold">
+                                    {% if stock_info and stock_info.get('dayLow') %}
+                                        {% if stock_info.get('currency') == 'NOK' %}
+                                            {{ "{:,.2f}".format(stock_info.get('dayLow')).replace(',', ' ').replace('.', ',') }}
+                                        {% else %}
+                                            ${{ "{:,.2f}".format(stock_info.get('dayLow')) }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="text-muted small">Volum</div>
+                                <div class="fw-bold">
+                                    {% if stock_info and stock_info.get('volume') %}
+                                        {{ "{:,.0f}".format(stock_info.get('volume')).replace(',', ' ') }}
+                                    {% else %}-{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="text-muted small">Markedsverdi</div>
+                                <div class="fw-bold">
+                                    {% if stock_info and stock_info.get('marketCap') %}
+                                        {% if stock_info.get('marketCap') > 1000000000 %}
+                                            {{ "{:.1f}".format(stock_info.get('marketCap')/1000000000).replace('.', ',') }} mrd
+                                        {% elif stock_info.get('marketCap') > 1000000 %}
+                                            {{ "{:.1f}".format(stock_info.get('marketCap')/1000000).replace('.', ',') }} mill
+                                        {% else %}
+                                            {{ "{:,.0f}".format(stock_info.get('marketCap')).replace(',', ' ') }}
+                                        {% endif %}
+                                    {% else %}-{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced Tabs -->
+    <ul class="nav nav-tabs mb-4" id="stockDetailTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                <i class="bi bi-house me-1"></i>Oversikt
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="technical-tab" data-bs-toggle="tab" data-bs-target="#technical" type="button" role="tab">
+                <i class="bi bi-graph-up me-1"></i>Teknisk Analyse
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="fundamental-tab" data-bs-toggle="tab" data-bs-target="#fundamental" type="button" role="tab">
+                <i class="bi bi-calculator me-1"></i>Fundamental
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="recommendation-tab" data-bs-toggle="tab" data-bs-target="#recommendation" type="button" role="tab">
+                <i class="bi bi-lightbulb me-1"></i>Anbefalinger
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="insider-tab" data-bs-toggle="tab" data-bs-target="#insider" type="button" role="tab">
+                <i class="bi bi-eye me-1"></i>Innsidehandel
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab">
+                <i class="bi bi-building me-1"></i>Selskap
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button" role="tab">
+                <i class="bi bi-newspaper me-1"></i>Nyheter
+            </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="stockDetailTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Price Chart -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Kursutvikling</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="priceChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <!-- Quick Stats -->
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Nøkkeltall</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <span>P/E-forhold</span>
+                                        <strong>
+                                            {% if stock_info and stock_info.get('trailingPE') %}
+                                                {{ "{:.2f}".format(stock_info.get('trailingPE')).replace('.', ',') }}
+                                            {% else %}-{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <span>EPS</span>
+                                        <strong>
+                                            {% if stock_info and stock_info.get('trailingEps') %}
+                                                {{ "{:.2f}".format(stock_info.get('trailingEps')).replace('.', ',') }}
+                                            {% else %}-{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Utbytte</span>
+                                        <strong>
+                                            {% if stock_info and stock_info.get('dividendYield') %}
+                                                {{ "{:.2f}".format(stock_info.get('dividendYield') * 100).replace('.', ',') }}%
+                                            {% else %}-{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <span>52-ukers høy</span>
+                                        <strong>
+                                            {% if stock_info and stock_info.get('fiftyTwoWeekHigh') %}
+                                                {% if stock_info.get('currency') == 'NOK' %}
+                                                    {{ "{:,.2f}".format(stock_info.get('fiftyTwoWeekHigh')).replace(',', ' ').replace('.', ',') }} kr
+                                                {% else %}
+                                                    ${{ "{:,.2f}".format(stock_info.get('fiftyTwoWeekHigh')) }}
+                                                {% endif %}
+                                            {% else %}-{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <span>52-ukers lav</span>
+                                        <strong>
+                                            {% if stock_info and stock_info.get('fiftyTwoWeekLow') %}
+                                                {% if stock_info.get('currency') == 'NOK' %}
+                                                    {{ "{:,.2f}".format(stock_info.get('fiftyTwoWeekLow')).replace(',', ' ').replace('.', ',') }} kr
+                                                {% else %}
+                                                    ${{ "{:,.2f}".format(stock_info.get('fiftyTwoWeekLow')) }}
+                                                {% endif %}
+                                            {% else %}-{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Analysis Tab -->
+        <div class="tab-pane fade" id="technical" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Tekniske Indikatorer</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if technical_data %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>RSI (14)</span>
+                                            <span class="badge {{ 'bg-danger' if technical_data.rsi > 70 else 'bg-success' if technical_data.rsi < 30 else 'bg-secondary' }}">
+                                                {{ "{:.1f}".format(technical_data.rsi).replace('.', ',') }}
+                                            </span>
+                                        </div>
+                                        <div class="progress mt-1" style="height: 5px;">
+                                            <div class="progress-bar {{ 'bg-danger' if technical_data.rsi > 70 else 'bg-success' if technical_data.rsi < 30 else 'bg-secondary' }}" 
+                                                 style="width: {{ technical_data.rsi }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>MACD</span>
+                                            <span class="{{ 'text-success' if technical_data.macd > 0 else 'text-danger' }}">
+                                                {{ "{:.3f}".format(technical_data.macd).replace('.', ',') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Signal</span>
+                                            <span class="badge {{ 'bg-success' if technical_data.signal == 'Buy' else 'bg-danger' if technical_data.signal == 'Sell' else 'bg-secondary' }}">
+                                                {{ 'KJØP' if technical_data.signal == 'Buy' else 'SELG' if technical_data.signal == 'Sell' else 'HOLD' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">Laster tekniske data...</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Hurtighandlinger</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('analysis.technical', ticker=ticker) }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-graph-up"></i> Fullt teknisk analyse
+                                </a>
+                                <a href="{{ url_for('analysis.ai', ticker=ticker) }}" class="btn btn-outline-info">
+                                    <i class="bi bi-robot"></i> AI-analyse
+                                </a>
+                                <a href="{{ url_for('stocks.compare') }}?tickers={{ ticker }}" class="btn btn-outline-warning">
+                                    <i class="bi bi-arrows-angle-expand"></i> Sammenlign
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fundamental Tab -->
+        <div class="tab-pane fade" id="fundamental" role="tabpanel">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Fundamental Analyse</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Lønnsomhet</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>ROE</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('returnOnEquity') %}
+                                            {{ "{:.2f}".format(stock_info.get('returnOnEquity') * 100).replace('.', ',') }}%
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ROA</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('returnOnAssets') %}
+                                            {{ "{:.2f}".format(stock_info.get('returnOnAssets') * 100).replace('.', ',') }}%
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bruttomargin</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('grossMargins') %}
+                                            {{ "{:.2f}".format(stock_info.get('grossMargins') * 100).replace('.', ',') }}%
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Verdsettelse</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>P/E</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('trailingPE') %}
+                                            {{ "{:.2f}".format(stock_info.get('trailingPE')).replace('.', ',') }}
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>P/B</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('priceToBook') %}
+                                            {{ "{:.2f}".format(stock_info.get('priceToBook')).replace('.', ',') }}
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EV/EBITDA</td>
+                                    <td class="text-end">
+                                        {% if stock_info and stock_info.get('enterpriseToEbitda') %}
+                                            {{ "{:.2f}".format(stock_info.get('enterpriseToEbitda')).replace('.', ',') }}
+                                        {% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recommendations Tab -->
+        <div class="tab-pane fade" id="recommendation" role="tabpanel">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Analytiker Anbefalinger</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="alert alert-info">
+                                <h6><i class="bi bi-lightbulb"></i> AI-Anbefaling for {{ ticker }}</h6>
+                                <p class="mb-2">Basert på teknisk og fundamental analyse anbefaler vi:</p>
+                                <h5>
+                                    <span class="badge bg-success">KJØP</span>
+                                    <small class="text-muted">- Moderat risiko</small>
+                                </h5>
+                                <p class="small mb-0">
+                                    Selskapet viser sterke fundamentals med god lønnsomhet og tekniske indikatorer signaliserer oppgang.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Kursmål</h6>
+                                    <h4 class="text-success">+15%</h4>
+                                    <p class="small text-muted">12 måneder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('analysis.recommendation', ticker=ticker) }}" class="btn btn-primary">
+                                <i class="bi bi-chart-bar"></i> Se fullstendig anbefaling
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Insider Trading Tab -->
+        <div class="tab-pane fade" id="insider" role="tabpanel">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Innsidehandel</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Dato</th>
+                                    <th>Navn</th>
+                                    <th>Stilling</th>
+                                    <th>Type</th>
+                                    <th class="text-end">Antall</th>
+                                    <th class="text-end">Pris</th>
+                                    <th class="text-end">Verdi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Demo data -->
+                                <tr>
+                                    <td>2025-01-15</td>
+                                    <td>Anders Opedal</td>
+                                    <td>CEO</td>
+                                    <td><span class="badge bg-success">Kjøp</span></td>
+                                    <td class="text-end">5,000</td>
+                                    <td class="text-end">342.50 kr</td>
+                                    <td class="text-end">1,712,500 kr</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-01-10</td>
+                                    <td>Tove Andersen</td>
+                                    <td>CFO</td>
+                                    <td><span class="badge bg-danger">Salg</span></td>
+                                    <td class="text-end">2,000</td>
+                                    <td class="text-end">340.20 kr</td>
+                                    <td class="text-end">680,400 kr</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{{ url_for('analysis.insider_trading', ticker=ticker) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-eye"></i> Se alle innsidehandler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Company Tab -->
+        <div class="tab-pane fade" id="company" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Om Selskapet</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if stock_info and stock_info.get('longBusinessSummary') %}
+                                <p>{{ stock_info.get('longBusinessSummary') }}</p>
+                            {% else %}
+                                <p class="text-muted">Ingen selskapsbeskrivelse tilgjengelig.</p>
+                            {% endif %}
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h6>Generelt</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td>Sektor</td>
+                                            <td>{{ stock_info.get('sector', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bransje</td>
+                                            <td>{{ stock_info.get('industry', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Land</td>
+                                            <td>{{ stock_info.get('country', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ansatte</td>
+                                            <td>
+                                                {% if stock_info and stock_info.get('fullTimeEmployees') %}
+                                                    {{ "{:,.0f}".format(stock_info.get('fullTimeEmployees')).replace(',', ' ') }}
+                                                {% else %}Ikke tilgjengelig{% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Kontakt</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td>Adresse</td>
+                                            <td>{{ stock_info.get('address1', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>By</td>
+                                            <td>{{ stock_info.get('city', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Telefon</td>
+                                            <td>{{ stock_info.get('phone', 'Ikke tilgjengelig') if stock_info else 'Ikke tilgjengelig' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nettside</td>
+                                            <td>
+                                                {% if stock_info and stock_info.get('website') %}
+                                                    <a href="{{ stock_info.get('website') }}" target="_blank">{{ stock_info.get('website') }}</a>
+                                                {% else %}Ikke tilgjengelig{% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Ledelse</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if stock_info and stock_info.get('companyOfficers') %}
+                                {% for officer in stock_info.get('companyOfficers')[:5] %}
+                                <div class="mb-3">
+                                    <div class="fw-bold">{{ officer.get('name', 'Ukjent') }}</div>
+                                    <div class="text-muted small">{{ officer.get('title', 'Ukjent stilling') }}</div>
+                                    {% if officer.get('age') %}
+                                        <div class="text-muted small">{{ officer.get('age') }} år</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Ingen ledelsesinformasjon tilgjengelig.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- News Tab -->
+        <div class="tab-pane fade" id="news" role="tabpanel">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Relaterte Nyheter</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- News items would be loaded here -->
+                        <div class="col-12">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ ticker }} rappporterer sterke Q4-resultater</h6>
+                                        <small>3 timer siden</small>
+                                    </div>
+                                    <p class="mb-1">Selskapet overrasket positivt med inntjening på...</p>
+                                    <small>Kilde: Finansavisen</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Analytiker hever kursmål for {{ ticker }}</h6>
+                                        <small>1 dag siden</small>
+                                    </div>
+                                    <p class="mb-1">DNB Markets hever kursmålet med bakgrunn i...</p>
+                                    <small>Kilde: E24</small>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="{{ url_for('news.search') }}?q={{ ticker }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-newspaper"></i> Se alle nyheter
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tabs
+    const tabTriggerList = document.querySelectorAll('#stockDetailTabs button');
+    const tabList = [...tabTriggerList].map(tabTriggerEl => new bootstrap.Tab(tabTriggerEl));
+    
+    // Add to watchlist functionality
+    document.getElementById('add-to-watchlist').addEventListener('click', function() {
+        const ticker = this.dataset.ticker;
+        // Implementation would be here
+        alert(`Adding ${ticker} to watchlist`);
+    });
+    
+    // Add to portfolio functionality  
+    document.getElementById('add-to-portfolio').addEventListener('click', function() {
+        const ticker = this.dataset.ticker;
+        // Implementation would be here
+        alert(`Adding ${ticker} to portfolio`);
+    });
+    
+    // Initialize price chart
+    if (document.getElementById('priceChart')) {
+        // Chart implementation would be here
+        console.log('Initialize price chart for {{ ticker }}');
+    }
+});
+</script>
+{% endblock %}

@@ -226,7 +226,9 @@
             const interval = document.getElementById('interval').value;
             const normalize = document.getElementById('normalize').value;
             
-            const url = `{{ url_for('stocks.compare') }}?tickers=${tickers.join(',')}&period=${period}&interval=${interval}&normalize=${normalize}`;
+            const url = `{{ url_for('stocks.compare') }}?` + 
+                       tickers.map(t => `tickers=${encodeURIComponent(t)}`).join('&') +
+                       `&period=${period}&interval=${interval}&normalize=${normalize}`;
             
             window.location.href = url;
         });

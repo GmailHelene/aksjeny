@@ -164,6 +164,15 @@ def market_overview():
         fallback_summaries.global_market = SimpleNamespace(index_value=0, change=0, change_percent=0)
         fallback_summaries.crypto = SimpleNamespace(change_percent=0, change=0, total_market_cap=0)
         fallback_summaries.currency = SimpleNamespace(usd_nok=0, usd_nok_change=0)
+        
+        flash('Kunne ikke laste markedsdata. Prøv igjen senere.', 'error')
+        return render_template('analysis/market_overview.html',
+                             oslo_stocks={},
+                             global_stocks={},
+                             crypto_data={},
+                             currency_data={},
+                             market_summaries=fallback_summaries,
+                             error=True)
 
 @analysis.route('/warren-buffett', methods=['GET', 'POST'])
 @access_required

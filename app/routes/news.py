@@ -317,9 +317,11 @@ def search():
     
     if query:
         try:
-            results = NewsService.search_news(query)
+            from ..services.news_service import search_news_sync
+            results = search_news_sync(query, limit=20)
         except Exception as e:
             logger.error(f"Error searching news for {query}: {e}")
+            results = []
     
     return render_template('news/search.html', 
                          query=query, 

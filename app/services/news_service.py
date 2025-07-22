@@ -20,8 +20,53 @@ from ..services.cache_service import cached
 logger = logging.getLogger(__name__)
 
 @dataclass
-class NewsArticle:
-    """Data class for news articles"""
+class NewsA            }
+        
+        except Exception as e:
+            logger.error(f"Error getting market overview news: {e}")
+            return {
+                'norwegian': [],
+                'international': [],
+                'last_updated': datetime.now().isoformat(),
+                'total_articles': 0
+            }
+    
+    async def search_news(self, query: str, limit: int = 20) -> List[NewsArticle]:
+        """Search news articles by query"""
+        try:
+            if not query or len(query.strip()) < 2:
+                return []
+            
+            # Get recent news to search through
+            all_articles = await self.get_latest_news(limit=100)
+            
+            query_terms = query.lower().split()
+            relevant_articles = []
+            
+            for article in all_articles:
+                relevance_score = 0
+                text = (article.title + ' ' + article.summary).lower()
+                
+                # Score based on query term matches
+                for term in query_terms:
+                    if term in text:
+                        # Title matches get higher score
+                        if term in article.title.lower():
+                            relevance_score += 3
+                        else:
+                            relevance_score += 1
+                
+                if relevance_score > 0:
+                    article.relevance_score = relevance_score
+                    relevant_articles.append(article)
+            
+            # Sort by relevance and return top results
+            relevant_articles.sort(key=lambda x: x.relevance_score, reverse=True)
+            return relevant_articles[:limit]
+            
+        except Exception as e:
+            logger.error(f"Error searching news for '{query}': {e}")
+            return []  """Data class for news articles"""
     title: str
     summary: str
     link: str
@@ -645,4 +690,14 @@ def get_company_news_sync(company_symbol: str, limit: int = 5) -> List[NewsArtic
         return loop.run_until_complete(news_service.get_company_news(company_symbol, limit))
     except Exception as e:
         logger.error(f"Error in sync company news fetch: {e}")
+        return []
+
+def search_news_sync(query: str, limit: int = 20) -> List[NewsArticle]:
+    """Synchronous wrapper for news search"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        return loop.run_until_complete(news_service.search_news(query, limit))
+    except Exception as e:
+        logger.error(f"Error in sync news search: {e}")
         return []

@@ -133,18 +133,24 @@ def details(symbol):
         # Get additional analysis data
         technical_data = AnalysisService.get_technical_analysis(symbol)
         
-        # Try detail.html first, fallback to details.html if it doesn't exist
+        # Try enhanced details template first, then fallbacks
         try:
-            return render_template('stocks/detail.html',
-                                 symbol=symbol,
+            return render_template('stocks/details_enhanced.html',
+                                 ticker=symbol,
                                  stock_info=stock_info,
                                  technical_data=technical_data)
         except Exception:
-            # Fallback to details.html
-            return render_template('stocks/details.html',
-                                 symbol=symbol,
-                                 stock_info=stock_info,
-                                 technical_data=technical_data)
+            try:
+                return render_template('stocks/detail.html',
+                                     symbol=symbol,
+                                     stock_info=stock_info,
+                                     technical_data=technical_data)
+            except Exception:
+                # Final fallback
+                return render_template('stocks/details.html',
+                                     symbol=symbol,
+                                     stock_info=stock_info,
+                                     technical_data=technical_data)
                              
     except Exception as e:
         logger.error(f"Error in stock details for {symbol}: {e}")
