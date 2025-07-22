@@ -340,171 +340,171 @@ class NewsService:
         
         return True  # Default to include all sources
 
-    @classmethod
-    def get_news_by_category(cls, category, limit=10):
-        """Get news filtered by category"""
+    def get_news_by_category(self, category: str, limit: int = 20) -> List[NewsArticle]:
+        """Get news articles filtered by category (synchronous wrapper)"""
         try:
-            # Get all latest news first
-            all_news = cls.get_latest_news(limit=50)
+            # Use the async method with proper event loop handling
+            return get_latest_news_sync(limit=limit, category=category)
+        except Exception as e:
+            logger.error(f"Error getting news by category {category}: {e}")
+            return []
+
+    async def get_company_news(self, company_symbol: str, limit: int = 10) -> List[NewsArticle]:
+        """Get news specifically related to a company"""
+        try:
+            # Check cache first
+            cache_key = f"company_news_{company_symbol}_{limit}"
+            cached_result = simple_cache.get(cache_key, 'news')
+            if cached_result:
+                return cached_result
             
-            if not all_news or 'articles' not in all_news:
-                return {'articles': [], 'category': category}
-            
-            articles = all_news['articles']
-            
-            # Filter by category
-            category_lower = category.lower()
-            filtered_articles = []
-            
-            category_keywords = {
-                'crypto': ['bitcoin', 'ethereum', 'crypto', 'blockchain', 'btc', 'eth'],
-                'energy': ['oil', 'gas', 'energy', 'renewable', 'equinor', 'statoil'],
-                'tech': ['technology', 'software', 'ai', 'tech', 'digital'],
-                'market': ['market', 'stock', 'børs', 'index', 'trading'],
-                'norwegian': ['norway', 'norwegian', 'norge', 'norsk', 'oslo'],
-                'international': ['usa', 'us', 'america', 'global', 'world']
+            # Enhanced company symbol mapping for better search
+            company_mapping = {
+                'EQNR.OL': ['equinor', 'statoil'],
+                'DNB.OL': ['dnb', 'dnb bank', 'dnb markets'],
+                'TEL.OL': ['telenor'],
+                'AKER.OL': ['aker', 'aker bp', 'aker solutions'],
+                'YAR.OL': ['yara', 'yara international'],
+                'NHY.OL': ['norsk hydro', 'hydro'],
+                'MOWI.OL': ['mowi', 'marine harvest'],
+                'SCHIBSTED.OL': ['schibsted'],
+                'KAH.OL': ['kahoot'],
+                'AUTO.OL': ['autostore'],
+                'KOMP.OL': ['komplett'],
+                'XXL.OL': ['xxl'],
+                'ORK.OL': ['orkla'],
+                'SALME.OL': ['salmon evolution'],
+                'NEL.OL': ['nel', 'nel hydrogen'],
+                'TOM.OL': ['tomra'],
+                'KOG.OL': ['kongsberg'],
+                'SUB.OL': ['subsea 7'],
+                'REC.OL': ['rec silicon'],
+                'ELKEM.OL': ['elkem'],
+                'STB.OL': ['storebrand']
             }
             
-            keywords = category_keywords.get(category_lower, [category_lower])
+            search_terms = company_mapping.get(company_symbol, [company_symbol.replace('.OL', '')])
             
-            for article in articles:
-                title_lower = (article.get('title', '') or '').lower()
-                summary_lower = (article.get('summary', '') or '').lower()
-                description_lower = (article.get('description', '') or '').lower()
-                
-                # Check if any keyword matches
-                for keyword in keywords:
-                    if (keyword in title_lower or 
-                        keyword in summary_lower or 
-                        keyword in description_lower):
-                        filtered_articles.append(article)
+            all_articles = await self.get_latest_news(limit=50)
+            
+            # Filter articles relevant to the company
+            relevant_articles = []
+            for article in all_articles:
+                text = (article.title + ' ' + article.summary).lower()
+                if any(term.lower() in text for term in search_terms):
+                    article.relevance_score += 5.0  # Boost company-specific articles
+                    relevant_articles.append(article)
+            
+            # Sort by relevance and return top results
+            relevant_articles.sort(key=lambda x: x.relevance_score, reverse=True)
+            final_articles = relevant_articles[:limit]
+            
+            # Cache the result
+            simple_cache.set(cache_key, final_articles, 'news')  # Ensure only 3 arguments are used
+            
+            return final_articles
+            
+        except Exception as e:
+            logger.error(f"Error getting company news for {company_symbol}: {e}")
+            return []
+
+    async def get_market_summary_news(self) -> Dict[str, List[NewsArticle]]:
+        """Get categorized market news for dashboard"""
+        try:
+            # Check cache first
+            cache_key = "market_summary_news"
+            cached_result = simple_cache.get(cache_key, 'news')
+            if cached_result:
+                return cached_result
+            
+            all_news = await self.get_latest_news(limit=40)
+            
+            categorized = {
+                'oslo_bors': [],
+                'international': [],
+                'energy': [],
+                'tech': [],
+                'crypto': [],
+                'banking': [],
+                'shipping': []
+            }
+            
+            for article in all_news:
+                # Categorize based on content and source
+                if any(cat in article.categories for cat in ['oslo_bors', 'norwegian_companies']):
+                    categorized['oslo_bors'].append(article)
+                elif 'energy' in article.categories:
+                    categorized['energy'].append(article)
+                elif 'tech' in article.categories:
+                    categorized['tech'].append(article)
+                elif 'crypto' in article.categories:
+                    categorized['crypto'].append(article)
+                elif 'banking' in article.categories:
+                    categorized['banking'].append(article)
+                elif 'shipping' in article.categories:
+                    categorized['shipping'].append(article)
+                else:
+                    categorized['international'].append(article)
+            
+            # Limit each category
+            for category in categorized:
+                categorized[category] = categorized[category][:5]
+            
+            # Cache the result
+            simple_cache.set(cache_key, categorized, 'news')  # Ensure only 3 arguments are used
+            
+            return categorized
+            
+        except Exception as e:
+            logger.error(f"Error getting market summary news: {e}")
+            return {key: [] for key in ['oslo_bors', 'international', 'energy', 'tech', 'crypto', 'banking', 'shipping']}
+
+    async def get_stock_related_news(self, stock_symbol: str, limit: int = 10) -> List[NewsArticle]:
+        """Get news specifically related to a stock symbol"""
+        try:
+            # Get all recent news
+            all_news = await self.get_latest_news(limit=50)
+            
+            # Extract company name and variations
+            company_variations = self._get_company_variations(stock_symbol)
+            
+            # Filter for relevant articles
+            relevant_articles = []
+            for article in all_news:
+                if self._is_stock_relevant(article, stock_symbol, company_variations):
+                    relevant_articles.append(article)
+                    if len(relevant_articles) >= limit:
                         break
-                
-                if len(filtered_articles) >= limit:
-                    break
             
-            return {
-                'articles': filtered_articles[:limit],
-                'category': category,
-                'total': len(filtered_articles)
-            }
+            return relevant_articles
             
         except Exception as e:
-            current_app.logger.error(f"Error getting news by category {category}: {e}")
-            return {'articles': [], 'category': category, 'error': str(e)}
-
-    @classmethod
-    def search_news(cls, query, limit=20):
-        """Search news articles"""
-        try:
-            # Get all latest news first
-            all_news = cls.get_latest_news(limit=100)
-            
-            if not all_news or 'articles' not in all_news:
-                return {'articles': [], 'query': query}
-            
-            articles = all_news['articles']
-            query_lower = query.lower()
-            
-            # Filter articles based on search query
-            matching_articles = []
-            
-            for article in articles:
-                title_lower = (article.get('title', '') or '').lower()
-                summary_lower = (article.get('summary', '') or '').lower()
-                description_lower = (article.get('description', '') or '').lower()
-                
-                if (query_lower in title_lower or 
-                    query_lower in summary_lower or 
-                    query_lower in description_lower):
-                    matching_articles.append(article)
-                
-                if len(matching_articles) >= limit:
-                    break
-            
-            return {
-                'articles': matching_articles,
-                'query': query,
-                'total': len(matching_articles)
-            }
-            
-        except Exception as e:
-            current_app.logger.error(f"Error searching news for query {query}: {e}")
-            return {'articles': [], 'query': query, 'error': str(e)}
-
-# Global instance
-news_service = NewsService()
-
-# Synchronous wrapper functions for template use
-def get_latest_news_sync(limit: int = 10, category: Optional[str] = None) -> List[NewsArticle]:
-    """Synchronous wrapper for template use with timeout protection"""
-    try:
-        # Check simple cache first with arguments in key
-        cache_key = f"latest_news_{limit}_{category or 'all'}"
-        cached_result = simple_cache.get(cache_key, 'news')
-        if cached_result:
-            return cached_result
+            logger.error(f"Error getting stock-related news for {stock_symbol}: {e}")
+            return []
+    
+    def _get_company_variations(self, stock_symbol: str) -> List[str]:
+        """Get various name variations for a company"""
+        # Remove .OL suffix if present
+        clean_symbol = stock_symbol.replace('.OL', '').upper()
         
-        # Try to get the existing event loop first
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # If loop is running, create task in thread
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(_run_async_news_fetch, limit, category)
-                    result = future.result(timeout=12.0)
-            else:
-                # Loop exists but not running, can use it
-                result = loop.run_until_complete(
-                    asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
-                )
-        except RuntimeError:
-            # No event loop, create new one
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                result = loop.run_until_complete(
-                    asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
-                )
-            finally:
-                loop.close()
+        # Company name mappings
+        company_names = {
+            'EQNR': ['equinor', 'statoil'],
+            'DNB': ['dnb', 'dnb bank'],
+            'TEL': ['telenor'],
+            'MOWI': ['mowi', 'marine harvest'],
+            'AKER': ['aker', 'aker solutions', 'aker bp'],
+            'NHY': ['norsk hydro', 'hydro'],
+            'YAR': ['yara', 'yara international'],
+            'SALME': ['salmon evolution'],
+            'KAH': ['kahoot'],
+            'AUTO': ['autostore'],
+            'SCHIBSTED': ['schibsted'],
+            'KOMP': ['komplett'],
+            'XXL': ['xxl'],
+            'ORK': ['orkla']
+        }
         
-        # Cache the result
-        simple_cache.set(cache_key, result, 'news')
-        return result
-        
-    except (asyncio.TimeoutError, concurrent.futures.TimeoutError):
-        logger.warning("Sync news fetch timed out")
-        # Try to return cached fallback
-        fallback_key = f"news_fallback_{category or 'all'}_{limit}"
-        fallback = simple_cache.get(fallback_key, 'news')
-        return fallback if fallback else []
-    except Exception as e:
-        logger.error(f"Error in sync news fetch: {e}")
-        # Return empty list instead of None to avoid template errors
-        return []
-
-def _run_async_news_fetch(limit: int, category: Optional[str]) -> List[NewsArticle]:
-    """Helper function to run async news fetch in new thread"""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        return loop.run_until_complete(
-            asyncio.wait_for(news_service.get_latest_news(limit, category), timeout=10.0)
-        )
-    finally:
-        loop.close()
-        return []
-
-def get_company_news_sync(company_symbol: str, limit: int = 5) -> List[NewsArticle]:
-    """Synchronous wrapper for company news"""
-    try:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        return loop.run_until_complete(news_service.get_company_news(company_symbol, limit))
-    except Exception as e:
-        logger.error(f"Error in sync company news fetch: {e}")
-        return []
         variations = [clean_symbol.lower()]
         if clean_symbol in company_names:
             variations.extend(company_names[clean_symbol])

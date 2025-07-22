@@ -59,23 +59,18 @@
         opacity: 0.1;
     }
 
-    /* Enhanced Navigation for PC - Click-based dropdowns */
+    /* Enhanced Dropdown Toggle Styling for PC */
     @media (min-width: 769px) {
-        /* Make dropdowns more visible and clickable */
         .navbar-nav .dropdown-toggle {
             cursor: pointer;
             position: relative;
-            padding: 0.75rem 1rem !important;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            border-radius: 4px;
-            transition: all 0.2s ease;
         }
         
         .navbar-nav .dropdown-toggle:hover {
             background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             transform: translateY(-1px);
+            transition: all 0.2s ease;
         }
         
         .navbar-nav .dropdown-toggle[aria-expanded="true"] {
@@ -83,28 +78,10 @@
             border-radius: 4px 4px 0 0;
         }
         
-        /* Dropdown menu improvements */
         .navbar-nav .dropdown-menu {
             margin-top: 0;
             border-top: 3px solid #007bff;
             animation: slideDown 0.3s ease;
-            min-width: 280px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .navbar-nav .dropdown-item {
-            padding: 0.75rem 1rem;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .navbar-nav .dropdown-item:hover {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            transform: translateX(5px);
-            color: #0d6efd;
         }
         
         @keyframes slideDown {
@@ -112,49 +89,43 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Click indicator */
-        .navbar-nav .dropdown-toggle::after {
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-            transition: transform 0.2s ease;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            padding: 2px 4px;
+        /* Hover indicator */
+        .navbar-nav .dropdown-toggle::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #007bff;
+            transition: width 0.3s ease;
         }
         
-        .navbar-nav .dropdown-toggle[aria-expanded="true"]::after {
-            transform: rotate(180deg);
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .navbar-nav .dropdown-toggle:hover::after {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        /* Navigation spacing */
-        .navbar-nav .nav-item {
-            margin: 0 0.25rem;
+        .navbar-nav .dropdown-toggle:hover::before,
+        .navbar-nav .dropdown-toggle[aria-expanded="true"]::before {
+            width: 80%;
         }
     }
 
-    /* Fix mobile menu padding issues - completely revised for ALL users */
+    /* Fix mobile menu padding issues - completely revised */
     @media (max-width: 768px) {
         .navbar-toggler {
             border: none;
-            padding: 0.1rem 0.2rem !important; /* Ultra-reduced */
+            padding: 0.25rem 0.5rem;
         }
         
         .navbar-collapse {
-            padding: 0 !important;
-            margin: 0 !important;
+            padding: 0;
+            margin: 0;
         }
         
         .navbar-nav {
-            padding: 0.2rem 0 !important; /* Much reduced */
+            padding: 0.5rem 0 !important;
             margin: 0 !important;
             background: #343a40;
-            border-radius: 0.3rem;
-            margin-top: 0.2rem !important; /* Reduced */
+            border-radius: 0.5rem;
+            margin-top: 0.5rem !important;
         }
         
         .navbar-nav .nav-item {
@@ -168,10 +139,9 @@
         }
         
         .navbar-nav .nav-link {
-            padding: 0.3rem 0.5rem !important; /* Significantly reduced */
+            padding: 0.75rem 1rem !important;
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
-            font-size: 0.85rem !important; /* Smaller font */
         }
         
         .navbar-nav .nav-link:hover {
@@ -181,7 +151,7 @@
         
         .navbar-nav .dropdown-toggle::after {
             float: right;
-            margin-top: 0.3rem; /* Reduced */
+            margin-top: 0.5rem;
         }
         
         .navbar-nav .dropdown-menu {
@@ -197,11 +167,11 @@
         }
         
         .navbar-nav .dropdown-item {
-            padding: 0.25rem 1rem !important; /* Reduced from 0.5rem 1.5rem */
+            padding: 0.5rem 1.5rem !important;
             margin: 0 !important;
             color: rgba(255,255,255,0.8) !important;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.8rem !important; /* Smaller font */
+            font-size: 0.9rem;
         }
         
         .navbar-nav .dropdown-item:hover {
@@ -211,18 +181,18 @@
         }
         
         .navbar-nav .dropdown-header {
-            padding: 0.25rem 1rem 0.1rem !important; /* Much reduced */
+            padding: 0.5rem 1.5rem 0.25rem !important;
             color: rgba(255,255,255,0.6) !important;
             background: transparent;
             margin: 0;
             border: none;
-            font-size: 0.7rem !important; /* Smaller font */
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
         .navbar-nav .dropdown-divider {
-            margin: 0.1rem 0; /* Reduced */
+            margin: 0.25rem 0;
             border-color: rgba(255,255,255,0.2);
         }
         
@@ -272,64 +242,6 @@
             content: ' ⏶';
         }
     }
-
-    /* Hamburger menu fixes for mobile */
-    @media (max-width: 991.98px) {
-        .navbar-toggler {
-            padding: 0.25rem 0.5rem !important;
-            font-size: 1rem !important;
-            border: 1px solid #dee2e6 !important;
-            margin-right: 0.5rem;
-        }
-        
-        .navbar-collapse {
-            padding: 0 !important;
-            margin-top: 0.5rem;
-        }
-        
-        .navbar-nav {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-        
-        .navbar-nav .nav-link {
-            padding: 0.5rem 1rem !important;
-            color: #212529 !important;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .navbar-nav .nav-link:hover {
-            background-color: #f8f9fa;
-            color: #0d6efd !important;
-        }
-        
-        .navbar-nav .dropdown-menu {
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            margin: 0;
-            background: none;
-        }
-        
-        .navbar-nav .dropdown-item {
-            padding: 0.5rem 1.5rem !important;
-            color: #6c757d !important;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .navbar-nav .dropdown-item:hover {
-            background-color: #e9ecef !important;
-            color: #0d6efd !important;
-        }
-    }
-
-    /* Desktop hamburger menu should be hidden */
-    @media (min-width: 992px) {
-        .navbar-toggler {
-            display: none !important;
-        }
-    }
     </style>
 </head>
 <body>
@@ -346,7 +258,7 @@
                 <ul class="navbar-nav me-auto">
                     <!-- Aksjer Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('stocks.index') }}" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="stocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Aksjer
                         </a>
                         <ul class="dropdown-menu">
@@ -390,7 +302,7 @@
 
                     <!-- Analyser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('analysis.index') }}" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Analyser
                         </a>
                         <ul class="dropdown-menu">
@@ -449,7 +361,7 @@
                     <!-- Portefølje Dropdown (for logged in users) -->
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('portfolio.index') }}" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Portefølje
                         </a>
                         <ul class="dropdown-menu">
@@ -478,7 +390,7 @@
 
                     <!-- Nyheter Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('news_bp.index') }}" id="newsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="newsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Nyheter
                         </a>
                         <ul class="dropdown-menu">
@@ -523,7 +435,7 @@
 
                     <!-- Priser Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('pricing.index') }}" id="pricingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="pricingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Priser
                         </a>
                         <ul class="dropdown-menu">
@@ -550,59 +462,11 @@
                             {% endif %}
                         </ul>
                     </li>
-
-                    <!-- Advanced Features -->
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('advanced_features.index') }}" id="advancedDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-lightning-charge me-1"></i>Avansert
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.index') }}">
-                                <i class="bi bi-house me-2"></i>{{ t('advanced_features.title', fallback='Avanserte Funksjoner') }}
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Markedsdata</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.market_overview') }}">
-                                <i class="bi bi-activity me-2"></i>Sanntids oversikt
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.crypto_dashboard') }}">
-                                <i class="bi bi-currency-bitcoin me-2"></i>Krypto dashboard
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.currency_converter') }}">
-                                <i class="bi bi-arrows-angle-expand me-2"></i>Valutakonverter
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.economic_calendar') }}">
-                                <i class="bi bi-calendar-event me-2"></i>Økonomisk kalender
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Analyse</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.competitive_analysis') }}">
-                                <i class="bi bi-trophy me-2"></i>Konkurrentanalyse
-                            </a></li>
-                        </ul>
-                    </li>
-                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
-                    <!-- Language Selector -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-translate"></i> 
-                            {% if get_current_language() == 'en' %}English{% else %}Norsk{% endif %}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('main.set_language', language='no') }}">
-                                <i class="bi bi-flag me-2"></i>🇳🇴 Norsk
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.set_language', language='en') }}">
-                                <i class="bi bi-flag me-2"></i>🇬🇧 English
-                            </a></li>
-                        </ul>
-                    </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{ url_for('main.profile') }}" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
                         </a>
                         <ul class="dropdown-menu">

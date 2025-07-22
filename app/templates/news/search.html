@@ -1,74 +1,74 @@
 {% extends "base.html" %}
 
-{% block title %}Søk i Nyheter - Aksjeradar{% endblock %}
+{% block title %}Søk i nyheter - Aksjeradar{% endblock %}
+
+{% block extra_css %}
+<style>
+.search-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+}
+
+.search-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    margin-top: -3rem;
+    position: relative;
+    z-index: 10;
+}
+
+.news-result {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.news-result:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.search-highlight {
+    background: #fff3cd;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.2rem;
+}
+
+.result-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.search-stats {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">
-                <i class="bi bi-search"></i>
-                Søk i Nyheter
-            </h1>
-            
-            <form method="GET" class="mb-4">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Søk etter nyheter..." value="{{ query or '' }}">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-search"></i> Søk
-                    </button>
-                </div>
-            </form>
-            
-            {% if query %}
-                <h3>Søkeresultater for "{{ query }}"</h3>
-                
-                {% if articles %}
-                    <div class="row">
-                        {% for article in articles %}
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100">
-                                {% if article.image %}
-                                <img src="{{ article.image }}" class="card-img-top" alt="{{ article.title }}" style="height: 200px; object-fit: cover;">
-                                {% endif %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ article.title }}</h5>
-                                    <p class="card-text">{{ article.summary or article.description[:150] + '...' if article.description and article.description|length > 150 else article.description }}</p>
-                                    <small class="text-muted">
-                                        {{ article.source }} • {{ article.published_at|datetimeformat if article.published_at else 'Nylig' }}
-                                    </small>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="{{ article.url }}" target="_blank" class="btn btn-primary btn-sm">
-                                        Les mer <i class="bi bi-arrow-up-right-square"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Ingen nyheter funnet for søket "{{ query }}".
-                    </div>
-                {% endif %}
-            {% else %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i>
-                    Skriv inn et søkeord for å finne relevante nyheter.
-                </div>
-            {% endif %}
-            
-            <div class="mt-4">
-                <a href="{{ url_for('news_bp.news_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Tilbake til nyheter
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+<div class="search-header">
+    <div class="container">
         <div class="row">
             <div class="col-lg-8">
                 <h1><i class="bi bi-search me-2"></i>Søk i nyheter</h1>

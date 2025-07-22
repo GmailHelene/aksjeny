@@ -109,7 +109,27 @@ def create_app(config_class=None):
             app.jinja_env.globals['get_supported_languages'] = get_supported_languages
             app.logger.info("✅ Translation service integrated")
         except Exception as e:
-            app.logger.warning(f"Translation service setup failed: {e}")
+            app.logger.error(f"Translation service setup failed: {e}")
+            # Fallback: ensure get_current_language is available
+            try:
+                from .utils.i18n import get_current_language as fallback_get_current_language
+                app.jinja_env.globals['get_current_language'] = fallback_get_current_language
+                app.logger.info("✅ Fallback get_current_language added to Jinja2 globals")
+            except Exception as e:
+                app.logger.error(f"Fallback get_current_language setup failed: {e}")
+                # Final fallback: always provide a safe default
+                def get_current_language():
+                    app.logger.warning("Using default get_current_language fallback (Norwegian)")
+                    return 'no'  # Default to Norwegian
+                app.jinja_env.globals['get_current_language'] = get_current_language
+                app.logger.info("✅ Default get_current_language added to Jinja2 globals")
+
+        # Add a global error handler for template rendering issues
+        from jinja2 import TemplateError
+        @app.errorhandler(TemplateError)
+        def handle_template_error(error):
+            app.logger.error(f"Template rendering error: {error}")
+            return render_template('errors/500.html', error_message=str(error)), 500
         
         # Set up app context globals for templates
         @app.context_processor
