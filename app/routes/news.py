@@ -161,19 +161,24 @@ def get_latest_news_sync(limit=10, category='all'):
 @news_bp.route('/')
 @demo_access
 def index():
-    """News main page without debug output"""
+    """News main page with category filtering"""
     try:
-        # Get news articles without debug output using mock data
-        news_articles = get_latest_news_sync(limit=20, category='all')
+        # Get category from request
+        selected_category = request.args.get('category', 'all')
         
-        # Get categories
-        categories = ['alle', 'aksjer', 'økonomi', 'marked', 'crypto']
-        selected_category = request.args.get('category', 'alle')
+        # Get news articles with mock data
+        news_articles = get_latest_news_sync(limit=20, category=selected_category)
         
-        # Filter by category if specified
-        if selected_category != 'alle':
-            # Filter mock data by category if needed
-            pass
+        # Filter articles by category
+        if selected_category and selected_category != 'all':
+            filtered_articles = []
+            for article in news_articles:
+                if hasattr(article, 'categories') and selected_category in article.categories:
+                    filtered_articles.append(article)
+            news_articles = filtered_articles
+        
+        # Define available categories
+        categories = ['all', 'norwegian', 'international', 'energy', 'tech', 'crypto']
         
         return render_template('news/index.html',
                              news_articles=news_articles,

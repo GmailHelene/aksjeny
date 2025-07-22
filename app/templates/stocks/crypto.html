@@ -45,19 +45,22 @@
                             {% for ticker, crypto in stocks.items() %}
                             <tr class="text-dark">
                                 <td><strong>{{ ticker }}</strong></td>
-                                <td>{{ crypto['name'] }}</td>
-                                <td>${{ "{:,.2f}".format(crypto['price']) }}</td>
-                                <td class="{% if crypto['change'] > 0 %}text-success{% elif crypto['change'] < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                    {% if crypto['change'] > 0 %}+{% endif %}{{ crypto['change'] }}
+                                <td>{{ crypto['name'] or ticker }}</td>
+                                <td>${{ "%.2f"|format((crypto.get('price') or 0)|float) }}</td>
+                                <td class="{% if (crypto.get('change') or 0)|float > 0 %}text-success{% elif (crypto.get('change') or 0)|float < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    {% set change_val = (crypto.get('change') or 0)|float %}
+                                    {% if change_val > 0 %}+{% endif %}{{ "%.2f"|format(change_val) }}
                                 </td>
-                                <td class="{% if crypto.get('change_percent', 0) > 0 %}text-success{% elif crypto.get('change_percent', 0) < 0 %}text-danger{% else %}text-muted{% endif %}">
-                                    {% if crypto.get('change_percent', 0) > 0 %}+{% endif %}{{ "{:.2f}".format(crypto.get('change_percent', 0)) }}%
+                                <td class="{% if (crypto.get('change_percent') or 0)|float > 0 %}text-success{% elif (crypto.get('change_percent') or 0)|float < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    {% set change_percent_val = (crypto.get('change_percent') or 0)|float %}
+                                    {% if change_percent_val > 0 %}+{% endif %}{{ "%.2f"|format(change_percent_val) }}%
                                 </td>
                                 <td>{{ crypto.get('volume', 'N/A') }}</td>
                                 <td>
-                                    {% if crypto.get('change_percent', 0) > 2 %}
+                                    {% set change_percent_val = (crypto.get('change_percent') or 0)|float %}
+                                    {% if change_percent_val > 2 %}
                                         <span class="badge bg-success">KJØP</span>
-                                    {% elif crypto.get('change_percent', 0) < -2 %}
+                                    {% elif change_percent_val < -2 %}
                                         <span class="badge bg-danger">SELG</span>
                                     {% else %}
                                         <span class="badge bg-warning">HOLD</span>

@@ -49,14 +49,16 @@
                             <h5>Oslo Børs Oversikt</h5>
                         </div>
                         <div class="card-body">
-                            {% if data.overview.oslo_stocks %}
-                                {% for symbol, stock in data.overview.oslo_stocks.items()[:5] %}
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>{{ symbol }}</span>
-                                    <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
-                                        {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
-                                    </span>
-                                </div>
+                            {% if data.overview and data.overview.oslo_stocks %}
+                                {% for symbol, stock in data.overview.oslo_stocks.items() %}
+                                    {% if loop.index <= 5 %}
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>{{ symbol }}</span>
+                                        <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                            {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
+                                        </span>
+                                    </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <p class="text-muted">Ingen data tilgjengelig</p>
@@ -71,14 +73,16 @@
                             <h5>Globale Markeder</h5>
                         </div>
                         <div class="card-body">
-                            {% if data.overview.global_stocks %}
-                                {% for symbol, stock in data.overview.global_stocks.items()[:5] %}
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>{{ symbol }}</span>
-                                    <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
-                                        {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
-                                    </span>
-                                </div>
+                            {% if data.overview and data.overview.global_stocks %}
+                                {% for symbol, stock in data.overview.global_stocks.items() %}
+                                    {% if loop.index <= 5 %}
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>{{ symbol }}</span>
+                                        <span class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
+                                            {{ "{:+.1f}".format(stock.change_percent|default(0)) }}%
+                                        </span>
+                                    </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <p class="text-muted">Ingen data tilgjengelig</p>
@@ -143,7 +147,8 @@
                             <h5>{{ symbol }}</h5>
                             <h4>${{ crypto.price|default('N/A') }}</h4>
                             <span class="{{ 'text-success' if crypto.change_24h >= 0 else 'text-danger' }}">
-                                {{ "{:+.1f}".format(crypto.change_24h|default(0)) }}% (24h)
+                                {% set change_val = crypto.change_24h|default(0)|float %}
+                                {{ "{:+.1f}".format(change_val) }}% (24h)
                             </span>
                         </div>
                     </div>
@@ -213,11 +218,7 @@
 
         <!-- Insider Trading Tab -->
         <div class="tab-pane fade {{ 'show active' if active_tab == 'insider' else '' }}" id="insider">
-            <div class="alert alert-info">Feil ved lasting av data. Ingen innsidehandel informasjon tilgjengelig.</div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+            {% if data.insider_trading %}
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -232,16 +233,16 @@
                         {% for trade in data.insider_trading %}
                         <tr>
                             <td><strong>{{ trade.symbol|default('N/A') }}</strong></td>
-                            <td>{{ trade.person|default('Ukjent') }}</td>
+                            <td>{{ trade.insider|default('Ukjent') }}</td>
                             <td>{{ trade.transaction_type|default('N/A') }}</td>
-                            <td>{{ trade.date|default('N/A') }}</td>
+                            <td>{{ trade.date.strftime('%d.%m.%Y') if trade.date else 'N/A' }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             {% else %}
-            <div class="alert alert-info">Feil ved lasting av data. Ingen innsidehandel informasjon tilgjengelig.</div>
+            <div class="alert alert-info">Ingen innsidehandel informasjon tilgjengelig.</div>
             {% endif %}
         </div>
     </div>

@@ -512,11 +512,22 @@ def recommendation():
 @analysis.route('/ai', methods=['GET', 'POST'])
 @access_required
 def ai():
-    """AI analysis view"""
+    """AI analysis view with popular stocks"""
     ticker = request.args.get('ticker')
+    
+    # Define popular stocks for AI analysis
+    popular_stocks = {
+        'oslo': ['EQNR.OL', 'DNB.OL', 'MOWI.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
+        'global': ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA'],
+        'crypto': ['BTC-USD', 'ETH-USD', 'ADA-USD']
+    }
+    
     if not ticker:
         usage_summary = usage_tracker.get_usage_summary()
-        return render_template('analysis/ai.html', ticker=None, usage_summary=usage_summary)
+        return render_template('analysis/ai.html', 
+                             ticker=None, 
+                             usage_summary=usage_summary,
+                             popular_stocks=popular_stocks)
     
     # Check if user can make analysis requests
     can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
@@ -535,12 +546,14 @@ def ai():
         return render_template('analysis/ai.html', 
                               ticker=ticker,
                               analysis=analysis,
-                              usage_summary=usage_summary)
+                              usage_summary=usage_summary,
+                              popular_stocks=popular_stocks)
     except Exception as e:
         print(f"Error in AI analysis route: {str(e)}")
         return render_template('analysis/ai.html', 
                               error=f"En feil oppstod: {str(e)}",
-                              ticker=ticker)
+                              ticker=ticker,
+                              popular_stocks=popular_stocks)
     
 
 # Add new routes

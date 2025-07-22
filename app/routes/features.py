@@ -20,13 +20,31 @@ def ai_predictions():
     
     try:
         if ticker:
-            # Mock prediction data for single stock
+            # Generate realistic mock prediction data for single stock
+            base_price = round(random.uniform(100, 300), 2)  # More realistic base price
+            
+            # Generate realistic price progression over 8 days
+            predicted_values = []
+            current_price = base_price
+            
+            for i in range(8):
+                # Small daily changes between -3% to +3%
+                daily_change = random.uniform(-0.03, 0.03)
+                current_price = current_price * (1 + daily_change)
+                predicted_values.append(round(current_price, 2))
+            
+            predicted_price = predicted_values[-1]  # Final predicted price
+            
+            # Generate confidence bands around the predictions
+            confidence_upper = [round(price * random.uniform(1.02, 1.05), 2) for price in predicted_values]
+            confidence_lower = [round(price * random.uniform(0.95, 0.98), 2) for price in predicted_values]
+            
             predictions = {
                 'ticker': ticker.upper(),
-                'current_price': round(random.uniform(50, 500), 2),
-                'predicted_price': round(random.uniform(50, 500), 2),
-                'change_percent': round(random.uniform(-10, 10), 2),
-                'confidence': round(random.uniform(0.6, 0.95), 2),
+                'current_price': base_price,
+                'predicted_price': predicted_price,
+                'change_percent': round(((predicted_price - base_price) / base_price) * 100, 2),
+                'confidence': round(random.uniform(0.65, 0.85), 2),
                 'key_factors': [
                     'Positiv markedstrend',
                     'Sterk kvartalsrapport',
@@ -34,27 +52,26 @@ def ai_predictions():
                     'Tekniske indikatorer positive'
                 ],
                 'dates': [(datetime.now() + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(8)],
-                'predicted_values': [round(random.uniform(50, 500), 2) for _ in range(8)],
-                'confidence_upper': [round(random.uniform(50, 500), 2) for _ in range(8)],
-                'confidence_lower': [round(random.uniform(50, 500), 2) for _ in range(8)]
+                'predicted_values': predicted_values,
+                'confidence_upper': confidence_upper,
+                'confidence_lower': confidence_lower
             }
-            predictions['change_percent'] = round(
-                ((predictions['predicted_price'] - predictions['current_price']) / predictions['current_price']) * 100, 
-                2
-            )
             stock_info = {'name': f'{ticker} Company'}
         else:
-            # Mock data for overview
+            # Mock data for overview with realistic prices
             predictions = []
             for t in ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA']:
-                current = round(random.uniform(50, 500), 2)
-                predicted = round(random.uniform(50, 500), 2)
+                current = round(random.uniform(100, 300), 2)  # Realistic price range
+                # Small prediction change between -5% to +8%
+                change_percent = round(random.uniform(-5, 8), 2)
+                predicted = round(current * (1 + change_percent / 100), 2)
+                
                 predictions.append({
                     'ticker': t,
                     'current_price': current,
                     'predicted_price': predicted,
-                    'change_percent': round(((predicted - current) / current) * 100, 2),
-                    'confidence': round(random.uniform(0.6, 0.95), 2)
+                    'change_percent': change_percent,
+                    'confidence': round(random.uniform(0.65, 0.85), 2)
                 })
             stock_info = None
         

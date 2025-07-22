@@ -671,17 +671,19 @@ class FinancialDashboard {
 
         Object.entries(stocks || {}).forEach(([symbol, data]) => {
             const row = tbody.insertRow();
-            const changeClass = data.change >= 0 ? 'text-success' : 'text-danger';
-            const changeIcon = data.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            const changePercent = data.change_percent || 0;
+            const change = data.change || 0;
+            const changeClass = change >= 0 ? 'text-success' : 'text-danger';
+            const changeIcon = change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
 
             row.innerHTML = `
                 <td><strong>${symbol}</strong></td>
-                <td>$${data.price}</td>
+                <td>$${data.price || 0}</td>
                 <td class="${changeClass}">
-                    <i class="fas ${changeIcon} me-1"></i>$${Math.abs(data.change).toFixed(2)}
+                    <i class="fas ${changeIcon} me-1"></i>$${Math.abs(change).toFixed(2)}
                 </td>
-                <td class="${changeClass}">${data.change_percent > 0 ? '+' : ''}${data.change_percent.toFixed(2)}%</td>
-                <td>${data.volume.toLocaleString()}</td>
+                <td class="${changeClass}">${changePercent > 0 ? '+' : ''}${changePercent.toFixed(2)}%</td>
+                <td>${(data.volume || 0).toLocaleString()}</td>
                 <td>${data.pe_ratio || 'N/A'}</td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary" onclick="dashboard.viewStockDetails('${symbol}')">
@@ -701,8 +703,9 @@ class FinancialDashboard {
 
         (cryptos || []).forEach(crypto => {
             const row = tbody.insertRow();
-            const changeClass = crypto.price_change_percentage_24h >= 0 ? 'text-success' : 'text-danger';
-            const changeIcon = crypto.price_change_percentage_24h >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            const changePercent = crypto.price_change_percentage_24h || 0;
+            const changeClass = changePercent >= 0 ? 'text-success' : 'text-danger';
+            const changeIcon = changePercent >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
 
             row.innerHTML = `
                 <td><span class="badge bg-secondary">${crypto.rank}</span></td>
@@ -712,7 +715,7 @@ class FinancialDashboard {
                 </td>
                 <td>$${crypto.price_usd.toFixed(6)}</td>
                 <td class="${changeClass}">
-                    <i class="fas ${changeIcon} me-1"></i>${Math.abs(crypto.price_change_percentage_24h).toFixed(2)}%
+                    <i class="fas ${changeIcon} me-1"></i>${Math.abs(changePercent).toFixed(2)}%
                 </td>
                 <td>$${(crypto.market_cap / 1e9).toFixed(2)}B</td>
                 <td>$${(crypto.volume_24h / 1e6).toFixed(1)}M</td>
@@ -726,14 +729,15 @@ class FinancialDashboard {
 
         (currencies || []).forEach(currency => {
             const row = tbody.insertRow();
-            const changeClass = currency.change_24h >= 0 ? 'text-success' : 'text-danger';
-            const changeIcon = currency.change_24h >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            const change24h = currency.change_24h || 0;
+            const changeClass = change24h >= 0 ? 'text-success' : 'text-danger';
+            const changeIcon = change24h >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
 
             row.innerHTML = `
                 <td><strong>${currency.target}</strong></td>
                 <td>${currency.rate.toFixed(4)}</td>
                 <td class="${changeClass}">
-                    <i class="fas ${changeIcon} me-1"></i>${Math.abs(currency.change_24h).toFixed(4)}
+                    <i class="fas ${changeIcon} me-1"></i>${Math.abs(change24h).toFixed(4)}
                 </td>
             `;
         });

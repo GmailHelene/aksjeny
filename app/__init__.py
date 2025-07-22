@@ -164,6 +164,7 @@ def register_blueprints(app):
         ('.routes.stocks', 'stocks', '/stocks'),
         ('.routes.api', 'api', None),
         ('.routes.analysis', 'analysis', '/analysis'),
+        ('.routes.dashboard', 'dashboard', None),
         ('.routes.pro_tools', 'pro_tools', '/pro-tools'),
         ('.routes.market_intel', 'market_intel', '/market-intel'),
         ('.routes.backtest', 'backtest_bp', '/backtest'),

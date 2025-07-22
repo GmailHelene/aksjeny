@@ -24,7 +24,7 @@ def financial_dashboard():
             'overview': {
                 'oslo_stocks': DataService.get_oslo_bors_overview() or {},
                 'global_stocks': DataService.get_global_stocks_overview() or {},
-                'market_summary': DataService.get_market_summary() or {}
+                'market_summary': DataService.get_market_overview() or {}
             },
             'stocks': DataService.get_oslo_bors_overview() or {},
             'crypto': DataService.get_crypto_overview() or {},

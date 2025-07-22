@@ -34,6 +34,33 @@
                 <div class="form-text">Skriv inn en aksjeticker for å få en KI-drevet analyse. For norske aksjer, legg til .OL (f.eks. EQNR.OL)</div>
             </form>
             
+            {% if not ticker %}
+                <!-- Popular stocks for AI analysis -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Populære aksjer for analyse</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Oslo Børs</h6>
+                            {% for stock in popular_stocks.oslo %}
+                            <a href="{{ url_for('analysis.ai', ticker=stock) }}" class="btn btn-outline-primary btn-sm me-1 mb-1">{{ stock }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Globale aksjer</h6>
+                            {% for stock in popular_stocks.global %}
+                            <a href="{{ url_for('analysis.ai', ticker=stock) }}" class="btn btn-outline-success btn-sm me-1 mb-1">{{ stock }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Krypto</h6>
+                            {% for stock in popular_stocks.crypto %}
+                            <a href="{{ url_for('analysis.ai', ticker=stock) }}" class="btn btn-outline-warning btn-sm me-1 mb-1">{{ stock }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
             {% if ticker %}
                 <h3>{{ ticker }}</h3>
                 

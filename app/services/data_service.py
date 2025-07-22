@@ -2614,3 +2614,42 @@ class DataService:
                     'categories': ['international', 'tech']
                 })()
             ][:limit]
+
+    @staticmethod
+    def get_insider_trading_data():
+        """Get insider trading data with mock data"""
+        return [
+            {
+                'company': 'Equinor ASA',
+                'symbol': 'EQNR.OL',
+                'insider': 'Anders Opedal',
+                'position': 'CEO',
+                'transaction_type': 'Purchase',
+                'shares': 10000,
+                'price': 298.50,
+                'value': 2985000,
+                'date': datetime.now() - timedelta(days=2)
+            },
+            {
+                'company': 'DNB Bank',
+                'symbol': 'DNB.OL',
+                'insider': 'Kjerstin Braathen',
+                'position': 'CEO',
+                'transaction_type': 'Sale',
+                'shares': 5000,
+                'price': 195.20,
+                'value': 976000,
+                'date': datetime.now() - timedelta(days=5)
+            },
+            {
+                'company': 'Norsk Hydro',
+                'symbol': 'NHY.OL',
+                'insider': 'Hilde Merete Aasheim',
+                'position': 'CEO',
+                'transaction_type': 'Purchase',
+                'shares': 15000,
+                'price': 67.85,
+                'value': 1017750,
+                'date': datetime.now() - timedelta(days=7)
+            }
+        ]

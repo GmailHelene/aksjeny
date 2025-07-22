@@ -847,6 +847,35 @@ def privacy():
     """Privacy policy page"""
     return render_template('privacy.html', now=datetime.now())
 
+@main.route('/about')
+def about():
+    """About page"""
+    return render_template('about.html', 
+                         title="Om Aksjeradar",
+                         now=datetime.now())
+
+@main.route('/help')
+def help():
+    """Help and FAQ page"""
+    return render_template('help.html', 
+                         title="Hjelp og FAQ",
+                         now=datetime.now())
+
+@main.route('/settings')
+@login_required 
+def settings():
+    """User settings page"""
+    return render_template('settings.html', 
+                         title="Innstillinger",
+                         now=datetime.now())
+
+@main.route('/features')
+def features():
+    """Features overview page"""
+    return render_template('features.html', 
+                         title="Funksjoner",
+                         now=datetime.now())
+
 # Error handlers
 @main.app_errorhandler(404)
 def not_found_error(error):
