@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, make_response, jsonify, send_from_directory
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, make_response, jsonify, send_from_directory, g
 from ..utils.market_open import is_market_open
 import logging
-from datetime import datetime
-from urllib.parse import urlparse
+from datetime import datetime, timedelta
+from urllib.parse import urlparse, urljoin
+import hashlib
+import time
 
 # Import column fallbacks for database compatibility
 try:
@@ -18,6 +20,29 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from sqlalchemy import text
 from ..extensions import db, login_manager
+
+def has_active_subscription():
+    """Check if current user has active subscription"""
+    if not current_user.is_authenticated:
+        return False
+    
+    try:
+        # Check exempt users first
+        if hasattr(current_user, 'email') and current_user.email in EXEMPT_EMAILS:
+            return True
+            
+        # Check subscription status
+        if hasattr(current_user, 'has_active_subscription'):
+            return current_user.has_active_subscription()
+            
+        # Fallback check
+        if hasattr(current_user, 'subscription_type') and current_user.subscription_type:
+            return current_user.subscription_type in ['premium', 'pro', 'yearly', 'lifetime']
+            
+    except Exception as e:
+        logger.error(f"Error checking subscription: {e}")
+        
+    return False
 from ..utils.subscription import subscription_required
 from ..utils.access_control import access_required
 from ..utils.access_control import access_required, is_demo_user, is_trial_active, api_login_required
@@ -40,9 +65,27 @@ def get_user_model():
     return User
 
 def get_data_service():
-    """Lazily import and return the DataService class."""
-    from ..services.data_service import DataService
-    return DataService
+    """Lazily import and return the DataService class with error handling."""
+    try:
+        from ..services.data_service import DataService
+        return DataService
+    except ImportError as e:
+        logger.warning(f"DataService not available: {e}")
+        # Return a mock service for fallback
+        class MockDataService:
+            @staticmethod
+            def get_oslo_bors_overview():
+                return {}
+            @staticmethod
+            def get_global_stocks_overview():
+                return {}
+            @staticmethod
+            def get_crypto_overview():
+                return {}
+            @staticmethod
+            def get_currency_overview():
+                return {}
+        return MockDataService
 
 def get_referral_service():
     """Lazily import and return the ReferralService class."""
@@ -340,6 +383,7 @@ def index():
             
             if is_premium:
                 # Show dashboard-style homepage for premium users
+                DataService = get_data_service()
                 oslo_stocks = DataService.get_oslo_bors_overview() or {}
                 global_stocks = DataService.get_global_stocks_overview() or {}
                 crypto_data = DataService.get_crypto_overview() or {}
@@ -922,3 +966,13 @@ def profile():
                              subscription_status='free',
                              user_stats={},
                              error=True)
+
+@main.route('/set_language/<language>')
+def set_language(language=None):
+    """Set user language preference"""
+    if language in ['no', 'en']:
+        session['language'] = language
+        flash(f'Språk endret til {"Norsk" if language == "no" else "English"}', 'success')
+    
+    # Redirect back to referring page or home
+    return redirect(request.referrer or url_for('main.index'))

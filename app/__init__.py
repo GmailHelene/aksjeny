@@ -96,6 +96,21 @@ def create_app(config_class=None):
         
         register_template_filters(app)
         
+        # Add hasattr to Jinja2 globals to prevent template errors
+        app.jinja_env.globals['hasattr'] = hasattr
+        app.jinja_env.globals['getattr'] = getattr
+        app.jinja_env.globals['isinstance'] = isinstance
+        
+        # Add translation functions to Jinja2 globals
+        try:
+            from .services.translation_service import t, get_current_language, get_supported_languages
+            app.jinja_env.globals['t'] = t
+            app.jinja_env.globals['get_current_language'] = get_current_language
+            app.jinja_env.globals['get_supported_languages'] = get_supported_languages
+            app.logger.info("✅ Translation service integrated")
+        except Exception as e:
+            app.logger.warning(f"Translation service setup failed: {e}")
+        
         # Set up app context globals for templates
         @app.context_processor
         def inject_market_status():
@@ -179,6 +194,7 @@ def register_blueprints(app):
         ('.routes.blog', 'blog', '/blog'),
         ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
         ('.routes.resources', 'resources_bp', '/resources'),
+        ('.routes.advanced_features', 'advanced_features', '/advanced'),
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:

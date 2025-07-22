@@ -550,8 +550,56 @@
                             {% endif %}
                         </ul>
                     </li>
+
+                    <!-- Advanced Features -->
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('advanced_features.index') }}" id="advancedDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-lightning-charge me-1"></i>Avansert
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.index') }}">
+                                <i class="bi bi-house me-2"></i>{{ t('advanced_features.title', fallback='Avanserte Funksjoner') }}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Markedsdata</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.market_overview') }}">
+                                <i class="bi bi-activity me-2"></i>Sanntids oversikt
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.crypto_dashboard') }}">
+                                <i class="bi bi-currency-bitcoin me-2"></i>Krypto dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.currency_converter') }}">
+                                <i class="bi bi-arrows-angle-expand me-2"></i>Valutakonverter
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.economic_calendar') }}">
+                                <i class="bi bi-calendar-event me-2"></i>Økonomisk kalender
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Analyse</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.competitive_analysis') }}">
+                                <i class="bi bi-trophy me-2"></i>Konkurrentanalyse
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate"></i> 
+                            {% if get_current_language() == 'en' %}English{% else %}Norsk{% endif %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('main.set_language', language='no') }}">
+                                <i class="bi bi-flag me-2"></i>🇳🇴 Norsk
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.set_language', language='en') }}">
+                                <i class="bi bi-flag me-2"></i>🇬🇧 English
+                            </a></li>
+                        </ul>
+                    </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="{{ url_for('main.profile') }}" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
