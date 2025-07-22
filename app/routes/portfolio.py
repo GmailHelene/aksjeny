@@ -13,7 +13,7 @@ from ..utils.error_handler import (
 # Lazy import for DataService to avoid circular import
 def get_data_service():
     """Lazy import DataService to avoid circular imports"""
-    from app.services.data_service import DataService
+    from ..services.data_service import DataService
     return DataService
 
 portfolio = Blueprint('portfolio', __name__, url_prefix='/portfolio')

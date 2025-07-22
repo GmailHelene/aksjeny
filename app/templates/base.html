@@ -342,6 +342,9 @@
                             <li><a class="dropdown-item" href="{{ url_for('analysis.currency_overview') }}">
                                 <i class="bi bi-currency-dollar me-2"></i>Valutaoversikt
                             </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.insider_trading') }}">
+                                <i class="bi bi-eye me-2"></i>Innsidehandel
+                            </a></li>
                             {% if current_user.is_authenticated %}
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">AI & Prediksjoner</h6></li>
@@ -445,13 +448,10 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Abonnementer</h6></li>
                             <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-credit-card me-2"></i>Månedlig (199 kr)
+                                <i class="bi bi-credit-card me-2"></i>Månedlig (399 kr)
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-star me-2"></i>Premium (399 kr)
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-diamond me-2"></i>Årlig (3499 kr)
+                                <i class="bi bi-diamond me-2"></i>Årlig (2999 kr) - Spar 25%
                             </a></li>
                             {% if current_user.is_authenticated %}
                             <li><hr class="dropdown-divider"></li>

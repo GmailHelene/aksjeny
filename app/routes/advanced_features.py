@@ -7,7 +7,6 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 from flask_login import login_required, current_user
 from ..services.external_data_service import ExternalDataService
 from ..services.competitive_analysis_service import CompetitiveFeatureService
-from ..services.translation_service import t
 from datetime import datetime
 import logging
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 advanced_features = Blueprint('advanced_features', __name__, url_prefix='/advanced')
 
-# Initialize services
+# Initialize services - delay translation service import
 external_data_service = ExternalDataService()
 competitive_service = CompetitiveFeatureService()
 
@@ -24,6 +23,13 @@ competitive_service = CompetitiveFeatureService()
 def index():
     """Advanced features dashboard"""
     try:
+        # Import translation function safely within request context
+        try:
+            from ..services.translation_service import t
+        except ImportError:
+            def t(key, fallback=None, **kwargs):
+                return fallback or key
+        
         # Get comprehensive market data
         market_data = {
             'oslo_bors': external_data_service.get_oslo_bors_real_time(),

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
-from app.models.user import User
-from app.models.portfolio import Portfolio, PortfolioStock
-from app.extensions import db
+from ..models.user import User
+from ..models.portfolio import Portfolio, PortfolioStock
+from ..extensions import db
 from datetime import datetime, timedelta
 import yfinance as yf
 import pandas as pd

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, current_app
-from app.utils.access_control import access_required
+from ..utils.access_control import access_requiredutils.access_control import access_required
 
 search = Blueprint('search', __name__)
 

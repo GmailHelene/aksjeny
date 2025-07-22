@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
-from app.services.external_data import (
+from app.services.external_data import (services.external_data import (
     get_stock_comprehensive_data, 
     get_insider_trading_data, 
     get_analyst_ratings,

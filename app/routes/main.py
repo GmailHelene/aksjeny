@@ -94,13 +94,13 @@ def get_referral_service():
 
 def get_forms():
     """Lazily import and return all forms used in this module."""
-    from app.forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
+    from ..forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
     return LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm, ReferralForm
 
 def get_performance_monitor():
     """Lazily import and return the performance monitor decorator."""
     try:
-        from app.services.performance_monitor import monitor_performance
+        from ..services.performance_monitor import monitor_performance
         return monitor_performance
     except ImportError:
         # Return a dummy decorator if performance monitor is not available
@@ -407,7 +407,7 @@ def index():
                                  user=None)
                                  
     except Exception as e:
-        logger.error(f"Error in homepage: {e}")
+        current_app.logger.error(f"Error in homepage: {e}")
         return render_template('index.html',
                              show_pricing=True,
                              error="Kunne ikke laste siden")

@@ -101,34 +101,51 @@ def create_app(config_class=None):
         app.jinja_env.globals['getattr'] = getattr
         app.jinja_env.globals['isinstance'] = isinstance
         
-        # Add translation functions to Jinja2 globals
-        try:
-            from .services.translation_service import t, get_current_language, get_supported_languages
-            app.jinja_env.globals['t'] = t
-            app.jinja_env.globals['get_current_language'] = get_current_language
-            app.jinja_env.globals['get_supported_languages'] = get_supported_languages
-            app.logger.info("✅ Translation service integrated")
-        except Exception as e:
-            app.logger.error(f"Translation service setup failed: {e}")
-            # Fallback: ensure get_current_language is available
+        # Add translation functions to Jinja2 globals - Setup safely without app context dependency
+        def setup_translation_service():
+            """Setup translation service safely"""
+            try:
+                from .services.translation_service import t, get_current_language, get_supported_languages
+                app.jinja_env.globals['t'] = t
+                app.jinja_env.globals['get_current_language'] = get_current_language
+                app.jinja_env.globals['get_supported_languages'] = get_supported_languages
+                app.logger.info("✅ Translation service integrated")
+                return True
+            except Exception as e:
+                app.logger.warning(f"Translation service setup failed: {e}")
+                return False
+                
+        # Try main translation service first
+        translation_success = setup_translation_service()
+        
+        # If main service failed, setup fallbacks
+        if not translation_success:
             try:
                 from .utils.i18n import get_current_language as fallback_get_current_language
                 app.jinja_env.globals['get_current_language'] = fallback_get_current_language
                 app.logger.info("✅ Fallback get_current_language added to Jinja2 globals")
             except Exception as e:
-                app.logger.error(f"Fallback get_current_language setup failed: {e}")
+                app.logger.warning(f"Fallback get_current_language setup failed: {e}")
                 # Final fallback: always provide a safe default
                 def get_current_language():
-                    app.logger.warning("Using default get_current_language fallback (Norwegian)")
                     return 'no'  # Default to Norwegian
                 app.jinja_env.globals['get_current_language'] = get_current_language
                 app.logger.info("✅ Default get_current_language added to Jinja2 globals")
+            
+            # Always provide a dummy translation function if t is missing
+            if 't' not in app.jinja_env.globals:
+                def t(key, **kwargs):
+                    fallback = kwargs.get('fallback', key)
+                    return fallback
+                app.jinja_env.globals['t'] = t
+                app.logger.info("✅ Default translation function 't' added to Jinja2 globals")
 
         # Add a global error handler for template rendering issues
         from jinja2 import TemplateError
         @app.errorhandler(TemplateError)
         def handle_template_error(error):
             app.logger.error(f"Template rendering error: {error}")
+            # Return a safe error page instead of crashing
             return render_template('errors/500.html', error_message=str(error)), 500
         
         # Set up app context globals for templates
@@ -219,16 +236,18 @@ def register_blueprints(app):
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:
         try:
-            from importlib import import_module
-            module = import_module(module_path, package=__name__)
-            blueprint = getattr(module, blueprint_name)
-            # Register blueprint with appropriate prefix
-            if url_prefix:
-                app.register_blueprint(blueprint, url_prefix=url_prefix)
-            else:
-                app.register_blueprint(blueprint)
-            blueprints_registered.append(blueprint_name)
-            app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
+            # Import within app context to avoid context errors
+            with app.app_context():
+                from importlib import import_module
+                module = import_module(module_path, package=__name__)
+                blueprint = getattr(module, blueprint_name)
+                # Register blueprint with appropriate prefix
+                if url_prefix:
+                    app.register_blueprint(blueprint, url_prefix=url_prefix)
+                else:
+                    app.register_blueprint(blueprint)
+                blueprints_registered.append(blueprint_name)
+                app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
         except ImportError as e:
             app.logger.warning(f"Could not import {blueprint_name}: {e}")
         except Exception as e:

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import current_user
-from app.utils.access_control import access_required
+from ..utils.access_control import access_required
 
 resources_bp = Blueprint('resources', __name__, url_prefix='/resources')
 

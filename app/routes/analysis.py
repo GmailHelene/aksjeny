@@ -865,3 +865,17 @@ def api_sentiment(symbol):
     except Exception as e:
         logger.error(f"Error in sentiment API for {symbol}: {e}")
         return jsonify({'error': 'Failed to get sentiment data'}), 500
+
+@analysis.route('/insider-trading')
+@access_required
+def insider_trading():
+    """Insider trading analysis page"""
+    try:
+        return render_template('analysis/insider_trading.html',
+                             page_title="Innsidehandel Intelligens")
+    except Exception as e:
+        logger.error(f"Error in insider trading page: {e}")
+        flash('Kunne ikke laste innsidehandel-siden.', 'error')
+        return render_template('analysis/insider_trading.html',
+                             page_title="Innsidehandel Intelligens",
+                             error="Siden kunne ikke lastes")
