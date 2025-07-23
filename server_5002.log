@@ -12873,3 +12873,165 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 [2025-07-23 06:47:36,395] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.24 seconds
 [2025-07-23 06:47:38,744] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:47:38.743959
 [2025-07-23 06:47:42,136] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:47:42.136635
+[2025-07-23 06:48:42,235] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:48:42.235827
+[2025-07-23 06:48:48,948] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:48:52,137] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:48:52,152] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.08 seconds
+[2025-07-23 06:48:54,336] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:48:54.336913
+[2025-07-23 06:48:57,890] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:48:57,891] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:49:04,244] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:49:04,244] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.09 seconds
+[2025-07-23 06:49:06,448] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:49:06.448020
+[2025-07-23 06:49:09,818] ERROR in realtime_data_service: Error processing ticker SOL-USD: cannot convert float NaN to integer
+[2025-07-23 06:49:09,818] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:49:09.818194
+[2025-07-23 06:50:09,918] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:50:09.918432
+[2025-07-23 06:50:16,696] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:50:19,892] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:50:19,892] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.03 seconds
+[2025-07-23 06:50:22,022] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:50:22.022785
+[2025-07-23 06:50:25,567] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:50:25,569] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:50:31,912] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:50:31,912] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.11 seconds
+[2025-07-23 06:50:34,134] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:50:34.134002
+[2025-07-23 06:50:37,515] ERROR in realtime_data_service: Error processing ticker SOL-USD: cannot convert float NaN to integer
+[2025-07-23 06:50:37,515] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:50:37.515486
+[2025-07-23 06:51:37,615] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:51:37.615728
+[2025-07-23 06:51:44,357] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:51:47,556] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:51:47,556] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.06 seconds
+[2025-07-23 06:51:49,726] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:51:49.726748
+[2025-07-23 06:51:53,238] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:51:53,239] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:51:59,586] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:51:59,586] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.14 seconds
+[2025-07-23 06:52:01,838] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:52:01.838157
+[2025-07-23 06:52:05,195] ERROR in realtime_data_service: Error processing ticker DOT-USD: cannot convert float NaN to integer
+[2025-07-23 06:52:05,196] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:52:05.196097
+[2025-07-23 06:53:05,296] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:53:05.296319
+[2025-07-23 06:53:12,034] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:53:15,229] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:53:15,229] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.07 seconds
+[2025-07-23 06:53:17,407] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:53:17.407346
+[2025-07-23 06:53:20,976] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:53:20,977] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:53:27,353] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:53:27,353] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.05 seconds
+[2025-07-23 06:53:29,518] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:53:29.518271
+[2025-07-23 06:53:29,719] ERROR in realtime_data_service: Error processing ticker BTC-USD: cannot convert float NaN to integer
+[2025-07-23 06:53:32,912] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:53:32.912632
+[2025-07-23 06:54:33,013] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:54:33.012967
+[2025-07-23 06:54:39,808] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:54:42,983] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:54:42,983] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.03 seconds
+[2025-07-23 06:54:45,123] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:54:45.123756
+[2025-07-23 06:54:48,670] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:54:48,672] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:54:55,029] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:54:55,029] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.09 seconds
+[2025-07-23 06:54:57,234] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:54:57.234902
+[2025-07-23 06:55:00,629] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:55:00.629865
+[2025-07-23 06:56:00,699] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:56:00.699092
+[2025-07-23 06:56:07,473] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:56:10,652] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:56:10,652] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.05 seconds
+[2025-07-23 06:56:12,807] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:56:12.807632
+[2025-07-23 06:56:16,369] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:56:16,370] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:56:23,770] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:56:23,770] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 1.04 seconds
+[2025-07-23 06:56:24,913] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:56:24.913493
+[2025-07-23 06:56:28,288] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:56:28.288434
+[2025-07-23 06:57:28,387] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:57:28.387957
+[2025-07-23 06:57:35,128] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:57:38,309] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:57:38,309] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.08 seconds
+[2025-07-23 06:57:40,498] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:57:40.498899
+[2025-07-23 06:57:44,000] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:57:44,002] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:57:50,351] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:57:50,351] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.15 seconds
+[2025-07-23 06:57:52,610] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:57:52.610357
+[2025-07-23 06:57:55,935] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:57:55.935333
+[2025-07-23 06:58:56,021] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 06:58:56,121] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:58:56.121802
+[2025-07-23 06:59:03,890] ERROR in realtime_data_service: Error processing ticker REC.OL: cannot convert float NaN to integer
+[2025-07-23 06:59:07,079] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 06:59:07,079] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 1.04 seconds
+[2025-07-23 06:59:08,227] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:59:08.227718
+[2025-07-23 06:59:12,743] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 06:59:12,744] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 06:59:19,086] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 06:59:19,086] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 1.14 seconds
+[2025-07-23 06:59:20,334] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 06:59:20.334176
+[2025-07-23 06:59:23,678] ERROR in realtime_data_service: Error processing ticker SOL-USD: cannot convert float NaN to integer
+[2025-07-23 06:59:23,678] INFO in realtime_data_service: Updated real-time data at 2025-07-23 06:59:23.678702
+[2025-07-23 07:00:23,746] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 07:00:23,846] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:00:23.846776
+[2025-07-23 07:00:24,026] WARNING in realtime_data_service: No data received for batch: ['EQNR.OL', 'DNB.OL', 'TEL.OL']
+[2025-07-23 07:00:24,212] WARNING in realtime_data_service: No data received for batch: ['YAR.OL', 'NHY.OL', 'MOWI.OL']
+[2025-07-23 07:00:24,483] WARNING in realtime_data_service: No data received for batch: ['NEL.OL', 'REC.OL', 'ORK.OL']
+[2025-07-23 07:00:24,657] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 07:00:24,658] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 11.19 seconds
+[2025-07-23 07:00:36,003] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:00:36.003460
+[2025-07-23 07:00:40,693] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 07:00:40,695] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 07:00:47,064] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 07:00:47,064] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.94 seconds
+[2025-07-23 07:00:48,107] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:00:48.107918
+[2025-07-23 07:00:52,458] ERROR in realtime_data_service: Error processing ticker DOT-USD: cannot convert float NaN to integer
+[2025-07-23 07:00:52,459] INFO in realtime_data_service: Updated real-time data at 2025-07-23 07:00:52.459482
+[2025-07-23 07:01:52,482] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 07:01:52,582] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:01:52.582789
+[2025-07-23 07:01:52,757] WARNING in realtime_data_service: No data received for batch: ['EQNR.OL', 'DNB.OL', 'TEL.OL']
+[2025-07-23 07:01:52,923] WARNING in realtime_data_service: No data received for batch: ['YAR.OL', 'NHY.OL', 'MOWI.OL']
+[2025-07-23 07:01:53,166] WARNING in realtime_data_service: No data received for batch: ['NEL.OL', 'REC.OL', 'ORK.OL']
+[2025-07-23 07:01:53,345] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 07:01:53,345] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 11.24 seconds
+[2025-07-23 07:02:04,739] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:02:04.739671
+[2025-07-23 07:02:08,300] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 07:02:08,301] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 07:02:14,633] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 07:02:14,633] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.11 seconds
+[2025-07-23 07:02:16,850] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:02:16.850900
+[2025-07-23 07:02:18,073] ERROR in realtime_data_service: Error processing ticker BTC-USD: cannot convert float NaN to integer
+[2025-07-23 07:02:18,074] ERROR in realtime_data_service: Error processing ticker ADA-USD: cannot convert float NaN to integer
+[2025-07-23 07:02:21,237] ERROR in realtime_data_service: Error processing ticker DOT-USD: cannot convert float NaN to integer
+[2025-07-23 07:02:21,237] INFO in realtime_data_service: Updated real-time data at 2025-07-23 07:02:21.237958
+[2025-07-23 07:03:21,337] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 07:03:21,438] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:03:21.438701
+[2025-07-23 07:03:21,632] WARNING in realtime_data_service: No data received for batch: ['EQNR.OL', 'DNB.OL', 'TEL.OL']
+[2025-07-23 07:03:21,865] WARNING in realtime_data_service: No data received for batch: ['YAR.OL', 'NHY.OL', 'MOWI.OL']
+[2025-07-23 07:03:22,127] WARNING in realtime_data_service: No data received for batch: ['NEL.OL', 'REC.OL', 'ORK.OL']
+[2025-07-23 07:03:22,292] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 07:03:22,292] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 11.15 seconds
+[2025-07-23 07:03:33,595] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:03:33.595164
+[2025-07-23 07:03:37,117] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 07:03:37,119] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 07:03:43,455] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 07:03:43,455] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.14 seconds
+[2025-07-23 07:03:45,706] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:03:45.706543
+[2025-07-23 07:03:45,929] ERROR in realtime_data_service: Error processing ticker ADA-USD: cannot convert float NaN to integer
+[2025-07-23 07:03:49,119] INFO in realtime_data_service: Updated real-time data at 2025-07-23 07:03:49.119394
+[2025-07-23 07:04:49,205] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 07:04:49,305] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:04:49.305910
+[2025-07-23 07:04:49,459] WARNING in realtime_data_service: No data received for batch: ['EQNR.OL', 'DNB.OL', 'TEL.OL']
+[2025-07-23 07:04:49,699] WARNING in realtime_data_service: No data received for batch: ['YAR.OL', 'NHY.OL', 'MOWI.OL']
+[2025-07-23 07:04:49,943] WARNING in realtime_data_service: No data received for batch: ['NEL.OL', 'REC.OL', 'ORK.OL']
+[2025-07-23 07:04:50,130] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 07:04:50,131] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 11.17 seconds
+[2025-07-23 07:05:01,456] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:05:01.456918
+[2025-07-23 07:05:04,995] ERROR in realtime_data_service: Error processing ticker GOOGL: cannot convert float NaN to integer
+[2025-07-23 07:05:04,996] ERROR in realtime_data_service: Error processing ticker NVDA: cannot convert float NaN to integer
+[2025-07-23 07:05:11,361] ERROR in realtime_data_service: Error processing ticker CRM: 'Close'
+[2025-07-23 07:05:11,362] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 2.09 seconds
+[2025-07-23 07:05:13,568] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:05:13.568094
+[2025-07-23 07:05:16,929] INFO in realtime_data_service: Updated real-time data at 2025-07-23 07:05:16.929116
+[2025-07-23 07:06:16,995] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 0.00 seconds
+[2025-07-23 07:06:17,096] DEBUG in rate_limiter: Recorded yahoo_finance API call at 2025-07-23 07:06:17.096104
+[2025-07-23 07:06:17,272] WARNING in realtime_data_service: No data received for batch: ['EQNR.OL', 'DNB.OL', 'TEL.OL']
+[2025-07-23 07:06:17,490] WARNING in realtime_data_service: No data received for batch: ['YAR.OL', 'NHY.OL', 'MOWI.OL']
+[2025-07-23 07:06:17,770] WARNING in realtime_data_service: No data received for batch: ['NEL.OL', 'REC.OL', 'ORK.OL']
+[2025-07-23 07:06:17,991] WARNING in realtime_data_service: No data received for batch: ['SSO.OL']
+[2025-07-23 07:06:17,992] INFO in rate_limiter: Rate limit reached for yahoo_finance, waiting 11.10 seconds
