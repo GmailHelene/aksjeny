@@ -112,12 +112,12 @@
                                             {{ ticker }}
                                         </a>
                                     </td>
-                                    <td class="fw-bold">{{ "%.2f"|format(stock.last_price) }} NOK</td>
-                                    <td class="{% if stock.change > 0 %}text-success{% elif stock.change < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(stock.change) if stock.change > 0 else "%.2f"|format(stock.change) }}
+                                    <td class="fw-bold">{{ "%.2f"|format(stock.last_price|default(0)) }} NOK</td>
+                                    <td class="{% if stock.change|default(0) > 0 %}text-success{% elif stock.change|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change|default(0)) if stock.change|default(0) > 0 else "%.2f"|format(stock.change|default(0)) }}
                                     </td>
-                                    <td class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(stock.change_percent) if stock.change_percent > 0 else "%.2f"|format(stock.change_percent) }}%
+                                    <td class="{% if stock.change_percent|default(0) > 0 %}text-success{% elif stock.change_percent|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change_percent|default(0)) if stock.change_percent|default(0) > 0 else "%.2f"|format(stock.change_percent|default(0)) }}%
                                     </td>
                                     {% if not restricted %}
                                     <td>
@@ -169,12 +169,12 @@
                                             {{ ticker }}
                                         </a>
                                     </td>
-                                    <td class="fw-bold">${{ "%.2f"|format(stock.last_price) }}</td>
-                                    <td class="{% if stock.change > 0 %}text-success{% elif stock.change < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(stock.change) if stock.change > 0 else "%.2f"|format(stock.change) }}
+                                    <td class="fw-bold">${{ "%.2f"|format(stock.last_price|default(0)) }}</td>
+                                    <td class="{% if stock.change|default(0) > 0 %}text-success{% elif stock.change|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change|default(0)) if stock.change|default(0) > 0 else "%.2f"|format(stock.change|default(0)) }}
                                     </td>
-                                    <td class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(stock.change_percent) if stock.change_percent > 0 else "%.2f"|format(stock.change_percent) }}%
+                                    <td class="{% if stock.change_percent|default(0) > 0 %}text-success{% elif stock.change_percent|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(stock.change_percent|default(0)) if stock.change_percent|default(0) > 0 else "%.2f"|format(stock.change_percent|default(0)) }}%
                                     </td>
                                     {% if not restricted %}
                                     <td>
@@ -220,12 +220,12 @@
                                 {% for ticker, coin in market_data.crypto.items() %}
                                 <tr>
                                     <td class="fw-bold">{{ ticker }}</td>
-                                    <td class="fw-bold">${{ "%.2f"|format(coin.last_price) }}</td>
-                                    <td class="{% if coin.change > 0 %}text-success{% elif coin.change < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(coin.change) if coin.change > 0 else "%.2f"|format(coin.change) }}
+                                    <td class="fw-bold">${{ "%.2f"|format(coin.last_price|default(0)) }}</td>
+                                    <td class="{% if coin.change|default(0) > 0 %}text-success{% elif coin.change|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(coin.change|default(0)) if coin.change|default(0) > 0 else "%.2f"|format(coin.change|default(0)) }}
                                     </td>
-                                    <td class="{% if coin.change_percent > 0 %}text-success{% elif coin.change_percent < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(coin.change_percent) if coin.change_percent > 0 else "%.2f"|format(coin.change_percent) }}%
+                                    <td class="{% if coin.change_percent|default(0) > 0 %}text-success{% elif coin.change_percent|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(coin.change_percent|default(0)) if coin.change_percent|default(0) > 0 else "%.2f"|format(coin.change_percent|default(0)) }}%
                                     </td>
                                     {% if not restricted %}
                                     <td>
@@ -268,16 +268,16 @@
                                 {% for ticker, curr in market_data.currency.items() %}
                                 <tr>
                                     <td class="fw-bold">{{ ticker }}</td>
-                                    <td class="fw-bold">{{ "%.4f"|format(curr.last_price) }}</td>
-                                    <td class="{% if curr.change > 0 %}text-success{% elif curr.change < 0 %}text-danger{% endif %}">
-                                        {{ "+%.4f"|format(curr.change) if curr.change > 0 else "%.4f"|format(curr.change) }}
+                                    <td class="fw-bold">{{ "%.4f"|format(curr.last_price|default(0)) }}</td>
+                                    <td class="{% if curr.change|default(0) > 0 %}text-success{% elif curr.change|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.4f"|format(curr.change|default(0)) if curr.change|default(0) > 0 else "%.4f"|format(curr.change|default(0)) }}
                                     </td>
-                                    <td class="{% if curr.change_percent > 0 %}text-success{% elif curr.change_percent < 0 %}text-danger{% endif %}">
-                                        {{ "+%.2f"|format(curr.change_percent) if curr.change_percent > 0 else "%.2f"|format(curr.change_percent) }}%
+                                    <td class="{% if curr.change_percent|default(0) > 0 %}text-success{% elif curr.change_percent|default(0) < 0 %}text-danger{% endif %}">
+                                        {{ "+%.2f"|format(curr.change_percent|default(0)) if curr.change_percent|default(0) > 0 else "%.2f"|format(curr.change_percent|default(0)) }}%
                                     </td>
                                     <td>{{ "%.4f"|format(curr.bid|default(0)) }}</td>
                                     <td>{{ "%.4f"|format(curr.ask|default(0)) }}</td>
-                                    <td>{{ "{:,.0f}"|format(curr.volume|default(0)) }}</td>
+                                    <td>{{ curr.volume|default('N/A') }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

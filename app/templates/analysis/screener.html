@@ -1,127 +1,202 @@
 {% extends "base.html" %}
 
-{% block title %}Aksje Screener - Aksjeradar{% endblock %}
+{% block title %}Avansert Aksje Screener | Aksjeradar{% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4">
+<div class="container-fluid py-4">
     <div class="row">
-        <div class="col-12">
+        <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="h3">Aksje Screener</h1>
-                    <p class="text-muted">Finn aksjer basert på dine investeringskriterier</p>
+                    <h1 class="h2 mb-1">
+                        <i class="bi bi-funnel text-primary"></i> Avansert Aksje Screener
+                    </h1>
+                    <p class="text-muted">Finn aksjer basert på detaljerte kriterier med Finviz-teknologi</p>
                 </div>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
-                        <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
-                        <li class="breadcrumb-item active">Screener</li>
-                    </ol>
-                </nav>
+                <div>
+                    <span class="badge bg-success fs-6">🚀 Powered by Finviz</span>
+                    {% if current_user.is_authenticated %}
+                    <span class="badge bg-warning text-dark fs-6">PRO</span>
+                    {% else %}
+                    <span class="badge bg-info fs-6">DEMO</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Form -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Filtrer Aksjer</h5>
+    <div class="row">
+        <!-- Filter Panel -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Screening Kriterier</h5>
                 </div>
                 <div class="card-body">
-                    <form method="GET" action="{{ url_for('analysis.screener') }}">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="market_cap_min" class="form-label">Min. Markedsverdi (mill.)</label>
-                                <input type="number" class="form-control" id="market_cap_min" name="market_cap_min" 
-                                       value="{{ filters.market_cap_min or '' }}" placeholder="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="market_cap_max" class="form-label">Maks. Markedsverdi (mill.)</label>
-                                <input type="number" class="form-control" id="market_cap_max" name="market_cap_max" 
-                                       value="{{ filters.market_cap_max or '' }}" placeholder="Ingen grense">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="pe_ratio_max" class="form-label">Maks. P/E Ratio</label>
-                                <input type="number" class="form-control" id="pe_ratio_max" name="pe_ratio_max" 
-                                       value="{{ filters.pe_ratio_max or '' }}" step="0.1" placeholder="50">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="dividend_yield_min" class="form-label">Min. Utbytteavkastning (%)</label>
-                                <input type="number" class="form-control" id="dividend_yield_min" name="dividend_yield_min" 
-                                       value="{{ filters.dividend_yield_min or '' }}" step="0.1" placeholder="0">
-                            </div>
+                    <form method="POST" action="{{ url_for('analysis.screener_view') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <!-- Preset Screens -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">🎯 Ferdigdefinerte screener</label>
+                            <select name="preset" class="form-select" onchange="selectPreset(this.value)">
+                                <option value="">-- Velg preset --</option>
+                                {% for preset_name, filters in preset_screens.items() %}
+                                <option value="{{ preset_name }}">{{ preset_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Velg en ferdig screening eller bygg din egen under</small>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="sector" class="form-label">Sektor</label>
-                                <select class="form-select" id="sector" name="sector">
-                                    <option value="">Alle sektorer</option>
-                                    {% for sector in sectors %}
-                                    <option value="{{ sector }}" {% if filters.sector == sector %}selected{% endif %}>{{ sector }}</option>
+
+                        <hr>
+
+                        <!-- Custom Filters -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">🔧 Tilpassede filtere</label>
+                            
+                            {% for category, filters in available_filters.items() %}
+                            <div class="mb-3">
+                                <h6 class="text-primary">{{ category }}</h6>
+                                <div class="row">
+                                    {% for filter_key in filters %}
+                                    <div class="col-12 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="filters" value="{{ filter_key }}" 
+                                                   id="filter_{{ filter_key }}"
+                                                   {% if filter_key in selected_filters %}checked{% endif %}>
+                                            <label class="form-check-label small" for="filter_{{ filter_key }}">
+                                                {{ get_filter_display_name(filter_key) }}
+                                            </label>
+                                        </div>
+                                    </div>
                                     {% endfor %}
-                                </select>
+                                </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="market" class="form-label">Marked</label>
-                                <select class="form-select" id="market" name="market">
-                                    <option value="all" {% if filters.market == 'all' %}selected{% endif %}>Alle markeder</option>
-                                    <option value="oslo" {% if filters.market == 'oslo' %}selected{% endif %}>Oslo Børs</option>
-                                    <option value="global" {% if filters.market == 'global' %}selected{% endif %}>Globale</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-filter"></i> Filtrer Aksjer
-                                </button>
-                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Søk aksjer
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                                <i class="bi bi-x-circle"></i> Nullstill
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Results -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Screeningresultater</h5>
+            <!-- Info Panel -->
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Om Screener</h6>
                 </div>
                 <div class="card-body">
+                    <small class="text-muted">
+                        Vår screener bruker Finviz-teknologi for å analysere tusenvis av aksjer basert på:
+                    </small>
+                    <ul class="mt-2 small">
+                        <li>Fundamental data (P/E, P/B, ROE, etc.)</li>
+                        <li>Teknisk analyse (RSI, momentum, etc.)</li>
+                        <li>Markedsdata (volum, market cap, etc.)</li>
+                        <li>Performance metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="col-md-8">
+            {% if show_results %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check text-success"></i> 
+                        Screening Resultater ({{ results|length }} aksjer)
+                    </h5>
+                    {% if results %}
+                    <div>
+                        <button class="btn btn-outline-primary btn-sm" onclick="exportResults()">
+                            <i class="bi bi-download"></i> Eksporter CSV
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="saveAsWatchlist()">
+                            <i class="bi bi-heart"></i> Lagre som Watchlist
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
                     {% if results %}
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Symbol</th>
-                                    <th>Navn</th>
+                                    <th>Ticker</th>
+                                    <th>Selskap</th>
+                                    <th>Sektor</th>
                                     <th>Pris</th>
-                                    <th>Markedsverdi</th>
-                                    <th>P/E Ratio</th>
-                                    <th>Utbytte</th>
-                                    <th>Endring %</th>
-                                    <th>Handlinger</th>
+                                    <th>Endring</th>
+                                    <th>P/E</th>
+                                    <th>P/B</th>
+                                    <th>RSI</th>
+                                    <th>Anbefaling</th>
+                                    <th>Handling</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for stock in results %}
                                 <tr>
-                                    <td><strong>{{ stock.symbol }}</strong></td>
-                                    <td>{{ stock.name }}</td>
-                                    <td>{{ stock.price }} {{ 'kr' if 'OL' in stock.symbol else '$' }}</td>
-                                    <td>{{ stock.market_cap }} mill</td>
-                                    <td>{{ stock.pe_ratio or 'N/A' }}</td>
-                                    <td>{{ stock.dividend_yield }}%</td>
-                                    <td class="{{ 'text-success' if stock.change_percent >= 0 else 'text-danger' }}">
-                                        {{ "{:+.1f}".format(stock.change_percent) }}%
+                                    <td>
+                                        <strong>{{ stock.ticker }}</strong>
                                     </td>
                                     <td>
-                                        <a href="{{ url_for('stocks.details', symbol=stock.symbol) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i> Detaljer
-                                        </a>
+                                        <div>
+                                            <div class="fw-bold">{{ stock.company[:30] }}{% if stock.company|length > 30 %}...{% endif %}</div>
+                                            <small class="text-muted">{{ stock.industry[:25] }}{% if stock.industry|length > 25 %}...{% endif %}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ stock.sector }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>${{ "%.2f"|format(stock.price) }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="{% if stock.change_percent > 0 %}text-success{% elif stock.change_percent < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                            {% if stock.change_percent > 0 %}+{% endif %}{{ "%.2f"|format(stock.change_percent) }}%
+                                            <i class="bi bi-{% if stock.change_percent > 0 %}arrow-up{% elif stock.change_percent < 0 %}arrow-down{% else %}dash{% endif %}"></i>
+                                        </span>
+                                    </td>
+                                    <td>{{ "%.2f"|format(stock.pe_ratio) if stock.pe_ratio else '-' }}</td>
+                                    <td>{{ "%.2f"|format(stock.pb_ratio) if stock.pb_ratio else '-' }}</td>
+                                    <td>
+                                        <span class="{% if stock.rsi < 30 %}text-success{% elif stock.rsi > 70 %}text-danger{% else %}text-muted{% endif %}">
+                                            {{ "%.1f"|format(stock.rsi) if stock.rsi else '-' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if stock.recommendation == 'STRONG BUY' %}bg-success
+                                            {% elif stock.recommendation == 'BUY' %}bg-primary
+                                            {% elif stock.recommendation == 'HOLD' %}bg-warning text-dark
+                                            {% elif stock.recommendation == 'SELL' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ stock.recommendation }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('stocks.detail', symbol=stock.ticker) }}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button class="btn btn-outline-success btn-sm" 
+                                                    onclick="addToWatchlist('{{ stock.ticker }}')">
+                                                <i class="bi bi-heart"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -130,65 +205,214 @@
                     </div>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h5>Ingen resultater</h5>
-                        <p class="text-muted">Juster filtreringsparametrene for å finne aksjer som matcher kriteriene dine.</p>
+                        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">Ingen aksjer fant som oppfyller kriteriene</h5>
+                        <p class="text-muted">Prøv å justere filterne eller velg en annen preset</p>
                     </div>
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="col-lg-3">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Hurtigfiltre</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <h6>Verdiaksjer</h6>
-                    <small class="text-muted">Lav P/E, høyt utbytte</small>
+            {% else %}
+            <!-- Welcome Panel -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-funnel text-primary" style="font-size: 4rem;"></i>
+                    <h3 class="mt-3">Velkommen til Avansert Screener</h3>
+                    <p class="lead text-muted">
+                        Finn de beste aksjene basert på dine kriterier ved hjelp av Finviz-teknologi
+                    </p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card border-primary h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-lightning-charge text-primary fs-1"></i>
+                                    <h5>Rask Screening</h5>
+                                    <p class="small">Analyser tusenvis av aksjer på sekunder</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-success h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-graph-up text-success fs-1"></i>
+                                    <h5>Detaljert Analyse</h5>
+                                    <p class="small">Fundamental og teknisk analyse kombinert</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-warning h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-star text-warning fs-1"></i>
+                                    <h5>Smart Anbefalinger</h5>
+                                    <p class="small">AI-drevne kjøp/selg anbefalinger</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-muted">Velg et ferdigdefinert preset eller bygg dine egne filtere til venstre for å komme i gang</p>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <h6>Vekstaksjer</h6>
-                    <small class="text-muted">Høy omsetningsvekst, lav utbytte</small>
-                </div>
-                <div class="mb-3">
-                    <h6>Utbytteaksjer</h6>
-                    <small class="text-muted">Høy og stabil utbytteavkastning</small>
-                </div>
             </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h5>Andre analysetyper</h5>
-            </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('analysis.warren_buffett') }}" class="btn btn-outline-primary btn-sm">
-                        Warren Buffett Analyse
-                    </a>
-                    <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-success btn-sm">
-                        Benjamin Graham Analyse
-                    </a>
-                    <a href="{{ url_for('analysis.sentiment_view') }}" class="btn btn-outline-info btn-sm">
-                        Sentiment Analyse
-                    </a>
-                    <a href="{{ url_for('analysis.technical') }}" class="btn btn-outline-warning btn-sm">
-                        Teknisk Analyse
-                    </a>
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 <script>
-function resetForm() {
-    document.querySelector('form').reset();
+// Filter display names mapping
+const filterDisplayNames = {
+    'cap_mega': 'Mega Cap (>$200B)',
+    'cap_large': 'Large Cap (>$10B)', 
+    'cap_mid': 'Mid Cap ($2B-$10B)',
+    'cap_small': 'Small Cap (<$2B)',
+    'nasdaq': 'NASDAQ',
+    'nyse': 'NYSE',
+    'sp500': 'S&P 500',
+    'sp400': 'S&P 400',
+    'sp600': 'S&P 600',
+    'nasdaq100': 'NASDAQ 100',
+    'russell2000': 'Russell 2000',
+    'tech': 'Teknologi',
+    'healthcare': 'Helsevesen',
+    'finance': 'Finans',
+    'energy': 'Energi',
+    'consumer': 'Forbruksvarer',
+    'industrial': 'Industri',
+    'utilities': 'Utilities',
+    'realestate': 'Eiendom',
+    'materials': 'Materialer',
+    'pe_low': 'Lav P/E (<15)',
+    'pe_profitable': 'Profitabel (P/E>0)',
+    'pe_high': 'Høy P/E (>50)',
+    'peg_low': 'Lav PEG (<1)',
+    'pb_low': 'Lav P/B (<1)',
+    'ps_low': 'Lav P/S (<1)',
+    'perf_week_up': 'Uke +',
+    'perf_month_up': 'Måned +',
+    'perf_ytd_up': 'YTD +',
+    'perf_year_up': 'År +',
+    'rsi_oversold': 'RSI Oversolgt (<30)',
+    'rsi_overbought': 'RSI Overkjøpt (>70)',
+    'price_near_high': 'Nær 52W høy',
+    'price_near_low': 'Nær 52W lav',
+    'volume_high': 'Høyt volum (>2M)',
+    'dividend_yield': 'Utbytte >0%',
+    'dividend_high': 'Høyt utbytte (>5%)',
+    'roe_high': 'ROE >0%',
+    'roa_high': 'ROA >0%',
+    'debt_low': 'Lav gjeld (<0.5)',
+    'current_ratio_high': 'Høy likviditet (>1.5)',
+    'sales_growth': 'Salgsvekst 5Y+',
+    'eps_growth': 'EPS vekst 5Y+',
+    'earnings_growth': 'Inntjeningsvekst+'
+};
+
+function getFilterDisplayName(filterKey) {
+    return filterDisplayNames[filterKey] || filterKey;
+}
+
+function selectPreset(preset) {
+    if (!preset) return;
+    
+    // Clear all checkboxes first
+    document.querySelectorAll('input[name="filters"]').forEach(cb => cb.checked = false);
+    
+    // Show loading indicator
+    const btn = document.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Laster preset...';
+    btn.disabled = true;
+    
+    // Auto-submit form after brief delay
+    setTimeout(() => {
+        document.querySelector('form').submit();
+    }, 500);
+}
+
+function clearFilters() {
+    document.querySelectorAll('input[name="filters"]').forEach(cb => cb.checked = false);
+    document.querySelector('select[name="preset"]').value = '';
+}
+
+function exportResults() {
+    // Create CSV content
+    const table = document.querySelector('table tbody');
+    if (!table) return;
+    
+    let csv = 'Ticker,Selskap,Sektor,Pris,Endring,P/E,P/B,RSI,Anbefaling\n';
+    
+    table.querySelectorAll('tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 9) {
+            const rowData = [
+                cells[0].textContent.trim(),
+                cells[1].querySelector('.fw-bold').textContent.trim(),
+                cells[2].textContent.trim(),
+                cells[3].textContent.trim(),
+                cells[4].textContent.trim(),
+                cells[5].textContent.trim(),
+                cells[6].textContent.trim(),
+                cells[7].textContent.trim(),
+                cells[8].textContent.trim()
+            ];
+            csv += rowData.map(cell => '"' + cell + '"').join(',') + '\n';
+        }
+    });
+    
+    // Download CSV
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'screener_results.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function saveAsWatchlist() {
+    // Collect tickers
+    const tickers = [];
+    document.querySelectorAll('table tbody tr').forEach(row => {
+        const ticker = row.querySelector('td:first-child strong')?.textContent.trim();
+        if (ticker) tickers.push(ticker);
+    });
+    
+    if (tickers.length === 0) return;
+    
+    // Show modal or redirect to create watchlist with tickers
+    alert(`Vil opprette watchlist med ${tickers.length} aksjer: ${tickers.slice(0, 5).join(', ')}${tickers.length > 5 ? '...' : ''}`);
+}
+
+function addToWatchlist(ticker) {
+    // AJAX call to add to watchlist
+    fetch('/api/watchlist/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({ ticker: ticker })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            const btn = event.target.closest('button');
+            btn.innerHTML = '<i class="bi bi-heart-fill"></i>';
+            btn.classList.replace('btn-outline-success', 'btn-success');
+            btn.disabled = true;
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to watchlist:', error);
+    });
 }
 </script>
 {% endblock %}

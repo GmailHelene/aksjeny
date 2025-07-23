@@ -18,22 +18,30 @@ class AIPredictionService:
         Generate AI-driven stock price prediction
         """
         try:
-            # Get historical data
+            # Get historical data with fallback
             historical_data = DataService.get_stock_info(ticker)
             
             # Simple prediction model (can be enhanced with actual ML models)
             current_price = historical_data.get('last_price', 0)
             if current_price == 0:
+                current_app.logger.warning(f"No price data for {ticker}, using fallback")
                 return AIPredictionService._get_fallback_prediction(ticker, days_ahead)
             
             # Calculate prediction based on multiple factors
             prediction_data = AIPredictionService._calculate_prediction(ticker, current_price, days_ahead)
             
+            # Add availability warning if using external API fallbacks
+            if 'error' in str(historical_data):
+                prediction_data['warning'] = 'Begrensede data tilgjengelig - eksterne API-er kan være utilgjengelige'
+            
             return prediction_data
             
         except Exception as e:
             current_app.logger.error(f"Error generating prediction for {ticker}: {str(e)}")
-            return AIPredictionService._get_fallback_prediction(ticker, days_ahead)
+            # Always return fallback data to ensure UI functionality
+            fallback = AIPredictionService._get_fallback_prediction(ticker, days_ahead)
+            fallback['warning'] = 'AI-prediksjon basert på historiske data - live data utilgjengelig'
+            return fallback
     
     @staticmethod
     def _calculate_prediction(ticker, current_price, days_ahead):

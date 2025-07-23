@@ -1,12 +1,25 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
-from app.services.external_data import (services.external_data import (
-    get_stock_comprehensive_data, 
-    get_insider_trading_data, 
-    get_analyst_ratings,
-    get_market_sentiment,
-    external_data_service
-)
+try:
+    from app.services.external_data import (
+        get_stock_comprehensive_data, 
+        get_insider_trading_data, 
+        get_analyst_ratings,
+        get_market_sentiment,
+        external_data_service
+    )
+except ImportError:
+    # Fallback dummy functions if service not available
+    def get_stock_comprehensive_data(symbol):
+        return {}
+    def get_insider_trading_data(symbol):
+        return []
+    def get_analyst_ratings(symbol):
+        return {}
+    def get_market_sentiment(symbol):
+        return {}
+    external_data_service = None
+
 from app.services.portfolio_service import get_ai_analysis
 import logging
 

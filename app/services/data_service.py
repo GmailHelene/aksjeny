@@ -1006,7 +1006,7 @@ class DataService:
             except Exception as e:
                 error_msg = str(e).lower()
                 if '429' in error_msg or 'too many requests' in error_msg:
-                    logging.error(f"Yahoo Finance rate limit (429) for {ticker}: {e}")
+                    logging.warning(f"Yahoo Finance rate limit (429) for {ticker}: {e}")
                     # Record failure to trigger circuit breaker
                     if hasattr(rate_limiter, 'record_failure'):
                         rate_limiter.record_failure('yfinance')
@@ -2652,4 +2652,22 @@ class DataService:
                 'value': 1017750,
                 'date': datetime.now() - timedelta(days=7)
             }
+        ]
+
+    @staticmethod
+    def get_popular_stocks():
+        """Get popular stocks for search suggestions"""
+        return [
+            {'symbol': 'EQNR.OL', 'name': 'Equinor ASA'},
+            {'symbol': 'DNB.OL', 'name': 'DNB Bank Group'},
+            {'symbol': 'TEL.OL', 'name': 'Telenor ASA'},
+            {'symbol': 'MOWI.OL', 'name': 'Mowi ASA'},
+            {'symbol': 'NOR.OL', 'name': 'Norsk Hydro ASA'},
+            {'symbol': 'AKER.OL', 'name': 'Aker ASA'},
+            {'symbol': 'YAR.OL', 'name': 'Yara International'},
+            {'symbol': 'STL.OL', 'name': 'Stolt-Nielsen'},
+            {'symbol': 'AAPL', 'name': 'Apple Inc.'},
+            {'symbol': 'MSFT', 'name': 'Microsoft Corporation'},
+            {'symbol': 'GOOGL', 'name': 'Alphabet Inc.'},
+            {'symbol': 'TSLA', 'name': 'Tesla Inc.'}
         ]

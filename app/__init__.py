@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g
 from .config import config
-from .extensions import db, login_manager, csrf, mail
+from .extensions import db, login_manager, csrf, mail, socketio
 from .utils.market_open import is_oslo_bors_open, is_global_markets_open
 from flask_login import current_user
 import logging
@@ -49,6 +49,15 @@ def create_app(config_class=None):
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    # Initialize SocketIO
+    socketio.init_app(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
+    
+    # Register WebSocket handlers
+    try:
+        from .routes import websocket_handlers
+        app.logger.info("✅ WebSocket handlers registered")
+    except Exception as e:
+        app.logger.warning(f"Failed to register WebSocket handlers: {e}")
     
     # Initialize Stripe before configuring stripe webhooks
     setup_stripe(app)
@@ -89,6 +98,10 @@ def create_app(config_class=None):
         
         register_blueprints(app)
         setup_error_handlers(app)
+        
+        # Setup global access control middleware
+        from .middleware.access_control import apply_global_access_control
+        app.before_request(apply_global_access_control)
         
         # Import and setup security headers
         from .utils.security import setup_security_headers
@@ -168,6 +181,23 @@ def create_app(config_class=None):
         app.logger.info("Registered endpoints:")
         for rule in app.url_map.iter_rules():
             app.logger.info(f"Endpoint: {rule.endpoint} -> {rule}")
+        
+        # Initialize market data service
+        def setup_market_data_service():
+            """Setup real-time market data service safely"""
+            try:
+                from .services.market_data_service import MarketDataService
+                # Initialize market data service
+                app.market_data_service = MarketDataService()
+                app.logger.info("✅ Market data service initialized")
+                return True
+            except Exception as e:
+                app.logger.warning(f"Market data service setup failed: {e}")
+                return False
+        
+        # Setup market data service
+        setup_market_data_service()
+        
         app.logger.info("✅ App initialization complete")
         
         # Initialize database tables within app context
@@ -214,11 +244,13 @@ def register_blueprints(app):
     # Other blueprints with proper relative imports
     blueprint_configs = [
         ('.routes.stocks', 'stocks', '/stocks'),
+        ('.routes.insider_trading', 'insider_trading', '/insider-trading'),
         ('.routes.api', 'api', None),
         ('.routes.analysis', 'analysis', '/analysis'),
         ('.routes.dashboard', 'dashboard', None),
         ('.routes.pro_tools', 'pro_tools', '/pro-tools'),
         ('.routes.market_intel', 'market_intel', '/market-intel'),
+        ('.routes.external_data', 'external_data_bp', '/external-data'),
         ('.routes.backtest', 'backtest_bp', '/backtest'),
         ('.routes.seo_content', 'seo_content', '/content'),
         ('.routes.portfolio_advanced', 'portfolio_advanced', '/portfolio-advanced'),
@@ -232,6 +264,11 @@ def register_blueprints(app):
         ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
         ('.routes.resources', 'resources_bp', '/resources'),
         ('.routes.advanced_features', 'advanced_features', '/advanced'),
+        ('.routes.news_intelligence', 'news_intelligence', '/news-intelligence'),
+        ('.routes.mobile_trading', 'mobile_trading', '/mobile-trading'),
+        ('.routes.realtime_routes', 'realtime_bp', '/realtime'),
+        ('.routes.realtime_websocket', 'realtime_data', None),
+        ('.routes.portfolio_analytics', 'portfolio_analytics', '/portfolio-analytics'),
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:

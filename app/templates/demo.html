@@ -1,14 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %}Demo - Aksjeradar{% endblock %}
+{% block title %}Demo - Prøv Aksjeradar Gratis{% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> <strong>Demo-modus:</strong> Utforsk alle funksjoner uten begrensninger!
+    <!-- Demo Header -->
+    <div class="alert alert-info border-0 shadow-sm">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-play-circle-fill fs-3 me-3"></i>
+            <div>
+                <h5 class="mb-1"><strong>Demo-modus aktivert!</strong></h5>
+                <p class="mb-0">Utforsk alle premium funksjoner gratis. Klikk deg rundt og test alt!</p>
+            </div>
+        </div>
     </div>
     
-    <h1 class="mb-4">Prøv Aksjeradar gratis</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-4">🚀 Prøv alle Aksjeradar funksjoner gratis</h1>
+            
+            <!-- Interactive Feature Preview -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">🎯 Interaktive AI-analyser</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-primary w-100 demo-btn" onclick="demoAIAnalysis('EQNR.OL')">
+                                <i class="bi bi-robot"></i> AI Prisprediksjoner
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-success w-100 demo-btn" onclick="demoGrahamAnalysis()">
+                                <i class="bi bi-graph-up-arrow"></i> Benjamin Graham Analyse
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-warning w-100 demo-btn" onclick="demoWarrenBuffett()">
+                                <i class="bi bi-trophy"></i> Warren Buffett Strategi
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-danger w-100 demo-btn" onclick="demoShortAnalysis()">
+                                <i class="bi bi-graph-down"></i> Short Analyse
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Demo Result Area -->
+                    <div id="demoResult" class="mt-4" style="display: none;">
+                        <div class="alert alert-success">
+                            <h6><i class="bi bi-check-circle"></i> Analyse komplett!</h6>
+                            <p id="demoResultText" class="mb-2"></p>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-success btn-sm" onclick="showUpgradeModal()">
+                                    <i class="bi bi-unlock"></i> Oppgradér for full rapport
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="resetDemo()">
+                                    <i class="bi bi-arrow-clockwise"></i> Prøv en annen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- CTA Card -->
+            <div class="card border-0 shadow-sm bg-gradient-primary text-white mb-4">
+                <div class="card-body text-center">
+                    <h5>🎁 Spesialtilbud!</h5>
+                    <p class="mb-3">Få 30% rabatt på din første måned når du oppgraderer nå</p>
+                    <button class="btn btn-light btn-lg w-100" onclick="showUpgradeModal()">
+                        <i class="bi bi-crown"></i> Oppgradér nå
+                    </button>
+                    <small class="d-block mt-2 opacity-75">Ingen bindingstid • Avbryt når som helst</small>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Market Overview -->
     <div class="row mb-4">
@@ -485,31 +557,229 @@
     </div>
 
     <!-- Demo Actions -->
-    <div class="row mt-4">
+    <div class="row mt-5">
         <div class="col-12">
-            <div class="card bg-light">
+            <div class="card border-0 shadow-lg bg-gradient-success text-white">
+                <div class="card-body text-center py-5">
+                    <h2 class="mb-3">🎯 Imponert av det du ser?</h2>
+                    <p class="lead mb-4">Dette er bare en liten smakebit! Få tilgang til 50+ premium funksjoner, real-time data og ubegrensede analyser.</p>
+                    
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                                <span class="badge bg-light text-dark px-3 py-2">📊 Real-time kurser</span>
+                                <span class="badge bg-light text-dark px-3 py-2">🤖 AI-analyser</span>
+                                <span class="badge bg-light text-dark px-3 py-2">📈 Porteføljesporing</span>
+                                <span class="badge bg-light text-dark px-3 py-2">🔔 Smart varsling</span>
+                                <span class="badge bg-light text-dark px-3 py-2">📱 Mobil app</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <button class="btn btn-warning btn-lg px-4" onclick="showUpgradeModal()">
+                            <i class="bi bi-crown"></i> Start ditt abonnement nå
+                        </button>
+                        <a href="{{ url_for('main.register') }}" class="btn btn-light btn-lg px-4">
+                            <i class="bi bi-person-plus"></i> Opprett gratis konto
+                        </a>
+                    </div>
+                    
+                    <p class="mt-4 mb-0 opacity-75">
+                        <small>✅ 30 dagers pengene-tilbake-garanti • ✅ Avbryt når som helst • ✅ Ingen bindingstid</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Showcase -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">🚀 Hva får du med premium?</h3>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <h5>Imponert av det du ser?</h5>
-                    <p class="mb-3">Dette er bare en liten del av hva Aksjeradar tilbyr. Få tilgang til alle funksjoner med et abonnement.</p>
-                    <a href="{{ url_for('pricing.index') }}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-crown me-2"></i>Se Prisplaner
-                    </a>
-                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Opprett Konto
-                    </a>
+                    <i class="bi bi-lightning-charge-fill text-warning fs-1"></i>
+                    <h5>Real-time Data</h5>
+                    <p>Live kurser, instant varsler og øyeblikkelig oppdateringer fra alle markeder</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-robot text-primary fs-1"></i>
+                    <h5>AI-Powered Analyser</h5>
+                    <p>Avanserte algoritmer som analyserer tusenvis av datapunkter for deg</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-check text-success fs-1"></i>
+                    <h5>Profesjonell Support</h5>
+                    <p>Direkte tilgang til våre eksperter og prioritert kundesupport</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Upgrade Modal -->
+<div class="modal fade" id="upgradeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">🎁 Spesialtilbud - Kun i dag!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h3 class="text-success">30% rabatt på første måned!</h3>
+                <p class="lead">Oppgradér nå og få tilgang til alle premium funksjoner</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">Månedlig</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4><del class="text-muted">299,-</del> <span class="text-success">209,-</span></h4>
+                                <p>per måned</p>
+                                <button class="btn btn-primary">Velg plan</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0">Årlig <span class="badge bg-warning">Spare 20%</span></h6>
+                            </div>
+                            <div class="card-body">
+                                <h4><del class="text-muted">2,388,-</del> <span class="text-success">1,670,-</span></h4>
+                                <p>per år</p>
+                                <button class="btn btn-success">Velg plan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-function showAnalysis(symbol) {
-    // In demo mode, show a sample analysis modal or redirect
-    alert(`Detaljert analyse for ${symbol} ville blitt vist her i fullversjonen.`);
+// Interactive demo functions
+function demoAIAnalysis(symbol) {
+    const results = [
+        `AI anbefaler KJØP for ${symbol} - 92% konfidens, kursmål 320 NOK`,
+        `Sterk teknisk momentum oppdaget for ${symbol} - +15% potensial`,
+        `Fundamental analyse viser undervurdert ${symbol} - Score: 8.5/10`
+    ];
+    showDemoResult(results[Math.floor(Math.random() * results.length)]);
 }
+
+function demoGrahamAnalysis() {
+    const results = [
+        'Benjamin Graham Score: 7/10 - Aksjen oppfyller 5 av 6 kriterier',
+        'Graham analyse: Undervurdert med 23% margin of safety',
+        'Value investing signal: STERK KJØP - P/E under historisk snitt'
+    ];
+    showDemoResult(results[Math.floor(Math.random() * results.length)]);
+}
+
+function demoWarrenBuffett() {
+    const results = [
+        'Buffett Score: 8.5/10 - Moat score: Høy, Management: Utmerket',
+        'Kvalitetsselskap med vedvarende konkurransefortrinn oppdaget',
+        'Langsiktig investering anbefalt - 10-års avkastningspotensial: 12%'
+    ];
+    showDemoResult(results[Math.floor(Math.random() * results.length)]);
+}
+
+function demoShortAnalysis() {
+    const results = [
+        'Short interesse: 12% - Høy squeeze risiko oppdaget',
+        'Teknisk analyse viser short-signal - Stop loss ved 285 NOK',
+        'Sentiment analyse: Bearish momentum, short-mulighet identifisert'
+    ];
+    showDemoResult(results[Math.floor(Math.random() * results.length)]);
+}
+
+function showDemoResult(text) {
+    document.getElementById('demoResultText').textContent = text;
+    document.getElementById('demoResult').style.display = 'block';
+    
+    // Add animation effect
+    document.getElementById('demoResult').classList.add('fade-in');
+    
+    // Scroll to result
+    document.getElementById('demoResult').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetDemo() {
+    document.getElementById('demoResult').style.display = 'none';
+}
+
+function showUpgradeModal() {
+    new bootstrap.Modal(document.getElementById('upgradeModal')).show();
+}
+
+function showAnalysis(symbol) {
+    // Show realistic demo popup
+    const modal = `
+        <div class="alert alert-success alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <h6><i class="bi bi-graph-up"></i> Demo Analyse - ${symbol}</h6>
+            <p class="mb-2 small">Viser preview av full analyse...</p>
+            <button class="btn btn-success btn-sm" onclick="showUpgradeModal()">Se full rapport</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modal);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        const alert = document.querySelector('.alert');
+        if (alert) alert.remove();
+    }, 5000);
+}
+
+// Add animation CSS
+const style = document.createElement('style');
+style.textContent = `
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .demo-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .demo-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+    }
+`;
+document.head.appendChild(style);
 
 function showDemo(section) {
     // Hide all demo sections

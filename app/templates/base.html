@@ -7,7 +7,16 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font                            <li><h6 class="dropdown-header">Market Intelligence</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.market_intelligence') }}">
+                                <i class="bi bi-lightning-charge me-2"></i>Market Intel
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.insider_trading_overview') }}">
+                                <i class="bi bi-person-badge me-2"></i>Insider Trading
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.analyst_coverage') }}">
+                                <i class="bi bi-people-fill me-2"></i>Analyst Coverage
+                            </a></li>-icons.css">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -108,11 +117,11 @@
         }
     }
 
-    /* Fix mobile menu padding issues - completely revised */
+    /* Fix mobile menu padding issues - completely revised - ZERO PADDING APPROACH */
     @media (max-width: 768px) {
         .navbar-toggler {
             border: none;
-            padding: 0.25rem 0.5rem;
+            padding: 0.1rem 0.2rem;
         }
         
         .navbar-collapse {
@@ -121,17 +130,17 @@
         }
         
         .navbar-nav {
-            padding: 0.5rem 0 !important;
+            padding: 0 !important;
             margin: 0 !important;
             background: #343a40;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem !important;
+            border-radius: 0.25rem;
+            margin-top: 0.25rem !important;
         }
         
         .navbar-nav .nav-item {
             padding: 0 !important;
             margin: 0 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         
         .navbar-nav .nav-item:last-child {
@@ -139,9 +148,11 @@
         }
         
         .navbar-nav .nav-link {
-            padding: 0.75rem 1rem !important;
+            padding: 0.25rem 0.75rem !important;
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
+            font-size: 0.9rem !important;
+            line-height: 1.2 !important;
         }
         
         .navbar-nav .nav-link:hover {
@@ -151,7 +162,7 @@
         
         .navbar-nav .dropdown-toggle::after {
             float: right;
-            margin-top: 0.5rem;
+            margin-top: 0.2rem;
         }
         
         .navbar-nav .dropdown-menu {
@@ -167,11 +178,12 @@
         }
         
         .navbar-nav .dropdown-item {
-            padding: 0.5rem 1.5rem !important;
+            padding: 0.25rem 0.75rem !important;
             margin: 0 !important;
             color: rgba(255,255,255,0.8) !important;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.85rem !important;
+            line-height: 1.2 !important;
         }
         
         .navbar-nav .dropdown-item:hover {
@@ -181,18 +193,18 @@
         }
         
         .navbar-nav .dropdown-header {
-            padding: 0.5rem 1.5rem 0.25rem !important;
+            padding: 0.15rem 0.75rem 0.05rem !important;
             color: rgba(255,255,255,0.6) !important;
             background: transparent;
             margin: 0;
             border: none;
-            font-size: 0.75rem;
+            font-size: 0.65rem !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
         .navbar-nav .dropdown-divider {
-            margin: 0.25rem 0;
+            margin: 0.05rem 0;
             border-color: rgba(255,255,255,0.2);
         }
         
@@ -317,7 +329,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('analysis.screener_view') }}">
                                 <i class="bi bi-funnel me-2"></i>Aksje screener
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis_view') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.short_analysis') }}">
                                 <i class="bi bi-graph-down me-2"></i>Short analyse
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('analysis.prediction') }}">
@@ -387,6 +399,17 @@
                             <li><a class="dropdown-item" href="{{ url_for('portfolio.stock_tips') }}">
                                 <i class="bi bi-lightbulb me-2"></i>Aksjetips
                             </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">AI Optimization</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.optimization_page') }}">
+                                <i class="bi bi-cpu me-2"></i>Portfolio Optimization
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio.performance_page') }}">
+                                <i class="bi bi-graph-up-arrow me-2"></i>Performance Analytics
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio_analytics.dashboard') }}">
+                                <i class="bi bi-brain me-2"></i>Avansert AI-Analyse
+                            </a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -402,7 +425,7 @@
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Kategorier</h6></li>
-                                                        <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='aksjer') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='aksjer') }}">
                                 <i class="bi bi-graph-up me-2"></i>Aksjenyheter
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='økonomi') }}">
@@ -432,9 +455,98 @@
                             <li><a class="dropdown-item" href="{{ url_for('news_bp.embed') }}">
                                 <i class="bi bi-code me-2"></i>Integrer nyheter
                             </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">AI Intelligence</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_intelligence.news_dashboard') }}">
+                                <i class="bi bi-brain me-2"></i>News Intelligence
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('news_intelligence.sentiment_page') }}">
+                                <i class="bi bi-emoji-smile me-2"></i>AI Sentiment Analysis
+                            </a></li>
                             {% endif %}
                         </ul>
                     </li>
+
+                    <!-- Pro Tools Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="proDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Pro Tools
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('pro_tools.index') }}">
+                                <i class="bi bi-tools me-2"></i>Alle Pro verktøy
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Avanserte funksjoner</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('analysis.screener_view') }}">
+                                <i class="bi bi-funnel-fill me-2"></i>Avansert screener
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pro_tools.portfolio_analyzer') }}">
+                                <i class="bi bi-graph-up-arrow me-2"></i>Portefølje analysator
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pro_tools.price_alerts') }}">
+                                <i class="bi bi-bell-fill me-2"></i>Smart varsling
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pro_tools.export_tools') }}">
+                                <i class="bi bi-download me-2"></i>Data eksport
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Market Intelligence</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.market_intelligence') }}">
+                                <i class="bi bi-lightning-charge me-2"></i>Market Intel
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.insider_trading_overview') }}">
+                                <i class="bi bi-eye-fill me-2"></i>Insider Intelligence
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('external_data.analyst_coverage') }}">
+                                <i class="bi bi-people-fill me-2"></i>Analytiker dekning
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Ressurser</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('resources.analysis_tools') }}">
+                                <i class="bi bi-gear-fill me-2"></i>Analyse verktøy
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('resources.tool_comparison') }}">
+                                <i class="bi bi-list-columns me-2"></i>Verktøy sammenligning
+                            </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Features & Notifications -->
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="featuresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Mine Tjenester
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('features.ai_predictions') }}">
+                                <i class="bi bi-robot me-2"></i>AI Prediksjoner
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('features.technical_analysis') }}">
+                                <i class="bi bi-graph-up me-2"></i>Teknisk analyse
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('features.social_sentiment') }}">
+                                <i class="bi bi-chat-dots me-2"></i>Social sentiment
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Varsling</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('notifications_bp.index') }}">
+                                <i class="bi bi-bell me-2"></i>Mine varsler
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('notifications_bp.settings') }}">
+                                <i class="bi bi-gear me-2"></i>Varsel innstillinger
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Avansert</h6></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.crypto_dashboard') }}">
+                                <i class="bi bi-currency-bitcoin me-2"></i>Krypto dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('advanced_features.currency_converter') }}">
+                                <i class="bi bi-arrow-left-right me-2"></i>Valuta konverter
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
 
                     <!-- Priser Dropdown -->
                     <li class="nav-item dropdown">
@@ -475,6 +587,9 @@
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('portfolio.index') }}">
                                 <i class="bi bi-briefcase me-2"></i>Min portefølje
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mobile_trading.mobile_dashboard') }}">
+                                <i class="bi bi-phone me-2"></i>Mobile Trading
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('pricing.subscription') }}">
                                 <i class="bi bi-credit-card me-2"></i>Mitt abonnement

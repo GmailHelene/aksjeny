@@ -9,6 +9,12 @@ from ..utils.error_handler import (
     format_percentage_norwegian, safe_api_call, validate_stock_symbol,
     validate_quantity, UserFriendlyError
 )
+from ..services.portfolio_optimization_service import PortfolioOptimizationService
+from ..services.performance_tracking_service import PerformanceTrackingService
+import logging
+import json
+
+logger = logging.getLogger(__name__)
 
 # Lazy import for DataService to avoid circular import
 def get_data_service():
@@ -789,8 +795,327 @@ def export_portfolio():
             UserFriendlyError('export_failed'), 
             'export_portfolio'
         )
-        pdf_bytes = buffer.getvalue()
-        buffer.close()
-        return Response(pdf_bytes, mimetype='application/pdf', headers={'Content-Disposition': 'attachment;filename=portefolje.pdf'})
-    else:
+
+# =============================================================================
+# ADVANCED PORTFOLIO OPTIMIZATION AND ANALYTICS API ENDPOINTS
+# =============================================================================
+
+@portfolio.route('/optimization')
+@access_required  
+def optimization_page():
+    """Portfolio optimization interface"""
+    try:
+        return render_template('portfolio/optimization.html',
+                             title='Portfolio Optimization')
+    except Exception as e:
+        logger.error(f"Optimization page error: {e}")
+        return render_template('error.html', error=str(e)), 500
+
+@portfolio.route('/performance-analytics')
+@access_required
+def performance_page():
+    """Performance analytics interface"""
+    try:
+        return render_template('portfolio/performance.html',
+                             title='Performance Analytics')
+    except Exception as e:
+        logger.error(f"Performance page error: {e}")
+        return render_template('error.html', error=str(e)), 500
+
+@portfolio.route('/api/optimization', methods=['POST'])
+@access_required
+def api_portfolio_optimization():
+    """API endpoint for portfolio optimization"""
+    try:
+        data = request.get_json()
+        
+        # Extract parameters
+        holdings = data.get('holdings', [])
+        risk_tolerance = data.get('risk_tolerance', 'moderate')
+        target_return = data.get('target_return')
+        
+        # Validate holdings data
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Perform optimization
+        optimization_result = PortfolioOptimizationService.optimize_portfolio(
+            holdings=holdings,
+            risk_tolerance=risk_tolerance,
+            target_return=target_return
+        )
+        
+        return jsonify(optimization_result)
+        
+    except Exception as e:
+        logger.error(f"Portfolio optimization API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/risk-metrics', methods=['POST'])
+@access_required
+def api_risk_metrics():
+    """API endpoint for comprehensive risk analysis"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        timeframe_days = data.get('timeframe_days', 252)
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Calculate risk metrics
+        risk_analysis = PortfolioOptimizationService.calculate_risk_metrics(
+            holdings=holdings,
+            timeframe_days=timeframe_days
+        )
+        
+        return jsonify(risk_analysis)
+        
+    except Exception as e:
+        logger.error(f"Risk metrics API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/scenario-analysis', methods=['POST'])
+@access_required
+def api_scenario_analysis():
+    """API endpoint for Monte Carlo scenario analysis"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        scenarios = data.get('scenarios', None)
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Generate scenario analysis
+        scenario_results = PortfolioOptimizationService.generate_scenario_analysis(
+            holdings=holdings,
+            scenarios=scenarios
+        )
+        
+        return jsonify(scenario_results)
+        
+    except Exception as e:
+        logger.error(f"Scenario analysis API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/performance-attribution', methods=['POST'])
+@access_required
+def api_performance_attribution():
+    """API endpoint for performance attribution analysis"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        benchmark = data.get('benchmark', 'OSEBX')
+        periods = data.get('periods', None)
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Calculate performance attribution
+        attribution_results = PerformanceTrackingService.calculate_performance_attribution(
+            holdings=holdings,
+            benchmark=benchmark,
+            periods=periods
+        )
+        
+        return jsonify(attribution_results)
+        
+    except Exception as e:
+        logger.error(f"Performance attribution API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/benchmark-comparison', methods=['POST'])
+@access_required
+def api_benchmark_comparison():
+    """API endpoint for benchmark comparison analysis"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        benchmarks = data.get('benchmarks', None)
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Generate benchmark comparison
+        comparison_results = PerformanceTrackingService.generate_benchmark_comparison(
+            holdings=holdings,
+            benchmarks=benchmarks
+        )
+        
+        return jsonify(comparison_results)
+        
+    except Exception as e:
+        logger.error(f"Benchmark comparison API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/factor-exposure', methods=['POST'])
+@access_required
+def api_factor_exposure():
+    """API endpoint for factor exposure analysis"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Calculate factor exposures
+        factor_results = PerformanceTrackingService.calculate_factor_exposure(
+            holdings=holdings
+        )
+        
+        return jsonify(factor_results)
+        
+    except Exception as e:
+        logger.error(f"Factor exposure API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@portfolio.route('/api/portfolio-health', methods=['POST'])
+@access_required
+def api_portfolio_health():
+    """API endpoint for comprehensive portfolio health check"""
+    try:
+        data = request.get_json()
+        
+        holdings = data.get('holdings', [])
+        
+        if not holdings:
+            return jsonify({
+                'success': False,
+                'error': 'Holdings data is required'
+            }), 400
+        
+        # Comprehensive health analysis
+        health_analysis = _generate_portfolio_health_analysis(holdings)
+        
+        return jsonify(health_analysis)
+        
+    except Exception as e:
+        logger.error(f"Portfolio health API error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+def _generate_portfolio_health_analysis(holdings):
+    """Generate comprehensive portfolio health analysis"""
+    try:
+        # Basic portfolio statistics
+        total_positions = len(holdings)
+        total_value = sum(holding.get('value', 0) for holding in holdings)
+        
+        # Concentration analysis
+        largest_position = max(holding.get('weight', 0) for holding in holdings) if holdings else 0
+        top_5_concentration = sum(sorted([h.get('weight', 0) for h in holdings], reverse=True)[:5])
+        
+        # Diversification metrics
+        hhi_index = sum(h.get('weight', 0)**2 for h in holdings)  # Herfindahl-Hirschman Index
+        effective_positions = 1 / hhi_index if hhi_index > 0 else 0
+        
+        # Risk indicators
+        risk_indicators = []
+        if largest_position > 0.20:
+            risk_indicators.append("High concentration in single position")
+        if top_5_concentration > 0.60:
+            risk_indicators.append("High concentration in top 5 positions")
+        if total_positions < 10:
+            risk_indicators.append("Limited diversification - consider more positions")
+        if effective_positions < 5:
+            risk_indicators.append("Low effective diversification")
+        
+        # Health score calculation
+        health_score = 100
+        health_score -= min(largest_position * 200, 40)  # Concentration penalty
+        health_score -= max(0, (0.60 - top_5_concentration) * -50)  # Diversification bonus
+        health_score -= max(0, (10 - total_positions) * 2)  # Position count penalty
+        health_score = max(0, min(100, health_score))
+        
+        # Health grade
+        if health_score >= 80:
+            health_grade = 'Excellent'
+        elif health_score >= 65:
+            health_grade = 'Good'
+        elif health_score >= 50:
+            health_grade = 'Fair'
+        else:
+            health_grade = 'Poor'
+        
+        # Recommendations
+        recommendations = []
+        if largest_position > 0.15:
+            recommendations.append("Consider reducing largest position concentration")
+        if total_positions < 15:
+            recommendations.append("Add more positions for better diversification")
+        if len(risk_indicators) == 0:
+            recommendations.append("Portfolio shows good diversification characteristics")
+        
+        return {
+            'success': True,
+            'health_metrics': {
+                'total_positions': total_positions,
+                'total_value': round(total_value, 2),
+                'largest_position_weight': round(largest_position, 4),
+                'top_5_concentration': round(top_5_concentration, 4),
+                'hhi_index': round(hhi_index, 4),
+                'effective_positions': round(effective_positions, 2),
+                'health_score': round(health_score, 1),
+                'health_grade': health_grade
+            },
+            'risk_indicators': risk_indicators,
+            'recommendations': recommendations,
+            'diversification_analysis': {
+                'concentration_risk': 'High' if largest_position > 0.20 else 'Low',
+                'diversification_level': 'Good' if effective_positions > 10 else 'Needs Improvement',
+                'position_sizing': 'Balanced' if largest_position < 0.15 else 'Concentrated'
+            },
+            'timestamp': 'datetime.utcnow().isoformat()'
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
         return jsonify({'error': 'Ugyldig format'}), 400

@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Benjamin Graham Analyse - Aksjeradar{% endblock %}
-{% block description %}Utfør fundamental analyse basert på Benjamin Graham's investeringsprinsiper. Finn undervurderte aksjer med solid verdi.{% endblock %}
+{% block title %}Enhanced Benjamin Graham Analyse - Aksjeradar{% endblock %}
+{% block description %}Avansert fundamental analyse basert på Benjamin Graham's investeringsprinsiper med moderne forbedringer. Finn undervurderte aksjer med solid verdi.{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container-fluid my-4">
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="h2 mb-0">
-                    <i class="bi bi-book text-primary"></i> Benjamin Graham Analyse
-                </h1>
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="bi bi-book text-primary"></i> Enhanced Benjamin Graham Analyse
+                    </h1>
+                    <p class="text-muted mb-0">Tidløse investeringsprinsipper med moderne datadrevne forbedringer</p>
+                </div>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
@@ -23,161 +26,458 @@
         </div>
     </div>
 
-    <!-- Intro Section -->
+    <!-- Introduction and Method Explanation -->
     {% if not analysis %}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="alert alert-info">
-                <h4 class="alert-heading">
-                    <i class="bi bi-lightbulb"></i> Benjamin Graham Analyse
-                </h4>
-                <p class="mb-0">
-                    Analyser aksjer basert på Benjamin Graham's tidløse investeringsprinsipper. 
-                    Finn solide selskaper som handles under sin indre verdi.
-                </p>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 class="text-primary">
+                                <i class="bi bi-lightbulb"></i> Om Benjamin Graham Analyse
+                            </h4>
+                            <p class="lead">
+                                Analyser aksjer basert på Benjamin Graham's tidløse investeringsprinsipper, 
+                                forbedret med moderne datadrevne metoder.
+                            </p>
+                            <div class="row mt-3">
+                                <div class="col-sm-6">
+                                    <h6><i class="bi bi-check-circle text-success"></i> Nøkkelkriterier:</h6>
+                                    <ul class="small">
+                                        <li>P/E ratio under 15</li>
+                                        <li>P/E × P/B under 22.5</li>
+                                        <li>Sterk likviditet (Current Ratio > 2)</li>
+                                        <li>Konservativ gjeldsbelastning</li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h6><i class="bi bi-graph-up text-info"></i> Moderne forbedringer:</h6>
+                                    <ul class="small">
+                                        <li>Vektet scoring-system</li>
+                                        <li>Multiple verdsettelsesmetoder</li>
+                                        <li>Risiko-justerte anbefalinger</li>
+                                        <li>Margin of safety-beregning</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <i class="bi bi-person-circle text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="mt-2">Benjamin Graham</h5>
+                                <p class="small text-muted">"Verdiinvestering-pioneren"</p>
+                                <div class="badge bg-primary">
+                                    The Intelligent Investor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     {% endif %}
 
-    <!-- Stock Selection Form -->
+    <!-- Enhanced Stock Selection Form -->
     {% if not analysis %}
     <div class="row mb-4">
         <div class="col-lg-8 mx-auto">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-primary">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-search"></i> Velg aksje for analyse
+                        <i class="bi bi-search"></i> Velg aksje for avansert Graham-analyse
                     </h5>
                 </div>
                 <div class="card-body">
                     <form method="GET" action="{{ url_for('analysis.benjamin_graham') }}">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label for="ticker" class="form-label">Aksjesymbol</label>
+                                <label for="ticker" class="form-label fw-bold">Aksjesymbol</label>
                                 <input type="text" 
-                                       class="form-control" 
+                                       class="form-control form-control-lg" 
                                        id="ticker" 
                                        name="ticker" 
-                                       placeholder="F.eks: EQNR.OL, AAPL, GOOGL"
+                                       placeholder="F.eks: EQNR.OL, DNB.OL, AAPL, MSFT"
                                        value="{{ request.args.get('ticker', '') }}"
                                        required>
-                                <div class="form-text">Skriv inn ticker-symbol for aksjen du vil analysere</div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Støtter Oslo Børs (.OL) og internationale aksjer
+                                </div>
                             </div>
                             <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-graph-up"></i> Analyser
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-calculator"></i> Analyser
                                 </button>
                             </div>
                         </div>
                     </form>
+                    
+                    <!-- Quick access buttons -->
+                    <div class="mt-3">
+                        <small class="text-muted">Hurtiganalyse:</small>
+                        <div class="btn-group btn-group-sm mt-1" role="group">
+                            <a href="?ticker=EQNR.OL" class="btn btn-outline-primary">EQNR.OL</a>
+                            <a href="?ticker=DNB.OL" class="btn btn-outline-primary">DNB.OL</a>
+                            <a href="?ticker=AAPL" class="btn btn-outline-primary">AAPL</a>
+                            <a href="?ticker=MSFT" class="btn btn-outline-primary">MSFT</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     {% endif %}
 
-    <!-- Analysis Results -->
+    <!-- Enhanced Analysis Results -->
     {% if analysis %}
     <div class="row">
-        <!-- Main Analysis -->
+        <!-- Main Analysis Column -->
         <div class="col-lg-8">
-            <!-- Company Info -->
-            <div class="card shadow-sm mb-4">
+            <!-- Company Header with Enhanced Info -->
+            <div class="card shadow-sm mb-4 border-primary">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-building"></i> {{ analysis.company_name }} ({{ analysis.ticker }})
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-building"></i> {{ analysis['company_name'] }} ({{ analysis['ticker'] }})
+                        </h5>
+                        <div class="text-end">
+                            <div class="h6 mb-0">${{ "%.2f"|format(analysis['current_price']) }}</div>
+                            <small>{{ analysis['sector'] }}</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-4">
+                        <!-- Graham Score -->
                         <div class="col-md-6">
-                            <h6>Graham Score</h6>
-                            <div class="progress mb-3" style="height: 25px;">
+                            <h6 class="mb-3">
+                                <i class="bi bi-award"></i> Enhanced Graham Score
+                                <span class="badge bg-secondary ms-2">{{ analysis.summary.graham_grade }}</span>
+                            </h6>
+                            <div class="progress mb-2" style="height: 30px;">
                                 <div class="progress-bar 
-                                    {% if analysis.graham_score >= 80 %}bg-success
-                                    {% elif analysis.graham_score >= 60 %}bg-warning
-                                    {% else %}bg-danger{% endif %}" 
+                                    {% if analysis['graham_score'] >= 80 %}bg-success
+                                    {% elif analysis['graham_score'] >= 70 %}bg-info
+                                    {% elif analysis['graham_score'] >= 60 %}bg-warning
+                                    {% else %}bg-danger{% endif %} 
+                                    progress-bar-animated" 
                                      role="progressbar" 
-                                     style="width: {{ analysis.graham_score }}%">
-                                    {{ analysis.graham_score|round(1) }}%
+                                     style="width: {{ analysis['graham_score'] }}%">
+                                    <strong>{{ analysis['graham_score']|round(1) }}%</strong>
                                 </div>
                             </div>
+                            <small class="text-muted">
+                                Vektet score basert på 9 Graham-kriterier
+                            </small>
                         </div>
+                        
+                        <!-- Investment Classification -->
                         <div class="col-md-6">
-                            <h6>Verdi-vurdering</h6>
-                            <span class="badge 
-                                {% if analysis.value_score == 'Excellent Value' %}bg-success
-                                {% elif analysis.value_score == 'Good Value' %}bg-info
-                                {% elif analysis.value_score == 'Fair Value' %}bg-warning
-                                {% else %}bg-danger{% endif %} fs-6">
-                                {{ analysis.value_score }}
-                            </span>
+                            <h6 class="mb-3">
+                                <i class="bi bi-tag"></i> Investeringstype
+                            </h6>
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="h5 text-primary mb-2">{{ analysis.summary.investment_type }}</div>
+                                <div class="badge 
+                                    {% if analysis.recommendation.action == 'STRONG BUY' %}bg-success
+                                    {% elif analysis.recommendation.action == 'BUY' %}bg-primary
+                                    {% elif analysis.recommendation.action == 'HOLD' %}bg-warning text-dark
+                                    {% elif analysis.recommendation.action == 'WEAK HOLD' %}bg-secondary
+                                    {% else %}bg-danger{% endif %} fs-6">
+                                    {{ analysis.recommendation.action }}
+                                </div>
+                                <div class="small text-muted mt-1">
+                                    Confidence: {{ analysis.recommendation.confidence }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Graham Criteria -->
+            <!-- Enhanced Graham Criteria Matrix -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-list-check"></i> Graham's Kriterier
+                        <i class="bi bi-grid-3x3"></i> Detaljert Graham Kriterie-analyse
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.pe_ratio }}</div>
-                                <div class="small text-muted">P/E Ratio</div>
-                                <div class="badge {% if analysis.criteria.pe_ratio < 15 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.pe_ratio < 15 %}Bra{% else %}Høy{% endif %}
+                        {% for criterion_key, result in analysis.criteria_results.items() %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body text-center p-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title small mb-0">{{ result.criterion.name }}</h6>
+                                        <span class="badge {% if result.passed %}bg-success{% else %}bg-danger{% endif %} ms-1">
+                                            {% if result.passed %}✓{% else %}✗{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="h4 mb-2 {% if result.passed %}text-success{% else %}text-danger{% endif %}">
+                                        {{ result.value }}
+                                        {% if criterion_key == 'pe_ratio' or criterion_key == 'pb_ratio' %}
+                                        {% elif criterion_key == 'current_ratio' %}
+                                        {% elif criterion_key == 'debt_ratio' %}
+                                        {% elif criterion_key == 'roe' %}%
+                                        {% elif criterion_key == 'earnings_growth' %}%
+                                        {% elif criterion_key == 'dividend_history' %} år
+                                        {% elif criterion_key == 'margin_of_safety' %}%
+                                        {% endif %}
+                                    </div>
+                                    <div class="progress mb-2" style="height: 8px;">
+                                        <div class="progress-bar {% if result.score >= 70 %}bg-success{% elif result.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ result.score }}%"></div>
+                                    </div>
+                                    <small class="text-muted">{{ result.criterion.description }}</small>
+                                    <div class="mt-1">
+                                        <small class="fw-bold">Score: {{ result.score }}/100</small>
+                                        <small class="text-muted">(Vekt: {{ (result.weight * 100)|round }}%)</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.pb_ratio }}</div>
-                                <div class="small text-muted">P/B Ratio</div>
-                                <div class="badge {% if analysis.criteria.pb_ratio < 1.5 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.pb_ratio < 1.5 %}Bra{% else %}Høy{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Valuation Methods -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-calculator"></i> Multiple Verdsettelsesmetoder
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <h6 class="text-primary">Verdiberegninger</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Graham Formula</strong></td>
+                                            <td class="text-end">${{ "%.2f"|format(analysis.valuation_methods.graham_formula) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Book Value Method</strong></td>
+                                            <td class="text-end">${{ "%.2f"|format(analysis.valuation_methods.book_value) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Earnings Power Value</strong></td>
+                                            <td class="text-end">${{ "%.2f"|format(analysis.valuation_methods.earnings_power) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Asset Value</strong></td>
+                                            <td class="text-end">${{ "%.2f"|format(analysis.valuation_methods.asset_value) }}</td>
+                                        </tr>
+                                        {% if analysis.valuation_methods.dividend_discount > 0 %}
+                                        <tr>
+                                            <td><strong>Dividend Discount</strong></td>
+                                            <td class="text-end">${{ "%.2f"|format(analysis.valuation_methods.dividend_discount) }}</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h6 class="text-success">Sammendrag</h6>
+                            <div class="bg-light p-3 rounded">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Gjennomsnittlig indre verdi:</span>
+                                    <strong class="text-success">${{ "%.2f"|format(analysis.valuation_methods.average_intrinsic) }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Nåværende pris:</span>
+                                    <strong>${{ "%.2f"|format(analysis.current_price) }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Margin of Safety:</span>
+                                    <strong class="{% if analysis.recommendation.margin_of_safety > 0 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ analysis.recommendation.margin_of_safety }}%
+                                    </strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Anbefalt målpris:</span>
+                                    <strong class="text-primary">${{ "%.2f"|format(analysis.recommendation.target_price) }}</strong>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Additional Info -->
+        <div class="col-lg-4">
+            <!-- Recommendation Card -->
+            <div class="card shadow-sm mb-4 border-{% if analysis.recommendation.action == 'STRONG BUY' %}success{% elif analysis.recommendation.action == 'BUY' %}primary{% elif analysis.recommendation.action == 'HOLD' %}warning{% else %}danger{% endif %}">
+                <div class="card-header bg-{% if analysis.recommendation.action == 'STRONG BUY' %}success{% elif analysis.recommendation.action == 'BUY' %}primary{% elif analysis.recommendation.action == 'HOLD' %}warning{% else %}danger{% endif %} text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-flag"></i> Graham Anbefaling
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="h3 mb-2">{{ analysis.recommendation.action }}</div>
+                        <div class="text-muted">{{ analysis.recommendation.reasoning }}</div>
+                    </div>
+                    
+                    {% if analysis.recommendation.upside_potential > 0 %}
+                    <div class="alert alert-success">
+                        <strong>Oppsidepotensial: {{ analysis.recommendation.upside_potential }}%</strong>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Risk Factors -->
+                    {% if analysis.recommendation.risk_factors %}
+                    <h6 class="text-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Risikofaktorer
+                    </h6>
+                    <ul class="list-unstyled small">
+                        {% for risk in analysis.recommendation.risk_factors %}
+                        <li><i class="bi bi-dash text-danger"></i> {{ risk }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    <!-- Positive Factors -->
+                    {% if analysis.recommendation.positive_factors %}
+                    <h6 class="text-success mt-3">
+                        <i class="bi bi-check-circle"></i> Styrker
+                    </h6>
+                    <ul class="list-unstyled small">
+                        {% for strength in analysis.recommendation.positive_factors %}
+                        <li><i class="bi bi-plus text-success"></i> {{ strength }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Key Financial Metrics -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-graph-up"></i> Nøkkeltall
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>P/E Ratio</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.pe_ratio) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>P/B Ratio</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.pb_ratio) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>ROE</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.roe) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Current Ratio</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.current_ratio) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Debt/Equity</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.debt_equity) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Dividend Yield</td>
+                                    <td class="text-end">{{ "%.1f"|format(analysis.key_metrics.dividend_yield) }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Summary -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-clipboard-check"></i> Investeringssammendrag
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-success">Styrker:</h6>
+                        <ul class="list-unstyled small">
+                            {% for strength in analysis.summary.strengths %}
+                            <li><i class="bi bi-check text-success"></i> {{ strength }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h6 class="text-warning">Svakheter:</h6>
+                        <ul class="list-unstyled small">
+                            {% for weakness in analysis.summary.weaknesses %}
+                            <li><i class="bi bi-x text-danger"></i> {{ weakness }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="{{ url_for('analysis.benjamin_graham') }}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Analyser ny aksje
+            </a>
+            <button class="btn btn-success" onclick="window.print()">
+                <i class="bi bi-printer"></i> Skriv ut rapport
+            </button>
+            <button class="btn btn-info" onclick="exportAnalysis()">
+                <i class="bi bi-download"></i> Eksporter data
+            </button>
+        </div>
+    </div>
+    {% endif %}
                         <div class="col-sm-6 col-lg-4">
                             <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.debt_equity }}</div>
+                                <div class="h4 mb-2 text-primary">{{ analysis['criteria']['debt_ratio'] }}</div>
                                 <div class="small text-muted">Gjeld/Egenkapital</div>
-                                <div class="badge {% if analysis.criteria.debt_equity < 1.0 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.debt_equity < 1.0 %}Bra{% else %}Høy{% endif %}
+                                <div class="badge {% if analysis['criteria']['debt_ratio'] < 1.0 %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if analysis['criteria']['debt_ratio'] < 1.0 %}Bra{% else %}Høy{% endif %}
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-4">
                             <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.current_ratio }}</div>
+                                <div class="h4 mb-2 text-primary">{{ analysis['criteria']['current_ratio'] }}</div>
                                 <div class="small text-muted">Likviditetsgrad</div>
-                                <div class="badge {% if analysis.criteria.current_ratio > 1.5 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.current_ratio > 1.5 %}Bra{% else %}Lav{% endif %}
+                                <div class="badge {% if analysis['criteria']['current_ratio'] > 1.5 %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if analysis['criteria']['current_ratio'] > 1.5 %}Bra{% else %}Lav{% endif %}
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-4">
                             <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.roe }}%</div>
+                                <div class="h4 mb-2 text-primary">{{ analysis['criteria']['roe'] }}%</div>
                                 <div class="small text-muted">ROE</div>
-                                <div class="badge {% if analysis.criteria.roe > 15 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.roe > 15 %}Bra{% else %}Lav{% endif %}
+                                <div class="badge {% if analysis['criteria']['roe'] > 15 %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if analysis['criteria']['roe'] > 15 %}Bra{% else %}Lav{% endif %}
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-4">
                             <div class="text-center p-3 border rounded">
-                                <div class="h4 mb-2 text-primary">{{ analysis.criteria.eps_growth }}%</div>
+                                <div class="h4 mb-2 text-primary">{{ analysis['criteria']['eps_growth'] }}%</div>
                                 <div class="small text-muted">EPS Vekst</div>
-                                <div class="badge {% if analysis.criteria.eps_growth > 5 %}bg-success{% else %}bg-warning{% endif %}">
-                                    {% if analysis.criteria.eps_growth > 5 %}Bra{% else %}Lav{% endif %}
+                                <div class="badge {% if analysis['criteria']['eps_growth'] > 5 %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if analysis['criteria']['eps_growth'] > 5 %}Bra{% else %}Lav{% endif %}
                                 </div>
                             </div>
                         </div>
@@ -196,21 +496,21 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h6>Indre verdi</h6>
-                            <div class="h4 text-success">${{ analysis.intrinsic_value }}</div>
+                            <div class="h4 text-success">${{ analysis['intrinsic_value'] }}</div>
                         </div>
                         <div class="col-md-4">
                             <h6>Sikkerhetsmargin</h6>
-                            <div class="h4 {% if analysis.margin_of_safety > 0 %}text-success{% else %}text-danger{% endif %}">
-                                {{ analysis.margin_of_safety }}%
+                            <div class="h4 {% if analysis['margin_of_safety'] > 0 %}text-success{% else %}text-danger{% endif %}">
+                                {{ analysis['margin_of_safety'] }}%
                             </div>
                         </div>
                         <div class="col-md-4">
                             <h6>Anbefaling</h6>
                             <span class="badge 
-                                {% if 'Buy' in analysis.recommendation %}bg-success
-                                {% elif analysis.recommendation == 'Hold' %}bg-warning
+                                {% if 'BUY' in analysis['recommendation'] %}bg-success
+                                {% elif analysis['recommendation'] == 'HOLD' %}bg-warning
                                 {% else %}bg-danger{% endif %} fs-6">
-                                {{ analysis.recommendation }}
+                                {{ analysis['recommendation'] }}
                             </span>
                         </div>
                     </div>
@@ -229,13 +529,13 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ url_for('stocks.details', symbol=analysis.ticker) }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ url_for('stocks.details', symbol=analysis['ticker']) }}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-info-circle"></i> Aksjedetaljer
                         </a>
-                        <a href="{{ url_for('analysis.technical', ticker=analysis.ticker) }}" class="btn btn-outline-info btn-sm">
+                        <a href="{{ url_for('analysis.technical', ticker=analysis['ticker']) }}" class="btn btn-outline-info btn-sm">
                             <i class="bi bi-graph-up"></i> Teknisk analyse
                         </a>
-                        <a href="{{ url_for('analysis.ai', ticker=analysis.ticker) }}" class="btn btn-outline-success btn-sm">
+                        <a href="{{ url_for('analysis.ai', ticker=analysis['ticker']) }}" class="btn btn-outline-success btn-sm">
                             <i class="bi bi-robot"></i> AI-analyse
                         </a>
                         <button class="btn btn-outline-secondary btn-sm" onclick="newAnalysis()">
@@ -292,19 +592,83 @@
 </div>
 
 <script>
+// Enhanced Benjamin Graham Analysis JavaScript
+
 function newAnalysis() {
     window.location.href = "{{ url_for('analysis.benjamin_graham') }}";
 }
 
-// Auto-complete for ticker input
+function exportAnalysis() {
+    // Create CSV export of the analysis
+    {% if analysis %}
+    const analysisData = {
+        ticker: '{{ analysis.ticker }}',
+        company: '{{ analysis.company_name }}',
+        graham_score: {{ analysis.graham_score }},
+        recommendation: '{{ analysis.recommendation.action }}',
+        target_price: {{ analysis.recommendation.target_price }},
+        margin_of_safety: {{ analysis.recommendation.margin_of_safety }},
+        timestamp: '{{ analysis.timestamp }}'
+    };
+    
+    // Convert to CSV
+    const csvContent = "Field,Value\n" + Object.entries(analysisData)
+        .map(([key, value]) => `${key},"${value}"`)
+        .join('\n');
+    
+    // Download CSV
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `graham_analysis_${analysisData.ticker}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    {% else %}
+    alert('No analysis data to export');
+    {% endif %}
+}
+
+// Enhanced page functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced ticker input
     const tickerInput = document.getElementById('ticker');
     if (tickerInput) {
         tickerInput.addEventListener('input', function() {
-            // You can add auto-complete functionality here
             this.value = this.value.toUpperCase();
         });
+        
+        // Auto-focus on page load if no analysis
+        {% if not analysis %}
+        tickerInput.focus();
+        {% endif %}
     }
+    
+    // Add smooth animations to progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach((bar, index) => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1.5s ease-in-out';
+            bar.style.width = width;
+        }, 200 + index * 100); // Stagger animations
+    });
+    
+    // Add hover effects to cards
+    const criteriaCards = document.querySelectorAll('.card');
+    criteriaCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'transform 0.2s ease';
+            this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+        });
+    });
 });
 </script>
 {% endblock %}

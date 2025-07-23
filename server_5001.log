@@ -1,0 +1,336 @@
+nohup: ignoring input
+[2025-07-23 05:31:52,126] INFO in __init__: ✅ App created in development mode
+Server initialized for threading.
+[2025-07-23 05:31:52,865] INFO in __init__: ✅ Stripe initialized successfully
+[2025-07-23 05:31:52,866] INFO in __init__: ℹ️ Stripe publishable key not configured - payment features disabled
+[2025-07-23 05:31:52,867] INFO in __init__: Custom unauthorized handler registered for Flask-Login
+[2025-07-23 05:31:52,897] INFO in __init__: ✅ Database models imported successfully
+[2025-07-23 05:31:53,777] DEBUG in cache_service: Redis cache disabled: Error 111 connecting to localhost:6379. Connection refused.
+[2025-07-23 05:31:53,777] INFO in __init__: Endpoint: static -> /static/<path:filename>
+[2025-07-23 05:31:54,201] INFO in main: ✅ Stripe initialized successfully
+[2025-07-23 05:31:54,339] INFO in stripe_routes: Stripe API key configured
+[2025-07-23 05:31:54,340] INFO in __init__: ✅ Registered Stripe blueprint
+[2025-07-23 05:31:54,344] INFO in __init__: ✅ Registered blueprint: stocks
+[2025-07-23 05:31:54,348] INFO in __init__: ✅ Registered blueprint: insider_trading
+[2025-07-23 05:31:54,363] INFO in __init__: ✅ Registered blueprint: api
+[2025-07-23 05:31:54,371] ERROR in __init__: Error registering analysis: View function mapping is overwriting an existing endpoint function: analysis.api_sentiment
+[2025-07-23 05:31:54,372] INFO in __init__: ✅ Registered blueprint: dashboard
+[2025-07-23 05:31:54,374] INFO in __init__: ✅ Registered blueprint: pro_tools
+[2025-07-23 05:31:54,378] INFO in __init__: ✅ Registered blueprint: market_intel
+[2025-07-23 05:31:54,382] INFO in __init__: ✅ Registered blueprint: external_data_bp
+[2025-07-23 05:31:54,383] INFO in __init__: ✅ Registered blueprint: backtest_bp
+[2025-07-23 05:31:54,387] INFO in __init__: ✅ Registered blueprint: seo_content
+[2025-07-23 05:31:54,389] INFO in __init__: ✅ Registered blueprint: portfolio_advanced
+[2025-07-23 05:31:54,391] INFO in __init__: ✅ Registered blueprint: advanced_analytics
+[2025-07-23 05:31:54,393] INFO in __init__: ✅ Registered blueprint: pricing
+[2025-07-23 05:31:54,398] INFO in __init__: ✅ Registered blueprint: news_bp
+[2025-07-23 05:31:54,400] INFO in __init__: ✅ Registered blueprint: health
+[2025-07-23 05:31:54,403] INFO in __init__: ✅ Registered blueprint: admin
+[2025-07-23 05:31:54,405] INFO in __init__: ✅ Registered blueprint: features
+[2025-07-23 05:31:54,405] INFO in __init__: ✅ Registered blueprint: blog
+[2025-07-23 05:31:54,406] INFO in __init__: ✅ Registered blueprint: investment_guides
+[2025-07-23 05:31:54,408] INFO in __init__: ✅ Registered blueprint: resources_bp
+[2025-07-23 05:31:54,410] INFO in __init__: ✅ Registered blueprint: advanced_features
+[2025-07-23 05:31:54,411] WARNING in __init__: Could not import news_intelligence: No module named 'app.decorators'
+[2025-07-23 05:31:54,411] WARNING in __init__: Could not import mobile_trading: No module named 'app.decorators'
+[2025-07-23 05:31:54,411] WARNING in __init__: Could not import realtime: No module named 'app.decorators'
+[2025-07-23 05:31:54,413] WARNING in __init__: Could not import realtime_data: No module named 'app.decorators'
+[2025-07-23 05:31:54,413] INFO in __init__: ✅ Registered 23 blueprints: main, portfolio, stripe, stocks, insider_trading, api, dashboard, pro_tools, market_intel, external_data_bp, backtest_bp, seo_content, portfolio_advanced, advanced_analytics, pricing, news_bp, health, admin, features, blog, investment_guides, resources_bp, advanced_features
+[2025-07-23 05:31:54,416] INFO in __init__: ✅ Registered realtime_api blueprint
+[2025-07-23 05:31:54,418] WARNING in __init__: Translation service setup failed: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2025-07-23 05:31:54,418] INFO in __init__: ✅ Fallback get_current_language added to Jinja2 globals
+[2025-07-23 05:31:54,418] INFO in __init__: ✅ Default translation function 't' added to Jinja2 globals
+[2025-07-23 05:31:54,418] INFO in __init__: Registered endpoints:
+[2025-07-23 05:31:54,418] INFO in __init__: Endpoint: static -> /static/<path:filename>
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.index -> /index
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.index -> /
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.demo -> /demo
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.portfolio -> /portfolio
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.search -> /search
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.prices -> /prices
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.login -> /login
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.logout -> /logout
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.register -> /register
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.handle_share -> /share-target
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.service_worker -> /service-worker.js
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.manifest -> /manifest.json
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.offline -> /offline
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.offline_html -> /offline.html
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.favicon -> /favicon.ico
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.contact -> /contact
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.contact_submit -> /contact/submit
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.subscription -> /subscription/
+[2025-07-23 05:31:54,419] INFO in __init__: Endpoint: main.subscription -> /subscription
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.subscription_plans -> /subscription/plans
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.forgot_password -> /forgot-password
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.reset_password -> /reset-password/<token>
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.referrals -> /referrals
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.send_referral -> /referrals/send
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.terms -> /terms
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.privacy -> /privacy
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.about -> /about
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.help -> /help
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.settings -> /settings
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.features -> /features
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.profile -> /profile
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: main.set_language -> /set_language/<language>
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.overview -> /portfolio/overview
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.watchlist -> /portfolio/watchlist
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.index -> /portfolio/
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.stock_tips -> /portfolio/tips
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.create_portfolio -> /portfolio/create
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.view_portfolio -> /portfolio/view/<int:id>
+[2025-07-23 05:31:54,420] INFO in __init__: Endpoint: portfolio.add_stock_to_portfolio -> /portfolio/portfolio/<int:id>/add
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.remove_stock_from_portfolio -> /portfolio/portfolio/<int:id>/remove/<int:stock_id>
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.create_watchlist -> /portfolio/watchlist/create
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.add_to_watchlist -> /portfolio/watchlist/<int:id>/add
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.add_tip -> /portfolio/tips/add
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.tip_feedback -> /portfolio/tips/feedback/<int:tip_id>
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.quick_add_stock -> /portfolio/add/<ticker>
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.add_stock -> /portfolio/add
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.edit_stock -> /portfolio/edit/<ticker>
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.remove_stock -> /portfolio/remove/<ticker>
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.transactions -> /portfolio/transactions
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.advanced -> /portfolio/advanced/
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.advanced -> /portfolio/advanced
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.export_portfolio -> /portfolio/api/export
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.optimization_page -> /portfolio/optimization
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.performance_page -> /portfolio/performance-analytics
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.api_portfolio_optimization -> /portfolio/api/optimization
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.api_risk_metrics -> /portfolio/api/risk-metrics
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.api_scenario_analysis -> /portfolio/api/scenario-analysis
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.api_performance_attribution -> /portfolio/api/performance-attribution
+[2025-07-23 05:31:54,421] INFO in __init__: Endpoint: portfolio.api_benchmark_comparison -> /portfolio/api/benchmark-comparison
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: portfolio.api_factor_exposure -> /portfolio/api/factor-exposure
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: portfolio.api_portfolio_health -> /portfolio/api/portfolio-health
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stripe.create_checkout_session -> /stripe/create-checkout-session
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stripe.payment_success -> /stripe/payment/success
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stripe.success -> /stripe/success
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stripe.cancel -> /stripe/cancel
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stripe.stripe_webhook -> /stripe/webhook
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.index -> /stocks/
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.list_stocks -> /stocks/list/<category>
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.list_stocks -> /stocks/list
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.list_oslo -> /stocks/list/oslo
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.global_list -> /stocks/list/global
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.list_crypto -> /stocks/list/crypto
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.list_currency -> /stocks/list/currency
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.details -> /stocks/details/<symbol>
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.search -> /stocks/search
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.api_search -> /stocks/api/search
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.add_to_favorites -> /stocks/api/favorites/add
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.compare -> /stocks/compare
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: stocks.prices -> /stocks/prices
+[2025-07-23 05:31:54,422] INFO in __init__: Endpoint: insider_trading.index -> /insider-trading/
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: insider_trading.search -> /insider-trading/search
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: insider_trading.api_latest -> /insider-trading/api/latest
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: insider_trading.api_export -> /insider-trading/api/export
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: insider_trading.api_stats -> /insider-trading/api/stats
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: insider_trading.api_trending -> /insider-trading/api/trending
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.demo_stocks_api -> /api/demo/stocks
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.demo_market_data_api -> /api/demo/market-data
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.demo_portfolio_api -> /api/demo/portfolio
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.api_status -> /api/status
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.demo_market_summary_api -> /api/demo/market-summary
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_crypto_trending -> /api/crypto/trending
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_crypto_data -> /api/crypto/data
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_currency_rates -> /api/currency/rates
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_dashboard_data -> /api/dashboard/data
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_financial_news -> /api/financial/news
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_economic_indicators -> /api/economic/indicators
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_market_sectors -> /api/market/sectors
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_insider_analysis -> /api/insider/analysis/<symbol>
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_crypto -> /api/crypto
+[2025-07-23 05:31:54,423] INFO in __init__: Endpoint: api.get_currency -> /api/currency
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.health_check -> /api/health
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.search -> /api/search
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.search_stocks -> /api/stocks/search
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_stock_data -> /api/stock/<symbol>
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_stock_price -> /api/stock/<symbol>/price
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_stock_analysis -> /api/stock/<symbol>/analysis
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.market_overview -> /api/market/overview
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.market_data -> /api/market-data
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.market_data_realtime -> /api/market-data/realtime
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_user_watchlist -> /api/user/watchlist
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_user_portfolio -> /api/user/portfolio
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.feedback -> /api/feedback
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.realtime_price -> /api/realtime/price/<ticker>
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.realtime_batch_updates -> /api/realtime/batch-updates
+[2025-07-23 05:31:54,424] INFO in __init__: Endpoint: api.get_financial_news_api -> /api/news/financial
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_general_insider_analysis -> /api/insider/analysis
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.insider_analysis -> /api/insider/analysis/<ticker>
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.market_comprehensive -> /api/market/comprehensive
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_market_data -> /api/public/market/data
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_economic_indicators -> /api/public/economic/indicators
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_sector_analysis -> /api/public/market/sectors
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_financial_news -> /api/public/news/financial
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_crypto_trending -> /api/public/crypto/trending
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_insider_analysis -> /api/public/insider/analysis/<symbol>
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_market_comprehensive -> /api/public/market/comprehensive
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_crypto_data -> /api/public/crypto/data
+[2025-07-23 05:31:54,425] INFO in __init__: Endpoint: api.get_public_currency_rates -> /api/public/currency/rates
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: api.get_stock_symbol_data -> /api/stocks/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: api.get_stock_history -> /api/stocks/<symbol>/history
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: api.market_summary -> /api/market/summary
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: api.get_news -> /api/news
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.index -> /analysis/
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.technical -> /analysis/technical/
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.technical -> /analysis/technical
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_technical_data -> /analysis/api/technical/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_chart_data -> /analysis/api/chart-data/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_indicators -> /analysis/api/indicators/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_patterns -> /analysis/api/patterns/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_sentiment -> /analysis/api/sentiment/<symbol>
+[2025-07-23 05:31:54,426] INFO in __init__: Endpoint: analysis.api_sentiment -> /analysis/api/sentiment/<symbol>
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.api_realtime_data -> /analysis/api/realtime/<symbol>
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.api_trading_alerts -> /analysis/api/alerts/<symbol>
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.market_overview -> /analysis/market-overview
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.warren_buffett -> /analysis/warren-buffett
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.benjamin_graham -> /analysis/benjamin-graham
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.sentiment_view -> /analysis/sentiment-view
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.screener -> /analysis/screener
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.screener_view -> /analysis/screener-view
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.currency_overview -> /analysis/currency-overview
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.prediction -> /analysis/prediction
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.recommendation -> /analysis/recommendation
+[2025-07-23 05:31:54,427] INFO in __init__: Endpoint: analysis.ai -> /analysis/ai
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.get_indicators -> /analysis/api/analysis/indicators
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.get_trading_signals -> /analysis/api/analysis/signals
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.get_market_summary -> /analysis/api/market-summary
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.download_file -> /analysis/downloads/<path:filename>
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.short_analysis -> /analysis/short-analysis
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.fundamental -> /analysis/fundamental
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: analysis.sentiment -> /analysis/sentiment
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: dashboard.financial_dashboard -> /financial-dashboard
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: pro_tools.index -> /pro-tools/
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: pro_tools.advanced_screener -> /pro-tools/screener
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: pro_tools.price_alerts -> /pro-tools/alerts
+[2025-07-23 05:31:54,428] INFO in __init__: Endpoint: pro_tools.portfolio_analyzer -> /pro-tools/portfolio-analyzer
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: pro_tools.export_tools -> /pro-tools/export
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: pro_tools.api_screener -> /pro-tools/api/screener
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: pro_tools.create_alert -> /pro-tools/api/create-alert
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.index -> /market-intel/
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.insider_trading -> /market-intel/insider-trading
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.earnings_calendar -> /market-intel/earnings-calendar
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.sector_analysis -> /market-intel/sector-analysis
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.economic_indicators -> /market-intel/economic-indicators
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.api_insider_trading -> /market-intel/api/insider-trading/<ticker>
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.api_institutional_ownership -> /market-intel/api/institutional-ownership/<ticker>
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.api_sector_performance -> /market-intel/api/sector-performance
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.api_earnings_calendar -> /market-intel/api/earnings-calendar
+[2025-07-23 05:31:54,429] INFO in __init__: Endpoint: market_intel.api_crypto_fear_greed -> /market-intel/api/crypto-fear-greed
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.external_analysis -> /external-data/external-analysis/<symbol>
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.api_external_data -> /external-data/api/external-data/<symbol>
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.api_market_overview -> /external-data/api/market-overview
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.insider_trading_overview -> /external-data/insider-trading
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.analyst_coverage -> /external-data/analyst-coverage
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: external_data.market_intelligence -> /external-data/market-intelligence
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: backtest.index -> /backtest/
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: backtest.strategy_builder -> /backtest/strategy_builder
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: backtest.run_backtest -> /backtest/api/run_backtest
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: backtest.optimize_strategy -> /backtest/api/optimize_strategy
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: backtest.compare_strategies -> /backtest/api/compare_strategies
+[2025-07-23 05:31:54,430] INFO in __init__: Endpoint: seo_content.blog_index -> /content/blogg
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.blog_post -> /content/blogg/<slug>
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.technical_analysis_oslo -> /content/teknisk-analyse-oslobors
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.ai_prediction_stocks -> /content/ai-prediksjon-aksjer
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.weekly_market_report -> /content/ukentlig-markedsrapport
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.blog_index_en -> /content/blog/
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.blog_post_en -> /content/blog/<slug>
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.investment_guides_index -> /content/investment-guides/
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: seo_content.investment_guide_detail -> /content/investment-guides/<slug>
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: portfolio_advanced.advanced_portfolio -> /portfolio-advanced/advanced/
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: portfolio_advanced.optimize_portfolio -> /portfolio-advanced/optimize
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: portfolio_advanced.backtest_portfolio -> /portfolio-advanced/backtest
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: portfolio_advanced.monte_carlo_simulation -> /portfolio-advanced/monte_carlo
+[2025-07-23 05:31:54,431] INFO in __init__: Endpoint: advanced_analytics.index -> /advanced-analytics/
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: advanced_analytics.dashboard -> /advanced-analytics/dashboard
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: advanced_analytics.ml_predictions -> /advanced-analytics/ml-predictions
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: advanced_analytics.portfolio_optimization -> /advanced-analytics/portfolio-optimization
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: advanced_analytics.risk_management -> /advanced-analytics/risk-management
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.index -> /pricing/pricing/
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.index -> /pricing/pricing
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.subscription -> /pricing/subscription/
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.subscription -> /pricing/subscription
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.api_pricing_plans -> /pricing/api/pricing/plans
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.subscription_success -> /pricing/subscription/success
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.buy_report -> /pricing/buy-report
+[2025-07-23 05:31:54,432] INFO in __init__: Endpoint: pricing.report_success -> /pricing/report/success
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: pricing.stripe_webhook -> /pricing/webhook
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.index -> /news/
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.article -> /news/<slug>
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.api_latest_news -> /news/api/latest
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.article_by_id -> /news/article/<int:article_id>
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.search -> /news/search
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.category -> /news/category/<category>
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.widget -> /news/widget
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.embed -> /news/embed
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.api_company_news -> /news/api/company/<string:symbol>
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.api_market_summary -> /news/api/market-summary
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.api_market_overview -> /news/api/market-overview
+[2025-07-23 05:31:54,433] INFO in __init__: Endpoint: news_bp.api_stock_news -> /news/api/stock/<stock_symbol>
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: news_bp.api_trending_news -> /news/api/trending
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: news_bp.api_news_sources -> /news/api/sources
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: news_bp.news_embed -> /news/embed
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: news_bp.article_detail -> /news/<slug>
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.check_health -> /health/health
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.check_health -> /health/
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.detailed_health -> /health/detailed
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.readiness -> /health/ready
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.liveness -> /health/live
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.check_routes -> /health/routes
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: health.check_all_dependencies -> /health/check-all
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: admin.dashboard -> /admin/
+[2025-07-23 05:31:54,434] INFO in __init__: Endpoint: admin.performance_stats -> /admin/performance
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.api_performance_stats -> /admin/api/performance
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.api_error_log -> /admin/api/errors
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.user_management -> /admin/users
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.system_status -> /admin/system
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.fix_database -> /admin/fix-database
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: admin.test_login_user -> /admin/test-login/<username>
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: features.ai_predictions -> /features/ai-predictions
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: features.social_sentiment -> /features/social-sentiment
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: features.analyst_recommendations -> /features/analyst-recommendations
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: features.api_create_price_alert -> /features/api/create-price-alert
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: features.api_predict -> /features/api/predict/<ticker>
+[2025-07-23 05:31:54,435] INFO in __init__: Endpoint: blog.index -> /blog/index
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: blog.index -> /blog/
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: investment_guides.index -> /investment-guides/index
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: investment_guides.index -> /investment-guides/
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: resources.analysis_tools -> /resources/analysis-tools
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: resources.tool_comparison -> /resources/comparison
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: resources.guides -> /resources/guides
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.index -> /advanced/
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.market_overview -> /advanced/market-overview
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.crypto_dashboard -> /advanced/crypto-dashboard
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.currency_converter -> /advanced/currency-converter
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.economic_calendar -> /advanced/economic-calendar
+[2025-07-23 05:31:54,436] INFO in __init__: Endpoint: advanced_features.competitive_analysis -> /advanced/competitive-analysis
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.get_live_price -> /api/realtime/price/<ticker>
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.get_market_summary -> /api/realtime/market-summary
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.get_trending_stocks -> /api/realtime/trending
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.get_batch_prices -> /api/realtime/batch-prices
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.start_real_time_updates -> /api/realtime/start-updates
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.stop_real_time_updates -> /api/realtime/stop-updates
+[2025-07-23 05:31:54,437] INFO in __init__: Endpoint: realtime_api.get_service_status -> /api/realtime/status
+[2025-07-23 05:31:54,437] INFO in __init__: ✅ Market data service initialized
+[2025-07-23 05:31:54,437] INFO in __init__: ✅ App initialization complete
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+🚀 Starting Aksjeradar in development mode...
+Error creating tables: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+✅ Applied column fallbacks to User model
+✅ Database tables created/verified
+🌐 Server starting on http://0.0.0.0:5001
+📊 Debug mode: True
+ * Serving Flask app 'app'
+ * Debug mode: on
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.

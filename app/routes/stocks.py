@@ -231,18 +231,24 @@ def details(symbol):
         # Get additional analysis data
         technical_data = AnalysisService.get_technical_analysis(symbol)
         
-        # Try detail.html first, fallback to details.html if it doesn't exist
+        # Try enhanced details template first, then fallbacks
         try:
-            return render_template('stocks/detail.html',
-                                 symbol=symbol,
+            return render_template('stocks/details_enhanced.html',
+                                 ticker=symbol,
                                  stock_info=stock_info,
                                  technical_data=technical_data)
         except Exception:
-            # Fallback to details.html
-            return render_template('stocks/details.html',
-                                 symbol=symbol,
-                                 stock_info=stock_info,
-                                 technical_data=technical_data)
+            try:
+                return render_template('stocks/detail.html',
+                                     symbol=symbol,
+                                     stock_info=stock_info,
+                                     technical_data=technical_data)
+            except Exception:
+                # Fallback to details.html
+                return render_template('stocks/details.html',
+                                     symbol=symbol,
+                                     stock_info=stock_info,
+                                     technical_data=technical_data)
                              
     except Exception as e:
         logger.error(f"Error in stock details for {symbol}: {e}")
@@ -412,30 +418,41 @@ def prices():
         crypto_data = DataService.get_crypto_overview()
         currency_data = DataService.get_currency_overview()
         
-        # Calculate statistics
+        # Calculate statistics safely
+        oslo_len = len(oslo_stocks) if oslo_stocks else 0
+        global_len = len(global_stocks) if global_stocks else 0
+        crypto_len = len(crypto_data) if crypto_data else 0
+        currency_len = len(currency_data) if currency_data else 0
+        
         stats = {
-            'total_stocks': len(oslo_stocks) + len(global_stocks),
-            'total_crypto': len(crypto_data) if crypto_data else 0,
-            'total_currency': len(currency_data) if currency_data else 0,
-            'total_instruments': len(oslo_stocks) + len(global_stocks) + len(crypto_data or {}) + len(currency_data or {})
+            'total_stocks': oslo_len + global_len,
+            'total_crypto': crypto_len,
+            'total_currency': currency_len,
+            'total_instruments': oslo_len + global_len + crypto_len + currency_len
         }
         
         return render_template('stocks/prices.html',
-                             oslo_stocks=oslo_stocks or {},
-                             global_stocks=global_stocks or {},
-                             crypto_data=crypto_data or {},
-                             currency_data=currency_data or {},
+                             market_data={
+                                 'oslo_stocks': oslo_stocks or {},
+                                 'global_stocks': global_stocks or {},
+                                 'crypto': crypto_data or {},
+                                 'currency': currency_data or {}
+                             },
                              stats=stats,
                              error=False)
                              
     except Exception as e:
         logger.error(f"Error in prices overview: {e}")
+        import traceback
+        traceback.print_exc()
         flash('Kunne ikke laste prisdata.', 'error')
         return render_template('stocks/prices.html',
-                             oslo_stocks={},
-                             global_stocks={},
-                             crypto_data={},
-                             currency_data={},
+                             market_data={
+                                 'oslo_stocks': {},
+                                 'global_stocks': {},
+                                 'crypto': {},
+                                 'currency': {}
+                             },
                              stats={'total_stocks': 0, 'total_crypto': 0, 'total_currency': 0, 'total_instruments': 0},
                              error=True)
 

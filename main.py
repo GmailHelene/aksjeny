@@ -6,6 +6,7 @@ Aksjeradar - Main application entry point
 import os
 import sys
 from app import create_app, db
+from app.extensions import socketio
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -32,18 +33,19 @@ def main():
         
         # Determine host and port
         host = os.getenv('HOST', '0.0.0.0')
-        port = int(os.getenv('PORT', 5000))
+        port = int(os.getenv('PORT', 5001))
         debug = config_name == 'development'
         
         print(f"🌐 Server starting on http://{host}:{port}")
         print(f"📊 Debug mode: {debug}")
         
-        # Start the application
-        app.run(
+        # Start the application with SocketIO
+        socketio.run(
+            app,
             host=host,
             port=port,
             debug=debug,
-            threaded=True
+            allow_unsafe_werkzeug=True
         )
         
     except Exception as e:

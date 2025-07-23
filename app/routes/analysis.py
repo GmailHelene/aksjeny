@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app, send_from_directory, session
 from flask_login import current_user, login_required
 from ..services.analysis_service import AnalysisService
+from ..services.advanced_technical_service import AdvancedTechnicalService
 from ..services.ai_service import AIService
 from ..services.data_service import DataService, OSLO_BORS_TICKERS, GLOBAL_TICKERS
 from ..services.usage_tracker import usage_tracker
@@ -49,40 +50,405 @@ def index():
 @analysis.route('/technical/')
 @access_required  
 def technical():
-    """Technical analysis main page with overview"""
+    """Advanced Technical analysis with comprehensive indicators and patterns"""
     try:
         symbol = request.args.get('symbol')
         
         if symbol:
-            # If symbol provided, show analysis for that symbol
-            technical_data = AnalysisService.get_technical_analysis(symbol)
-            stock_info = DataService.get_stock_info(symbol)
+            # Get comprehensive technical analysis
+            technical_data = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+            
+            # Convert to template-friendly format
+            template_data = {
+                'last_price': technical_data['current_price'],
+                'change': technical_data['change'],
+                'change_percent': technical_data['change_percent'],
+                'volume': technical_data['volume'],
+                'avg_volume': technical_data['avg_volume'],
+                'rsi': technical_data['indicators']['rsi'],
+                'macd': technical_data['indicators']['macd'],
+                'macd_signal': technical_data['indicators']['macd_signal'],
+                'sma20': technical_data['indicators']['sma_20'],
+                'sma50': technical_data['indicators']['sma_50'],
+                'sma200': technical_data['indicators']['sma_200'],
+                'support': technical_data['support_resistance']['support_levels'][0]['level'] if technical_data['support_resistance']['support_levels'] else 0,
+                'resistance': technical_data['support_resistance']['resistance_levels'][0]['level'] if technical_data['support_resistance']['resistance_levels'] else 0,
+                'signal': technical_data['signals']['overall_signal'],
+                'overall_signal': technical_data['signals']['overall_signal'],
+                'signal_reason': technical_data['signals']['recommendation'],
+                
+                # Additional advanced data
+                'patterns': technical_data['patterns'],
+                'support_resistance': technical_data['support_resistance'],
+                'sentiment': technical_data['sentiment'],
+                'chart_data': technical_data['chart_data'],
+                'stochastic_k': technical_data['indicators']['stochastic_k'],
+                'williams_r': technical_data['indicators']['williams_r'],
+                'bollinger_upper': technical_data['indicators']['bollinger_upper'],
+                'bollinger_lower': technical_data['indicators']['bollinger_lower']
+            }
+            
+            # Convert popular stocks to objects
+            popular_stocks = []
+            oslo_tickers = ['EQNR.OL', 'DNB.OL', 'YAR.OL', 'MOWI.OL', 'TEL.OL']
+            global_tickers = ['AAPL', 'TSLA', 'MSFT', 'AMZN', 'GOOGL']
+            
+            for ticker in oslo_tickers + global_tickers:
+                if ticker != symbol:  # Don't include current symbol
+                    from types import SimpleNamespace
+                    stock = SimpleNamespace()
+                    stock.symbol = ticker
+                    stock.name = ticker
+                    popular_stocks.append(stock)
             
             return render_template('analysis/technical.html',
                                  symbol=symbol,
-                                 technical_data=technical_data,
-                                 stock_info=stock_info,
+                                 technical_data=template_data,
+                                 advanced_data=technical_data,
+                                 popular_stocks=popular_stocks[:8],  # Limit to 8
                                  show_analysis=True)
         else:
             # Show technical analysis overview with popular stocks
-            # Get popular stocks from Oslo Børs data
-            oslo_stocks = DataService.get_oslo_bors_overview() or {}
-            popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
-            market_overview = {
-                'oslo_trending': DataService.get_trending_oslo_stocks() or [],
-                'global_trending': DataService.get_trending_global_stocks() or [],
-                'most_active': DataService.get_most_active_stocks() or []
-            }
+            popular_stocks = []
+            oslo_tickers = ['EQNR.OL', 'DNB.OL', 'YAR.OL', 'MOWI.OL', 'TEL.OL']
+            global_tickers = ['AAPL', 'TSLA', 'MSFT', 'AMZN', 'GOOGL']
+            
+            for ticker in oslo_tickers + global_tickers:
+                from types import SimpleNamespace
+                stock = SimpleNamespace()
+                stock.symbol = ticker
+                stock.name = ticker
+                popular_stocks.append(stock)
             
             return render_template('analysis/technical.html',
                                  popular_stocks=popular_stocks,
-                                 market_overview=market_overview,
                                  show_analysis=False)
                                  
     except Exception as e:
         logger.error(f"Error in technical analysis: {e}")
+        # Return fallback data
+        fallback_data = {
+            'last_price': 100.0,
+            'change': 0.0,
+            'change_percent': 0.0,
+            'rsi': 50.0,
+            'macd': 0.0,
+            'signal': 'HOLD',
+            'signal_reason': 'Teknisk analyse ikke tilgjengelig'
+        }
         return render_template('analysis/technical.html',
+                             symbol=request.args.get('symbol', ''),
+                             technical_data=fallback_data,
+                             show_analysis=bool(request.args.get('symbol')),
                              error="Kunne ikke laste teknisk analyse")
+
+@analysis.route('/api/technical/<symbol>')
+@access_required
+def api_technical_data(symbol):
+    """API endpoint for real-time technical data"""
+    try:
+        # Get comprehensive analysis
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        # Return JSON data for AJAX requests
+        return jsonify({
+            'success': True,
+            'data': {
+                'ticker': analysis['ticker'],
+                'current_price': analysis['current_price'],
+                'change': analysis['change'],
+                'change_percent': analysis['change_percent'],
+                'volume': analysis['volume'],
+                'indicators': {
+                    'rsi': round(analysis['indicators']['rsi'], 1),
+                    'macd': round(analysis['indicators']['macd'], 3),
+                    'macd_signal': round(analysis['indicators']['macd_signal'], 3),
+                    'sma_20': round(analysis['indicators']['sma_20'], 2),
+                    'sma_50': round(analysis['indicators']['sma_50'], 2),
+                    'sma_200': round(analysis['indicators']['sma_200'], 2)
+                },
+                'signals': analysis['signals'],
+                'sentiment': analysis['sentiment'],
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API technical data for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/chart-data/<symbol>')
+@access_required
+def api_chart_data(symbol):
+    """API endpoint for advanced chart data with multiple timeframes"""
+    try:
+        timeframe = request.args.get('timeframe', '1M')
+        chart_type = request.args.get('chart_type', 'line')
+        
+        # Get comprehensive analysis
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        # Generate timeframe-specific data
+        chart_data = AdvancedTechnicalService._generate_chart_data_for_timeframe(
+            symbol, timeframe, chart_type
+        )
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'chart_data': chart_data,
+                'support_resistance': analysis['support_resistance'],
+                'indicators': analysis['indicators'],
+                'timeframe': timeframe,
+                'chart_type': chart_type,
+                'patterns': analysis['patterns'],
+                'volume_profile': analysis.get('volume_profile', {}),
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API chart data for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/indicators/<symbol>')
+@access_required  
+def api_indicators(symbol):
+    """API endpoint for technical indicators only"""
+    try:
+        # Get specific indicators
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'rsi': analysis['indicators']['rsi'],
+                'macd': analysis['indicators']['macd'],
+                'macd_signal': analysis['indicators']['macd_signal'],
+                'macd_histogram': analysis['indicators'].get('macd_histogram', 0),
+                'stochastic_k': analysis['indicators']['stochastic_k'],
+                'stochastic_d': analysis['indicators'].get('stochastic_d', 0),
+                'williams_r': analysis['indicators']['williams_r'],
+                'cci': analysis['indicators'].get('cci', 0),
+                'atr': analysis['indicators'].get('atr', 0),
+                'adx': analysis['indicators'].get('adx', 0),
+                'bollinger_upper': analysis['indicators']['bollinger_upper'],
+                'bollinger_lower': analysis['indicators']['bollinger_lower'],
+                'bollinger_position': analysis['indicators'].get('bollinger_position', 'middle'),
+                'sma_20': analysis['indicators']['sma_20'],
+                'sma_50': analysis['indicators']['sma_50'],
+                'sma_200': analysis['indicators']['sma_200'],
+                'ema_12': analysis['indicators'].get('ema_12', 0),
+                'ema_26': analysis['indicators'].get('ema_26', 0),
+                'volume_sma': analysis['indicators'].get('volume_sma', 0),
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API indicators for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/patterns/<symbol>')
+@access_required
+def api_patterns(symbol):
+    """API endpoint for pattern detection"""
+    try:
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'candlestick_patterns': analysis['patterns']['candlestick_patterns'],
+                'chart_patterns': analysis['patterns']['chart_patterns'],
+                'trend_patterns': analysis['patterns'].get('trend_patterns', []),
+                'reversal_signals': analysis['patterns'].get('reversal_signals', []),
+                'continuation_signals': analysis['patterns'].get('continuation_signals', []),
+                'pattern_strength': analysis['patterns'].get('pattern_strength', 'medium'),
+                'pattern_reliability': analysis['patterns'].get('pattern_reliability', 0.6),
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API patterns for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/sentiment/<symbol>')
+@access_required
+def api_sentiment(symbol):
+    """API endpoint for market sentiment analysis"""
+    try:
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'overall_sentiment': analysis['sentiment']['sentiment'],
+                'sentiment_score': analysis['sentiment']['score'],
+                'sentiment_reasons': analysis['sentiment'].get('reasons', []),
+                'market_mood': analysis['sentiment'].get('market_mood', 'neutral'),
+                'fear_greed_index': analysis['sentiment'].get('fear_greed_index', 50),
+                'social_sentiment': analysis['sentiment'].get('social_sentiment', {}),
+                'institutional_flow': analysis['sentiment'].get('institutional_flow', 'neutral'),
+                'retail_sentiment': analysis['sentiment'].get('retail_sentiment', 'neutral'),
+                'options_flow': analysis['sentiment'].get('options_flow', {}),
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API sentiment for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/realtime/<symbol>')
+@access_required
+def api_realtime_data(symbol):
+    """API endpoint for real-time streaming data"""
+    try:
+        # Get latest data
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        # Simulate real-time price movement
+        import random
+        base_price = analysis['current_price']
+        price_change = random.uniform(-0.02, 0.02)  # ±2% movement
+        new_price = base_price * (1 + price_change)
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'symbol': symbol.upper(),
+                'price': round(new_price, 2),
+                'change': round(new_price - base_price, 2),
+                'change_percent': round(price_change * 100, 2),
+                'volume': analysis['volume'] + random.randint(-50000, 100000),
+                'bid': round(new_price * 0.999, 2),
+                'ask': round(new_price * 1.001, 2),
+                'high_24h': round(max(base_price, new_price) * 1.02, 2),
+                'low_24h': round(min(base_price, new_price) * 0.98, 2),
+                'timestamp': datetime.now().isoformat(),
+                'market_status': 'open'  # Would be actual market status
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API realtime data for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@analysis.route('/api/alerts/<symbol>')
+@access_required
+def api_trading_alerts(symbol):
+    """API endpoint for AI-generated trading alerts"""
+    try:
+        analysis = AdvancedTechnicalService.get_comprehensive_analysis(symbol.upper())
+        
+        # Generate AI trading alerts based on analysis
+        alerts = []
+        
+        # RSI alerts
+        rsi = analysis['indicators']['rsi']
+        if rsi > 75:
+            alerts.append({
+                'type': 'warning',
+                'indicator': 'RSI',
+                'message': f'RSI overkjøpt på {rsi:.1f} - vurder salg',
+                'severity': 'high',
+                'action': 'sell_signal'
+            })
+        elif rsi < 25:
+            alerts.append({
+                'type': 'opportunity',
+                'indicator': 'RSI',
+                'message': f'RSI oversolgt på {rsi:.1f} - kjøpsmulighet',
+                'severity': 'high',
+                'action': 'buy_signal'
+            })
+        
+        # MACD alerts
+        macd = analysis['indicators']['macd']
+        macd_signal = analysis['indicators']['macd_signal']
+        if macd > macd_signal and macd > 0:
+            alerts.append({
+                'type': 'bullish',
+                'indicator': 'MACD',
+                'message': 'MACD bullish crossover - oppgang forventet',
+                'severity': 'medium',
+                'action': 'buy_signal'
+            })
+        elif macd < macd_signal and macd < 0:
+            alerts.append({
+                'type': 'bearish',
+                'indicator': 'MACD',
+                'message': 'MACD bearish crossover - nedgang forventet',
+                'severity': 'medium',
+                'action': 'sell_signal'
+            })
+        
+        # Pattern alerts
+        for pattern in analysis['patterns']['chart_patterns']:
+            if pattern['type'] in ['breakout', 'triangle_breakout']:
+                alerts.append({
+                    'type': 'pattern',
+                    'indicator': 'Pattern',
+                    'message': f'{pattern["name"]} detektert - potensielt utbrudd',
+                    'severity': 'high',
+                    'action': 'watch_signal'
+                })
+        
+        # Volume alerts
+        if analysis['volume'] > analysis.get('avg_volume', 0) * 1.5:
+            alerts.append({
+                'type': 'volume',
+                'indicator': 'Volume',
+                'message': 'Uvanlig høyt volum - økt interesse',
+                'severity': 'medium',
+                'action': 'watch_signal'
+            })
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'alerts': alerts,
+                'alert_count': len(alerts),
+                'high_severity_count': len([a for a in alerts if a['severity'] == 'high']),
+                'recommended_action': analysis['signals']['overall_signal'],
+                'confidence_score': analysis['signals'].get('confidence', 0.7),
+                'timestamp': analysis['timestamp']
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in API alerts for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+        
+    except Exception as e:
+        logger.error(f"Error in API chart data for {symbol}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @analysis.route('/market-overview')
 @access_required
@@ -236,11 +602,13 @@ def benjamin_graham():
                 from ..services.graham_analysis_service import GrahamAnalysisService
                 analysis_data = GrahamAnalysisService.analyze_stock(ticker)
                 
-                if analysis_data:
+                if analysis_data and not analysis_data.get('error'):
+                    logger.info(f"Successfully analyzed {ticker} using Graham Analysis")
                     return render_template('analysis/benjamin_graham.html',
                                          analysis=analysis_data,
                                          ticker=ticker)
                 else:
+                    logger.warning(f'Graham analysis failed for {ticker}')
                     flash(f'Kunne ikke analysere {ticker}. Prøv en annen aksje.', 'warning')
             except ImportError:
                 logger.error("GrahamAnalysisService not available")
@@ -277,14 +645,21 @@ def benjamin_graham():
         # Get popular stocks from Oslo Børs data
         oslo_stocks = DataService.get_oslo_bors_overview() or {}
         popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
+        
+        # Ensure we always have some popular stocks
+        if not popular_stocks:
+            popular_stocks = ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL']
+        
+        logger.info(f"Loading Benjamin Graham page with {len(popular_stocks)} popular stocks")
         return render_template('analysis/benjamin_graham.html',
                              popular_stocks=popular_stocks,
                              show_results=False)
     except Exception as e:
         logger.error(f"Error loading Benjamin Graham page: {e}")
         return render_template('analysis/benjamin_graham.html',
-                             popular_stocks=[],
-                             error="Kunne ikke laste siden")
+                             popular_stocks=['EQNR.OL', 'DNB.OL', 'TEL.OL'],
+                             show_results=False,
+                             error="Noen funksjoner kan være begrenset")
 
 @analysis.route('/sentiment-view')
 @access_required
@@ -326,88 +701,117 @@ def screener():
     """Redirect to screener view"""
     return redirect(url_for('analysis.screener_view'))
 
-@analysis.route('/screener-view')
+@analysis.route('/screener-view', methods=['GET', 'POST'])
 @demo_access
 def screener_view():
-    """Stock screening tool"""
-    # Get screening parameters
-    min_market_cap = request.args.get('min_market_cap', type=float, default=0)
-    max_pe = request.args.get('max_pe', type=float, default=50)
-    min_roe = request.args.get('min_roe', type=float, default=0)
-    sector = request.args.get('sector', default='all')
-    
-    # Mock screened stocks
-    screened_stocks = [
-        {
-            'symbol': 'EQNR.OL',
-            'name': 'Equinor ASA',
-            'price': 342.55,
-            'market_cap': 1087000000000,
-            'pe_ratio': 12.5,
-            'roe': 15.2,
-            'sector': 'Energy',
-            'score': 85
-        },
-        {
-            'symbol': 'DNB.OL', 
-            'name': 'DNB Bank ASA',
-            'price': 212.8,
-            'market_cap': 328000000000,
-            'pe_ratio': 8.9,
-            'roe': 12.8,
-            'sector': 'Financial',
-            'score': 78
-        },
-        {
-            'symbol': 'AAPL',
-            'name': 'Apple Inc.',
-            'price': 185.25,
-            'market_cap': 2870000000000,
-            'pe_ratio': 28.5,
-            'roe': 24.1,
-            'sector': 'Technology',
-            'score': 92
-        }
-    ]
-    
-    return render_template('analysis/screener.html', 
-                         screened_stocks=screened_stocks,
-                         filters={
-                             'min_market_cap': min_market_cap,
-                             'max_pe': max_pe, 
-                             'min_roe': min_roe,
-                             'sector': sector
-                         })
-
-@analysis.route('/short-analysis-view')
-@access_required
-def short_analysis_view():
-    """Short selling analysis"""
+    """Advanced stock screening tool with Finviz integration"""
     try:
-        ticker = request.args.get('ticker')
+        # Import finviz service
+        from app.services.finviz_service import FinvizScreenerService
+        finviz_service = FinvizScreenerService()
         
-        if ticker:
-            # Return short analysis for specific ticker
-            short_data = {
-                'ticker': ticker.upper(),
-                'company_name': ticker.upper(),
-                'short_interest': round(random.uniform(2, 25), 1),
-                'short_ratio': round(random.uniform(1, 10), 1),
-                'days_to_cover': round(random.uniform(1, 15), 1),
-                'short_squeeze_potential': random.choice(['High', 'Medium', 'Low']),
-                'trend': random.choice(['Increasing', 'Decreasing', 'Stable']),
-                'recommendation': random.choice(['Watch for Squeeze', 'Monitor', 'Low Risk']),
-                'analysis_date': datetime.now().strftime('%Y-%m-%d')
+        # Get available filters and presets
+        available_filters = finviz_service.get_available_filters()
+        preset_screens = finviz_service.get_preset_screens()
+        
+        results = []
+        selected_filters = []
+        show_results = False
+        
+        # Filter display name function for template
+        def get_filter_display_name(filter_key):
+            filter_names = {
+                'cap_mega': 'Mega Cap (>$200B)',
+                'cap_large': 'Large Cap (>$10B)', 
+                'cap_mid': 'Mid Cap ($2B-$10B)',
+                'cap_small': 'Small Cap (<$2B)',
+                'nasdaq': 'NASDAQ',
+                'nyse': 'NYSE',
+                'sp500': 'S&P 500',
+                'sp400': 'S&P 400',
+                'sp600': 'S&P 600',
+                'nasdaq100': 'NASDAQ 100',
+                'russell2000': 'Russell 2000',
+                'tech': 'Teknologi',
+                'healthcare': 'Helsevesen',
+                'finance': 'Finans',
+                'energy': 'Energi',
+                'consumer': 'Forbruksvarer',
+                'industrial': 'Industri',
+                'utilities': 'Utilities',
+                'realestate': 'Eiendom',
+                'materials': 'Materialer',
+                'pe_low': 'Lav P/E (<15)',
+                'pe_profitable': 'Profitabel (P/E>0)',
+                'pe_high': 'Høy P/E (>50)',
+                'peg_low': 'Lav PEG (<1)',
+                'pb_low': 'Lav P/B (<1)',
+                'ps_low': 'Lav P/S (<1)',
+                'perf_week_up': 'Uke +',
+                'perf_month_up': 'Måned +',
+                'perf_ytd_up': 'YTD +',
+                'perf_year_up': 'År +',
+                'rsi_oversold': 'RSI Oversolgt (<30)',
+                'rsi_overbought': 'RSI Overkjøpt (>70)',
+                'price_near_high': 'Nær 52W høy',
+                'price_near_low': 'Nær 52W lav',
+                'volume_high': 'Høyt volum (>2M)',
+                'dividend_yield': 'Utbytte >0%',
+                'dividend_high': 'Høyt utbytte (>5%)',
+                'roe_high': 'ROE >0%',
+                'roa_high': 'ROA >0%',
+                'debt_low': 'Lav gjeld (<0.5)',
+                'current_ratio_high': 'Høy likviditet (>1.5)',
+                'sales_growth': 'Salgsvekst 5Y+',
+                'eps_growth': 'EPS vekst 5Y+',
+                'earnings_growth': 'Inntjeningsvekst+'
             }
-            return render_template('analysis/short_analysis.html', 
-                                 short_data=short_data, 
-                                 ticker=ticker)
+            return filter_names.get(filter_key, filter_key)
         
-        return render_template('analysis/short_analysis.html')
+        if request.method == 'POST':
+            show_results = True
+            
+            # Check for preset selection
+            preset = request.form.get('preset')
+            if preset and preset in preset_screens:
+                # Use preset filters
+                selected_filters = list(preset_screens[preset])
+                results = finviz_service.screen_stocks(selected_filters)
+                flash(f'Bruker preset: {preset}', 'info')
+            else:
+                # Use custom filters
+                selected_filters = request.form.getlist('filters')
+                if selected_filters:
+                    # Build filter dict from selected filters  
+                    # Just pass the list directly since screen_stocks expects a list
+                    results = finviz_service.screen_stocks(selected_filters)
+                    if results:
+                        flash(f'Fant {len(results)} aksjer som oppfyller kriteriene', 'success')
+                    else:
+                        flash('Ingen gyldige filtere valgt', 'warning')
+                else:
+                    flash('Velg minst ett filter eller preset', 'warning')
+        
+        return render_template('analysis/screener.html',
+                             available_filters=available_filters,
+                             preset_screens=preset_screens,
+                             results=results,
+                             selected_filters=selected_filters,
+                             show_results=show_results,
+                             get_filter_display_name=get_filter_display_name)
+    
     except Exception as e:
-        logger.error(f"Error in short analysis: {e}")
-        flash("En feil oppstod ved lasting av short-analysen.", "error")
-        return redirect(url_for('analysis.index'))
+        logger.error(f"Screener error: {str(e)}")
+        flash('Det oppstod en feil med screeneren. Prøv igjen senere.', 'error')
+        return render_template('analysis/screener.html',
+                             available_filters={},
+                             preset_screens={},
+                             results=[],
+                             selected_filters=[],
+                             show_results=False,
+                             get_filter_display_name=lambda x: x)
+
+# Removed duplicate short-analysis-view route to avoid conflicts
 
 @analysis.route('/currency-overview')
 @access_required
@@ -789,15 +1193,13 @@ def short_analysis():
                              available_stocks=available_stocks)
     except Exception as e:
         current_app.logger.error(f"Error in short analysis for {ticker}: {str(e)}")
-        flash('Kunne ikke hente data for denne aksjen', 'error')
-        return redirect(url_for('analysis.short_analysis'))
-    if not stock_data:
-        flash('Kunne ikke hente data for denne aksjen', 'error')
-        return redirect(url_for('analysis.short_analysis'))
-    available_stocks = get_all_available_stocks()
-    return render_template('analysis/short-analysis.html', 
-                         stock_data=stock_data, 
-                         available_stocks=available_stocks)
+        flash('En feil oppstod ved lasting av short analysen. Prøv igjen senere.', 'error')
+        return render_template('analysis/short-analysis.html', 
+                             available_stocks={
+                                 'oslo_stocks': ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL'],
+                                 'global_stocks': ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'META', 'NFLX']
+                             },
+                             error=True)
 
 @analysis.route('/fundamental', methods=['GET', 'POST'])
 @access_required

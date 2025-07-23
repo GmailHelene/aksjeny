@@ -45,3 +45,5 @@ scipy>=1.11.0  # For portfolio optimization and risk calculations
 joblib>=1.3.0  # For ML model persistence
 ta-lib>=0.4.0  # For technical analysis indicators
 cvxpy>=1.4.0  # For advanced optimization problems
+# Screener Enhancement
+git+https://github.com/mariostoev/finviz  # For advanced stock screening

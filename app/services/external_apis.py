@@ -353,7 +353,8 @@ class ExternalAPIService:
                 return formatted_recommendations
                 
         except Exception as e:
-            current_app.logger.error(f"Error fetching analyst recommendations for {ticker}: {str(e)}")
+            current_app.logger.warning(f"Error fetching analyst recommendations for {ticker}: {str(e)}")
+            current_app.logger.info(f"Using fallback analyst recommendations for {ticker}")
         
         return ExternalAPIService._get_fallback_analyst_recommendations(ticker)
     
@@ -406,7 +407,8 @@ class ExternalAPIService:
                 return sentiment_summary
                 
         except Exception as e:
-            current_app.logger.error(f"Error fetching social sentiment for {ticker}: {str(e)}")
+            current_app.logger.warning(f"Error fetching social sentiment for {ticker}: {str(e)}")
+            current_app.logger.info(f"Using fallback social sentiment data for {ticker}")
         
         return ExternalAPIService._get_fallback_social_sentiment(ticker)
     
