@@ -28,7 +28,7 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
 # Copy requirements and install Python dependencies
-COPY requirements-prod.txt requirements.txt ./
+COPY requirements-prod.txt ./
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements-prod.txt
 
@@ -77,4 +77,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
     CMD python health_check.py
 
 # Run the application
-CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "120", "--worker-class", "sync", "--worker-connections", "1000", "--access-logfile", "-", "--error-logfile", "-", "--log-level", "info"]
+CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "120", "--worker-class", "eventlet", "--worker-connections", "1000", "--access-logfile", "-", "--error-logfile", "-", "--log-level", "info"]
