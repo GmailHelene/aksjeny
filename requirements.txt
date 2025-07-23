@@ -1,4 +1,5 @@
-# Production Requirements - Optimized for Railway Deployment
+# Production Requirements - Railway Deployment  
+# Updated: 2025-07-23 - Cache Bust v2
 # Core Flask Dependencies
 flask==2.3.3
 flask-sqlalchemy==3.0.5
@@ -40,5 +41,5 @@ stripe==6.1.0
 beautifulsoup4==4.12.2
 feedparser==6.0.10
 
-# Financial Data
+# Financial Data - PyPI version ONLY (NO git dependencies)
 finviz==1.4.4

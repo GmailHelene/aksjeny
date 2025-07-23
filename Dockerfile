@@ -28,9 +28,10 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
 # Copy requirements and install Python dependencies
+# Cache bust: 2025-07-23-v3-FINVIZ-FIX
 COPY requirements.txt ./
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --force-reinstall -r requirements.txt
 
 # Production stage
 FROM python:3.11-slim
