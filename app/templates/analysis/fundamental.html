@@ -232,10 +232,11 @@
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('analysis.fundamental') }}">
+                        {{ csrf_token() }}
                         <div class="mb-3">
                             <label for="symbol" class="form-label">Aksjesymbol</label>
                             <input type="text" class="form-control" id="symbol" name="symbol" 
-                                   placeholder="f.eks. AAPL, TSLA, NOK" required>
+                                   placeholder="f.eks. EQNR.OL, DNB.OL, TEL.OL" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Analyser</button>
                     </form>

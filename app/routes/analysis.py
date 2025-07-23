@@ -1239,11 +1239,34 @@ def sentiment():
     try:
         selected_symbol = request.args.get('symbol', '')
         
-        # Get sentiment data
+        # Initialize default data structure
+        sentiment_data = {
+            'overall_score': 0,
+            'sentiment_label': 'Nøytral',
+            'news_score': 'N/A',
+            'social_score': 'N/A',
+            'volume_trend': 'N/A',
+            'market_sentiment': 0,
+            'fear_greed_index': 'N/A',
+            'vix': 'N/A',
+            'market_trend': 'neutral'
+        }
+        
+        # Get sentiment data only if symbol is provided
         if selected_symbol:
-            sentiment_data = AnalysisService.get_sentiment_analysis(selected_symbol)
+            try:
+                custom_sentiment = AnalysisService.get_sentiment_analysis(selected_symbol)
+                if custom_sentiment:
+                    sentiment_data.update(custom_sentiment)
+            except Exception as e:
+                logger.warning(f"Failed to get sentiment for {selected_symbol}: {e}")
         else:
-            sentiment_data = AnalysisService.get_market_sentiment_overview()
+            try:
+                market_overview = AnalysisService.get_market_sentiment_overview()
+                if market_overview:
+                    sentiment_data.update(market_overview)
+            except Exception as e:
+                logger.warning(f"Failed to get market overview: {e}")
         
         # Get popular stocks for dropdown from Oslo Børs data
         oslo_stocks = DataService.get_oslo_bors_overview() or {}

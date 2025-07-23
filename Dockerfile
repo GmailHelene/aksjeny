@@ -38,9 +38,10 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Install only runtime dependencies
+# Install only runtime dependencies including git for package installations
 RUN apt-get update && apt-get install -y \
     libgomp1 \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy TA-Lib from builder stage

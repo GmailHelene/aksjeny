@@ -189,7 +189,8 @@ def list_oslo():
         return render_template('stocks/list.html',
                              stocks=stocks,
                              market='Oslo Børs',
-                             market_type='oslo')
+                             market_type='oslo',
+                             category='oslo')
     except Exception as e:
         current_app.logger.error(f"Error loading Oslo stocks: {str(e)}")
         flash('Kunne ikke laste aksjedata. Prøv igjen senere.', 'error')
@@ -197,6 +198,7 @@ def list_oslo():
                              stocks={},  # Changed from [] to {} 
                              market='Oslo Børs',
                              market_type='oslo',
+                             category='oslo',
                              error=True)
 
 @stocks.route('/list/global')
