@@ -407,7 +407,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('portfolio.performance_page') }}">
                                 <i class="bi bi-graph-up-arrow me-2"></i>Performance Analytics
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('portfolio_analytics.dashboard') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('portfolio_analytics.analytics_dashboard') }}">
                                 <i class="bi bi-brain me-2"></i>Avansert AI-Analyse
                             </a></li>
                         </ul>
@@ -420,39 +420,39 @@
                             Nyheter
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.index') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.news_index') }}">
                                 <i class="bi bi-newspaper me-2"></i>Alle nyheter
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Kategorier</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='aksjer') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='aksjer') }}">
                                 <i class="bi bi-graph-up me-2"></i>Aksjenyheter
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='økonomi') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='økonomi') }}">
                                 <i class="bi bi-currency-dollar me-2"></i>Økonomi
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='marked') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='marked') }}">
                                 <i class="bi bi-bar-chart me-2"></i>Markedsnyheter
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='crypto') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='crypto') }}">
                                 <i class="bi bi-currency-bitcoin me-2"></i>Krypto nyheter
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='teknologi') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='teknologi') }}">
                                 <i class="bi bi-cpu me-2"></i>Teknologi
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.category', category='energi') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.category', category='energi') }}">
                                 <i class="bi bi-lightning me-2"></i>Energi
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Spesial</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.search') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.search') }}">
                                 <i class="bi bi-search me-2"></i>Søk nyheter
                             </a></li>
                             {% if current_user.is_authenticated %}
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.widget') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.widget') }}">
                                 <i class="bi bi-widget me-2"></i>Nyhets-widget
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('news_bp.embed') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('news.embed') }}">
                                 <i class="bi bi-code me-2"></i>Integrer nyheter
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
