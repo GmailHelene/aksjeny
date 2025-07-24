@@ -1,2 +1,2 @@
-web: gunicorn run:app --bind 0.0.0.0:$PORT --workers 1 --timeout 30
+web: python wsgi_start.py
 release: python init_db.py
