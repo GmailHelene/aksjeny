@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}{{ watchlist.name }} - Aksjeradar{% endblock %}
+
+{% block head %}
+<style>
+.watchlist-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 30px 0;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.stock-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.stock-card:hover {
+    transform: translateY(-5px);
+}
+
+.price-up { color: #28a745; }
+.price-down { color: #dc3545; }
+.price-neutral { color: #6c757d; }
+
+.performance-badge {
+    font-size: 0.875rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+}
+
+.performance-positive {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.performance-negative {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.performance-neutral {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mini-chart {
+    height: 60px;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Watchlist Header -->
+    <div class="watchlist-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-2">
+                <i class="fas fa-star me-3"></i>{{ watchlist.name }}
+            </h1>
+            {% if watchlist.description %}
+            <p class="lead mb-3">{{ watchlist.description }}</p>
+            {% endif %}
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h4>{{ stock_data|length }}</h4>
+                    <small>Stocks Tracked</small>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="price-up">+2.34%</h4>
+                    <small>Avg Performance</small>
+                </div>
+                <div class="col-md-3">
+                    <h4>$127,450</h4>
+                    <small>Total Value</small>
+                </div>
+                <div class="col-md-3">
+                    <h4>$3,245</h4>
+                    <small>Total Gain</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="d-flex gap-3 align-items-center">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Stock
+                </button>
+                <button class="btn btn-outline-primary">
+                    <i class="fas fa-edit me-2"></i>Edit Watchlist
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="notifications" {{ 'checked' if watchlist.notifications_enabled else '' }}>
+                    <label class="form-check-label" for="notifications">
+                        Notifications
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search stocks...">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stocks Grid -->
+    <div class="row">
+        {% if stock_data %}
+            {% for stock in stock_data %}
+            <div class="col-lg-6 col-xl-4">
+                <div class="stock-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="fw-bold text-primary mb-1">{{ stock.symbol }}</h5>
+                            <p class="text-muted mb-0 small">{{ stock.name }}</p>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('stocks.details', symbol=stock.symbol) }}">
+                                    <i class="fas fa-chart-line me-2"></i>View Details
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-bell me-2"></i>Set Alert
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-plus me-2"></i>Add to Portfolio
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#">
+                                    <i class="fas fa-trash me-2"></i>Remove
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h4 class="
+                                {% if stock.change > 0 %}price-up{% elif stock.change < 0 %}price-down{% else %}price-neutral{% endif %}">
+                                {{ "%.2f"|format(stock.price) }}
+                                {% if stock.symbol.endswith('.OL') %}NOK{% else %}${% endif %}
+                            </h4>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="performance-badge 
+                                {% if stock.change_percent > 0 %}performance-positive{% elif stock.change_percent < 0 %}performance-negative{% else %}performance-neutral{% endif %}">
+                                {% if stock.change_percent > 0 %}+{% endif %}{{ "%.2f"|format(stock.change_percent) }}%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Change</small><br>
+                            <span class="
+                                {% if stock.change > 0 %}price-up{% elif stock.change < 0 %}price-down{% else %}price-neutral{% endif %}">
+                                {% if stock.change > 0 %}+{% endif %}{{ "%.2f"|format(stock.change) }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Volume</small><br>
+                            <span>{{ stock.volume }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Mini Chart Placeholder -->
+                    <div class="mini-chart mb-3">
+                        <i class="fas fa-chart-line me-2"></i>7-day trend
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="{{ url_for('stocks.details', symbol=stock.symbol) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                            <i class="fas fa-info-circle me-1"></i>Details
+                        </a>
+                        <button class="btn btn-sm btn-outline-success flex-fill">
+                            <i class="fas fa-chart-line me-1"></i>Analyze
+                        </button>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="row mt-3 pt-3 border-top">
+                        <div class="col-4 text-center">
+                            <small class="text-muted">High</small><br>
+                            <small class="fw-bold">{{ "%.2f"|format(stock.high|default(stock.price * 1.05)) }}</small>
+                        </div>
+                        <div class="col-4 text-center">
+                            <small class="text-muted">Low</small><br>
+                            <small class="fw-bold">{{ "%.2f"|format(stock.low|default(stock.price * 0.95)) }}</small>
+                        </div>
+                        <div class="col-4 text-center">
+                            <small class="text-muted">P/E</small><br>
+                            <small class="fw-bold">{{ stock.pe_ratio|default("N/A") }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                    <h3 class="text-muted">No Stocks Added Yet</h3>
+                    <p class="text-muted mb-4">Start building your watchlist by adding stocks you want to track.</p>
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Add Your First Stock
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Performance Summary -->
+    {% if stock_data %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="stock-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-chart-pie me-2"></i>Watchlist Performance Summary
+                </h4>
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <h5 class="price-up">+$3,245</h5>
+                        <small class="text-muted">Total Gain/Loss</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h5 class="price-up">+2.61%</h5>
+                        <small class="text-muted">Overall Return</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h5>7 of 10</h5>
+                        <small class="text-muted">Positive Performers</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h5>EQNR.OL</h5>
+                        <small class="text-muted">Best Performer</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Notification toggle
+    document.getElementById('notifications').addEventListener('change', function() {
+        const enabled = this.checked;
+        // Here you would make an AJAX call to update notification settings
+        console.log('Notifications', enabled ? 'enabled' : 'disabled');
+    });
+
+    // Auto-refresh data every minute
+    setInterval(function() {
+        // In a real application, this would fetch updated stock prices
+        console.log('Refreshing stock data...');
+    }, 60000);
+});
+</script>
+{% endblock %}

@@ -444,13 +444,28 @@ https://www.ii.co.uk/ii-accounts/trading-account
 https://www.etoro.com/stocks/trading-and-investing-in-stocks
 
 
---
-! Husk å se siste errorlogs fra Raiway også
-
 NYTT: 
+https://aksjeradar.trade/analysis/prediction
+Her må vi gjøre noe med navigasjonen 
+(hvertfall på pc, usikekr om det er et problem på mobil også) men pga undernavigasjone her med Teknsik analyse prisprediksjon osv, så er det på pc ikke mulig å bruke hovednavigjasjonen (elementet: analuyse) man
+blir da bare "hoppet vekk" på en måte.
+
 https://aksjeradar.trade/profile
 Teknisk feil
+
+https://aksjeradar.trade/stocks/prices
+ Det oppstod en feil ved henting av prisdata. Prøv igjen senere.
+
+https://aksjeradar.trade/stocks/
+Kunne ikke laste prisdata.
+
 "Mitt abbonement" viser ikke riktig, denne siden må være 
 en egen side som viser info om brukerens faktiske aktive abbonement
 
+stocks/details -tickers sidene,mangler info på tabbene Anbefaling
+Analyse
+Firma-info
+
 Dette med navigasjonstips som popper opp i blå popup vil jeg gjerne ha vekk
+
+Pass på at all innhenting av data og services fungerer som det skal så det ikke brukes noe demo og fallbackdata annt enn UNNTAKSVIS dersom servicen til xx er nede f.eks

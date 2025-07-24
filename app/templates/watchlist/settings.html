@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Watchlist Settings - Aksjeradar{% endblock %}
+
+{% block head %}
+<style>
+.settings-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.setting-group {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.setting-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.notification-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.frequency-option {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.frequency-option:hover {
+    border-color: #007bff;
+}
+
+.frequency-option.selected {
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-5 text-primary mb-4">
+                <i class="fas fa-cog me-3"></i>Watchlist Settings
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Notification Settings -->
+            <div class="settings-card">
+                <h3 class="mb-4">
+                    <i class="fas fa-bell me-2"></i>Notification Preferences
+                </h3>
+
+                <form id="settings-form" method="POST">
+                    {{ csrf_token() }}
+
+                    <div class="setting-group">
+                        <h5 class="mb-3">Price Alerts</h5>
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="price-alerts" name="price_alerts" 
+                                       {{ 'checked' if user.price_alerts_enabled else '' }}>
+                                <label class="form-check-label" for="price-alerts">
+                                    <strong>Enable Price Alerts</strong><br>
+                                    <small class="text-muted">Get notified when stock prices hit your target levels</small>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="price-change-alerts" name="price_change_alerts"
+                                       {{ 'checked' if user.price_change_alerts_enabled else '' }}>
+                                <label class="form-check-label" for="price-change-alerts">
+                                    <strong>Significant Price Changes</strong><br>
+                                    <small class="text-muted">Alert when stocks move more than 5% in a day</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h5 class="mb-3">News & Analysis</h5>
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="news-alerts" name="news_alerts"
+                                       {{ 'checked' if user.news_alerts_enabled else '' }}>
+                                <label class="form-check-label" for="news-alerts">
+                                    <strong>Breaking News</strong><br>
+                                    <small class="text-muted">Important news about companies in your watchlists</small>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="earnings-alerts" name="earnings_alerts"
+                                       {{ 'checked' if user.earnings_alerts_enabled else '' }}>
+                                <label class="form-check-label" for="earnings-alerts">
+                                    <strong>Earnings Reports</strong><br>
+                                    <small class="text-muted">Notify before and after earnings announcements</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="analyst-alerts" name="analyst_alerts"
+                                       {{ 'checked' if user.analyst_alerts_enabled else '' }}>
+                                <label class="form-check-label" for="analyst-alerts">
+                                    <strong>Analyst Recommendations</strong><br>
+                                    <small class="text-muted">Updates on analyst ratings and price targets</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h5 class="mb-3">Market Updates</h5>
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="market-open" name="market_open"
+                                       {{ 'checked' if user.market_open_alerts else '' }}>
+                                <label class="form-check-label" for="market-open">
+                                    <strong>Market Open Summary</strong><br>
+                                    <small class="text-muted">Daily overview of your watchlist performance</small>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="weekly-summary" name="weekly_summary"
+                                       {{ 'checked' if user.weekly_summary_enabled else '' }}>
+                                <label class="form-check-label" for="weekly-summary">
+                                    <strong>Weekly Summary Report</strong><br>
+                                    <small class="text-muted">Comprehensive weekly performance analysis</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h5 class="mb-3">Notification Frequency</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="frequency-option" data-frequency="instant">
+                                    <input type="radio" name="notification_frequency" value="instant" id="instant"
+                                           {{ 'checked' if user.notification_frequency == 'instant' else '' }}>
+                                    <label for="instant" class="d-block">
+                                        <strong>Instant</strong><br>
+                                        <small class="text-muted">Get notified immediately</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="frequency-option" data-frequency="hourly">
+                                    <input type="radio" name="notification_frequency" value="hourly" id="hourly"
+                                           {{ 'checked' if user.notification_frequency == 'hourly' else '' }}>
+                                    <label for="hourly" class="d-block">
+                                        <strong>Hourly Digest</strong><br>
+                                        <small class="text-muted">Bundled every hour</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="frequency-option" data-frequency="daily">
+                                    <input type="radio" name="notification_frequency" value="daily" id="daily"
+                                           {{ 'checked' if user.notification_frequency == 'daily' or not user.notification_frequency else '' }}>
+                                    <label for="daily" class="d-block">
+                                        <strong>Daily Summary</strong><br>
+                                        <small class="text-muted">Once per day</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-save me-2"></i>Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Account Info -->
+            <div class="settings-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-user me-2"></i>Account Information
+                </h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Email</label>
+                    <p class="fw-bold">{{ user.email }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Member Since</label>
+                    <p class="fw-bold">{{ user.created_at.strftime('%B %Y') if user.created_at else 'January 2025' }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Subscription</label>
+                    <p class="fw-bold">
+                        {% if user.subscription_status == 'active' %}
+                            <span class="badge bg-success">Premium Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Free Plan</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-grid">
+                    <a href="{{ url_for('main.profile') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="settings-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-chart-bar me-2"></i>Your Activity
+                </h4>
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <h3 class="text-primary">{{ user.watchlists.count() if user.watchlists else '3' }}</h3>
+                        <small class="text-muted">Watchlists</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h3 class="text-success">{{ '47' }}</h3>
+                        <small class="text-muted">Stocks Tracked</small>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-info">{{ '156' }}</h3>
+                        <small class="text-muted">Alerts Set</small>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-warning">{{ '23' }}</h3>
+                        <small class="text-muted">Reports Generated</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preview -->
+            <div class="settings-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-eye me-2"></i>Preview
+                </h4>
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">Example Notification</h6>
+                    <p class="mb-1"><strong>EQNR.OL</strong> is up 2.45% today</p>
+                    <small class="text-muted">This is how your notifications will look</small>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary w-100">
+                    <i class="fas fa-paper-plane me-2"></i>Send Test Notification
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Frequency option selection
+    document.querySelectorAll('.frequency-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            document.querySelectorAll('.frequency-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
+    });
+
+    // Initialize selected frequency
+    const checkedRadio = document.querySelector('input[name="notification_frequency"]:checked');
+    if (checkedRadio) {
+        checkedRadio.closest('.frequency-option').classList.add('selected');
+    }
+
+    // Form submission
+    document.getElementById('settings-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show success message
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show';
+        alert.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            Settings saved successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        this.insertBefore(alert, this.firstChild);
+        
+        // In a real application, this would submit the form via AJAX
+        setTimeout(() => {
+            alert.remove();
+        }, 3000);
+    });
+});
+</script>
+{% endblock %}

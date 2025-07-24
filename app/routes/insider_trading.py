@@ -137,24 +137,23 @@ def details(symbol):
         # Get additional analysis data
         technical_data = AnalysisService.get_technical_analysis(symbol)
         
-        # Try enhanced details template first, then fallbacks
+        # Try enhanced details template first, then fallback
         try:
             return render_template('stocks/details_enhanced.html',
                                  ticker=symbol,
                                  stock_info=stock_info,
                                  technical_data=technical_data)
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Enhanced template failed for {symbol}: {e}")
             try:
                 return render_template('stocks/detail.html',
                                      symbol=symbol,
                                      stock_info=stock_info,
                                      technical_data=technical_data)
-            except Exception:
-                # Final fallback
-                return render_template('stocks/details.html',
-                                     symbol=symbol,
-                                     stock_info=stock_info,
-                                     technical_data=technical_data)
+            except Exception as e2:
+                logger.error(f"All templates failed for {symbol}: {e2}")
+                flash(f'Template error for {symbol}. Redirecting to stock list.', 'error')
+                return redirect(url_for('stocks.index'))
                              
     except Exception as e:
         logger.error(f"Error in stock details for {symbol}: {e}")

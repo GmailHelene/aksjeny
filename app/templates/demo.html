@@ -48,18 +48,89 @@
                         </div>
                     </div>
                     
-                    <!-- Demo Result Area -->
-                    <div id="demoResult" class="mt-4" style="display: none;">
-                        <div class="alert alert-success">
-                            <h6><i class="bi bi-check-circle"></i> Analyse komplett!</h6>
-                            <p id="demoResultText" class="mb-2"></p>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-success btn-sm" onclick="showUpgradeModal()">
-                                    <i class="bi bi-unlock"></i> Oppgradér for full rapport
-                                </button>
-                                <button class="btn btn-secondary btn-sm" onclick="resetDemo()">
-                                    <i class="bi bi-arrow-clockwise"></i> Prøv en annen
-                                </button>
+                    <!-- Enhanced Demo Results Area -->
+                    <div id="demo-result-container" class="mt-4">
+                        <!-- Dynamic content will be inserted here by JavaScript -->
+                    </div>
+                    
+                    <!-- Interactive Demo Progress -->
+                    <div class="mt-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h6><i class="bi bi-lightbulb"></i> Prøv flere funksjoner:</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="demoScreener()">
+                                            <i class="bi bi-funnel"></i> Avansert Screener
+                                        </button>
+                                        <button class="btn btn-outline-warning btn-sm w-100 mb-2" onclick="demoInsiderTrading()">
+                                            <i class="bi bi-person-badge"></i> Insider Trading
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="demoPortfolioOptimization()">
+                                            <i class="bi bi-pie-chart"></i> Portfolio Optimering
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm w-100 mb-2" onclick="demoRealTimeAlerts()">
+                                            <i class="bi bi-bell"></i> Sanntids Varsler
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interactive Feature Showcase -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0">🔥 Populære Premium Funksjoner</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle p-2 me-3">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Sanntids Markedsdata</h6>
+                                    <small class="text-muted">Oppdateres hvert sekund</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success text-white rounded-circle p-2 me-3">
+                                    <i class="bi bi-robot"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">AI-drevne Prediksjoner</h6>
+                                    <small class="text-muted">Machine learning analyser</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning text-white rounded-circle p-2 me-3">
+                                    <i class="bi bi-funnel"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Avanserte Screenere</h6>
+                                    <small class="text-muted">50+ filterkriterier</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-danger text-white rounded-circle p-2 me-3">
+                                    <i class="bi bi-bell"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Smart Varsler</h6>
+                                    <small class="text-muted">Personaliserte notifikasjoner</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,36 +139,99 @@
         </div>
         
         <div class="col-lg-4">
-            <!-- CTA Card -->
-            <div class="card border-0 shadow-sm bg-gradient-primary text-white mb-4">
+            <!-- Enhanced CTA Card -->
+            <div class="card border-0 shadow-lg bg-gradient-primary text-white mb-4">
                 <div class="card-body text-center">
-                    <h5>🎁 Spesialtilbud!</h5>
-                    <p class="mb-3">Få 30% rabatt på din første måned når du oppgraderer nå</p>
-                    <button class="btn btn-light btn-lg w-100" onclick="showUpgradeModal()">
-                        <i class="bi bi-crown"></i> Oppgradér nå
+                    <div class="mb-3">
+                        <i class="bi bi-crown fs-1"></i>
+                    </div>
+                    <h4>🎁 Spesialtilbud!</h4>
+                    <p class="mb-3">Få 30% rabatt på din første måned når du oppgraderer fra demo</p>
+                    <div class="mb-3">
+                        <div class="fs-2 fw-bold">279,-</div>
+                        <small class="text-decoration-line-through opacity-75">399,-</small>
+                        <div class="small">første måned</div>
+                    </div>
+                    <button class="btn btn-light btn-lg w-100 mb-3" onclick="window.location.href='/subscription'">
+                        <i class="bi bi-rocket"></i> Start Premium
                     </button>
-                    <small class="d-block mt-2 opacity-75">Ingen bindingstid • Avbryt når som helst</small>
+                    <div class="row text-start small">
+                        <div class="col-6">
+                            <i class="bi bi-check2"></i> Alle AI-analyser<br>
+                            <i class="bi bi-check2"></i> Sanntids data<br>
+                            <i class="bi bi-check2"></i> Avanserte screenere
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-check2"></i> Portfolio tracking<br>
+                            <i class="bi bi-check2"></i> Price alerts<br>
+                            <i class="bi bi-check2"></i> Insider data
+                        </div>
+                    </div>
+                    <hr class="opacity-50">
+                    <small class="d-block opacity-75">Ingen bindingstid • Avbryt når som helst</small>
+                </div>
+            </div>
+            
+            <!-- Demo Progress Tracker -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6><i class="bi bi-trophy"></i> Demo Fremgang</h6>
+                    <div id="demo-progress-bar" class="progress mb-3">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="demo-achievements" class="small">
+                        <div class="text-muted">Fullfør 3 analyser for å låse opp bonusinnhold!</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Market Overview -->
+    <!-- Enhanced Market Overview -->
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <h5>Markedsoversikt</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">📊 Live Markedsoversikt</h5>
+                    <span class="badge bg-success">Demo Data</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <h6>OSEBX</h6>
-                            <p class="text-success fs-4">1,234.56 <i class="bi bi-arrow-up"></i> +1.2%</p>
+                            <div class="text-center">
+                                <h6>OSEBX</h6>
+                                <p class="text-success fs-4 mb-1">1,234.56 <i class="bi bi-arrow-up"></i></p>
+                                <small class="text-success">+1.2% (+14.52)</small>
+                            </div>
                         </div>
                         <div class="col-md-3">
-                            <h6>S&P 500</h6>
-                            <p class="text-danger fs-4">4,567.89 <i class="bi bi-arrow-down"></i> -0.5%</p>
+                            <div class="text-center">
+                                <h6>S&P 500</h6>
+                                <p class="text-danger fs-4 mb-1">4,567.89 <i class="bi bi-arrow-down"></i></p>
+                                <small class="text-danger">-0.5% (-22.84)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h6>Bitcoin</h6>
+                                <p class="text-success fs-4 mb-1">$65,432 <i class="bi bi-arrow-up"></i></p>
+                                <small class="text-success">+2.3% (+1,470)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h6>USD/NOK</h6>
+                                <p class="text-success fs-4 mb-1">10.45 <i class="bi bi-arrow-up"></i></p>
+                                <small class="text-success">+0.3% (+0.03)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <button class="btn btn-outline-primary btn-sm" onclick="demoMarketAnalysis()">
+                            <i class="bi bi-graph-up"></i> Analyser markedstrends
+                        </button>
+                    </div>
+                </div>
                         </div>
                         <div class="col-md-3">
                             <h6>Bitcoin</h6>

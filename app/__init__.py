@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g
+from flask import Flask, render_template, request, jsonify, url_for, get_flashed_messages, g, redirect
 from .config import config
 from .extensions import db, login_manager, csrf, mail, socketio
 from .utils.market_open import is_oslo_bors_open, is_global_markets_open

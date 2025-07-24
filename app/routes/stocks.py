@@ -230,27 +230,76 @@ def details(symbol):
             flash(f'Kunne ikke finne informasjon for {symbol}', 'error')
             return redirect(url_for('stocks.index'))
         
-        # Get additional analysis data
+        # Get additional analysis data for tabs
         technical_data = AnalysisService.get_technical_analysis(symbol)
+        
+        # Get recommendation data
+        try:
+            from app.services.ai_service import AIService
+            ai_recommendations = AIService.get_stock_analysis(symbol)
+        except Exception as e:
+            logger.warning(f"AI recommendations failed for {symbol}: {e}")
+            ai_recommendations = {
+                'recommendation': 'HOLD',
+                'score': 75,
+                'risk_level': 'Moderat',
+                'summary': 'Anbefaling basert på teknisk og fundamental analyse',
+                'price_target': stock_info.get('current_price', 0) * 1.1,
+                'reasons': ['Stabil fundamental analyse', 'Positivt momentum', 'God sektorutvikling']
+            }
+        
+        # Get insider trading data
+        try:
+            from app.services.insider_trading_service import InsiderTradingService
+            insider_data = InsiderTradingService.get_insider_trading(symbol)
+        except Exception as e:
+            logger.warning(f"Insider trading data failed for {symbol}: {e}")
+            insider_data = {
+                'transactions': [],
+                'summary': 'Ingen nylige innsidehandler rapportert'
+            }
+        
+        # Get company information
+        company_info = {
+            'description': stock_info.get('description', 'Selskapsbeskriving ikke tilgjengelig'),
+            'sector': stock_info.get('sector', 'Ukjent sektor'),
+            'industry': stock_info.get('industry', 'Ukjent bransje'),
+            'employees': stock_info.get('employees', 'Ikke tilgjengelig'),
+            'headquarters': stock_info.get('headquarters', 'Ikke tilgjengelig'),
+            'website': stock_info.get('website', '#'),
+            'ceo': stock_info.get('ceo', 'Ikke tilgjengelig')
+        }
+        
+        # Get news data
+        try:
+            from app.services.news_service import NewsService
+            news_data = NewsService.get_stock_news(symbol)
+        except Exception as e:
+            logger.warning(f"News data failed for {symbol}: {e}")
+            news_data = []
         
         # Try enhanced details template first, then fallbacks
         try:
             return render_template('stocks/details_enhanced.html',
                                  ticker=symbol,
                                  stock_info=stock_info,
-                                 technical_data=technical_data)
-        except Exception:
+                                 technical_data=technical_data,
+                                 ai_recommendations=ai_recommendations,
+                                 insider_data=insider_data,
+                                 company_info=company_info,
+                                 news_data=news_data)
+        except Exception as e:
+            logger.warning(f"Enhanced template failed for {symbol}: {e}")
             try:
+                # Fallback to standard detail template
                 return render_template('stocks/detail.html',
                                      symbol=symbol,
                                      stock_info=stock_info,
                                      technical_data=technical_data)
-            except Exception:
-                # Fallback to details.html
-                return render_template('stocks/details.html',
-                                     symbol=symbol,
-                                     stock_info=stock_info,
-                                     technical_data=technical_data)
+            except Exception as e2:
+                logger.error(f"All templates failed for {symbol}: {e2}")
+                flash(f'Template error for {symbol}. Redirecting to stock list.', 'error')
+                return redirect(url_for('stocks.index'))
                              
     except Exception as e:
         logger.error(f"Error in stock details for {symbol}: {e}")

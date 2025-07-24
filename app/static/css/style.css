@@ -190,7 +190,27 @@ main {
 .navbar {
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1030; /* Bootstrap modal z-index is 1050, dropdown is 1000 */
+}
+
+/* Disable tooltips globally */
+.tooltip {
+    display: none !important;
+}
+
+/* Analysis sub-navigation - ensure it doesn't interfere with main nav */
+.analysis-menu {
+    position: relative;
+    z-index: 100; /* Much lower than main navbar */
+    margin-top: 0; /* Remove margin to prevent overlay */
+}
+
+.analysis-menu .navbar {
+    position: relative !important; /* Override sticky positioning */
+    z-index: 100 !important; /* Lower z-index than main nav */
+    backdrop-filter: none;
+    background: #f8f9fa !important; /* Light background instead of dark */
+    border: 1px solid #dee2e6;
 }
 
 /* Enhanced Navigation Layout - Clean & Modern */
