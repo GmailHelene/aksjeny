@@ -26,6 +26,95 @@
                 padding-top: env(safe-area-inset-top);
             }
         }
+        
+        /* Fix mobile menu padding issues - completely revised */
+        @media (max-width: 768px) {
+            .navbar-toggler {
+                border: none;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .navbar-collapse {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .navbar-nav {
+                padding: 0.3rem 0 !important;
+                margin: 0 !important;
+                background: #343a40;
+                border-radius: 0.5rem;
+                margin-top: 0.3rem !important;
+            }
+            
+            .navbar-nav .nav-item {
+                padding: 0 !important;
+                margin: 0 !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .navbar-nav .nav-item:last-child {
+                border-bottom: none;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem !important;
+                color: rgba(255,255,255,0.9) !important;
+                font-weight: 500;
+            }
+            
+            .navbar-nav .nav-link:hover {
+                background: rgba(255,255,255,0.1);
+                color: white !important;
+            }
+            
+            .navbar-nav .dropdown-toggle::after {
+                float: right;
+                margin-top: 0.5rem;
+            }
+            
+            .navbar-nav .dropdown-menu {
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                background: #495057;
+                width: 100%;
+                position: static;
+                float: none;
+            }
+            
+            .navbar-nav .dropdown-item {
+                padding: 0.2rem 1rem !important;
+                margin: 0 !important;
+                color: rgba(255,255,255,0.8) !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                font-size: 0.85rem;
+            }
+            
+            .navbar-nav .dropdown-item:hover {
+                background: rgba(255,255,255,0.1) !important;
+                color: white !important;
+                transform: none;
+            }
+            
+            .navbar-nav .dropdown-header {
+                padding: 0.2rem 1rem 0.1rem !important;
+                color: rgba(255,255,255,0.6) !important;
+                background: transparent;
+                margin: 0;
+                border: none;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            .navbar-nav .dropdown-divider {
+                margin: 0.1rem 0;
+                border-color: rgba(255,255,255,0.2);
+            }
+        }
     </style>
     
     <!-- SEO Meta Tags -->
