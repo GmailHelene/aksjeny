@@ -6,8 +6,8 @@ python = "3.11"
 cmds = ["pip install -r requirements.txt"]
 
 [start]
-# Start the application
-cmd = "gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+# Start the application with simple script
+cmd = "python simple_start.py"
 
 [variables]
 FLASK_ENV = "production"
