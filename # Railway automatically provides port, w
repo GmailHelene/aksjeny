@@ -1,0 +1,6 @@
+# Railway automatically provides port, we just bind to all interfaces
+app.run(
+    host='0.0.0.0',
+    port=5000,  # Hardcoded - Railway will handle the routing
+    debug=False
+)

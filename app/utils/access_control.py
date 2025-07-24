@@ -3,7 +3,7 @@ Unified trial and access control system for Aksjeradar
 This replaces the multiple overlapping trial/restriction systems with a single, clean approach.
 """
 from functools import wraps
-from flask import redirect, url_for, flash, request, session, current_app
+from flask import jsonify, redirect, url_for, flash, request, session, current_app
 from flask_login import current_user
 from datetime import datetime, timedelta
 from dateutil.parser import isoparse

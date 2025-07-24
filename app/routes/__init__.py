@@ -1,6 +1,29 @@
 """
 Clean route imports - remove duplicates and organize properly
 """
+# Standard library imports
+import os
+import logging
+from datetime import datetime, timedelta
+
+# Flask imports
+from flask import Flask, request, redirect, url_for, render_template, jsonify
+from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask_migrate import Migrate
+
+# Local imports - config and extensions
+from ..config import Config
+from ..extensions import db, login_manager, csrf, mail
+
+# Configuration mapping
+config = {
+    'default': Config,
+    'production': Config,
+    'development': Config,
+    'testing': Config
+}
+
+# Blueprint imports
 from .main import main
 from .stocks import stocks
 from .analysis import analysis
@@ -60,8 +83,8 @@ def create_app(config_name='default'):
         
         # Import database models early to ensure user_loader is registered
         try:
-            from .models import User, Portfolio, Watchlist
-            from .models.user import load_user
+            from ..models import User, Portfolio, Watchlist
+            from ..models.user import load_user
             app.logger.info("✅ Database models imported successfully")
         except Exception as e:
             app.logger.error(f"❌ Error importing database models: {e}")
@@ -81,14 +104,14 @@ def create_app(config_name='default'):
         
         # Register custom Jinja2 filters
         try:
-            from .utils.filters import register_filters
+            from ..utils.filters import register_filters
             register_filters(app)
         except ImportError:
             app.logger.warning("Could not import custom filters")
         
         # Register Norwegian formatting filters
         try:
-            from .utils.norwegian_formatter import register_norwegian_filters
+            from ..utils.norwegian_formatter import register_norwegian_filters
             register_norwegian_filters(app)
         except ImportError:
             app.logger.warning("Could not import Norwegian filters")
@@ -110,16 +133,16 @@ def register_blueprints(app):
     
     # Core blueprints that must be registered
     try:
-        from .routes.main import main
+        from .main import main
         app.register_blueprint(main)
         blueprints_registered.append('main')
         # Explicitly import and register portfolio blueprint
-        from .routes.portfolio import portfolio
+        from .portfolio import portfolio
         app.register_blueprint(portfolio)
         blueprints_registered.append('portfolio')
         # Register Stripe blueprint
         try:
-            from .routes.stripe_routes import stripe_bp
+            from .stripe_routes import stripe_bp
             app.register_blueprint(stripe_bp)
             blueprints_registered.append('stripe')
             app.logger.info("✅ Registered Stripe blueprint")
@@ -131,17 +154,17 @@ def register_blueprints(app):
     
     # Other blueprints with error handling
     blueprint_configs = [
-        ('.routes.stocks', 'stocks', '/stocks'),
-        ('.routes.api', 'api', None),
-        ('.routes.blog', 'blog', '/blog'),
-        ('.routes.investment_guides', 'investment_guides', '/investment-guides'),
-        ('.routes.pricing', 'pricing', '/pricing'),
-        ('.routes.notifications', 'notifications_bp', '/notifications'),
-        ('.routes.admin', 'admin', None),
-        ('.routes.features', 'features', None),
-        ('.routes.analysis', 'analysis', None),
-        ('.routes.health', 'health', '/health'),
-        ('.routes.news', 'news_bp', '/news'),
+        ('.stocks', 'stocks', '/stocks'),
+        ('.api', 'api', None),
+        ('.blog', 'blog', '/blog'),
+        ('.investment_guides', 'investment_guides', '/investment-guides'),
+        ('.pricing', 'pricing', '/pricing'),
+        ('.notifications', 'notifications_bp', '/notifications'),
+        ('.admin', 'admin', None),
+        ('.features', 'features', None),
+        ('.analysis', 'analysis', None),
+        ('.health', 'health', '/health'),
+        ('.news', 'news_bp', '/news'),
     ]
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:
@@ -168,7 +191,7 @@ def register_blueprints(app):
     
     # Register the realtime_api blueprint
     try:
-        from .routes.realtime_api import realtime_api
+        from .realtime_api import realtime_api
         app.register_blueprint(realtime_api)
         blueprints_registered.append('realtime_api')
         app.logger.info("✅ Registered realtime_api blueprint")
@@ -192,7 +215,7 @@ def setup_production_database(app):
 def setup_exempt_users(app):
     """Set up exempt users for production"""
     try:
-        from .models.user import User
+        from ..models.user import User
         
         exempt_users = [
             {'email': 'helene721@gmail.com', 'username': 'helene721', 'password': 'aksjeradar2024', 'lifetime': False},
@@ -339,13 +362,13 @@ def setup_lazy_database_init(app):
             
         try:
             # Import models here to ensure they're registered with SQLAlchemy
-            from .models import User, Portfolio, Watchlist
-            from .models.notifications import (
+            from ..models import User, Portfolio, Watchlist
+            from ..models.notifications import (
                 Notification, PriceAlert, NotificationSettings, 
                 AIModel, PredictionLog
             )
             # Ensure user_loader is imported and registered
-            from .models.user import load_user
+            from ..models.user import load_user
             app._database_models_imported = True
             app.logger.info("Database models imported successfully")
         except Exception as e:

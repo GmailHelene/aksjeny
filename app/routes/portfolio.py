@@ -1,5 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app, Response
 from flask_login import login_required, current_user
+from datetime import datetime, timedelta
+from io import BytesIO
+import logging
+import json
+import os
 
 from ..models import Portfolio, PortfolioStock, StockTip, Watchlist, WatchlistStock
 from ..extensions import db
@@ -11,8 +16,6 @@ from ..utils.error_handler import (
 )
 from ..services.portfolio_optimization_service import PortfolioOptimizationService
 from ..services.performance_tracking_service import PerformanceTrackingService
-import logging
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +24,32 @@ def get_data_service():
     """Lazy import DataService to avoid circular imports"""
     from ..services.data_service import DataService
     return DataService
+
+# Lazy import for AnalysisService to avoid circular import
+def get_analysis_service():
+    """Lazy import AnalysisService to avoid circular imports"""
+    try:
+        from ..services.analysis_service import AnalysisService
+        return AnalysisService
+    except ImportError:
+        return None
+
+# Lazy import for reportlab to handle optional dependency
+def get_reportlab():
+    """Lazy import reportlab components for PDF generation"""
+    try:
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib import colors
+        return {
+            'SimpleDocTemplate': SimpleDocTemplate,
+            'Table': Table, 
+            'TableStyle': TableStyle,
+            'A4': A4,
+            'colors': colors
+        }
+    except ImportError:
+        return None
 
 portfolio = Blueprint('portfolio', __name__, url_prefix='/portfolio')
 
@@ -298,6 +327,8 @@ def view_portfolio(id):
         total_cost = 0
         portfolio_data = []
         
+        # Lazy import DataService to avoid circular imports
+        DataService = get_data_service()
         for stock in portfolio_stocks:
             try:
                 # Get current stock data
@@ -700,7 +731,8 @@ def get_single_stock_data(ticker):
             return None
             
         # Teknisk analyse
-        ta_data = AnalysisService.get_technical_analysis(ticker)
+        AnalysisService = get_analysis_service()
+        ta_data = AnalysisService.get_technical_analysis(ticker) if AnalysisService else None
         
         # Sett sammen data
         last_price = stock_data['Close'].iloc[-1]
@@ -763,27 +795,42 @@ def export_portfolio():
                 headers={'Content-Disposition': 'attachment;filename=portefolje.csv'}
             )
         elif format == 'pdf':
-            from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-            from reportlab.lib.pagesizes import A4
-            from reportlab.lib import colors
-            from io import BytesIO
+            # Try to use reportlab for PDF generation
+            reportlab_components = get_reportlab()
+            if not reportlab_components:
+                # Fallback to CSV if reportlab is not available
+                csv_data = df.to_csv(index=False, sep=';', decimal=',')
+                return Response(
+                    csv_data,
+                    mimetype='text/csv',
+                    headers={'Content-Disposition': 'attachment;filename=portefolje.csv'}
+                )
             
-            buffer = BytesIO()
-            doc = SimpleDocTemplate(buffer, pagesize=A4)
-            table_data = [df.columns.tolist()] + df.values.tolist()
-            table = Table(table_data)
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ]))
-            doc.build([table])
-            
-            buffer.seek(0)
-            return Response(
-                buffer.read(),
-                mimetype='application/pdf',
-                headers={'Content-Disposition': 'attachment;filename=portefolje.pdf'}
-            )
+            try:
+                buffer = BytesIO()
+                doc = reportlab_components['SimpleDocTemplate'](buffer, pagesize=reportlab_components['A4'])
+                table_data = [df.columns.tolist()] + df.values.tolist()
+                table = reportlab_components['Table'](table_data)
+                table.setStyle(reportlab_components['TableStyle']([
+                    ('BACKGROUND', (0, 0), (-1, 0), reportlab_components['colors'].lightgrey),
+                    ('GRID', (0, 0), (-1, -1), 0.5, reportlab_components['colors'].grey),
+                ]))
+                doc.build([table])
+                
+                buffer.seek(0)
+                return Response(
+                    buffer.read(),
+                    mimetype='application/pdf',
+                    headers={'Content-Disposition': 'attachment;filename=portefolje.pdf'}
+                )
+            except Exception:
+                # Fallback to CSV if PDF generation fails
+                csv_data = df.to_csv(index=False, sep=';', decimal=',')
+                return Response(
+                    csv_data,
+                    mimetype='text/csv',
+                    headers={'Content-Disposition': 'attachment;filename=portefolje.csv'}
+                )
         else:
             raise UserFriendlyError('invalid_file_type')
             

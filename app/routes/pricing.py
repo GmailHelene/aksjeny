@@ -1,6 +1,30 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, current_app
 from flask_login import current_user, login_required
+from datetime import datetime, timedelta
 import logging
+import os
+
+# Import models and extensions
+from ..models import User
+from ..extensions import db
+
+# Lazy import for stripe to handle missing dependency
+def get_stripe():
+    """Lazy import stripe to handle missing dependency"""
+    try:
+        import stripe
+        return stripe
+    except ImportError:
+        return None
+
+# Lazy import for ConsultantReportService
+def get_consultant_report_service():
+    """Lazy import ConsultantReportService to avoid circular imports"""
+    try:
+        from ..services.integrations import ConsultantReportService
+        return ConsultantReportService
+    except ImportError:
+        return None
 
 # Define pricing tiers and their limits
 PRICING_TIERS = {
@@ -165,8 +189,12 @@ def api_pricing_plans():
         return redirect(url_for('pricing.pricing'))
     
     try:
+        stripe_client = get_stripe()
+        if not stripe_client:
+            return jsonify({'error': 'Stripe ikke tilgjengelig'}), 503
+        
         # Create Stripe checkout session
-        session = stripe.checkout.Session.create(
+        session = stripe_client.checkout.Session.create(
             payment_method_types=['card'],
             customer_email=current_user.email,
             line_items=[{
@@ -200,8 +228,13 @@ def subscription_success():
         return redirect(url_for('main.index'))
     
     try:
+        stripe_client = get_stripe()
+        if not stripe_client:
+            flash('Stripe ikke tilgjengelig', 'error')
+            return redirect(url_for('main.index'))
+            
         # Retrieve the session from Stripe
-        session = stripe.checkout.Session.retrieve(session_id)
+        session = stripe_client.checkout.Session.retrieve(session_id)
         
         if session.payment_status == 'paid':
             # Update user subscription
@@ -246,7 +279,11 @@ def buy_report():
     
     # Create one-time payment for report
     try:
-        session = stripe.checkout.Session.create(
+        stripe_client = get_stripe()
+        if not stripe_client:
+            return jsonify({'error': 'Stripe ikke tilgjengelig'}), 503
+            
+        session = stripe_client.checkout.Session.create(
             payment_method_types=['card'],
             customer_email=current_user.email,
             line_items=[{
@@ -287,7 +324,12 @@ def report_success():
         return redirect(url_for('main.dashboard'))
     
     try:
-        session = stripe.checkout.Session.retrieve(session_id)
+        stripe_client = get_stripe()
+        if not stripe_client:
+            flash('Stripe ikke tilgjengelig', 'error')
+            return redirect(url_for('main.dashboard'))
+            
+        session = stripe_client.checkout.Session.retrieve(session_id)
         
         if session.payment_status == 'paid':
             symbols = session.metadata.get('symbols', '').split(',')
@@ -304,8 +346,13 @@ def report_success():
 def generate_and_deliver_report(symbols: list, free: bool = False) -> str:
     """Generate and deliver consultant report"""
     try:
+        # Get ConsultantReportService
+        consultant_service = get_consultant_report_service()
+        if not consultant_service:
+            return "Rapportgenerering ikke tilgjengelig"
+            
         # Generate PDF report
-        filename = ConsultantReportService.generate_pdf_report(symbols, current_user.id)
+        filename = consultant_service.generate_pdf_report(symbols, current_user.id)
         
         if filename:
             # Update user's report usage if it was a free report
@@ -328,16 +375,21 @@ def generate_and_deliver_report(symbols: list, free: bool = False) -> str:
 @pricing.route('/webhook', methods=['POST'])
 def stripe_webhook():
     """Handle Stripe webhooks"""
+    stripe_client = get_stripe()
+    if not stripe_client:
+        logger.error("Stripe ikke tilgjengelig")
+        return '', 503
+        
     payload = request.get_data()
     sig_header = request.headers.get('Stripe-Signature')
     endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
     
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        event = stripe_client.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except ValueError:
         logger.error("Invalid payload")
         return '', 400
-    except stripe.error.SignatureVerificationError:
+    except stripe_client.error.SignatureVerificationError:
         logger.error("Invalid signature")
         return '', 400
     
