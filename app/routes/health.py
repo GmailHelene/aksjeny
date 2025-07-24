@@ -14,18 +14,33 @@ health = Blueprint('health', __name__)
 
 @health.route('/')
 @health.route('/health')  # Add alias for Docker health check
+@health.route('/ready')   # Railway uses /ready for health checks
 def check_health():
     """Basic health check endpoint that verifies critical services."""
     try:
-        # Quick database connection check
-        db.session.execute(text('SELECT 1'))
-        db.session.commit()
+        # Quick database connection check with timeout
+        import signal
+        
+        def timeout_handler(signum, frame):
+            raise TimeoutError("Database query timeout")
+        
+        # Set 5 second timeout for database query
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(5)
+        
+        try:
+            db.session.execute(text('SELECT 1'))
+            db.session.commit()
+            database_status = 'connected'
+        finally:
+            signal.alarm(0)  # Cancel the alarm
         
         health_status = {
             'status': 'healthy',
+            'ready': True,
             'timestamp': datetime.utcnow().isoformat(),
             'checks': {
-                'database': 'connected',
+                'database': database_status,
                 'app': 'running'
             }
         }
@@ -34,9 +49,10 @@ def check_health():
         current_app.logger.error(f"Health check failed: {str(e)}")
         return jsonify({
             'status': 'unhealthy',
+            'ready': False,
             'timestamp': datetime.utcnow().isoformat(),
             'error': str(e)
-        }), 500
+        }), 503  # Service Unavailable
 
 @health.route('/detailed')
 def detailed_health():

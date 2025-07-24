@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="cache-bust" content="20250724_203419">
+    <meta name="cache-bust" content="20250724_205000">
+    <!-- Force production cache refresh -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>{% block title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
@@ -11,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20250724_203058">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20250724_205000">
     {% block extra_css %}{% endblock %}
     
     <!-- PWA Support -->
@@ -524,7 +528,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <p>&copy; 2025 Aksjeradar. Alle rettigheter reservert.</p>
-                    <!-- Cache refresh: July 24, 2025 -->
+                    <!-- Cache FORCE refresh: July 24, 2025 20:50 -->
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="{{ url_for('main.privacy') }}" class="text-white me-3">Personvern</a>
