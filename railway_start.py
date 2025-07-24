@@ -54,8 +54,13 @@ def main():
             except Exception as e:
                 print(f"⚠️ Database table creation warning: {e}")
         
-        # Get port from environment
-        port = int(os.environ.get('PORT', 5000))
+        # Get port from environment with proper Railway handling
+        port_env = os.environ.get('PORT', '5000')
+        try:
+            port = int(port_env)
+        except ValueError:
+            print(f"⚠️ Invalid PORT value: {port_env}, using default 5000")
+            port = 5000
         
         print(f"🌐 Starting server on port {port}")
         
@@ -64,7 +69,8 @@ def main():
             host='0.0.0.0',
             port=port,
             debug=False,
-            threaded=True
+            threaded=True,
+            use_reloader=False
         )
         
     except Exception as e:
