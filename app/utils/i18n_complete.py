@@ -148,7 +148,7 @@ TRANSLATIONS = {
         'footer.terms': 'Vilkår',
         'footer.help': 'Hjelp',
         'footer.language': 'Språk',
-        'footer.copyright': '© 2024 Aksjeradar. Alle rettigheter reservert.',
+        'footer.copyright': '© 2025 Aksjeradar. Alle rettigheter reservert.',
         
         # Subscription
         'subscription.title': 'Abonnement',
