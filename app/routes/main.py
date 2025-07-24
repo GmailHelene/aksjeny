@@ -994,6 +994,83 @@ def profile():
                              user_stats={},
                              error=True)
 
+@main.route('/mitt-abonnement')
+@main.route('/my-subscription')
+@login_required
+def my_subscription():
+    """Dedicated user subscription management page"""
+    try:
+        # Get detailed subscription info
+        subscription_info = {
+            'status': 'free',
+            'plan_name': 'Gratis',
+            'plan_description': 'Grunnleggende tilgang til aksjedata og analyser',
+            'start_date': None,
+            'end_date': None,
+            'next_billing': None,
+            'price': 0,
+            'currency': 'NOK',
+            'features': [
+                'Begrenset tilgang til aksjedata',
+                'Grunnleggende teknisk analyse',
+                'Daglig markedsoversikt'
+            ],
+            'upgrade_options': [
+                {
+                    'name': 'Pro',
+                    'price': 299,
+                    'features': [
+                        'Ubegrenset tilgang til alle aksjer',
+                        'Avanserte analyser (Warren Buffett, Benjamin Graham)',
+                        'AI-drevne anbefalinger',
+                        'Innsidehandel-overvåkning',
+                        'Sanntids prisdata',
+                        'Eksport av data'
+                    ]
+                },
+                {
+                    'name': 'Premium',
+                    'price': 599,
+                    'features': [
+                        'Alt i Pro-pakken',
+                        'Porteføljeoptimalisering',
+                        'Backtesting av strategier',
+                        'Avanserte screener-filter',
+                        'API-tilgang',
+                        'Prioritert kundestøtte'
+                    ]
+                }
+            ]
+        }
+        
+        # Check if user has active subscription
+        if hasattr(current_user, 'subscription') and current_user.subscription:
+            subscription = current_user.subscription
+            if hasattr(subscription, 'status') and subscription.status == 'active':
+                subscription_info.update({
+                    'status': 'active',
+                    'plan_name': getattr(subscription, 'plan_name', 'Pro'),
+                    'start_date': getattr(subscription, 'start_date', None),
+                    'end_date': getattr(subscription, 'end_date', None),
+                    'next_billing': getattr(subscription, 'next_billing_date', None),
+                    'price': getattr(subscription, 'price', 299),
+                    'features': [
+                        'Ubegrenset tilgang til alle aksjer',
+                        'Avanserte analyser',
+                        'AI-drevne anbefalinger',
+                        'Sanntids prisdata'
+                    ]
+                })
+        
+        return render_template('subscription_management.html',
+                             subscription=subscription_info,
+                             user=current_user)
+                             
+    except Exception as e:
+        logger.error(f"Error in subscription page for user {getattr(current_user, 'id', 'unknown')}: {e}")
+        flash('Kunne ikke laste abonnementssiden. Prøv igjen senere.', 'error')
+        return redirect(url_for('main.profile'))
+
 @main.route('/set_language/<language>')
 def set_language(language=None):
     """Set user language preference"""

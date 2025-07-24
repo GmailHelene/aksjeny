@@ -395,7 +395,7 @@ def index():
                              signal_count=0,
                              alerts_count=0)
 
-@insider_trading.route('/search')
+@insider_trading.route('/search', methods=['GET', 'POST'])
 @demo_access
 def search():
     """Enhanced insider trading search with advanced filtering"""
@@ -409,13 +409,65 @@ def search():
     insider_name = request.args.get('insider_name', '')
     significant_only = request.args.get('significant_only') == '1'
     
+    # Handle POST requests from the search form
+    if request.method == 'POST':
+        symbol = request.form.get('symbol', '').strip().upper()
+        transaction_type = request.form.get('transaction_type', '')
+        period = int(request.form.get('period', 30))
+        min_value = request.form.get('min_value', type=float)
+        role = request.form.get('role', '')
+        sort = request.form.get('sort', 'date_desc')
+        significant_only = request.form.get('significant_only') == '1'
+    
     if not symbol:
-        flash('Vennligst velg en aksje.', 'warning')
-        return redirect(url_for('insider_trading.index'))
+        flash('Vennligst velg en aksje for å søke etter innsidehandel.', 'warning')
+        popular_stocks = DataService.get_popular_stocks() or []
+        return render_template('insider_trading/index.html',
+                             insider_data=[],
+                             popular_stocks=popular_stocks,
+                             search_performed=False)
     
     try:
         # Get insider trading data for specific symbol using enhanced filtering
-        insider_transactions = insider_service.get_insider_transactions(symbol) or []
+        insider_transactions = insider_service_2.get_insider_transactions(symbol) or []
+        
+        # Apply filters
+        filtered_transactions = []
+        for transaction in insider_transactions:
+            # Date filter
+            if period:
+                transaction_date = datetime.strptime(transaction.get('date', '2024-01-01'), '%Y-%m-%d')
+                cutoff_date = datetime.now() - timedelta(days=period)
+                if transaction_date < cutoff_date:
+                    continue
+            
+            # Transaction type filter
+            if transaction_type and transaction.get('transaction_type') != transaction_type:
+                continue
+                
+            # Minimum value filter
+            if min_value and transaction.get('value', 0) < min_value:
+                continue
+                
+            # Role filter
+            if role and transaction.get('role') != role:
+                continue
+                
+            # Significant transactions only
+            if significant_only and transaction.get('value', 0) < 1000000:  # 1M threshold
+                continue
+                
+            filtered_transactions.append(transaction)
+        
+        # Sort transactions
+        if sort == 'date_desc':
+            filtered_transactions.sort(key=lambda x: x.get('date', ''), reverse=True)
+        elif sort == 'date_asc':
+            filtered_transactions.sort(key=lambda x: x.get('date', ''))
+        elif sort == 'value_desc':
+            filtered_transactions.sort(key=lambda x: x.get('value', 0), reverse=True)
+        elif sort == 'value_asc':
+            filtered_transactions.sort(key=lambda x: x.get('value', 0))
         
         popular_stocks = DataService.get_popular_stocks() or []
         

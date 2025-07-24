@@ -213,6 +213,17 @@ main {
     border: 1px solid #dee2e6;
 }
 
+/* Specific fix for analysis page button groups */
+.analysis-menu .btn-group {
+    z-index: 50 !important; /* Even lower than menu itself */
+    position: relative;
+}
+
+.analysis-menu .btn {
+    z-index: 50 !important;
+    position: relative;
+}
+
 /* Enhanced Navigation Layout - Clean & Modern */
 
 /* Main navbar styling */

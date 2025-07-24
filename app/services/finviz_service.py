@@ -92,7 +92,7 @@ class FinvizScreenerService:
     
     def screen_stocks(self, filter_criteria: List[str], table_type: str = 'Performance', order_by: str = 'price') -> List[Dict[str, Any]]:
         """
-        Screen stocks based on filter criteria
+        Screen stocks based on filter criteria using enhanced finviz integration
         
         Args:
             filter_criteria: List of filter criteria (e.g., ['market_cap_large', 'sector_technology'])
@@ -100,87 +100,94 @@ class FinvizScreenerService:
             order_by: Column to order by ('price', 'change', 'volume', etc.)
         
         Returns:
-            List of dictionaries with stock data
+            List of dictionaries containing stock data
         """
         try:
-            # Try finviz first, fall back to enhanced data if issues
-            logger.info(f"Attempting finviz screening with filters: {filter_criteria}")
+            logger.info(f"🔍 Starting screening with filters: {filter_criteria}")
             
+            # Try to use real Finviz API first
             try:
-                # Import finviz here to handle cases where it's not installed
                 from finviz.screener import Screener
                 
-                # Convert filter criteria to finviz filters
+                # Convert our filter criteria to Finviz format
                 finviz_filters = []
                 for criteria in filter_criteria:
                     if criteria in self.available_filters:
                         finviz_filters.append(self.available_filters[criteria])
                 
-                if not finviz_filters:
-                    logger.warning("No valid finviz filters found, using fallback")
-                    return self._get_enhanced_fallback_screening_data(filter_criteria)
-                
-                # Create screener with filters (limit to prevent rate limiting)
-                stock_list = Screener(
-                    filters=finviz_filters[:3],  # Limit filters to avoid complexity
-                    table=table_type,
-                    order=order_by
-                )
-                
-                # Convert to list of dictionaries
-                results = []
-                processed_count = 0
-                for stock in stock_list:
-                    if processed_count >= 20:  # Limit results to prevent timeout
-                        break
-                        
-                    # Check if stock data is valid
-                    if not stock or not isinstance(stock, dict) or not stock:
-                        continue
-                        
-                    stock_data = {
-                        'ticker': stock.get('Ticker', ''),
-                        'company': stock.get('Company', ''),
-                        'sector': stock.get('Sector', ''),
-                        'industry': stock.get('Industry', ''),
-                        'market_cap': stock.get('Market Cap', ''),
-                        'price': self._parse_numeric(stock.get('Price', 0)),
-                        'change': self._parse_numeric(stock.get('Change', 0)),
-                        'change_percent': self._parse_percentage(stock.get('Chg', '0%')),
-                        'volume': self._parse_volume(stock.get('Volume', '0')),
-                        'pe_ratio': self._parse_numeric(stock.get('P/E', 0)),
-                        'rsi': self._parse_numeric(stock.get('RSI (14)', 50)),
-                        'beta': self._parse_numeric(stock.get('Beta', 1.0)),
-                        'dividend_yield': self._parse_percentage(stock.get('Dividend %', '0%'))
-                    }
+                if finviz_filters:
+                    logger.info(f"📊 Using finviz filters: {finviz_filters}")
                     
-                    # Only add if we have basic data
-                    if stock_data['ticker'] and stock_data['company']:
-                        results.append(stock_data)
-                        processed_count += 1
-                
-                if results:
-                    logger.info(f"✅ Finviz returned {len(results)} valid stocks")
-                    return results
+                    # Create screener instance
+                    stock_list = Screener(filters=finviz_filters, table=table_type, order=order_by)
+                    
+                    results = []
+                    processed_count = 0
+                    max_results = 50  # Limit results for performance
+                    
+                    for stock in stock_list[:max_results]:
+                        try:
+                            stock_data = {
+                                'ticker': stock.get('Ticker', ''),
+                                'company': stock.get('Company', ''),
+                                'sector': stock.get('Sector', ''),
+                                'industry': stock.get('Industry', ''),
+                                'country': stock.get('Country', 'USA'),
+                                'market_cap': self._parse_market_cap(stock.get('Market Cap', '0')),
+                                'price': self._parse_numeric(stock.get('Price', 0)),
+                                'change': self._parse_percentage(stock.get('Change', '0%')),
+                                'volume': self._parse_numeric(stock.get('Volume', 0)),
+                                'pe_ratio': self._parse_numeric(stock.get('P/E', 0)),
+                                'peg_ratio': self._parse_numeric(stock.get('PEG', 0)),
+                                'pb_ratio': self._parse_numeric(stock.get('P/B', 0)),
+                                'ps_ratio': self._parse_numeric(stock.get('P/S', 0)),
+                                'dividend_yield': self._parse_percentage(stock.get('Dividend %', '0%')),
+                                'rsi': self._parse_numeric(stock.get('RSI (14)', 50)),
+                                'beta': self._parse_numeric(stock.get('Beta', 1.0)),
+                                'eps_growth': self._parse_percentage(stock.get('EPS growth next 5 years', '0%')),
+                                'sales_growth': self._parse_percentage(stock.get('Sales growth past 5 years', '0%')),
+                                'roe': self._parse_percentage(stock.get('ROE', '0%')),
+                                'roa': self._parse_percentage(stock.get('ROA', '0%')),
+                                'debt_equity': self._parse_numeric(stock.get('Debt/Eq', 0)),
+                                'current_ratio': self._parse_numeric(stock.get('Current Ratio', 0)),
+                                'performance_week': self._parse_percentage(stock.get('Perf Week', '0%')),
+                                'performance_month': self._parse_percentage(stock.get('Perf Month', '0%')),
+                                'performance_year': self._parse_percentage(stock.get('Perf Year', '0%')),
+                                'avg_volume': self._parse_numeric(stock.get('Avg Volume', 0)),
+                                'relative_volume': self._parse_numeric(stock.get('Rel Volume', 1.0)),
+                                'volatility': self._parse_percentage(stock.get('Volatility', '0%')),
+                                'recommendation': self._get_recommendation(stock),
+                                'last_updated': datetime.now().isoformat()
+                            }
+                            
+                            # Only add if we have basic data
+                            if stock_data['ticker'] and stock_data['company']:
+                                results.append(stock_data)
+                                processed_count += 1
+                                
+                        except Exception as parse_error:
+                            logger.warning(f"Error parsing stock data: {parse_error}")
+                            continue
+                    
+                    if results:
+                        logger.info(f"✅ Finviz returned {len(results)} valid stocks")
+                        return results
+                    else:
+                        logger.warning("Finviz returned empty results, using enhanced fallback")
+                        return self._get_enhanced_fallback_screening_data(filter_criteria)
                 else:
-                    logger.warning("Finviz returned empty results, using enhanced fallback")
+                    logger.warning("No valid finviz filters mapped, using fallback")
                     return self._get_enhanced_fallback_screening_data(filter_criteria)
-                    
+                
             except ImportError:
-                logger.warning("Finviz not available, using enhanced fallback data")
+                logger.warning("Finviz not available, using enhanced fallback")
                 return self._get_enhanced_fallback_screening_data(filter_criteria)
-            except Exception as e:
-                # Handle rate limiting, parsing errors, etc.
-                if "429" in str(e) or "Too Many Requests" in str(e):
-                    logger.warning(f"Finviz rate limited: {e}. Using enhanced fallback data")
-                elif "HTTPError" in str(e):
-                    logger.warning(f"Finviz HTTP error: {e}. Using enhanced fallback data")
-                else:
-                    logger.warning(f"Finviz error: {e}. Using enhanced fallback data")
+            except Exception as finviz_error:
+                logger.warning(f"Finviz screening failed: {finviz_error}")
                 return self._get_enhanced_fallback_screening_data(filter_criteria)
                 
         except Exception as e:
-            logger.error(f"Screening error: {e}")
+            logger.error(f"Comprehensive screening error: {e}")
             return self._get_enhanced_fallback_screening_data(filter_criteria)
     
     def _parse_numeric(self, value: Any) -> float:
@@ -209,6 +216,66 @@ class FinvizScreenerService:
             return float(value)
         except (ValueError, AttributeError):
             return 0.0
+    
+    def _parse_market_cap(self, value: str) -> float:
+        """Parse market cap value (handles B, M, K suffixes)"""
+        try:
+            if isinstance(value, str):
+                value = value.replace('$', '').replace(',', '').strip().upper()
+                if 'B' in value:
+                    return float(value.replace('B', '')) * 1000000000
+                elif 'M' in value:
+                    return float(value.replace('M', '')) * 1000000
+                elif 'K' in value:
+                    return float(value.replace('K', '')) * 1000
+                elif value == '-' or value == '':
+                    return 0.0
+                else:
+                    return float(value)
+            return float(value)
+        except (ValueError, AttributeError):
+            return 0.0
+    
+    def _get_recommendation(self, stock_data: Dict) -> str:
+        """Generate a recommendation based on stock metrics"""
+        try:
+            pe_ratio = self._parse_numeric(stock_data.get('P/E', 0))
+            peg_ratio = self._parse_numeric(stock_data.get('PEG', 0))
+            rsi = self._parse_numeric(stock_data.get('RSI (14)', 50))
+            
+            score = 0
+            
+            # PE ratio scoring
+            if 0 < pe_ratio < 15:
+                score += 2
+            elif 15 <= pe_ratio < 25:
+                score += 1
+            elif pe_ratio > 30:
+                score -= 1
+            
+            # PEG ratio scoring
+            if 0 < peg_ratio < 1:
+                score += 2
+            elif 1 <= peg_ratio < 1.5:
+                score += 1
+            
+            # RSI scoring
+            if rsi < 30:
+                score += 1  # Oversold
+            elif rsi > 70:
+                score -= 1  # Overbought
+            
+            if score >= 3:
+                return 'STRONG BUY'
+            elif score >= 1:
+                return 'BUY'
+            elif score >= -1:
+                return 'HOLD'
+            else:
+                return 'SELL'
+                
+        except Exception:
+            return 'HOLD'
     
     def _parse_volume(self, value: str) -> int:
         """Parse volume value with K/M suffixes"""

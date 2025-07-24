@@ -959,6 +959,178 @@ function demoAddToWatchlist(symbol) {
     showNotification(`${symbol} lagt til i overvåkningsliste!`, 'success');
 }
 
+function demoScreener() {
+    // Simulate advanced screener functionality
+    showNotification('Laster avansert screener...', 'info');
+    
+    const resultHTML = `
+        <div class="card mt-3">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="bi bi-funnel"></i> Screening Resultater - Demo</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Selskap</th>
+                                <th>P/E</th>
+                                <th>ROE</th>
+                                <th>Anbefaling</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>EQNR.OL</strong></td>
+                                <td>Equinor ASA</td>
+                                <td>7.5</td>
+                                <td>22.1%</td>
+                                <td><span class="badge bg-success">KJØP</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>DNB.OL</strong></td>
+                                <td>DNB Bank ASA</td>
+                                <td>8.2</td>
+                                <td>15.8%</td>
+                                <td><span class="badge bg-warning">HOLD</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted mt-3"><i class="bi bi-info-circle"></i> Demo data - oppgrader for ekte screening av 2000+ aksjer!</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        document.getElementById('demo-result-container').innerHTML = resultHTML;
+        showNotification('Avansert screener fullført! Fant 2 aksjer som matcher kriteriene.', 'success');
+    }, 1500);
+}
+
+function demoInsiderTrading() {
+    // Simulate insider trading analysis
+    showNotification('Henter innsidehandel data...', 'info');
+    
+    const resultHTML = `
+        <div class="card mt-3">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0"><i class="bi bi-person-badge"></i> Nylige Innsidehandler - Demo</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="border-start border-success border-3 ps-3 mb-3">
+                            <strong>EQNR.OL</strong> - Anders Opedal (CEO)<br>
+                            <small class="text-muted">Kjøpte 10,000 aksjer for 2.8M NOK</small><br>
+                            <span class="badge bg-success">KJØP</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border-start border-danger border-3 ps-3 mb-3">
+                            <strong>NHY.OL</strong> - Hilde Merete Aasheim (CFO)<br>
+                            <small class="text-muted">Solgte 5,000 aksjer for 1.2M NOK</small><br>
+                            <span class="badge bg-danger">SALG</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-3"><i class="bi bi-info-circle"></i> Demo data - oppgrader for sanntids innsidehandel overvåkning!</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        document.getElementById('demo-result-container').innerHTML = resultHTML;
+        showNotification('Innsidehandel analyse fullført! Fant 12 nye transaksjoner.', 'success');
+    }, 1500);
+}
+
+function demoPortfolioOptimization() {
+    // Simulate portfolio optimization
+    showNotification('Optimerer portefølje...', 'info');
+    
+    const resultHTML = `
+        <div class="card mt-3">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Portefølje Optimering - Demo</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5 class="text-success">+18.5%</h5>
+                            <small class="text-muted">Forventet avkastning</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5 class="text-warning">12.3%</h5>
+                            <small class="text-muted">Risiko (volatilitet)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5 class="text-info">1.51</h5>
+                            <small class="text-muted">Sharpe ratio</small>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6>Anbefalte Justeringer:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-arrow-up text-success"></i> Øk EQNR til 25% (+5%)</li>
+                    <li><i class="bi bi-arrow-down text-danger"></i> Reduser DNB til 15% (-3%)</li>
+                    <li><i class="bi bi-plus-circle text-info"></i> Legg til NHY 10%</li>
+                </ul>
+                <p class="text-muted mt-3"><i class="bi bi-info-circle"></i> Demo optimering - oppgrader for Monte Carlo simuleringer!</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        document.getElementById('demo-result-container').innerHTML = resultHTML;
+        showNotification('Portefølje optimering fullført! Sharpe ratio forbedret med 0.23.', 'success');
+    }, 2000);
+}
+
+function demoRealTimeAlerts() {
+    // Simulate real-time alerts
+    showNotification('Setter opp sanntids varsler...', 'info');
+    
+    const resultHTML = `
+        <div class="card mt-3">
+            <div class="card-header bg-danger text-white">
+                <h6 class="mb-0"><i class="bi bi-bell"></i> Aktive Varsler - Demo</h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> <strong>EQNR.OL</strong> har falt 3.2% på 15 minutter
+                </div>
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> <strong>DNB.OL</strong> har nådd kursmål på 220 NOK
+                </div>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> <strong>NHY.OL</strong> volum er 400% over normalt
+                </div>
+                <hr>
+                <h6>Dine Varsel-innstillinger:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-bell-fill text-primary"></i> Prisvarsel: ±5% endring</li>
+                    <li><i class="bi bi-bell-fill text-warning"></i> Volumvarsel: 200% over snitt</li>
+                    <li><i class="bi bi-bell-fill text-success"></i> Innsidehandel: Alle transaksjoner</li>
+                </ul>
+                <p class="text-muted mt-3"><i class="bi bi-info-circle"></i> Demo varsler - oppgrader for SMS og e-post varsler!</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        document.getElementById('demo-result-container').innerHTML = resultHTML;
+        showNotification('Sanntids varsler aktivert! Du vil få 3 varsler de neste 24 timer.', 'success');
+    }, 1500);
+}
+
 function showNotification(message, type = 'info') {
     // Create and show notification
     const notification = document.createElement('div');

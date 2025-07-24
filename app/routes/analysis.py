@@ -717,13 +717,29 @@ def screener():
 def screener_view():
     """Advanced stock screening tool with Finviz integration"""
     try:
-        # Import finviz service
-        from app.services.finviz_service import FinvizScreenerService
-        finviz_service = FinvizScreenerService()
+        # Import finviz service with better error handling
+        try:
+            from app.services.finviz_service import FinvizScreenerService
+            finviz_service = FinvizScreenerService()
+        except ImportError as e:
+            logger.error(f"Could not import FinvizScreenerService: {e}")
+            flash('Screening-tjenesten er midlertidig utilgjengelig.', 'error')
+            return render_template('analysis/screener.html',
+                                 available_filters={},
+                                 preset_screens={},
+                                 results=[],
+                                 selected_filters=[],
+                                 show_results=False,
+                                 get_filter_display_name=lambda x: x)
         
-        # Get available filters and presets
-        available_filters = finviz_service.get_available_filters()
-        preset_screens = finviz_service.get_preset_screens()
+        # Get available filters and presets with error handling
+        try:
+            available_filters = finviz_service.get_available_filters()
+            preset_screens = finviz_service.get_preset_screens()
+        except Exception as e:
+            logger.error(f"Error getting filters: {e}")
+            available_filters = {}
+            preset_screens = {}
         
         results = []
         selected_filters = []
@@ -795,11 +811,16 @@ def screener_view():
                 if selected_filters:
                     # Build filter dict from selected filters  
                     # Just pass the list directly since screen_stocks expects a list
-                    results = finviz_service.screen_stocks(selected_filters)
-                    if results:
-                        flash(f'Fant {len(results)} aksjer som oppfyller kriteriene', 'success')
-                    else:
-                        flash('Ingen gyldige filtere valgt', 'warning')
+                    try:
+                        results = finviz_service.screen_stocks(selected_filters)
+                        if results:
+                            flash(f'Fant {len(results)} aksjer som oppfyller kriteriene', 'success')
+                        else:
+                            flash('Ingen aksjer funnet som oppfyller kriteriene', 'info')
+                    except Exception as screen_error:
+                        logger.error(f"Screening error: {screen_error}")
+                        flash('Feil ved screening. Prøv igjen med færre kriterier.', 'error')
+                        results = []
                 else:
                     flash('Velg minst ett filter eller preset', 'warning')
         

@@ -306,7 +306,7 @@
 ### 20. **Notification System**
 - **Status**: Trenger testing av varsling funksjonalitet
 
-Nye feil:
+Nytt:
  Det er fortsatt alt for mye padding , altså plass under/over elementene i dropdown mobil mnyen, både som innlogget og ikke innlogget bruker.
 
 Som ikke innlogget bruker fikk jeg access til mange urls jeg ikke skulle hatt, det må fikses. De som ikke er innlogget, eller innlogget uten aktivt abbonement, må helst ikke se alle disse endepunktene noe sted,og hvis de allikevel havner inn pået,så må de redirecttes til demosiden

@@ -456,7 +456,7 @@
                             {% if current_user.is_authenticated %}
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Min konto</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('pricing.subscription') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('main.my_subscription') }}">
                                 <i class="bi bi-person-circle me-2"></i>Mitt abonnement
                             </a></li>
                             {% endif %}
@@ -476,7 +476,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('portfolio.index') }}">
                                 <i class="bi bi-briefcase me-2"></i>Min portefølje
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('pricing.subscription') }}">
+                            <li><a class="dropdown-item" href="{{ url_for('main.my_subscription') }}">
                                 <i class="bi bi-credit-card me-2"></i>Mitt abonnement
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
