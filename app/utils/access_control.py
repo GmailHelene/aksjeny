@@ -417,9 +417,9 @@ def check_access_and_redirect():
     if current_user.is_authenticated and is_exempt_user():
         return None
     
-    # Public endpoints that should always be accessible
+    # Public endpoints that should always be accessible (REMOVED main.index!)
     public_endpoints = {
-        'main.index', 'main.demo', 'main.login', 'main.register', 
+        'main.demo', 'main.login', 'main.register', 
         'main.about', 'main.contact', 'main.terms', 'main.privacy',
         'health.health_check', 'static', 'main.landing'
     }
@@ -434,7 +434,22 @@ def check_access_and_redirect():
     if request.endpoint in public_endpoints or request.endpoint in api_endpoints:
         return None
     
-    # Redirect unauthorized users to demo for protected endpoints
+    # Now main.index is protected! Check if user has access
+    if request.endpoint == 'main.index':
+        # Check if user has active subscription or trial
+        if current_user.is_authenticated and _has_active_subscription():
+            return None  # Allow access
+        
+        # Check trial for unauthenticated users
+        if not current_user.is_authenticated:
+            trial_status = _check_trial_access()
+            if trial_status.get('active'):
+                return None  # Allow access
+        
+        # No access - redirect to demo
+        return redirect(url_for('main.demo', source='access_required'))
+    
+    # Redirect unauthorized users to demo for other protected endpoints
     protected_endpoints = {
         'stocks.stock_detail', 'analysis.benjamin_graham', 'analysis.warren_buffett',
         'analysis.technical_analysis', 'portfolio.index', 'portfolio.view',

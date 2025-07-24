@@ -446,3 +446,11 @@ https://www.etoro.com/stocks/trading-and-investing-in-stocks
 
 --
 ! Husk å se siste errorlogs fra Raiway også
+
+NYTT: 
+https://aksjeradar.trade/profile
+Teknisk feil
+"Mitt abbonement" viser ikke riktig, denne siden må være 
+en egen side som viser info om brukerens faktiske aktive abbonement
+
+Dette med navigasjonstips som popper opp i blå popup vil jeg gjerne ha vekk
