@@ -14,6 +14,8 @@ from app import create_app
 if os.getenv('RAILWAY_ENVIRONMENT'):
     config_name = 'production'
     print(f"🚂 Railway environment detected, using production config")
+    print(f"🔧 PORT environment variable: {os.getenv('PORT', 'NOT SET')}")
+    print(f"🔧 DATABASE_URL: {os.getenv('DATABASE_URL', 'NOT SET')[:50]}...")
 elif os.getenv('FLASK_ENV'):
     config_name = os.getenv('FLASK_ENV')
     print(f"🔧 FLASK_ENV detected: {config_name}")
