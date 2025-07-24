@@ -5,16 +5,16 @@
 
 ### 1. **Oslo Børs Heading** ✅ FIKSET
 
-### 21. **Benjamin Graham Analysis Empty Results** ✅ FIKSET
+!FUNGERER IKKE ### 21. **Benjamin Graham Analysis Empty Results**
 - **Problem**: Benjamin Graham analyse returnerte ingen data når ticker testes
-- **Status**: ✅ KOMPLETT - Service structure oppdatert til å matche template forventninger
+- **Status**:  til å matche template forventninger
 - **Løsning**: Lagt til company_name mapping, value_score labels, og riktig criteria format
 - **Test**: Graham Score: 88.9, Company: Equinor ASA, Recommendation: STRONG BUY
 - **Påvirkning**: Premium analyse feature nå operativ for alle brukere
 
-### 24. **Insider Trading Search Functionality** ✅ FIKSET
+!FUNGERER IKKE ### 24. **Insider Trading Search Functionality** 
 - **Problem**: Insider trading intelligence søk gjorde "ingenting" når brukere klikket søk
-- **Status**: ✅ KOMPLETT - Blueprint registrering og service integration fullført
+- **Status**: 
 - **Løsning**: 
   - Registrerte insider_trading Blueprint i app/__init__.py
   - La til InsiderTradingService import og instanse
@@ -29,17 +29,17 @@
 - **Løsning**: Lagt til "Visa, Mastercard, American Express samt debetkort" informasjon
 - **Påvirkning**: Klarere brukerinformasjon for betalingsmetoder
 
-### 26. **Mobile Dropdown Padding** ✅ FIKSET
+!FUNGERER IKKE - FORTSATT feil i mobil dropdown navigasjon, alt for mye padding/margin mellom elementer ### 26. **Mobile Dropdown Padding** 
 - **Problem**: Ekstrem padding/spacing i mobile dropdown meny
-- **Status**: ✅ KOMPLETT - CSS konflikter løst
+- **Status**: 
 - **Løsning**: Justerte mobile-optimized.css padding values til praktiske størrelser
 - **Påvirkning**: Mobile UX betydelig forbedret
 
 ## ❌ **PROBLEMER IKKE LØST ENNÅ:**
 
-### 27. **Enhanced Stock Details Empty Tabs** ✅ FIKSET
+### 27. **Enhanced Stock Details Empty Tabs**
 - **Problem**: Enhanced stock details tabs viste "ingen anbefalinger tilgjengelig"
-- **Status**: ✅ KOMPLETT - URL building error fikset og enhanced template nå aktiv
+- **Status**: 
 - **Løsning**:
   - Fikset `news.search` → `news_bp.search` URL building error i template
   - Oppdaterte stocks.py route til å bruke details_enhanced.html som primary template
@@ -47,43 +47,43 @@
 - **Test**: EQNR viser AI-anbefalinger (KJØP - Moderat risiko), tekniske indikatorer, insider trading data
 - **Påvirkning**: 🔥 KRITISK premium stock details feature nå fullt operativ
 
-### 28. **Screener Shows No Results** ✅ FIKSET
+!FUNGERER IKKE ### 28. **Screener Shows No Results** ✅FIKSET
 - **Problem**: Screening funksjon viste "Ingen resultater" selv med mock data  
 - **Løsning**: Fikset variabel mapping (screened_stocks → results) og template syntax (dict access)
 - **Status**: ✅ FULLFØRT - Screener viser 5 aksjer med korrekt filtering og data
 - **Detaljer**: Mock data med EQNR, DNB, AAPL, NHY, TEL + markedsverdi/sector/P/E filtering
 
-### 18. **Enhanced Stock Details - Empty Tabs** ✅ FIKSET
+!FUNGERER IKKE ### 18. **Enhanced Stock Details - Empty Tabs** 
 - **Problem**: Faner i enhanced stock details viste "Ingen anbefalinger tilgjengelig" i stedet for data
 - **Løsning**: Fikset URL building error i details_enhanced.html template (news.search → news_bp.search)
 - **Status**: ✅ FULLFØRT - Enhanced template viser AI recommendations, insider trading, alle 7 tabs fungerer
 - **Påvirkning**: 🔥 KRITISK premium stock details feature nå fullt operativ
 
-### 19. **Insider Trading Search Functionality** ✅ FIKSET
+!FUNGERER IKKE ### 19. **Insider Trading Search Functionality** 
 - **Problem**: Søkefunksjon på insider trading intelligens gjorde ingenting når brukere trykket søk
 - **Løsning**: Implementert InsiderTradingService med mock data + get_popular_stocks() i DataService
-- **Status**: ✅ FULLFØRT - Søk returnerer 8 transaktioner for EQNR, 12 populære aksjer i dropdown
+- **Status**: 
 - **Påvirkning**: 🔥 KRITISK funksjon nå operativ for insider trading intelligence
 
 ### 20. **FAQ Content Updates** 🔥 KRITISK
 - **Problem**: FAQ mangler informasjon om Mastercard og bedre subscription håndtering
-- **Status**: ✅ FIKSET - Oppdatert betalingsmetoder til å inkludere Visa, Mastercard, American Express
+- **Status**: 
 - **Påvirkning**: Bedre informasjon til brukere om betalingsalternativer
 
-### 21. **Benjamin Graham Analysis Empty Results** ✅ FIKSET
+!FUNGERER IKKE ### 21. **Benjamin Graham Analysis Empty Results** 
 - **Problem**: Benjamin Graham analyse viste ingen resultater når testet med ticker
 - **Løsning**: Fikset template dict access syntax (`analysis.criteria.pe_ratio` → `analysis['criteria']['pe_ratio']`)
-- **Status**: ✅ FULLFØRT - Benjamin Graham analyse viser komplett resultat med score, kriterier og anbefaling
+- **Status**: 
 - **Detaljer**: EQNR.OL score: 91.8 (STRONG BUY), alle 6 Graham kriterier evaluert korrekt
 
-### 21. **Language Switcher** 
+!FUNGERER IKKE / SER IKKE ### 21. **Language Switcher** 
 - **Problem**: Ingen synlig språkvelger
 - **Status**: Trenger UI implementering og i18n setup
 - **Problem**: "Oslo børs" skulle være "Oslo Børs" 
 - **Løsning**: Oppdatert `/app/templates/stocks/list.html` linje 19 med riktig kapitalisering
 - **Status**: ✅ KOMPLETT - Heading viser nå "Oslo Børs" korrekt
 
-### 2. **Enhanced Stock Details Page** ✅ FIKSET  
+!FUNGERER IKKE### 2. **Enhanced Stock Details Page**  FIKSET  
 - **Problem**: Aksjedetaljer-siden trengte mer info, faner og analyser
 - **Løsning**: 
   - Opprettet `/app/templates/stocks/details_enhanced.html` med 7 komprehensive faner:
@@ -96,47 +96,47 @@
     - **Nyheter**: Relaterte nyhetsartikler og markedsoppdateringer
   - Oppdatert `/app/routes/insider_trading.py` til å bruke enhanced template
   - Lagt til external service links (Nordnet kjøp-knapper)
-- **Status**: ✅ KOMPLETT - Comprehensive tabbed interface implementert
+- **Status**: 
 
-### 3. **Stock Compare Function** ✅ FIKSET
+### 3. **Stock Compare Function** 
 - **Problem**: Rare URL-parametere og sammenligning fungerte ikke
 - **Løsning**: 
   - Oppdatert `/app/routes/stocks.py` compare route til å støtte både `symbols` og `tickers` 
   - Fikset JavaScript URL-bygging i `/app/templates/stocks/compare.html`
   - Lagt til sammenligningsdata og ticker_names mapping
   - Forbedret data structure for template rendering
-- **Status**: ✅ KOMPLETT - Sammenligning fungerer med korrekte URL parametere
+- **Status**: 
 
-### 4. **Stocks/Prices Technical Errors** ✅ FIKSET
+### 4. **Stocks/Prices Technical Errors** 
 - **Problem**: `/stocks/prices` ga "Kunne ikke laste prisdata" feil
 - **Løsning**: 
   - Oppdatert prices route i `/app/routes/stocks.py` til å sende `stats` objekt
   - Lagt til telling av aksjer, krypto og valuta for statistikk-kort
   - Implementert feilhåndtering og fallback-data
   - Template får nå: total_stocks, total_crypto, total_currency, total_instruments
-- **Status**: ✅ KOMPLETT - Pricing oversikt viser data og statistikk
+- **Status**: 
 
-### 5. **Market Overview Analysis Page** ✅ FIKSET
+### 5. **Market Overview Analysis Page** 
 - **Problem**: Market overview side var ufullstendig med manglende markedssammendrag
 - **Løsning**: 
   - Fullført `/app/routes/analysis.py` market_overview funksjonen
   - Lagt til strukturerte markedssammendrag med SimpleNamespace objekter
   - Konvertert crypto/currency data til riktig format for templates
   - Implementert fallback-data ved feil med proper error handling
-- **Status**: ✅ KOMPLETT - Markedssammendrag data leveres til template
+- **Status**: 
 
-### 6. **News Search Functionality** ✅ FIKSET
+### 6. **News Search Functionality** 
 - **Problem**: News search fant ingenting
 - **Løsning**:
   - Lagt til manglende `search_news` async metode i `NewsService` klassen
   - Opprettet `search_news_sync` wrapper funksjon for synkron bruk
   - Oppdatert `/app/routes/news.py` search route til å bruke riktig import
   - Implementert relevans-scoring basert på tittel og sammendrag matching
-- **Status**: ✅ KOMPLETT - News search fungerer med query matching
+- **Status**:
 
 ---
 
-### 7. **Warren Buffett Analysis Page** ✅ FIKSET
+!FUNGERER IKKE### 7. **Warren Buffett Analysis Page** ✅ FIKSET
 - **Problem**: Viser ingenting når testet
 - **Løsning**: 
   - Identifisert at feil `app.py` ble brukt som entry point (temp email file)
@@ -145,23 +145,23 @@
   - Template laster nå perfekt med full HTML struktur
 - **Status**: ✅ KOMPLETT - Warren Buffett side tilgjengelig på `/analysis/warren-buffett`
 
-### 8. **Benjamin Graham Analysis Page** ✅ FIKSET  Nei
+### 8. **Benjamin Graham Analysis Page** 
 - **Problem**: "Feil ved analyse. Prøv igjen senere" feilmelding
 - **Løsning**: 
   - Bekreftet at `GrahamAnalysisService` importerer riktig fra `graham_analysis_service.py`
   - Server startet med korrekt main.py og blueprint registrering
   - Service imports og route struktur fungerer perfekt
   - Template laster nå komplett med analysis funksjonalitet
-- **Status**: ✅ KOMPLETT - Benjamin Graham analyse tilgjengelig på `/analysis/benjamin-graham`
+- **Status**: tilgjengelig på `/analysis/benjamin-graham`
 
-### 9. **Profile Page** ✅ FIKSET
+### 9. **Profile Page** 
 - **Problem**: 500 error på `/profile`
 - **Løsning**: 
   - Bekreftet at profile route fungerer perfekt med riktig authentication redirect
   - Template laster korrekt med login redirect for uautentiserte brukere
   - Route struktur og error handling implementert robust
   - Ingen 500 errors - følger standard Flask-Login mønster
-- **Status**: ✅ KOMPLETT - Profile side redirects til login som forventet (`/profile`)
+- **Status**: 
 
 ---
 
@@ -169,13 +169,13 @@
 
 ## 🚨 CRITICAL MOBILE NAVIGATION ISSUES:
 
-✅ FIKSET: **LØST - Mobile navigation dropdown padding excessive spacing problem**
+ FIKSET: **IKKE FIKSRT- Mobile navigation dropdown padding excessive spacing problem**
 - **Problem**: Tre motstridende CSS-seksjoner for mobile dropdown styling
 - **Impact**: Mobile UX ble negativt påvirket av for mye padding/margin spacing 
 - **Solution**: Konsoliderte CSS regler med vernuftige verdier (0.4rem padding, 0.5rem margin)
-- **Status**: CSS cleaned up, server restarted, testing in browser ✅
+- **Status**: CSS cleaned up, server restarted, testing in browser 
 
-### 11. **Access Control Security** ✅ FIKSET 🚨 KRITISK  
+### 11. **Access Control Security**   🚨 KRITISK  
 - **Problem**: Ikke-innlogget brukere fikk tilgang til beskyttede URLs via 5 usikre API endpoints
 - **Solution**: Lagt til @access_required decorators på:
   - `/analysis/api/analysis/indicators` (GET)
@@ -184,14 +184,14 @@
   - `/advanced/market-overview` (GET)
   - `/advanced/currency-converter` (GET)
 - **Impact**: 🔒 KRITISK sikkerhetshull tettet - alle premium features nå beskyttet
-- **Status**: ✅ KOMPLETT - Alle API endpoints har nå tilgangskontroll
+- **Status**: 
 
 ### 12. **FAQ Updates** 📝 MEDIUM
 - **Problem**: Ofte stilte spørsmål trenger oppdatering
 - **Endringer**: Kun kortbetaling, abonnement løper ut ved ikke-fornyelse
 - **Prioritet**: MEDIUM - innhold
 
-### 13. **Short Analysis Error** ✅ FIKSET
+!FUNGERER IKKE ### 13. **Short Analysis Error**
 - **Problem**: "En feil oppstod ved lasting av short analysen"
 - **Root Cause**: 
   1. Duplikat routes: `short_analysis_view` og `short_analysis` konfliktet med hverandre
@@ -199,13 +199,13 @@
 - **Solution**: 
   1. Fjernet duplikat `short_analysis_view` route fra analysis.py
   2. Oppdaterte base.html til å bruke `analysis.short_analysis` isteden
-- **Status**: ✅ KOMPLETT FIKSET - Short analyse side laster nå korrekt med demo data
+- **Status**: 
 - **Verification**: 
   - GET `/analysis/short-analysis` → 200 OK
   - Viser aksjevalg og analyse interface korrekt
   - Demo data med norske og globale aksjer fungerer
 
-### 14. **Pricing Overview Data Error** ✅ FIKSET
+!FUNGERER IKKE### 14. **Pricing Overview Data Error**  FIKSET
 - **Problem**: "Det oppstod en feil ved henting av prisdata" på priser-siden
 - **Root Cause**: 
   1. Duplikat routes: `/prices` (main.py) og `/stocks/prices` (stocks.py) med forskjellige DataService metoder
@@ -217,16 +217,16 @@
   2. Standardiserte data structure til `market_data` objekt i begge routes
   3. Fikset template formatting med `|default(0)` for alle numeriske verdier
   4. Fikset valuta volume som feilet med komma-formatering
-- **Status**: ✅ KOMPLETT FIKSET - Både `/prices` og `/stocks/prices` laster nå data korrekt
+- **Status**: 
 - **Verification**: 
   - GET `/prices` → 200 OK, viser data for 22 Oslo aksjer, 21 globale, 9 crypto, 10 valuta
   - GET `/stocks/prices` → 200 OK, samme data men i stocks blueprint
   - Ingen "Det oppstod en feil" meldinger
   - Alle statistics kort viser korrekte tall
 
-### 15. **AI Price Predictions Error** ✅ FIKSET
+### 15. **AI Price Predictions Error** 
 - **Problem**: Feilmelding på AI prisprediksjoner side
-- **Status**: ✅ KOMPLETT - Robust error handling implementert
+- **Status**: 
 
 **Løsning**: 
 - Implementert forbedret feilhåndtering i AI predictions
@@ -250,15 +250,14 @@
 
 **Påvirkning**: 🔥 KRITISK AI prediction feature nå fullt stabilt med robust error handling
 
-### 16. **Benjamin Graham Analysis Empty** ✅ FIKSET
-- **Problem**: Viste bare form uten data eller eksempel-analyser
+### 16. **Benjamin Graham Analysis Empty** eksempel-analyser
 - **Solution**: 
   - Lagt til automatisk analyse av 5 populære aksjer (EQNR.OL, DNB.OL, TEL.OL, YAR.OL, NHY.OL)
   - Viser preview-kort med Graham Score, anbefaling, intrinsic value og upside potential
   - Hurtig-tilgang knapper for øyeblikkelig analyse
   - Robust error handling med fallback data
 - **Impact**: 🔥 KRITISK value investing feature nå fullt operativ med data
-- **Status**: ✅ KOMPLETT - Viser 3 populære aksje-analyser på startsiden
+- **Status**: 
 
 ### 17. **Screener No Results** ❌
 - **Problem**: Viser bare "ingen resultater" uansett filter
@@ -339,15 +338,13 @@ Samme problem fortsatt som nevnt på teknisk analyse og står "Analyser" knapper
 - ✅ Debug mode aktivert  
 - ✅ Auto-reload fungerer
 - ✅ Alle 23 blueprints registrert korrekt
-- ✅ Analysis, Warren Buffett, Benjamin Graham, Profile routes fungerer
 - ✅ Debugger PIN: 725-656-805
 - ✅ Accessible på http://127.0.0.1:5004
 - 🚀 **READY FOR DEPLOYMENT**
 
 ### **Template Errors:**
 - ⚠️ compare.html: Jinja2 syntax warnings (ikke reelle feil)
-- ✅ details_enhanced.html: Ingen feil
-- ✅ list.html: Ingen feil
+
 
 ### **Fiksede filer:**
 - ✅ `/app/templates/stocks/list.html` - Oslo Børs heading (linje 19)
@@ -374,13 +371,14 @@ Samme problem fortsatt som nevnt på teknisk analyse og står "Analyser" knapper
 - ✅ Market statistics generation
 - ✅ Real-time price display formatting
 - ✅ Multi-currency support (NOK/USD)
+! usikker på om alt dette er i orden!
 
 ---
 
 ## 📈 **FREMGANG:**
-- **Løst**: 9 av 24+ problemer (37% komplett) 
-- **Delvis løst**: 0 problemer
-- **Gjenstående**: 15+ problemer (inkl. 3 kritiske sikkerhet/UX issues)
+- **Løst**: 
+- **Delvis løst**: 
+- **Gjenstående**: 
 - **Total kodelinjer endret**: 1000+ linjer
 - **Nye features implementert**: 8 store funksjoner
 - **Critical Fix**: Server kjører nå på korrekt `main.py` (port 5004) med full blueprint registrering
@@ -548,4 +546,31 @@ Og kan du også sjekke våre konkurrenter, utenlandske og innenlandske, og imple
 
 Sjekker du også at dette med varsling, dersom bruker har satt det opp, fungerer.
 
+NYTT:
+Forsiden som innlogget bruker, der er det litt info
+som ikke stemmer, men er placeholderinfo tror jeg, sånn som under: "Siste aktivitet", dette må være ekte,
+og "Sett opp varsler" må fungere på ordentlig, kan du gfikse dette, med en side som fungerer for dette og riktig lenking fra forsiden som innlogget bruker.
 
+ Premium Markedsoversikt på forsiden,kan du fjerne
+ den mørkegrå overlay/bakgrunnen der
+
+ https://aksjeradar.trade/analysis/ai
+ kan du fjerne den mørkegrå overlay/bakgrunnen der
+
+ https://aksjeradar.trade/analysis/technical/
+# Forbedre visning av populære aksjer og teknisk analyse på høyre side (analyser-knapp står mange ganger nedover på høyre side her)
+
+# 1. Sjekk at populære aksjer-listen faktisk inneholder data
+popular_stocks = TechnicalAnalysisService.get_popular_stocks()
+if not popular_stocks or len(popular_stocks) == 0:
+  popular_stocks = [
+    {"symbol": "EQNR.OL", "name": "Equinor ASA", "price": 312.5, "rsi": 54.2, "macd": 1.12, "signal": "KJØP"},
+    {"symbol": "DNB.OL", "name": "DNB Bank", "price": 201.3, "rsi": 48.7, "macd": -0.23, "signal": "HOLD"},
+    {"symbol": "NHY.OL", "name": "Norsk Hydro", "price": 78.9, "rsi": 61.5, "macd": 0.87, "signal": "KJØP"},
+    {"symbol": "TEL.OL", "name": "Telenor", "price": 124.1, "rsi": 39.8, "macd": -0.45, "signal": "SELGE"},
+    {"symbol": "AAPL", "name": "Apple Inc", "price": 189.2, "rsi": 57.3, "macd": 1.45, "signal": "KJØP"},
+  ]
+
+DEMOLØSNINGEN: Her må det være mulig å test på ordentlig
+, at funksjoner fungerer som det skal, og det er knapper
+or dette/at knappene faktisk fungerer. 
