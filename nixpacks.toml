@@ -1,22 +1,16 @@
 [providers]
 python = "3.11"
 
-[build]
-# Install Python dependencies
-cmds = ["pip install -r requirements.txt"]
-
-[start]
-# Start the application with simple script
-cmd = "python simple_start.py"
-
 [variables]
 FLASK_ENV = "production"
-FLASK_APP = "run:app"
 PYTHONPATH = "/app"
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
 
 [phases.build]
 dependsOn = ["install"]
 cmds = ["echo 'Build phase completed'"]
 
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
+[start]
+cmd = "python simple_start.py"

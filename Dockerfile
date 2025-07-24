@@ -43,6 +43,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libgomp1 \
     git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy TA-Lib from builder stage
@@ -74,9 +75,9 @@ USER app
 # Expose port
 EXPOSE 5000
 
-# Health check
+# Health check with simple endpoint
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
-    CMD python health_check.py
+    CMD curl -f http://localhost:5000/health || exit 1
 
-# Run the application
-CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "120", "--worker-class", "eventlet", "--worker-connections", "1000", "--access-logfile", "-", "--error-logfile", "-", "--log-level", "info"]
+# Run the application with simple startup
+CMD ["python", "simple_start.py"]
