@@ -130,6 +130,62 @@
     </div>
     {% endif %}
 
+    <!-- Popular Stock Analyses Preview -->
+    {% if not analysis and popular_analyses %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3">
+                <i class="bi bi-star-fill text-warning"></i> Populære Aksjer - Graham Analyse
+            </h4>
+            <div class="row">
+                {% for stock in popular_analyses[:3] %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <strong>{{ stock.ticker }}</strong>
+                                <span class="badge bg-{% if stock.analysis.recommendation.action == 'STRONG BUY' %}success{% elif stock.analysis.recommendation.action == 'BUY' %}primary{% elif stock.analysis.recommendation.action == 'HOLD' %}warning{% else %}danger{% endif %} float-end">
+                                    {{ stock.analysis.recommendation.action }}
+                                </span>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Graham Score</small>
+                                    <div class="fw-bold text-{% if stock.analysis.graham_score >= 70 %}success{% elif stock.analysis.graham_score >= 60 %}warning{% else %}danger{% endif %}">
+                                        {{ "%.0f"|format(stock.analysis.graham_score) }}%
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Current Price</small>
+                                    <div class="fw-bold">${{ "%.2f"|format(stock.analysis.current_price) }}</div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Intrinsic Value</small>
+                                    <div class="fw-bold text-success">${{ "%.2f"|format(stock.analysis.valuation_methods.average_intrinsic) }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Upside</small>
+                                    <div class="fw-bold text-{% if stock.analysis.recommendation.upside_potential > 0 %}success{% else %}danger{% endif %}">
+                                        {{ "%.1f"|format(stock.analysis.recommendation.upside_potential) }}%
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="?ticker={{ stock.ticker }}" class="btn btn-primary btn-sm w-100">
+                                <i class="bi bi-eye"></i> Se full analyse
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Enhanced Analysis Results -->
     {% if analysis %}
     <div class="row">

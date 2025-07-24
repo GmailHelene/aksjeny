@@ -9,8 +9,20 @@ sys.path.insert(0, app_dir)
 # Import create_app from app/__init__.py
 from app import create_app
 
+# Use environment variable for config, default to production
+config_name = os.getenv('FLASK_ENV', 'production')
+print(f"🔧 Creating app with config: {config_name}")
 
-app = create_app('development')
+try:
+    app = create_app(config_name)
+    print("✅ App created successfully for WSGI")
+except Exception as e:
+    print(f"❌ Failed to create app: {e}")
+    # Create minimal fallback app for health checks
+    app = Flask(__name__)
+    @app.route('/health/ready')
+    def health():
+        return {'status': 'error', 'message': f'App failed to initialize: {str(e)}'}, 500
 
 # Entry point
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 from flask_login import login_required, current_user
 from ..services.external_data_service import ExternalDataService
 from ..services.competitive_analysis_service import CompetitiveFeatureService
+from ..utils.access_control import access_required  # SECURITY FIX: Corrected import path
 from datetime import datetime
 import logging
 
@@ -54,6 +55,7 @@ def index():
                              error=str(e))
 
 @advanced_features.route('/market-overview')
+@access_required  # SECURITY FIX: Added missing access control
 def market_overview():
     """Real-time market overview API endpoint"""
     try:
@@ -86,6 +88,7 @@ def crypto_dashboard():
                              error=str(e))
 
 @advanced_features.route('/currency-converter')
+@access_required  # SECURITY FIX: Added missing access control
 def currency_converter():
     """Advanced currency converter"""
     try:

@@ -167,7 +167,7 @@
         line-height: 1.4 !important;
     }
 
-    /* Better spacing for mobile menu items - ZERO MARGIN APPROACH */
+    /* FIXED: Better spacing for mobile menu items - REASONABLE APPROACH */
     @media (max-width: 991.98px) {
         .navbar-nav .nav-item {
             margin-bottom: 0 !important;
@@ -175,31 +175,36 @@
         }
         
         .navbar-nav .dropdown-menu {
-            margin-left: 0 !important;
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-            padding: 0 !important;
+            margin: 0 !important;
+            padding: 0.5rem 0 !important;
+            background-color: rgba(248, 249, 250, 0.98) !important;
+            border: none !important;
+            box-shadow: none !important;
         }
         
         .navbar-nav .dropdown-menu .dropdown-item {
-            padding: 0.02rem 0.05rem !important;
-            font-size: 0.65rem !important;
-            line-height: 1 !important;
+            padding: 0.4rem 1rem !important;
+            font-size: 0.85rem !important;
+            line-height: 1.3 !important;
             margin: 0 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .navbar-nav .nav-link {
-            padding: 0.02rem 0.05rem !important;
+            padding: 0.5rem 1rem !important;
             margin-bottom: 0 !important;
         }
         
-        /* Collapse dropdown menus better on mobile - MINIMAL SPACING */
-        .navbar-collapse .dropdown-menu {
-            box-shadow: none !important;
-            border: none !important;
-            background-color: rgba(248, 249, 250, 0.95) !important;
-            padding: 0 !important;
+        /* Dropdown header spacing */
+        .navbar-nav .dropdown-header {
+            padding: 0.3rem 1rem 0.2rem !important;
+            font-size: 0.7rem !important;
+            margin: 0 !important;
+        }
+        
+        /* Dropdown divider spacing */
+        .navbar-nav .dropdown-divider {
+            margin: 0.25rem 0 !important;
         }
     }    /* Dropdown optimizations */
     .dropdown-menu {
@@ -250,12 +255,13 @@
         flex-shrink: 0;
     }
     
-    /* Fix for navbar dropdown on mobile */
+    /* Fix for navbar dropdown on mobile - CONSISTENT WITH MAIN MOBILE STYLES */
     .navbar-collapse .dropdown-menu {
         position: static;
         float: none;
         width: 100%;
-        margin-top: 0;
+        margin: 0 !important;
+        padding: 0.5rem 0 !important;
         background-color: rgba(248, 249, 250, 0.98);
         backdrop-filter: blur(10px);
         border: none;
@@ -845,30 +851,33 @@
         margin-bottom: 0.01rem !important;
     }
     
-    /* Dropdown menu spacing improvements */
+    /* CONSOLIDATED: Single consistent dropdown spacing for mobile */
     .navbar-nav .dropdown-menu {
-        margin-left: 0.25rem !important;
-        margin-top: 0.01rem !important;
-        margin-bottom: 0.02rem !important;
-        padding: 0.05rem 0 !important;
+        margin: 0 !important;
+        padding: 0.5rem 0 !important;
+        background-color: rgba(248, 249, 250, 0.98) !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     
     .navbar-nav .dropdown-menu .dropdown-item {
-        padding: 0.15rem 0.5rem !important; /* Very compact dropdown items */
-        font-size: 0.8rem !important;
-        margin-bottom: 0.005rem !important;
+        padding: 0.4rem 1rem !important;
+        font-size: 0.85rem !important;
+        line-height: 1.3 !important;
+        margin: 0 !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
     }
     
     /* Dropdown header adjustments */
     .navbar-nav .dropdown-header {
-        padding: 0.1rem 0.5rem !important;
+        padding: 0.3rem 1rem 0.2rem !important;
         font-size: 0.7rem !important;
-        margin-bottom: 0.01rem !important;
+        margin: 0 !important;
     }
     
     /* Dropdown divider adjustments */
     .navbar-nav .dropdown-divider {
-        margin: 0.05rem 0 !important;
+        margin: 0.25rem 0 !important;
     }
     
     /* Register button spacing fix */

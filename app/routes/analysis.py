@@ -642,17 +642,28 @@ def benjamin_graham():
     
     # GET request
     try:
-        # Get popular stocks from Oslo Børs data
-        oslo_stocks = DataService.get_oslo_bors_overview() or {}
-        popular_stocks = list(oslo_stocks.keys())[:10] if oslo_stocks else ['EQNR.OL', 'DNB.OL', 'MOWI.OL']
+        # Show popular stocks with mock analyses by default
+        popular_stocks_with_analysis = []
+        popular_tickers = ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL']
         
-        # Ensure we always have some popular stocks
-        if not popular_stocks:
-            popular_stocks = ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'NHY.OL']
+        # Import the service here to avoid circular imports
+        from ..services.graham_analysis_service import GrahamAnalysisService
         
-        logger.info(f"Loading Benjamin Graham page with {len(popular_stocks)} popular stocks")
+        for ticker in popular_tickers:
+            try:
+                analysis_data = GrahamAnalysisService.analyze_stock(ticker)
+                if analysis_data and not analysis_data.get('error'):
+                    popular_stocks_with_analysis.append({
+                        'ticker': ticker,
+                        'analysis': analysis_data
+                    })
+            except Exception as e:
+                logger.warning(f"Could not analyze {ticker}: {e}")
+                continue
+        
+        logger.info(f"Loading Benjamin Graham page with {len(popular_stocks_with_analysis)} analyzed stocks")
         return render_template('analysis/benjamin_graham.html',
-                             popular_stocks=popular_stocks,
+                             popular_analyses=popular_stocks_with_analysis,
                              show_results=False)
     except Exception as e:
         logger.error(f"Error loading Benjamin Graham page: {e}")
@@ -971,6 +982,7 @@ def ai():
 
 # Add new routes
 @analysis.route('/api/analysis/indicators', methods=['GET'])
+@access_required  # SECURITY FIX: Added missing access control
 def get_indicators():
     """Get technical indicators for a stock"""
     symbol = request.args.get('symbol')
@@ -1015,6 +1027,7 @@ def get_indicators():
         return jsonify({"error": str(e)}), 500
 
 @analysis.route('/api/analysis/signals', methods=['GET'])
+@access_required  # SECURITY FIX: Added missing access control
 def get_trading_signals():
     """Get trading signals for a stock"""
     symbol = request.args.get('symbol')
@@ -1050,6 +1063,7 @@ def get_trading_signals():
         return jsonify({"error": str(e)}), 500
 
 @analysis.route('/api/market-summary', methods=['GET'])
+@access_required  # SECURITY FIX: Added missing access control
 def get_market_summary():
     """Get AI-generated market summary"""
     sector = request.args.get('sector')
