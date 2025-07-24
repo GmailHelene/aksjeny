@@ -237,6 +237,15 @@ def register_blueprints(app):
             app.logger.info("✅ Registered Stripe blueprint")
         except ImportError as e:
             app.logger.warning(f"Could not import Stripe blueprint: {e}")
+        
+        # Register Cache Management blueprint
+        try:
+            from .routes.cache_management import cache_bp
+            app.register_blueprint(cache_bp)
+            blueprints_registered.append('cache_management')
+            app.logger.info("✅ Registered Cache Management blueprint")
+        except ImportError as e:
+            app.logger.warning(f"Could not import Cache Management blueprint: {e}")
     except ImportError as e:
         app.logger.error(f"Failed to import main or portfolio blueprint: {e}")
         raise

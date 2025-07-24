@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="cache-bust" content="{{ g.current_time }}">
     <title>{% block title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
@@ -10,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ g.current_time }}">
     {% block extra_css %}{% endblock %}
     
     <!-- PWA Support -->
@@ -537,8 +538,46 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/dropdown-navigation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}?v={{ g.current_time }}"></script>
+    <script src="{{ url_for('static', filename='js/dropdown-navigation.js') }}?v={{ g.current_time }}"></script>
+    
+    <!-- Cache Busting Utility -->
+    <script>
+    // Aksjeradar Cache Busting - Quick Access
+    window.refreshCache = function() {
+        // Clear browser storage
+        if (typeof Storage !== "undefined") {
+            localStorage.clear();
+            sessionStorage.clear();
+        }
+        
+        // Add cache-busting parameters and reload
+        const url = new URL(window.location);
+        url.searchParams.set('v', Date.now());
+        url.searchParams.set('cache_refresh', 'true');
+        window.location.href = url.toString();
+    };
+    
+    // Keyboard shortcut: Ctrl+Shift+F5 for super cache refresh
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'F5') {
+            e.preventDefault();
+            window.refreshCache();
+        }
+    });
+    
+    // Auto-detect cache issues and offer refresh
+    window.addEventListener('error', function(e) {
+        if (e.filename && (e.filename.includes('.css') || e.filename.includes('.js'))) {
+            console.warn('🔄 Static file load failed - cache issue detected');
+            const shouldRefresh = confirm('Det ser ut som det kan være cache-problemer. Vil du refreshe cache?');
+            if (shouldRefresh) {
+                window.refreshCache();
+            }
+        }
+    });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
