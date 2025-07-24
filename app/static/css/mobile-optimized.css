@@ -154,57 +154,54 @@
     }
 
     .navbar-collapse {
-        margin-top: 0.5rem !important;
-        padding-top: 0.5rem !important;
+        margin-top: 0.2rem !important;
+        padding-top: 0.2rem !important;
         border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Main nav links in collapsed menu - CLEAN SPACING */
+    /* CLEAN MOBILE NAVIGATION - MINIMAL PADDING SOLUTION */
     .navbar-nav .nav-link {
-        padding: 0.6rem 0.75rem !important;
+        padding: 0.2rem 0.5rem !important;
         font-size: 0.9rem !important;
-        margin-bottom: 0.1rem !important;
-        line-height: 1.4 !important;
+        margin-bottom: 0 !important;
+        line-height: 1.3 !important;
     }
 
-    /* FIXED: Better spacing for mobile menu items - REASONABLE APPROACH */
+    /* Mobile dropdown optimizations - MINIMAL SPACING */
     @media (max-width: 991.98px) {
         .navbar-nav .nav-item {
             margin-bottom: 0 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         
         .navbar-nav .dropdown-menu {
             margin: 0 !important;
-            padding: 0.25rem 0 !important;
+            padding: 0.1rem 0 !important;
             background-color: rgba(248, 249, 250, 0.98) !important;
             border: none !important;
             box-shadow: none !important;
         }
         
         .navbar-nav .dropdown-menu .dropdown-item {
-            padding: 0.25rem 0.75rem !important;
+            padding: 0.15rem 0.5rem !important;
             font-size: 0.85rem !important;
             line-height: 1.2 !important;
             margin: 0 !important;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .navbar-nav .nav-link {
-            padding: 0.4rem 0.75rem !important;
+            padding: 0.2rem 0.5rem !important;
             margin-bottom: 0 !important;
         }
         
-        /* Dropdown header spacing */
+        /* Minimal header and divider spacing */
         .navbar-nav .dropdown-header {
-            padding: 0.2rem 0.75rem 0.1rem !important;
+            padding: 0.1rem 0.5rem !important;
             font-size: 0.7rem !important;
             margin: 0 !important;
         }
         
-        /* Dropdown divider spacing */
         .navbar-nav .dropdown-divider {
-            margin: 0.25rem 0 !important;
+            margin: 0.1rem 0 !important;
         }
     }    /* Dropdown optimizations */
     .dropdown-menu {
