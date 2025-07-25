@@ -400,24 +400,105 @@ def handle_subscription_update(subscription):
         current_app.logger.error(f'Failed to update subscription: {str(e)}')
         raise
 
-def handle_subscription_deleted(subscription):
-    """Handle subscription cancellation"""
+def handle_invoice_paid(invoice):
+    """Handle successful invoice payment"""
     try:
-        customer_id = subscription.customer
+        # Get the customer associated with this invoice
+        customer_id = invoice.customer
         user = User.query.filter_by(stripe_customer_id=customer_id).first()
         
         if not user:
             current_app.logger.error(f'User not found for Stripe customer: {customer_id}')
             return
         
-        # Update user subscription status
-        user.has_subscription = False
-        user.subscription_end = datetime.utcnow()
+        # Update subscription details based on invoice
+        if invoice.subscription:
+            try:
+                subscription = stripe.Subscription.retrieve(invoice.subscription)
+                
+                # Update user subscription end date based on billing cycle
+                if subscription.current_period_end:
+                    new_end_date = datetime.fromtimestamp(subscription.current_period_end)
+                    user.subscription_end = new_end_date
+                    
+                    # Determine subscription type based on billing interval
+                    if subscription.items and subscription.items.data:
+                        interval = subscription.items.data[0].plan.interval
+                        if interval == 'month':
+                            user.subscription_type = 'monthly'
+                        elif interval == 'year':
+                            user.subscription_type = 'yearly'
+                
+                # Store last payment info if available
+                if hasattr(user, 'last_payment_date'):
+                    user.last_payment_date = datetime.utcnow()
+                if hasattr(user, 'last_payment_amount'):
+                    user.last_payment_amount = invoice.amount_paid / 100  # Convert from cents
+                
+                db.session.commit()
+                current_app.logger.info(f'Updated subscription from invoice for user {user.id}, valid until {user.subscription_end}')
+                
+            except Exception as e:
+                current_app.logger.error(f'Error retrieving subscription {invoice.subscription}: {str(e)}')
         
-        db.session.commit()
-        current_app.logger.info(f'Subscription cancelled for user {user.id}')
+        # Handle one-time payments (not subscription-related)
+        elif invoice.amount_paid > 0:
+            current_app.logger.info(f'One-time payment of {invoice.amount_paid/100} processed for user {user.id}')
         
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f'Failed to cancel subscription: {str(e)}')
+        current_app.logger.error(f'Failed to process invoice payment: {str(e)}')
+        raise
+
+def handle_invoice_failed(invoice):
+    """Handle failed invoice payment"""
+    try:
+        # Get the customer associated with this invoice
+        customer_id = invoice.customer
+        user = User.query.filter_by(stripe_customer_id=customer_id).first()
+        
+        if not user:
+            current_app.logger.error(f'User not found for Stripe customer: {customer_id}')
+            return
+        
+        # Log the failed payment
+        current_app.logger.warning(f'Payment failed for user {user.id}: invoice {invoice.id}, amount {invoice.amount_due/100}')
+        
+        # If this is the final attempt, mark the subscription as at risk
+        if invoice.next_payment_attempt is None:
+            current_app.logger.warning(f'Final payment attempt failed for user {user.id}, subscription at risk')
+            
+            # Optionally flag the account for follow-up
+            if hasattr(user, 'payment_failed'):
+                user.payment_failed = True
+            
+            # Store the date of the failed payment
+            if hasattr(user, 'last_failed_payment'):
+                user.last_failed_payment = datetime.utcnow()
+            
+            db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Failed to process invoice failure: {str(e)}')
+        raise
+
+def handle_subscription_deleted(subscription):
+    """Handle subscription deletion event from Stripe"""
+    try:
+        customer_id = subscription.customer
+        user = User.query.filter_by(stripe_customer_id=customer_id).first()
+        if not user:
+            current_app.logger.error(f'User not found for Stripe customer: {customer_id}')
+            return
+
+        user.has_subscription = False
+        user.subscription_end = datetime.utcnow()
+        user.subscription_type = None
+
+        db.session.commit()
+        current_app.logger.info(f'Subscription deleted for user {user.id}')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Failed to process subscription deletion: {str(e)}')
         raise
