@@ -1,4 +1,11 @@
-@cache_bp.route('/railway-health', methods=['GET'])
+from flask import Blueprint, jsonify, current_app
+from datetime import datetime
+import os
+
+# Blueprint definition
+railway_health_bp = Blueprint('railway_health', __name__)
+
+@railway_health_bp.route('/railway-health', methods=['GET'])
 def railway_health():
     """Health check endpoint specifically for Railway deployment"""
     return jsonify({
