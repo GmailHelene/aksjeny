@@ -7,7 +7,12 @@ real-time quotes, market indices, and live trading data.
 """
 
 import asyncio
-import websockets
+try:
+    import websockets
+    WEBSOCKETS_AVAILABLE = True
+except ImportError:
+    WEBSOCKETS_AVAILABLE = False
+    websockets = None
 import json
 import time
 import threading

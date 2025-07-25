@@ -50,3 +50,9 @@ feedparser==6.0.10
 
 # Financial Data - PyPI version ONLY (NO git dependencies)
 finviz==1.4.4
+
+# Machine Learning (optional - for portfolio analytics)
+scikit-learn==1.3.0
+
+# WebSocket support for real-time features
+websockets==11.0.3

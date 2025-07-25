@@ -15,9 +15,35 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 from typing import Dict, List, Optional, Tuple, Any
 import logging
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+
+# Optional sklearn imports for advanced analytics
+try:
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.cluster import KMeans
+    from sklearn.decomposition import PCA
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    # Create dummy classes if sklearn is not available
+    class StandardScaler:
+        def fit_transform(self, data):
+            return data
+        def transform(self, data):
+            return data
+    
+    class KMeans:
+        def __init__(self, *args, **kwargs):
+            self.labels_ = []
+        def fit(self, data):
+            return self
+    
+    class PCA:
+        def __init__(self, *args, **kwargs):
+            pass
+        def fit_transform(self, data):
+            return data
+    
+    SKLEARN_AVAILABLE = False
+
 import warnings
 warnings.filterwarnings('ignore')
 

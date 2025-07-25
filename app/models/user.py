@@ -304,8 +304,5 @@ def load_user(user_id):
         print(f"Error loading user {user_id}: {e}")
         return None
 
-# Ensure the database is updated with the new column
-try:
-    db.create_all()  # Create tables if they don't exist
-except Exception as e:
-    print(f"Error creating tables: {e}")
+# Database table creation is handled in main.py and app initialization
+# No need to create tables at import time

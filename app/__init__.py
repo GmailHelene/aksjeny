@@ -282,18 +282,16 @@ def register_blueprints(app):
     
     for module_path, blueprint_name, url_prefix in blueprint_configs:
         try:
-            # Import within app context to avoid context errors
-            with app.app_context():
-                from importlib import import_module
-                module = import_module(module_path, package=__name__)
-                blueprint = getattr(module, blueprint_name)
-                # Register blueprint with appropriate prefix
-                if url_prefix:
-                    app.register_blueprint(blueprint, url_prefix=url_prefix)
-                else:
-                    app.register_blueprint(blueprint)
-                blueprints_registered.append(blueprint_name)
-                app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
+            from importlib import import_module
+            module = import_module(module_path, package=__name__)
+            blueprint = getattr(module, blueprint_name)
+            # Register blueprint with appropriate prefix
+            if url_prefix:
+                app.register_blueprint(blueprint, url_prefix=url_prefix)
+            else:
+                app.register_blueprint(blueprint)
+            blueprints_registered.append(blueprint_name)
+            app.logger.info(f"✅ Registered blueprint: {blueprint_name}")
         except ImportError as e:
             app.logger.warning(f"Could not import {blueprint_name}: {e}")
         except Exception as e:

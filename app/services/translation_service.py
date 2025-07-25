@@ -25,11 +25,24 @@ class TranslationService:
                 if os.path.exists(file_path):
                     with open(file_path, 'r', encoding='utf-8') as f:
                         self.translations[lang] = json.load(f)
-                        
-            current_app.logger.info(f"✅ Loaded translations for: {list(self.translations.keys())}")
             
+            # Only log if we have an app context
+            try:
+                if current_app:
+                    current_app.logger.info(f"✅ Loaded translations for: {list(self.translations.keys())}")
+            except RuntimeError:
+                # No app context, silent loading
+                pass
+                        
         except Exception as e:
-            current_app.logger.error(f"❌ Error loading translations: {e}")
+            # Only log if we have an app context
+            try:
+                if current_app:
+                    current_app.logger.error(f"❌ Error loading translations: {e}")
+            except RuntimeError:
+                # No app context, silent error handling
+                pass
+            
             # Fallback empty translations
             for lang in self.supported_languages:
                 self.translations[lang] = {}
@@ -132,7 +145,12 @@ class TranslationService:
                 json.dump(self.translations[language], f, ensure_ascii=False, indent=2)
                 
         except Exception as e:
-            current_app.logger.error(f"Error saving translation: {e}")
+            try:
+                if current_app:
+                    current_app.logger.error(f"Error saving translation: {e}")
+            except RuntimeError:
+                # No app context, silent error handling
+                pass
 
 # Global translation service instance
 translation_service = TranslationService()
