@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Ultra-simple Railway startup - no PORT variables
+Railway-optimized startup with proper PORT handling
 """
 import os
 import sys
@@ -8,17 +8,21 @@ import sys
 # Force production mode
 os.environ['FLASK_ENV'] = 'production'
 
-print("🚀 Ultra-simple Railway startup")
+print("🚀 Railway startup with proper PORT handling")
 
 try:
     from app import create_app
     app = create_app('production')
     
+    # Get port from Railway environment, default to 5000 for local testing
+    port = int(os.environ.get('PORT', 5000))
+    print(f"📡 Starting app on port {port}")
+    
     # Railway automatically provides port, we just bind to all interfaces
     # Railway will route traffic correctly
     app.run(
         host='0.0.0.0',
-        port=5000,  # Hardcoded - Railway will handle the routing
+        port=port,
         debug=False
     )
     

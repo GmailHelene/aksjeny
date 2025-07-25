@@ -1,2 +1,2 @@
-web: gunicorn --bind 0.0.0.0:$PORT main:app
+web: python3 gunicorn_start.py
 release: python init_db.py
