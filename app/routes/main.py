@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, make_response, jsonify, send_from_directory, g
+from flask_login import current_user, login_required
 from ..utils.market_open import is_market_open
 import logging
 from datetime import datetime, timedelta
@@ -357,62 +358,58 @@ def before_request():
 @main.route('/index')
 def index():
     """Enhanced homepage with access control"""
-    from ..utils.access_control import is_exempt_user, check_access_and_redirect
+    # Uinnloggede brukere skal gå til demo
+    if not current_user.is_authenticated:
+        return redirect(url_for('main.demo'))
+        
+    # Innloggede brukere uten abonnement skal gå til demo
+    if not has_active_subscription() and current_user.email not in EXEMPT_EMAILS:
+        return redirect(url_for('main.demo'))
     
-    # Check access and potentially redirect
-    redirect_response = check_access_and_redirect()
-    if redirect_response:
-        return redirect_response
-    
-    if current_user.is_authenticated and is_exempt_user():
-        # Exempt users get full access
-        restricted = False
-    elif current_user.is_authenticated and has_active_subscription():
-        # Subscribed users get full access  
-        restricted = False
-    else:
-        # Non-authenticated or trial users get limited access
-        restricted = True
-    
+    # Innloggede brukere med aktivt abonnement får tilgang til hovedside
     try:
-        if current_user.is_authenticated:
-            # Check if user is premium
-            is_premium = False
-            if hasattr(current_user, 'subscription') and current_user.subscription:
-                is_premium = getattr(current_user.subscription, 'status', '') == 'active'
-            
-            if is_premium:
-                # Show dashboard-style homepage for premium users
-                DataService = get_data_service()
-                oslo_stocks = DataService.get_oslo_bors_overview() or {}
-                global_stocks = DataService.get_global_stocks_overview() or {}
-                crypto_data = DataService.get_crypto_overview() or {}
-                currency_data = DataService.get_currency_overview() or {}
-                
-                return render_template('dashboard_home.html',
-                                     oslo_stocks=oslo_stocks,
-                                     global_stocks=global_stocks,
-                                     crypto_data=crypto_data,
-                                     currency_data=currency_data,
-                                     user=current_user)
-            else:
-                # Show regular homepage for free users (without pricing section)
-                return render_template('index.html',
-                                     show_pricing=False,
-                                     user=current_user)
-        else:
-            # Show demo homepage with pricing
-            return render_template('index.html',
-                                 show_pricing=True,
-                                 user=None)
-                                 
+        DataService = get_data_service()
+        
+        oslo_stocks = DataService.get_oslo_bors_overview() or {}
+        global_stocks = DataService.get_global_stocks_overview() or {}
+        crypto_data = DataService.get_crypto_overview() or {}
+        currency_data = DataService.get_currency_overview() or {}
+        
+        # Calculate user stats
+        user_stats = {
+            'portfolios': 0,
+            'watchlist_items': 0,
+            'recent_searches': 0,
+            'alerts': 0
+        }
+        
+        if hasattr(current_user, 'id'):
+            try:
+                from ..models.portfolio import Portfolio
+                user_stats['portfolios'] = Portfolio.query.filter_by(user_id=current_user.id).count()
+            except:
+                pass
+        
+        return render_template('index_premium.html',
+                             oslo_stocks=oslo_stocks,
+                             global_stocks=global_stocks,
+                             crypto_data=crypto_data,
+                             currency_data=currency_data,
+                             user_stats=user_stats,
+                             restricted=False)
+                             
     except Exception as e:
-        current_app.logger.error(f"Error in homepage: {e}")
-        return render_template('index.html',
-                             show_pricing=True,
-                             error="Kunne ikke laste siden")
+        logger.error(f"Error in index: {e}")
+        return render_template('index_premium.html',
+                             oslo_stocks={},
+                             global_stocks={},
+                             crypto_data={},
+                             currency_data={},
+                             user_stats={},
+                             restricted=False,
+                             error=True)
 
-# Ensure demo functions are accessible without login or subscription
+
 @main.route('/demo')
 def demo():
     """Demo page with full functionality preview"""
@@ -978,11 +975,19 @@ def profile():
             'favorite_stocks': getattr(current_user, 'favorite_count', 0)
         }
         
+        # Get referral stats safely
+        referral_stats = {
+            'referrals_made': getattr(current_user, 'referrals_made', 0),
+            'referral_earnings': getattr(current_user, 'referral_earnings', 0),
+            'referral_code': getattr(current_user, 'referral_code', f'REF{current_user.id}' if hasattr(current_user, 'id') else 'REF001')
+        }
+        
         return render_template('profile.html',
                              user=current_user,
                              subscription=subscription,
                              subscription_status=subscription_status,
-                             user_stats=user_stats)
+                             user_stats=user_stats,
+                             **referral_stats)
                              
     except Exception as e:
         logger.error(f"Error in profile page for user {getattr(current_user, 'id', 'unknown')}: {e}")
@@ -992,6 +997,9 @@ def profile():
                              subscription=None,
                              subscription_status='free',
                              user_stats={},
+                             referrals_made=0,
+                             referral_earnings=0,
+                             referral_code='REF001',
                              error=True)
 
 @main.route('/mitt-abonnement')

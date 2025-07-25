@@ -1897,6 +1897,48 @@ class DataService:
             return {}
     
     @staticmethod
+    def get_economic_indicators():
+        """Get economic indicators that affect currencies"""
+        try:
+            return {
+                'interest_rates': {
+                    'NOK': 4.25,
+                    'USD': 5.25,
+                    'EUR': 4.0,
+                    'GBP': 5.0,
+                    'SEK': 3.75,
+                    'DKK': 3.6
+                },
+                'inflation': {
+                    'NOK': 3.2,
+                    'USD': 3.1,
+                    'EUR': 2.8,
+                    'GBP': 4.0,
+                    'SEK': 2.5,
+                    'DKK': 2.9
+                },
+                'gdp_growth': {
+                    'NOK': 2.1,
+                    'USD': 2.8,
+                    'EUR': 1.9,
+                    'GBP': 1.5,
+                    'SEK': 2.3,
+                    'DKK': 2.0
+                },
+                'unemployment': {
+                    'NOK': 3.5,
+                    'USD': 3.8,
+                    'EUR': 6.5,
+                    'GBP': 4.2,
+                    'SEK': 7.1,
+                    'DKK': 4.8
+                }
+            }
+        except Exception as e:
+            print(f"Error getting economic indicators: {e}")
+            return {}
+    
+    @staticmethod
     def get_market_overview():
         """Get complete market overview with fallback data"""
         return {

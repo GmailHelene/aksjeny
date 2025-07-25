@@ -2,6 +2,8 @@
 {% block title %}Innsidehandel Intelligens - Aksjeradar{% endblock %}
 
 {% block content %}
+{% include 'analysis/analysis_nav.html' %}
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -246,33 +248,43 @@ async function loadInsiderData() {
 }
 
 function updateInsiderData(data) {
+    // Extract the actual data array
+    const transactions = data.data || [];
+    
+    // Calculate metrics
+    const totalTransactions = transactions.length;
+    const buyTransactions = transactions.filter(t => t.transaction_type === 'Kjøp').length;
+    const sellTransactions = transactions.filter(t => t.transaction_type === 'Salg').length;
+    const buyPercentage = totalTransactions > 0 ? Math.round((buyTransactions / totalTransactions) * 100) : 0;
+    const sellPercentage = totalTransactions > 0 ? Math.round((sellTransactions / totalTransactions) * 100) : 0;
+    
     // Update metrics
-    document.getElementById('total-transactions').textContent = data.total_transactions || 0;
-    document.getElementById('buy-percentage').textContent = (data.buy_percentage || 0) + '%';
-    document.getElementById('sell-percentage').textContent = (data.sell_percentage || 0) + '%';
-    document.getElementById('sentiment-score').textContent = data.sentiment_score || 'N/A';
+    document.getElementById('total-transactions').textContent = totalTransactions;
+    document.getElementById('buy-percentage').textContent = buyPercentage + '%';
+    document.getElementById('sell-percentage').textContent = sellPercentage + '%';
+    document.getElementById('sentiment-score').textContent = buyPercentage > 60 ? 'Bullish' : sellPercentage > 60 ? 'Bearish' : 'Nøytral';
     
     // Update table
     const tbody = document.getElementById('insider-tbody');
-    if (data.transactions && data.transactions.length > 0) {
-        tbody.innerHTML = data.transactions.map(transaction => `
+    if (transactions && transactions.length > 0) {
+        tbody.innerHTML = transactions.map(transaction => `
             <tr>
                 <td>${new Date(transaction.date).toLocaleDateString('no-NO')}</td>
                 <td><strong>${transaction.ticker}</strong></td>
-                <td>${transaction.company_name || 'N/A'}</td>
+                <td>${transaction.company || 'N/A'}</td>
                 <td>${transaction.insider_name}</td>
                 <td class="small">${transaction.position || 'N/A'}</td>
                 <td>
-                    <span class="badge ${transaction.transaction_type === 'buy' ? 'bg-success' : 'bg-danger'}">
-                        ${transaction.transaction_type === 'buy' ? 'Kjøp' : 'Salg'}
+                    <span class="badge ${transaction.transaction_type === 'Kjøp' ? 'bg-success' : 'bg-danger'}">
+                        ${transaction.transaction_type}
                     </span>
                 </td>
                 <td>${transaction.shares ? transaction.shares.toLocaleString('no-NO') : 'N/A'}</td>
-                <td>${transaction.price ? '$' + transaction.price.toFixed(2) : 'N/A'}</td>
-                <td>${transaction.value ? '$' + transaction.value.toLocaleString('no-NO') : 'N/A'}</td>
+                <td>kr ${transaction.price ? transaction.price.toFixed(2) : 'N/A'}</td>
+                <td>kr ${transaction.value ? transaction.value.toLocaleString('no-NO') : 'N/A'}</td>
                 <td>
-                    <span class="badge ${getSignalClass(transaction.signal)}">
-                        ${transaction.signal || 'Nøytral'}
+                    <span class="badge ${getSignalClass(transaction.ownership_change)}">
+                        ${transaction.ownership_change > 0 ? 'Positiv' : transaction.ownership_change < 0 ? 'Negativ' : 'Nøytral'}
                     </span>
                 </td>
             </tr>
@@ -289,14 +301,10 @@ function updateInsiderData(data) {
     }
 }
 
-function getSignalClass(signal) {
-    switch(signal?.toLowerCase()) {
-        case 'bullish': return 'bg-success';
-        case 'bearish': return 'bg-danger';
-        case 'strong_buy': return 'bg-success';
-        case 'strong_sell': return 'bg-danger';
-        default: return 'bg-secondary';
-    }
+function getSignalClass(ownershipChange) {
+    if (ownershipChange > 2) return 'bg-success';
+    if (ownershipChange < -2) return 'bg-danger';
+    return 'bg-secondary';
 }
 
 function refreshInsiderData() {

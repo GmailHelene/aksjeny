@@ -229,3 +229,127 @@ class AnalysisService:
                 'details': f'Kunne ikke generere anbefaling: {str(e)}'
             }
 
+    @staticmethod
+    def get_sentiment_analysis(symbol):
+        """Get sentiment analysis for a specific symbol"""
+        try:
+            # Demo sentiment data based on symbol
+            sentiment_data = {
+                'EQNR.OL': {
+                    'overall_score': 75,
+                    'sentiment_label': 'Bullish',
+                    'news_score': 68,
+                    'social_score': 82,
+                    'volume_trend': 'Økning',
+                    'market_sentiment': 72,
+                    'fear_greed_index': 65,
+                    'vix': 18.5,
+                    'market_trend': 'bullish',
+                    'sentiment_reasons': [
+                        'Positive nyheter om olje prisøkning',
+                        'Sterke kvartalstall ventes',
+                        'Høy sosial medier aktivitet'
+                    ]
+                },
+                'DNB.OL': {
+                    'overall_score': 45,
+                    'sentiment_label': 'Nøytral',
+                    'news_score': 42,
+                    'social_score': 48,
+                    'volume_trend': 'Stabil',
+                    'market_sentiment': 45,
+                    'fear_greed_index': 55,
+                    'vix': 16.2,
+                    'market_trend': 'neutral',
+                    'sentiment_reasons': [
+                        'Blandet markedsreaksjon på banksektoren',
+                        'Rentebeslutninger ventes',
+                        'Moderat investorinteresse'
+                    ]
+                },
+                'MOWI.OL': {
+                    'overall_score': 62,
+                    'sentiment_label': 'Positiv',
+                    'news_score': 58,
+                    'social_score': 66,
+                    'volume_trend': 'Økning',
+                    'market_sentiment': 62,
+                    'fear_greed_index': 60,
+                    'vix': 17.1,
+                    'market_trend': 'bullish',
+                    'sentiment_reasons': [
+                        'Høye laksepriser støtter optimisme',
+                        'Positive markedsutsikter',
+                        'Økt analytiker interesse'
+                    ]
+                }
+            }
+            
+            # Return symbol-specific data or default
+            return sentiment_data.get(symbol, {
+                'overall_score': 50,
+                'sentiment_label': 'Nøytral',
+                'news_score': 50,
+                'social_score': 50,
+                'volume_trend': 'Stabil',
+                'market_sentiment': 50,
+                'fear_greed_index': 50,
+                'vix': 20.0,
+                'market_trend': 'neutral',
+                'sentiment_reasons': [
+                    'Begrenset markedsdata tilgjengelig',
+                    'Nøytral markedsstemning',
+                    'Avventer flere nyheter'
+                ]
+            })
+            
+        except Exception as e:
+            print(f"Error in sentiment analysis: {e}")
+            return {
+                'overall_score': 50,
+                'sentiment_label': 'Nøytral',
+                'news_score': 'N/A',
+                'social_score': 'N/A',
+                'volume_trend': 'N/A',
+                'market_sentiment': 50,
+                'fear_greed_index': 'N/A',
+                'vix': 'N/A',
+                'market_trend': 'neutral'
+            }
+
+    @staticmethod
+    def get_market_sentiment_overview():
+        """Get overall market sentiment overview"""
+        try:
+            return {
+                'overall_score': 58,
+                'sentiment_label': 'Moderat Positiv',
+                'news_score': 62,
+                'social_score': 54,
+                'volume_trend': 'Økning',
+                'market_sentiment': 58,
+                'fear_greed_index': 62,
+                'vix': 18.2,
+                'market_trend': 'bullish',
+                'market_summary': 'Markedet viser moderat optimisme med økt handelsvolum og positive nyhetsstrømmer.',
+                'top_sectors': [
+                    {'name': 'Energi', 'sentiment': 72, 'trend': 'bullish'},
+                    {'name': 'Teknologi', 'sentiment': 65, 'trend': 'bullish'},
+                    {'name': 'Finans', 'sentiment': 48, 'trend': 'neutral'},
+                    {'name': 'Sjømat', 'sentiment': 60, 'trend': 'bullish'}
+                ]
+            }
+        except Exception as e:
+            print(f"Error in market sentiment overview: {e}")
+            return {
+                'overall_score': 50,
+                'sentiment_label': 'Nøytral',
+                'news_score': 'N/A',
+                'social_score': 'N/A',
+                'volume_trend': 'N/A',
+                'market_sentiment': 50,
+                'fear_greed_index': 'N/A',
+                'vix': 'N/A',
+                'market_trend': 'neutral'
+            }
+

@@ -67,12 +67,20 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary add-to-watchlist" data-ticker="{{ ticker }}">
-                                                <i class="bi bi-star"></i>
-                                            </button>
-                                            <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-info-circle"></i> Detaljer
-                                            </a>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ url_for('stocks.details', symbol=ticker) }}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-info-circle"></i> Detaljer
+                                                </a>
+                                                <a href="{{ url_for('analysis.stock_analysis', symbol=ticker) }}" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-graph-up"></i> Analyse
+                                                </a>
+                                                <button class="btn btn-sm btn-success add-to-portfolio" data-ticker="{{ ticker }}">
+                                                    <i class="bi bi-plus-circle"></i> Kjøp
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning add-to-watchlist" data-ticker="{{ ticker }}">
+                                                    <i class="bi bi-star"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -96,6 +104,7 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Add to watchlist functionality
     document.querySelectorAll('.add-to-watchlist').forEach(btn => {
         btn.addEventListener('click', async function() {
             const ticker = this.dataset.ticker;
@@ -111,8 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (response.ok) {
                     this.innerHTML = '<i class="bi bi-star-fill"></i>';
-                    this.classList.remove('btn-outline-primary');
-                    this.classList.add('btn-primary');
+                    this.classList.remove('btn-outline-warning');
+                    this.classList.add('btn-warning');
                     showToast('Lagt til i favoritter!', 'success');
                 } else {
                     throw new Error('Failed to add to watchlist');
@@ -120,6 +129,40 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Error:', error);
                 showToast('Kunne ikke legge til i favoritter', 'error');
+            }
+        });
+    });
+    
+    // Add to portfolio functionality
+    document.querySelectorAll('.add-to-portfolio').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const ticker = this.dataset.ticker;
+            try {
+                const response = await fetch('/api/portfolio/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ 
+                        ticker: ticker,
+                        quantity: 1,
+                        action: 'buy'
+                    })
+                });
+                
+                if (response.ok) {
+                    this.innerHTML = '<i class="bi bi-check-circle"></i> Lagt til';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-success');
+                    this.disabled = true;
+                    showToast(`${ticker} lagt til i portefølje!`, 'success');
+                } else {
+                    throw new Error('Failed to add to portfolio');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Kunne ikke legge til i portefølje', 'error');
             }
         });
     });

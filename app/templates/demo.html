@@ -145,15 +145,15 @@
                     <div class="mb-3">
                         <i class="bi bi-crown fs-1"></i>
                     </div>
-                    <h4>🎁 Spesialtilbud!</h4>
-                    <p class="mb-3">Få 30% rabatt på din første måned når du oppgraderer fra demo</p>
+                    <h4>⭐ Oppgrader til Premium</h4>
+                    <p class="mb-3">Få tilgang til alle funksjoner og sanntidsdata</p>
                     <div class="mb-3">
-                        <div class="fs-2 fw-bold">279,-</div>
-                        <small class="text-decoration-line-through opacity-75">399,-</small>
-                        <div class="small">første måned</div>
+                        <div class="fs-2 fw-bold">399,-</div>
+                        <div class="small">per måned</div>
+                        <div class="small text-muted">eller 2999,- per år (spar 25%)</div>
                     </div>
-                    <button class="btn btn-light btn-lg w-100 mb-3" onclick="window.location.href='/subscription'">
-                        <i class="bi bi-rocket"></i> Start Premium
+                    <button class="btn btn-light btn-lg w-100 mb-3" onclick="window.location.href='/pricing'">
+                        <i class="bi bi-rocket"></i> Velg Abonnement
                     </button>
                     <div class="row text-start small">
                         <div class="col-6">
@@ -701,19 +701,19 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
                             <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-                                <span class="badge bg-light text-dark px-3 py-2">📊 Real-time kurser</span>
-                                <span class="badge bg-light text-dark px-3 py-2">🤖 AI-analyser</span>
-                                <span class="badge bg-light text-dark px-3 py-2">📈 Porteføljesporing</span>
-                                <span class="badge bg-light text-dark px-3 py-2">🔔 Smart varsling</span>
-                                <span class="badge bg-light text-dark px-3 py-2">📱 Mobil app</span>
+                                <span class="badge bg-light text-dark px-3 py-2" style="color: #000 !important; font-weight: bold;">📊 Real-time kurser</span>
+                                <span class="badge bg-light text-dark px-3 py-2" style="color: #000 !important; font-weight: bold;">🤖 AI-analyser</span>
+                                <span class="badge bg-light text-dark px-3 py-2" style="color: #000 !important; font-weight: bold;">📈 Porteføljesporing</span>
+                                <span class="badge bg-light text-dark px-3 py-2" style="color: #000 !important; font-weight: bold;">🔔 Smart varsling</span>
+                                <span class="badge bg-light text-dark px-3 py-2" style="color: #000 !important; font-weight: bold;">📱 Mobil app</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <button class="btn btn-warning btn-lg px-4" onclick="showUpgradeModal()">
+                        <a href="{{ url_for('pricing.pricing') }}" class="btn btn-warning btn-lg px-4">
                             <i class="bi bi-crown"></i> Start ditt abonnement nå
-                        </button>
+                        </a>
                         <a href="{{ url_for('main.register') }}" class="btn btn-light btn-lg px-4">
                             <i class="bi bi-person-plus"></i> Opprett gratis konto
                         </a>
@@ -1156,4 +1156,6 @@ document.addEventListener('DOMContentLoaded', function() {
     showDemo('stocks');
 });
 </script>
+
+<script src="{{ url_for('static', filename='js/demo.js') }}"></script>
 {% endblock %}

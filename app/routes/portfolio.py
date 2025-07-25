@@ -54,7 +54,7 @@ def get_reportlab():
 portfolio = Blueprint('portfolio', __name__, url_prefix='/portfolio')
 
 @portfolio.route('/overview')
-@access_required
+@login_required
 def overview():
     """Portfolio overview page"""
     try:
@@ -149,7 +149,7 @@ def overview():
                              message='Kunne ikke laste porteføljedata.')
 
 @portfolio.route('/watchlist')
-@access_required
+@login_required
 def watchlist():
     """User's watchlist"""
     try:
@@ -293,7 +293,7 @@ def stock_tips():
 
 
 @portfolio.route('/create', methods=['GET', 'POST'])
-@access_required
+@login_required
 def create_portfolio():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()

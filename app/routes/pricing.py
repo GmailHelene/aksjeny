@@ -96,13 +96,13 @@ def index():
             {
                 'name': 'Pro',
                 'price': '399 kr/mnd', 
-                'price_yearly': '3499 kr/år',
+                'price_yearly': '2999 kr/år',
                 'features': [
                     'Alt i Basic +',
                     'AI-drevne anbefalinger',
                     'Ubegrensede analyser',
                     'Avanserte tekniske verktøy',
-                    'Sanntidsdata',
+                    'Santtidsdata',
                     'Porteføljeoptimalisering',
                     'Prioritert support'
                 ],
@@ -164,7 +164,7 @@ def api_pricing_plans():
                 'id': 'pro',
                 'name': 'Pro',
                 'price_monthly': 399,
-                'price_yearly': 3499,
+                'price_yearly': 2999,
                 'currency': 'NOK'
             },
             {

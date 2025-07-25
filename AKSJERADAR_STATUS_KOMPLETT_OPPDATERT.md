@@ -1,241 +1,158 @@
 # 🚀 AKSJERADAR - KOMPLETT STATUS RAPPORT
 **Oppdatert: 23. juli 2025**
+NØDVENDIGE FIKS PR 25.07, I AKSJENY GITHUB REPOET:
 
-#**FAQ Content Updates**
-Endre ofte stilte spørsmål: "Kan jeg si opp når som helst?
-Ja, du kan avslutte abonnementet når som helst fra kontosiden din.
-Er det bindingstid?
-Nei, det er ingen bindingstid på noen av planene" 
-Riktig info som det må endres til: 
- Kun betaling med kort, hvis man avslutter abonnementet så løper det ut perioden man har betalt for mtp sitt abb. Enten da ut måneden, ,eller ut året, og løper videre neste mnd. eller år, om det ikke sies opp i forkant av utløpt periode i gjeldende kjøpt abbonement.
+/Demo,  ingen av knapene og funksjonene her fungerer, det  må fikses 
+Spesialtilbud blokken, den må endres til info om vanlig abb og evt årsabb, og riktige priser som er 399,- og 2999,-    
 
+Lenkene tiul kjøp hos stripe fungerr ikke,de må gå til stripe der det såtr Velg månedlig, og velg årlig
 
-Overskrift: "Alle" Må her være "Oslo børs" 
-https://aksjeradar.trade/stocks/list/oslo
+Fortsatt som uinnlogget eller bruker uten aktivt abb. har jeg tilgang til ALT for mye..jeg bør redirectes fra start til demo løsningen,og på alle ruter som skal kreve betalt abb. som egentlig er nesten alle utenom demo, login,register,prices,subscription, contact, prices oog slike, ..
 
- **Benjamin Graham Analysis Empty Results**
-- **Problem**: Benjamin Graham analyse returnerte ingen data når ticker testes
+Mobilnavigasjonen, altså der det står Aksjer, Analyser og Portefølje må styles riktig, nå er det aaaaalt for mye mellomrom mellom (under) hver av disse xD 
 
- **Insider Trading Search Functionality** 
-- **Problem**: Insider trading intelligence søk gjorde "ingenting" når brukere klikket søk
+Det oppstod en feil med screeneren. Prøv igjen senere.
+Får denne på /sentiment-view    og  /sentiment  (vet ikke om begge disse er nødvendige)
 
-Navigasjonsproblem:
- **Mobile Dropdown Padding** 
-- **Problem**: Ekstrem padding/spacing i mobile dropdown meny
-- **Problem**: Tre motstridende CSS-seksjoner for mobile dropdown styling
-- **Problem**: 
-https://aksjeradar.trade/analysis/prediction
-Her må vi også gjøre noe med navigasjonen 
-(hvertfall på pc, usikker om det er et problem på mobil også) men pga under- navigasjonen her med Teknisk analyse pris prediksjon osv, så er det på pc ikke mulig å bruke hovednavigjasjonen (elementet: analyse) man
-blir da bare "hoppet vekk" på en måte.
+analysis/currency-overview
+FÅr her error:
+500
+Teknisk feil
+Det oppstod en teknisk feil. Vi jobber med å løse problemet.
 
- **Screener Shows No Results** 
-- **Problem**: Screening funksjon viste "Ingen resultater" selv med mock data  
+Får her: 
 
-. **Enhanced Stock Details - Empty Tabs** 
-- **Problem**: Faner i enhanced stock details viste "Ingen anbefalinger tilgjengelig" i stedet for data
+/market-overview
+tabellen helt nederst her er overflødig (den det står "Valuta Markedsoversikt" i, helt nederst, og ingen valutadata tilgjengelig. Fordi en lik tabell finnes allerede (som nesten fungerer, denne tabellen må fikses mtp Kurs og N/A..)    litt høyere opp på siden.
 
+Popup med Navigasjonstips:  "  den blå, ønsker jeg fjernet
 
-**Insider Trading Search Functionality** 
-- **Problem**: Søkefunksjon på insider trading intelligens gjorde ingenting når brukere trykket søk
-**Status**: Search handler ikke implementert
+/stocks/list/currency (i)knappene her fungerer ikke
 
+/stocks/details/AAPL(OG ALLE ANDRE SIKKERT)
+graf/visualisering her under "Kursuvitkling" vises ikke
 
- **Enhanced Stock Details Page** 
-- **Problem**: Aksjedetaljer-siden trengte mer info, faner og analyser
+stocks/compare?csrf_token=IjNkOTYwMGY4OTEwZjBmYjk4ZjNmZWRmZDQ3ZjAxN2E4N2ViNjBhYTci.aILbeA.8C5cOMllspIhEuRMLKwam4wRsLY&tickers=EQNR.OL&tickers=DNB.OL&tickers=&tickers=&period=6mo&interval=1d&normalize=1
+Problem her, du ser det i urlen....og funksjonen "sammenlign" fungerer heller ikke
 
+/profile ERROR 500 her
 
-**Stock Compare Function** 
-- **Problem**: Rare URL-parametere og sammenligning fungerte ikke
+/my-subscription  her er det feil info, som helene721 skal jeg egentlig ha premium stående på den siden
 
+Og pruisene påd enne siden er feil.... Det skal være Måned og År, hvor Måned er 399,- og År er 2999,-
+Du kan kalle begge Premium
+Knappene der for "velg", fungerer heller ikke, de må lenke til riktig abb på riktig Stripe url
+Knappene på samme side som viser "rediger prodil" fungerer ikke, men den ved siden av fungerer "innstillinger", så du kan fjerne knappen helt som er "rediger profil" 
 
-#**Stocks/Prices Technical Errors** 
-- **Problem**: `/stocks/prices` ga "Kunne ikke laste prisdata" feil
+/portfolio/create
+teknisk feil
 
+/portfolio/tips
+Knappen "legg til tips" fungerer ikke 
 
-**Market Overview Analysis Page** 
-- **Problem**: Market overview side var ufullstendig med manglende markedssammendrag
- 
+/portfolio/overview
+får her feilen:  Feil: Kunne ikke laste porteføljedata.
 
-**News Search Functionality** 
-- **Problem**: Får errorpage når jeg forsøker gå videre inn på en nyhet
+/portfolio/
+Får her feilen: Det oppstod en teknisk feil ved lasting av porteføljer. Vennligst prøv igjen senere.
 
+/analysis/screener-view
+Fungerer ikke helt, under "ferdigdefinerte screener" så stå  det bare velg preset i dropdownen, men går ikke an å gjøre noe, og får error når jeg trykker på knappen under der "søk aksjer"
 
- **Warren Buffett Analysis Page** 
-- **Problem**: Viser ingenting når testet
+/analysis/
+her står det ignenting under "Markedssammendrag" 
 
-**Profile Page**   /profile
-- **Problem**: 500 error på `/profile`
 
+analysis/benjamin-graham
+  fungerer ikke
 
+/analysis/warren-buffett
+fungerer ikke
 
-**Access Control Security**   🚨 KRITISK  
-- **Problem**: Ikke-innlogget brukere fikk tilgang til beskyttede URLs via 5 usikre API endpoints
+  på /analysis/ai  så står det ingenting under "popuilære aksjer for analyse"
 
+/analysis/technical/?symbol=eqnr
+Her sår bare Avansert tardingview-style chart og laster og laster, vises ikke...
 
- **Short Analysis Error**
-- **Problem**: "En feil oppstod ved lasting av short analysen"
-- **Root Cause**: 
-  1. Duplikat routes: `short_analysis_view` og `short_analysis` konfliktet med hverandre
-  2. URL building error i `base.html` som refererte til ikke-eksisterende `short_analysis_view` route
--
+/backtest/
+Her på egentlig alle funksjonene/knappene under "populære strategier" så får jeg error og de fungerer ikke...
+Feil: Cannot read properties of null (reading 'getAttribute')
+(eneste av de som fungerer er den siste "Auto optimaliser")
 
-!**Pricing Overview Data Error**  
-- **Problem**: "Det oppstod en feil ved henting av prisdata" på priser-siden
-- **Root Cause**: 
-  1. Duplikat routes: `/prices` (main.py) og `/stocks/prices` (stocks.py) med forskjellige DataService metoder
-  2. Template formatting errors: Jinja2 formattering feilet på None/manglende verdier
-  3. Wrong DataService methods: main.py brukte `get_oslo_overview()` som ikke eksisterte
-  4. Template structure: Forventet `market_data` structure men fikk flat variabler  
+Knapper: på market-overview, og egentlig alle andre sider som har tabeller med aksjer, crypto, valuta osv, så ønsker jeg noen knapper på hver ticker, knapper som kan ta brukeren videre til andre relaterte sider for den tickereen, slik som: Detaljer, Analyse, Anbefaling, Utvikling, Kjøp, osv! Kjøp knappen kan lenke til en ekstern side hvor brukerne faktisk kan kjøpe tickeren, f.eks nordnet osv. 
 
+på alle analysis/ ruter, , altså analysis/technical, analysis/short-analysis, osv, så må subnavigasjonen
+vises, altså den som viser en "Knappe-meny" øverst på siden med knapper for "Teknisk analyse", "Prisprediksjon", "KI-analyse" osv...Nå vises denne knappe navigasjonen bare på /analysis/prediction og /analysis/ai. Kan du sørge for at den vises på alle analysis/ routes. 
 
-**AI Price Predictions Error** 
-- **Problem**: Feilmelding på AI prisprediksjoner side
+Implementer fulletendig løsning for at brukere kan sette opp varsling dersom de ønsker det
 
+Plutselig ser jeg denne beskjeden;
+"Du har brukt opp dine 3 daglige analyser. Oppgrader for ubegrenset tilgang."
+Dette må fjernes, som beskjed , og som funksjon.
+Løsningen vår skal være slik (!):  
+ALT er tilgjengelig for de som har enten mnd, eller års- abonnement betalt
+For de som IKKE har det, altsåa ktivt ebtalt abbonement, eller for brukere som ikke er innlogget, så har vi en demoløsning/side med en rekke funksjoner for å vise frem appen vår, som kan testes, og forhåpentligvis føre til at brukeren vil kjøpe abbonement .
+Men det er ikke noe restrictions på tid, eller antall analyser osv.
+Så dette må rettes opp i. 
 
-**Screener No Results** 
-- **Problem**: Viser bare "ingen resultater" uansett filter
 
+/analysis/recommendation
+Knappene øverst her, for teknisk analyse, prisprediksjon, ki-analyse osvosv, noen av de står alt for langt unna hverandre? Samle disse knappene mer på midten på en ryddig måte
 
-**Stock Details Tabs Incomplete** 
-- **Problem**: Manglende data under mange tabs (Anbefalinger, etc.)
+Knappene som viser en stjerne og "Favoritt" som lar brukeren legge til som favoritt / legge til i watchlist, virker ikke som at fungerer. 
 
 
- **Technical Analysis Popular Stocks** 
-- **Problem**: Bare "analyser" knapper 6+ ganger, ingen info
+"Kursutvikling" pås stocks/details/og de diverse tickersene, viser ingenting, her må det implementeres visualisering/graf
 
+Feil ved søk etter innsidehandel data." Denne erroren får jeg når jeg tester Innsidehandel Søk på /insider-trading, 
+Får også feil/fungerer heller ikke å trykke på Populære aksjer med insider aktivitet:
+EQNR.OL 12 DNB.OL 11 TEL.OL 10 MOWI.OL NOR.OL AKER.OL YAR.OL STL.OL AAPL MSFT GOOGL TSLA, noen av disse på denne siden, og fungerer heller ikke å trykke på "Last inn transaksjoner"
+Denne funksjonen/siden for innsidehandel, må også være mer synlig/lettere tilgjengelig, ønsker også at denne siden er i hovednavigasjonen vår
 
-**Market Overview Currency Tables** 
-- **Problem**: Valuta viser N/A, mangler action buttons
-- **Status**: Grunnstruktur finnes, trenger ekte data og UI forbedringer
+/stocks/
+Denme siden,  som innlogget betalende bruker er nå veldig simpel, den er grei øverst, men under "populære aksjer" tabellen, legg gjerne til flere andre tabeller, og annen praktisk data, info osv som du tenker betalte brukere ønsker ha her
 
-**Fundamental Analysis Redirect**
-- **Problem**: Sendes til forsiden istedenfor analyse
-- **Status**: Trenger ruting undersøkelse og fikse redirect logikk
 
-**Sentiment Analysis Loading Errors**
-- **Problem**: "Kunne ikke laste sentiment data"
-- **Status**: Trenger data service sjekk og fallback implementering
+/stocks/list/currency
+(i) knappen her fungerer ikke. Sjekk også andre steder etter (i) knapper og sjekk at alle fuingerer som de skal.
 
- **Pricing/Subscription Pages** 
-- **Problem**: Trenger Stripe integrasjon og abonnement logikk, Stripe skal være lagt inn riktig, men lenkene
-går ikke inn til Stripe. Template finnes, trenger backend implementering
-- **Status**: 
+kontakt@aksjeradar.no og support@aksjeradar.no er feil epost, disse må endres til: kontakt@aksjeradar.trade
 
-**Demo Solution Functionality**
-Demoløsningen virker ikke helt ferdig,eller funksjonabel. Det må kunne gå an å "teste" ved å klikke på knapper osv for demobrukere i demoløsningen. Kanskje legge til flere demofunksjoner og? Som dekker mer av den betalte fulle løsningen,
-og dermed øker kjøpelysten, og sjekk at løsningen ikke har noen errors.
+SPRÅKVELGER: Kan vi legge til et flagg e.l øverst eller nederst i appen som lar brukerenn endre fra norsk til engelsk språk? Sjekk isåfall til slutt at dette også fungerer, at all norsk tekst faktisk blir ovrersatt ttil engelsk tekst 
 
+GDPR og cookies: Sjekk/implementer at dette er implementert i forhold til krav!
 
-**Language Switcher** 
-- **Problem**: Ingen synlig språkvelger
-- **Status**: Trenger UI implementering og i18n setup
+SEO optimalisering: Sjekk/fiks at appen er 100% SEO optimalisert for google norge! =) 
 
- **Notification System**
-- **Status**: Trenger testing av varsling funksjonalitet
+Som innlogget helene721, så ser jeg at på min "forside" som innlogget bruker, under "Personlig oversikt" så er det nok noe demo/test data, fordi det stemmer jo ikke at jeg har "lagt til" noe i watchlist osv, så dette må settes til 0, gå gjennom alle disse under "siste aktivitet", "din aktivitet", og "personlig oversikt", og gjør så det bruktes FAKTISK data fra brukeren som er innlogget med aktivt abonnement her, og ikke noe demo mockup data på dette.
+Og på samme side: "Sett opp varsler
+Aktiver prisvarsler for dine favorittaksjer" Dette må være en knapp som fungerer og lenker til en side hvor man får satt opp varslinger på ordentlig  (lag en side med ritkig fungerende funksjonalitet for dette, dersom det ikke finnes, og fiks lenken deretter )
+Og lenken "Se full aktivitetslogg" fungerer ikke, den må fungere (lag en side med ritkig fungerende funksjonalitet for dette, dersom det ikke finnes, og fiks lenken deretter )
+(Forsiden som "ikke innnlogget" bruke,r eller bruker som ikke har aktivt abbonement,  skal være demo siden)
 
 
-** Som ikke innlogget bruker fikk jeg access til mange urls jeg ikke skulle hatt, det må fikses. De som ikke er innlogget, eller innlogget uten aktivt abbonement, må helst ikke se alle disse endepunktene noe sted,og hvis de allikevel havner inn pået,så må de redirecttes til demosiden
+📊 Real-time kurser
+🤖 AI-analyser
+📈 Porteføljesporing
+🔔 Smart varsling
+📱 Mobil app
+Dette her i "Imponert av det du ser-banneret på demo forsiden, er i hvit tekstfarge og må være i sort text font color,, for nå synes dette nesten ikke. Og knappen i samme banner "start ditt abonnement nå" virker ikke, den må gå til siden vår for priser og abonnementer.
 
 
-** På sidene hvor det står detaljer om de forskjellige tickers osv, så er det ikke hentet inn informasjon under alle tabbene, f.eks står det "ingen anbefaling tilgjengelig" under Anbefaling-tabben, sjekk de andre tabbene der også
-Innside handel intelligens virker heller ikke,skjer ingenting når jjeg tester funksjonen ved "søk" der
+Teksten på 
+Ofte stilte spørsmål, endre til dette:
+Hvordan fungerer plattformen med abonnement?
+Du får full tilgang til alle funksjoner med ditt abonnement, og det er ingen forskjell
+i tilgang til full funksjonalitet om du har Premium måneds-abonnement, eller Premium års-abonnement. 
 
-** Implementere ekte valutadata og action buttons  
-** Screener data**: Koble til ekte screening logikk
-** Forbedre insider trading synlighet
+Hvordan betaler jeg?
+Du kan betale med kort (Visa, Mastercard). Alle priser vises i norske kroner (kr) og er inkl. mva.
 
+Er det bindingstid og kan jeg si opp når som helst?
+Ditt abonnement fortsetter til slutten av betalingsperioden. Hvis du avslutter abonnementet ditt, løper det ut perioden du har betalt for (månedlig eller årlig), og fornyes automatisk neste periode hvis det ikke sies opp i forkant av utløpsdato for abonnert periode.
 
-** Template errors i compare.html er kun VS Code linting warnings (Jinja2 syntax)
-Og: Gå nøye gjennom alle templates,spesielt under: /seo, /Stocks, /pro, /Resources, /Portfolio, /payments , /Notifications,
-/market_intel, /insider trding, /features, /external_data, /analysis, og /Advanced_feautures, og sjekk at 
-alle undertemplates der er implementeret og synlig , og på riktig sted i riktig navigasjon/subnavigasjon. Forsøk å dekk alt dette i hovednavigasjonen på en god, full og riktig måte, og sjekk at alt innhold er riktig, ikke mangefullt, ikke med errors, henter inn riktig data og det fungerer, og alle funksjoner/knapper fungerer overalt.
-Samtidig rydd gjerne opp i templates: Audit existing templates to identify duplicates and conflicts
-Remove any unused or redundant templates, Ensure all templates are linked correctly in the Flask routes.
 
-
-** stocks/details -tickers sidene,mangler info på tabbene: Anbefaling
-Analyse
-Firma-info
-
-** Fjern den blå popupen som kommer opp med navigasjonstips
-
-** Pass på at all innhenting av data og services fungerer som det skal så det ikke brukes noe demo og fallbackdata annt enn UNNTAKSVIS dersom servicen til xx er nede f.eks
-
-
-** https://aksjeradar.trade/stocks/details/EQNR.OL
-På disse details/---- sidene så savner jeg mer info, tabber til andre funksjoner som anbealinger, analysering,osv
-implementer alt vi har på denne måten! Hent også gjerne inn data som viser informasjon om firmaet osv
-
-** https://aksjeradar.trade/stocks/compare?csrf_token=IjEyYmJiMTg5ZWNiYjE1MzIyZDE0OTZlNGRiN2U5ZjhlMmU1NGI2Yjgi.aH_Lrw.YOcmMYWfizR3mHqPIJl-R9X9vsA&tickers=EQNR.OL&tickers=DNB.OL&tickers=eqnr&tickers=&period=6mo&interval=1d&normalize=1
-enne har rare greiern i urlen, og sammenlign funksjonen fungerer ikke, skjer ingenting nårjeg prøver sammenlikne noen aksjer
-
-
-** https://aksjeradar.trade/analysis/
-Her savner jeg info under overskriften "Markedssammendrag"
-
-
-** https://aksjeradar.trade/analysis/market-overview
-Nederste tabell "valuta markedsoversikt" viser ingenting, men samtidig er det en til tabell som
-viser valuta markedsoversikt over denne (ved siden av kryptovaluta tabellen) men denne viser kurs N/A, det må fkses
-så det blir hentet inn faktiske ekte data 
-Også ønsker jeg flere forskjellige knapper til høyre på hver av disse tabellene som kan sende brukeren videre til relevante andre sider (for f.eks detaljer, sammenlikning, kjøp (der det finnes direkte kjøplenke til f.eks nordnet e.l)
-
-
-** https://aksjeradar.trade/analysis/fundamental
-Når jeg tester velg en aksje for analyse her, og velger en aksje og prøver, så blir jeg bare sendt til aksjeradar forsiden
-
-https://aksjeradar.trade/analysis/sentiment
-Her får jeg feilmeldingen "Kunne ikke laste sentiment data" før jeg rekker prøve funksjonen, og når jeg prøver, så skjer det ingenting, siden bare reloader
-
-** https://aksjeradar.trade/analysis/screener-view
-Her står det ingenting fra før av (altså data ) og det kommer heller ikke opp noe når jeg tester med "fitlrer aksjer"og har ingen filtre valgt, altså det burde da kommet opp masse
-
-** https://aksjeradar.trade/news/search?
-Her finner den ingenting når jeg forsøker å søke etter nyheter med ingen filtre, så her er det noe galt
-
-
-** https://aksjeradar.trade/pricing/pricing/
-Denne siden her skal være for priser og abbonement, men under "profil"-"Mitt abonnement" i navigasjonen
-så må det brukes en annen side/template som forteller brukeren om hens evt. aktive abbonement
-Og det må være lenker til kjøp av de ulike abbonementene der det er knapper til disse, som fungerer inn til stripe og riktig abbonementkjøp
-
-
-** På Forsiden som innlogget bruker, der er det litt info
-som ikke stemmer, men er placeholderinfo tror jeg, sånn som under: "Siste aktivitet", dette må være ekte,
-og "Sett opp varsler" må fungere på ordentlig, kan du fikse dette, med en side som fungerer for dette og riktig lenking fra forsiden som innlogget bruker.
-
- ** Premium Markedsoversikt på forsiden, kan du fjerne
- den mørkegrå overlay/bakgrunnen der
-
- ** https://aksjeradar.trade/analysis/ai
- kan du fjerne den mørkegrå overlay/bakgrunnen der
-
-
-** Sjekk at populære aksjer-listen faktisk inneholder data
-
-NYE FUNKSJONER ØNSKET:
-** Er dette noe vi burde implementere?
-pip install -U git+https://github.com/mariostoev/finviz
-To use the screener feature, you need to manually set your desired filters on the Finviz website and then use the generated URL parameters in your code. Here is an example:
-
-from finviz.screener import Screener
-
-filters = ['exch_nasd', 'idx_sp500'] # Shows companies in NASDAQ which are in the S&P500
-stock_list = Screener(filters=filters, table='Performance', order='price') # Get the performance table and sort it by price ascending
-
-# Export the screener results to .csv
-stock_list.to_csv("stock.csv")
-
-# Create a SQLite database
-stock_list.to_sqlite("stock.sqlite3")
-
-# Loop through 10th - 20th stocks and print symbol and price
-for stock in stock_list[9:19]:
-print(stock['Ticker'], stock['Price'])
-
-
-** Her er noen store konkurrenter, kan vi lære av de, og se hva de har av funksjoner og annet, og implementere 
+Og her er noen store konkurrenter, kan vi lære av de, og se hva de har av funksjoner og annet, og implementere 
 det vi enda ikke har?:
 https://www.stockmarketguides.com/
 https://www.cmcmarkets.com/
@@ -246,3 +163,9 @@ https://www.fool.com/
 https://www.morningstar.com/
 https://www.ii.co.uk/ii-accounts/trading-account
 https://www.etoro.com/stocks/trading-and-investing-in-stocks
+
+
+- 
+Rydd gjerne opp i filer vi ikke bruker lenger! 
+-
+Evt. implementere nødvendige sikkerhetstiltakn mtp at appen nå skal gå live , og andre ting vi evt. bør tenke på og implementere i forhold til live lansering?

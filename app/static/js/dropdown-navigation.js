@@ -319,30 +319,3 @@ style.textContent = `
 document.head.appendChild(style);
 
 console.log('Enhanced dropdown navigation initialization complete');
-
-// Add help notification for PC users
-if (window.innerWidth > 768) {
-    // Show a brief help notification after page load
-    setTimeout(() => {
-        const helpDiv = document.createElement('div');
-        helpDiv.innerHTML = `
-            <div style="position: fixed; top: 20px; right: 20px; background: #007bff; color: white; padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-size: 14px; max-width: 300px;">
-                <div style="font-weight: bold; margin-bottom: 5px;">🎯 Navigasjonstips:</div>
-                <div style="font-size: 12px;">
-                    • Klikk på pilene (▼) for å åpne menyer<br>
-                    • Klikk på teksten for direkte navigering<br>
-                    • Bruk Alt+1-5 for hurtignavigering
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 5px; right: 8px; background: none; border: none; color: white; font-size: 16px; cursor: pointer;">×</button>
-            </div>
-        `;
-        document.body.appendChild(helpDiv);
-        
-        // Auto-remove after 8 seconds
-        setTimeout(() => {
-            if (helpDiv.parentElement) {
-                helpDiv.remove();
-            }
-        }, 8000);
-    }, 2000);
-}

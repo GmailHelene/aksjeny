@@ -470,17 +470,20 @@ async function runBacktest() {
     try {
         showLoading('Kjører backtest...');
         
-        const response = await fetch('/portfolio_advanced/backtest', {
+        const response = await fetch('/backtest/api/run_backtest', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
             body: JSON.stringify({
-                symbols: symbols,
-                weights: weights,
+                symbol: symbols[0], // Use first symbol for now
+                strategy: 'moving_average',
+                period_short: 20,
+                period_long: 50,
                 start_date: startDate,
-                end_date: endDate
+                end_date: endDate,
+                initial_capital: 100000
             })
         });
 

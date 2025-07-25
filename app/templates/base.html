@@ -8,7 +8,55 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    
+    <!-- SEO Meta Tags -->
     <title>{% block title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}</title>
+    <meta name="description" content="{% block description %}Aksjeradar er Norges mest avanserte aksjeplattform med AI-drevne analyser, sanntidsdata og profesjonelle verktøy for aksjehandel. Få tilgang til teknisk analyse, fundamental analyse og markedsinnsikt.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}aksjer Norge, aksjeanalyse, teknisk analyse, fundamental analyse, Oslo Børs, aksjekurser, investering, trading, AI analyse, markedsdata, aksjetips{% endblock %}">
+    <meta name="author" content="Aksjeradar Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}AI-drevne aksjeanalyser og sanntidsdata for Oslo Børs og internasjonale markeder. Profesjonelle verktøy for moderne investorer.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/aksjeradar-og.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:site_name" content="Aksjeradar">
+    <meta property="og:locale" content="nb_NO">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{% block twitter_title %}Aksjeradar - Norges smarteste aksjeplattform{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}AI-drevne aksjeanalyser og sanntidsdata for Oslo Børs og internasjonale markeder.{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/aksjeradar-twitter.jpg', _external=True) }}{% endblock %}">
+    
+    <!-- Structured Data for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Aksjeradar",
+        "description": "Norges smarteste aksjeplattform med AI-drevne analyser og sanntidsdata",
+        "url": "https://aksjeradar.trade",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "399",
+            "priceCurrency": "NOK",
+            "priceValidUntil": "2025-12-31"
+        },
+        "provider": {
+            "@type": "Organization",
+            "name": "Aksjeradar",
+            "url": "https://aksjeradar.trade",
+            "email": "kontakt@aksjeradar.trade"
+        }
+    }
+    </script>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -113,11 +161,11 @@
         }
     }
 
-    /* Fix mobile menu padding issues - completely revised */
+    /* Fix mobile menu padding issues - optimized for better spacing */
     @media (max-width: 768px) {
         .navbar-toggler {
             border: none;
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.4rem;
         }
         
         .navbar-collapse {
@@ -126,11 +174,11 @@
         }
         
         .navbar-nav {
-            padding: 0.3rem 0 !important;
+            padding: 0.1rem 0 !important;
             margin: 0 !important;
             background: #343a40;
-            border-radius: 0.5rem;
-            margin-top: 0.3rem !important;
+            border-radius: 0.4rem;
+            margin-top: 0.2rem !important;
         }
         
         .navbar-nav .nav-item {
@@ -147,6 +195,7 @@
             padding: 0.5rem 1rem !important;
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
+            margin: 0 !important;
         }
         
         .navbar-nav .nav-link:hover {
@@ -156,7 +205,7 @@
         
         .navbar-nav .dropdown-toggle::after {
             float: right;
-            margin-top: 0.5rem;
+            margin-top: 0.4rem;
         }
         
         .navbar-nav .dropdown-menu {
@@ -363,6 +412,13 @@
                         </ul>
                     </li>
 
+                    <!-- Innsidehandel -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('insider_trading.index') }}">
+                            <i class="bi bi-eye-slash me-2"></i>Innsidehandel
+                        </a>
+                    </li>
+
                     <!-- Portefølje Dropdown (for logged in users) -->
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -450,13 +506,13 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Abonnementer</h6></li>
                             <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-credit-card me-2"></i>Månedlig (199 kr)
+                                <i class="bi bi-credit-card me-2"></i>Premium Månedlig (399 kr)
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-star me-2"></i>Premium (399 kr)
+                                <i class="bi bi-diamond me-2"></i>Premium Årlig (2999 kr)
                             </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('pricing.index') }}">
-                                <i class="bi bi-diamond me-2"></i>Årlig (3499 kr)
+                            <li><a class="dropdown-item" href="mailto:kontakt@aksjeradar.trade?subject=Teams%20abonnement">
+                                <i class="bi bi-building me-2"></i>Teams (Kontakt oss)
                             </a></li>
                             {% if current_user.is_authenticated %}
                             <li><hr class="dropdown-divider"></li>
@@ -579,6 +635,87 @@
                 window.refreshCache();
             }
         }
+    });
+    </script>
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- TradingView Charts -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsentBanner" class="cookie-consent-banner" style="display: none;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <p class="mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Vi bruker cookies for å forbedre din opplevelse. Ved å fortsette å bruke siden samtykker du til vår bruk av cookies.
+                        <a href="{{ url_for('main.privacy') }}" class="text-light">Les mer om personvern</a>
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button type="button" class="btn btn-sm btn-outline-light me-2" onclick="manageCookies()">
+                        Administrer
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="acceptCookies()">
+                        Godta alle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .cookie-consent-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 123, 255, 0.95);
+        color: white;
+        padding: 15px 0;
+        z-index: 9999;
+        backdrop-filter: blur(10px);
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .cookie-consent-banner p {
+        font-size: 0.9rem;
+    }
+    
+    .cookie-consent-banner a {
+        text-decoration: underline;
+    }
+    </style>
+
+    <script>
+    // Cookie Consent Management
+    function checkCookieConsent() {
+        const consent = localStorage.getItem('cookieConsent');
+        if (!consent) {
+            document.getElementById('cookieConsentBanner').style.display = 'block';
+        }
+    }
+
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        localStorage.setItem('cookieConsentDate', new Date().toISOString());
+        document.getElementById('cookieConsentBanner').style.display = 'none';
+        
+        // Initialize analytics or other cookies here
+        console.log('✅ Cookie consent accepted');
+    }
+
+    function manageCookies() {
+        // For now, redirect to GDPR page - can be enhanced with modal
+        window.location.href = "{{ url_for('main.privacy') }}";
+    }
+
+    // Check consent on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkCookieConsent();
     });
     </script>
     

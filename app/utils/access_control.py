@@ -128,19 +128,12 @@ def access_required(f):
             flash('Ditt abonnement har utløpt eller er ikke aktivt. Vennligst oppgrader for å fortsette.', 'warning')
             return redirect(url_for('pricing.pricing'))
             
-        # For unauthenticated users
+        # For unauthenticated users - redirect to demo
         else:
-            # Check trial status
-            trial_status = _check_trial_access()
-            
-            if trial_status.get('active'):
-                logging.warning("[ACCESS_REQUIRED] Trial active, allowing access.")
-                return f(*args, **kwargs)
-                
-            # If trial is expired or not started, redirect to /demo
+            # Always redirect unauthenticated users to demo
             from flask import Response, url_for
-            location = url_for('main.demo', source='trial_expired')
-            logging.warning(f"[ACCESS_REQUIRED] Trial expired or not started, redirecting to {location}")
+            location = url_for('main.demo', source='access_required')
+            logging.warning(f"[ACCESS_REQUIRED] Unauthenticated user, redirecting to {location}")
             return Response('', status=302, headers={'Location': location})
     
     return decorated_function
@@ -409,24 +402,26 @@ def is_trial_active():
     return trial_status['active']
 
 def check_access_and_redirect():
-    """Check access and redirect if necessary - FIXED"""
+    """Check access and redirect if necessary - STRICT ACCESS CONTROL"""
     from flask import request, redirect, url_for
     from flask_login import current_user
     
-    # Always allow access to exempt users
+    # Always allow access to exempt users (admin accounts)
     if current_user.is_authenticated and is_exempt_user():
         return None
     
-    # Public endpoints that should always be accessible (REMOVED main.index!)
+    # Public endpoints that should always be accessible
     public_endpoints = {
         'main.demo', 'main.login', 'main.register', 
         'main.about', 'main.contact', 'main.terms', 'main.privacy',
-        'health.health_check', 'static', 'main.landing'
+        'health.health_check', 'static', 'main.landing',
+        'pricing.pricing', 'pricing.subscription', 'pricing.manage_subscription',
+        'pricing.stripe_webhook', 'pricing.cancel_subscription'
     }
     
-    # API endpoints that should be accessible
+    # API endpoints that should be accessible for demo functionality
     api_endpoints = {
-        'api.get_crypto_trending', 'api.get_economic_indicators',
+        'api.demo_market_data_api', 'api.get_crypto_trending', 'api.get_economic_indicators',
         'api.get_market_sectors', 'api.search_stocks', 'api.market_data',
         'api.get_currency_rates', 'health.health_check'
     }
@@ -434,30 +429,11 @@ def check_access_and_redirect():
     if request.endpoint in public_endpoints or request.endpoint in api_endpoints:
         return None
     
-    # Now main.index is protected! Check if user has access
-    if request.endpoint == 'main.index':
-        # Check if user has active subscription or trial
-        if current_user.is_authenticated and _has_active_subscription():
-            return None  # Allow access
-        
-        # Check trial for unauthenticated users
-        if not current_user.is_authenticated:
-            trial_status = _check_trial_access()
-            if trial_status.get('active'):
-                return None  # Allow access
-        
-        # No access - redirect to demo
-        return redirect(url_for('main.demo', source='access_required'))
+    # For ALL other endpoints, check if user has access
+    # Check if user has active subscription
+    if current_user.is_authenticated and _has_active_subscription():
+        return None  # Allow access for paying users
     
-    # Redirect unauthorized users to demo for other protected endpoints
-    protected_endpoints = {
-        'stocks.stock_detail', 'analysis.benjamin_graham', 'analysis.warren_buffett',
-        'analysis.technical_analysis', 'portfolio.index', 'portfolio.view',
-        'news_bp.news_index', 'news_bp.category', 'news_bp.search',
-        'pricing.pricing', 'features.features'
-    }
-    
-    if not current_user.is_authenticated and request.endpoint in protected_endpoints:
-        return redirect(url_for('main.demo'))
-    
-    return None
+    # No access - redirect to demo for EVERYONE else
+    # This includes: main.index, all analysis routes, stocks, portfolio, etc.
+    return redirect(url_for('main.demo', source='access_required'))

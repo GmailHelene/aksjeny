@@ -4,7 +4,6 @@ from ..services.analysis_service import AnalysisService
 from ..services.advanced_technical_service import AdvancedTechnicalService
 from ..services.ai_service import AIService
 from ..services.data_service import DataService, OSLO_BORS_TICKERS, GLOBAL_TICKERS
-from ..services.usage_tracker import usage_tracker
 from ..utils.access_control import access_required, demo_access
 from ..models.user import User
 from ..models.portfolio import Portfolio, PortfolioStock
@@ -141,6 +140,30 @@ def technical():
                              technical_data=fallback_data,
                              show_analysis=bool(request.args.get('symbol')),
                              error="Kunne ikke laste teknisk analyse")
+
+@analysis.route('/tradingview')
+@analysis.route('/tradingview/')
+@access_required
+def tradingview():
+    """TradingView Advanced Charts page"""
+    try:
+        symbol = request.args.get('symbol', 'AAPL')
+        
+        # Get basic stock info
+        stock_info = DataService.get_stock_info(symbol)
+        
+        return render_template('analysis/tradingview.html',
+                             symbol=symbol,
+                             stock_info=stock_info,
+                             page_title=f"TradingView Charts - {symbol}")
+                             
+    except Exception as e:
+        logger.error(f"Error in TradingView page for symbol {symbol}: {e}")
+        flash('TradingView charts midlertidig utilgjengelig.', 'error')
+        return render_template('analysis/tradingview.html',
+                             symbol='AAPL',
+                             stock_info={},
+                             error=True)
 
 @analysis.route('/api/technical/<symbol>')
 @access_required
@@ -484,6 +507,7 @@ def market_overview():
                 converted_currency[symbol] = SimpleNamespace(
                     last_price=data.get('last_price', 0),
                     change_24h=data.get('change_24h', data.get('change_percent', 0)),
+                    change_percent=data.get('change_percent', 0),
                     change=data.get('change', 0),
                     volume=data.get('volume', 0),
                     signal=data.get('signal', 'HOLD'),
@@ -518,6 +542,7 @@ def market_overview():
                              oslo_stocks=oslo_data,
                              global_stocks=global_data,
                              crypto_data=converted_crypto,
+                             currency=converted_currency,
                              currency_data=converted_currency,
                              market_summaries=market_summaries)
                              
@@ -536,6 +561,7 @@ def market_overview():
                              oslo_stocks={},
                              global_stocks={},
                              crypto_data={},
+                             currency={},
                              currency_data={},
                              market_summaries=fallback_summaries,
                              error=True)
@@ -677,34 +703,42 @@ def benjamin_graham():
 def sentiment_view():
     """Social sentiment analysis"""
     try:
-        ticker = request.args.get('ticker')
+        ticker = request.args.get('ticker', 'AAPL')
         
-        if ticker:
-            # Return sentiment analysis for specific ticker
-            sentiment_data = {
-                'ticker': ticker.upper(),
-                'company_name': ticker.upper(),
-                'overall_sentiment': random.choice(['Very Positive', 'Positive', 'Neutral', 'Negative', 'Very Negative']),
-                'sentiment_score': round(random.uniform(0, 100), 1),
-                'sources': {
-                    'reddit': {'score': round(random.uniform(0, 100), 1), 'posts': random.randint(50, 500)},
-                    'twitter': {'score': round(random.uniform(0, 100), 1), 'tweets': random.randint(100, 1000)},
-                    'news': {'score': round(random.uniform(0, 100), 1), 'articles': random.randint(10, 50)},
-                    'forums': {'score': round(random.uniform(0, 100), 1), 'discussions': random.randint(20, 200)}
-                },
-                'trending_topics': ['earnings', 'growth', 'competition', 'innovation'],
-                'recommendation': random.choice(['Buy', 'Hold', 'Sell']),
-                'analysis_date': datetime.now().strftime('%Y-%m-%d')
-            }
-            return render_template('analysis/sentiment.html', 
-                                 sentiment=sentiment_data, 
-                                 ticker=ticker)
+        # Mock sentiment data for now
+        sentiment_data = {
+            'ticker': ticker.upper(),
+            'company_name': ticker.upper(),
+            'overall_sentiment': 'Positive',
+            'sentiment_score': 72.5,
+            'sources': {
+                'reddit': {'score': 68.2, 'posts': 145},
+                'twitter': {'score': 76.8, 'tweets': 432},
+                'news': {'score': 71.5, 'articles': 23},
+                'forums': {'score': 69.1, 'discussions': 87}
+            },
+            'trending_keywords': ['earnings', 'growth', 'innovation', 'bullish'],
+            'sentiment_history': [
+                {'date': '2025-07-20', 'score': 68.5},
+                {'date': '2025-07-21', 'score': 71.2},
+                {'date': '2025-07-22', 'score': 69.8},
+                {'date': '2025-07-23', 'score': 73.1},
+                {'date': '2025-07-24', 'score': 72.5}
+            ]
+        }
         
-        return render_template('analysis/sentiment.html')
+        return render_template('analysis/sentiment.html',
+                             sentiment_data=sentiment_data,
+                             ticker=ticker)
+        
     except Exception as e:
-        logger.error(f"Error in sentiment analysis: {e}")
-        flash("En feil oppstod ved lasting av sentiment-analysen.", "error")
-        return redirect(url_for('analysis.index'))
+        logger.error(f"Error in sentiment view: {e}")
+        flash('Sentiment analyse midlertidig utilgjengelig.', 'error')
+        return render_template('analysis/sentiment.html',
+                             sentiment_data={},
+                             ticker='AAPL',
+                             error=True)
+
 
 @analysis.route('/screener')
 @access_required  
@@ -713,7 +747,7 @@ def screener():
     return redirect(url_for('analysis.screener_view'))
 
 @analysis.route('/screener-view', methods=['GET', 'POST'])
-@demo_access
+@access_required
 def screener_view():
     """Advanced stock screening tool with Finviz integration"""
     try:
@@ -1030,26 +1064,18 @@ def ai():
     }
     
     if not ticker:
-        usage_summary = usage_tracker.get_usage_summary()
+        usage_summary = {}  # usage_tracker.get_usage_summary()
         return render_template('analysis/ai.html', 
                              ticker=None, 
                              usage_summary=usage_summary,
                              popular_stocks=popular_stocks)
     
-    # Check if user can make analysis requests
-    can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
-    
-    if not can_analyze:
-        flash(f'Du har brukt opp dine {daily_limit} daglige analyser. Oppgrader for ubegrenset tilgang.', 'warning')
-        return redirect(url_for('pricing.pricing'))
-    
-    # Track the analysis request
-    usage_tracker.track_analysis_request(ticker)
+    # For paid users, no analysis limits
     
     try:
         # Get AI analysis
         analysis = AIService.get_stock_analysis(ticker)
-        usage_summary = usage_tracker.get_usage_summary()
+        usage_summary = {}  # usage_tracker.get_usage_summary()
         return render_template('analysis/ai.html', 
                               ticker=ticker,
                               analysis=analysis,
@@ -1073,9 +1099,9 @@ def get_indicators():
         return jsonify({"error": "Symbol parameter is required"}), 400
     
     # Check if user can make analysis requests
-    can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
+    #can_analyze, daily_limit, remaining = #usage_tracker.can_make_analysis_request()
     
-    if not can_analyze:
+    #if not can_analyze:
         return jsonify({
             "error": f"Daily analysis limit reached ({daily_limit}/day). Upgrade for unlimited access.",
             "limit_reached": True,
@@ -1084,7 +1110,7 @@ def get_indicators():
         }), 429
     
     # Track the analysis request
-    usage_tracker.track_analysis_request(symbol)
+    #usage_tracker.track_analysis_request(symbol)
     
     try:
         # Endre til å bruke DataService.get_stock_data istedenfor get_stock_data
@@ -1118,9 +1144,9 @@ def get_trading_signals():
         return jsonify({"error": "Symbol parameter is required"}), 400
     
     # Check if user can make analysis requests
-    can_analyze, daily_limit, remaining = usage_tracker.can_make_analysis_request()
+    #can_analyze, daily_limit, remaining = #usage_tracker.can_make_analysis_request()
     
-    if not can_analyze:
+    #if not can_analyze:
         return jsonify({
             "error": f"Daily analysis limit reached ({daily_limit}/day). Upgrade for unlimited access.",
             "limit_reached": True,
@@ -1129,7 +1155,7 @@ def get_trading_signals():
         }), 429
     
     # Track the analysis request
-    usage_tracker.track_analysis_request(symbol)
+    #usage_tracker.track_analysis_request(symbol)
     
     try:
         # Endre til å bruke DataService.get_stock_data istedenfor get_stock_data
@@ -1302,27 +1328,30 @@ def short_analysis():
 @access_required
 def fundamental():
     """Fundamental analysis page"""
+    symbol = None
+    
     if request.method == 'POST':
+        symbol = request.form.get('symbol', '').strip().upper()
+    elif request.method == 'GET':
+        symbol = request.args.get('symbol', '').strip().upper()
+    
+    if symbol:
         try:
-            symbol = request.form.get('symbol', '').strip().upper()
-            if symbol:
-                # Get fundamental analysis data
-                analysis_data = AnalysisService.get_fundamental_analysis(symbol)
-                stock_info = DataService.get_stock_info(symbol)
-                analysis_score = AnalysisService.calculate_fundamental_score(symbol)
-                
-                return render_template('analysis/fundamental.html',
-                                     symbol=symbol,
-                                     analysis_data=analysis_data,
-                                     stock_info=stock_info,
-                                     analysis_score=analysis_score)
-            else:
-                flash('Vennligst skriv inn et aksjesymbol.', 'warning')
+            # Get fundamental analysis data
+            analysis_data = AnalysisService.get_fundamental_analysis(symbol)
+            stock_info = DataService.get_stock_info(symbol)
+            analysis_score = AnalysisService.calculate_fundamental_score(symbol)
+            
+            return render_template('analysis/fundamental.html',
+                                 symbol=symbol,
+                                 analysis_data=analysis_data,
+                                 stock_info=stock_info,
+                                 analysis_score=analysis_score)
         except Exception as e:
             logger.error(f"Error in fundamental analysis for {symbol}: {e}")
             flash('Feil ved fundamental analyse. Prøv igjen senere.', 'error')
     
-    # GET request or fallback
+    # GET request without symbol or fallback
     return render_template('analysis/fundamental.html',
                          symbol=None,
                          analysis_data=None,
@@ -1414,7 +1443,13 @@ def api_insider_analysis():
         
         # If specific ticker requested, focus on that
         if ticker:
-            tickers_to_use = [ticker] if ticker in popular_tickers else [ticker]
+            # Support both Norwegian and international tickers
+            if not ticker.endswith('.OL') and len(ticker) <= 4:
+                # Assume Norwegian ticker, add .OL suffix
+                ticker_search = ticker + '.OL'
+            else:
+                ticker_search = ticker
+            tickers_to_use = [ticker_search]
         else:
             tickers_to_use = popular_tickers
         

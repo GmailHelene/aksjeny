@@ -3,7 +3,7 @@ name = "aksjeradar"
 version = "1.0.0"
 description = "Norwegian stock analysis web application"
 authors = [
-    {name = "Aksjeradar Team", email = "contact@aksjeradar.no"}
+    {name = "Aksjeradar Team", email = "kontakt@aksjeradar.trade"}
 ]
 license = {text = "MIT"}
 readme = "README.md"

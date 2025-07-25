@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}TradingView Charts - {{ symbol if symbol else 'Aksjeradar' }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="bi bi-graph-up text-primary me-2"></i>
+                    TradingView Charts
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+                        <li class="breadcrumb-item active">TradingView</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> TradingView charts er midlertidig utilgjengelig.
+    </div>
+    {% endif %}
+
+    <!-- Stock Search -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5>Velg aksje for analyse</h5>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="symbolSearch" 
+                               placeholder="Skriv aksjesymbol (f.eks. AAPL, EQNR.OL)" 
+                               value="{{ symbol if symbol else '' }}">
+                        <button class="btn btn-primary" type="button" id="loadChart">
+                            <i class="bi bi-search"></i> Last chart
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    {% if stock_info %}
+                    <div class="text-md-end">
+                        <h6 class="mb-1">{{ symbol }}</h6>
+                        <p class="text-muted mb-0">{{ stock_info.get('shortName', symbol) }}</p>
+                        {% if stock_info.get('regularMarketPrice') %}
+                        <span class="h5 text-primary">{{ stock_info.regularMarketPrice }} {{ stock_info.get('currency', 'USD') }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main TradingView Widget -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-bar-chart me-2"></i>
+                Avansert Chart - {{ symbol if symbol else 'Velg aksje' }}
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div id="tradingview_main_widget" style="height: 600px;"></div>
+        </div>
+    </div>
+
+    <!-- Additional TradingView Widgets -->
+    <div class="row">
+        <!-- Market Overview -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">Markedsoversikt</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div id="tradingview_market_overview" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Analysis Widget -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">Teknisk Analyse Sammendrag</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div id="tradingview_technical_analysis" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Economic Calendar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h6 class="mb-0">Økonomisk Kalender</h6>
+        </div>
+        <div class="card-body p-0">
+            <div id="tradingview_economic_calendar" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentSymbol = '{{ symbol if symbol else "AAPL" }}';
+    
+    // Load main chart
+    loadMainChart(currentSymbol);
+    
+    // Load additional widgets
+    loadMarketOverview();
+    loadTechnicalAnalysis(currentSymbol);
+    loadEconomicCalendar();
+    
+    // Search functionality
+    document.getElementById('loadChart').addEventListener('click', function() {
+        const symbol = document.getElementById('symbolSearch').value.trim().toUpperCase();
+        if (symbol) {
+            window.location.href = `{{ url_for('analysis.tradingview') }}?symbol=${symbol}`;
+        }
+    });
+    
+    // Enter key search
+    document.getElementById('symbolSearch').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('loadChart').click();
+        }
+    });
+});
+
+function loadMainChart(symbol) {
+    if (typeof TradingView !== 'undefined') {
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": symbol,
+            "interval": "D",
+            "timezone": "Europe/Oslo",
+            "theme": "light",
+            "style": "1",
+            "locale": "no",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_main_widget",
+            "height": 600,
+            "studies": [
+                "RSI@tv-basicstudies",
+                "MACD@tv-basicstudies",
+                "MASimple@tv-basicstudies"
+            ],
+            "show_popup_button": true,
+            "popup_width": "1000",
+            "popup_height": "650",
+            "hide_side_toolbar": false,
+            "details": true,
+            "hotlist": true,
+            "calendar": true,
+            "watchlist": [
+                "AAPL",
+                "TSLA", 
+                "MSFT",
+                "EQNR.OL",
+                "DNB.OL"
+            ]
+        });
+    } else {
+        document.getElementById('tradingview_main_widget').innerHTML = 
+            '<div class="text-center p-5"><p class="text-muted">TradingView widgets ikke tilgjengelig</p></div>';
+    }
+}
+
+function loadMarketOverview() {
+    if (typeof TradingView !== 'undefined') {
+        new TradingView.MarketOverviewWidget({
+            "colorTheme": "light",
+            "dateRange": "12M",
+            "showChart": true,
+            "locale": "no",
+            "largeChartUrl": "",
+            "isTransparent": false,
+            "showSymbolLogo": true,
+            "showFloatingTooltip": false,
+            "width": "100%",
+            "height": "300",
+            "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
+            "plotLineColorFalling": "rgba(41, 98, 255, 1)",
+            "gridLineColor": "rgba(240, 243, 250, 0)",
+            "scaleFontColor": "rgba(120, 123, 134, 1)",
+            "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
+            "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
+            "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
+            "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
+            "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
+            "tabs": [
+                {
+                    "title": "Oslo Børs",
+                    "symbols": [
+                        {"s": "EQNR.OL", "d": "Equinor"},
+                        {"s": "DNB.OL", "d": "DNB"},
+                        {"s": "YAR.OL", "d": "Yara"},
+                        {"s": "MOWI.OL", "d": "Mowi"}
+                    ]
+                },
+                {
+                    "title": "US Stocks",
+                    "symbols": [
+                        {"s": "AAPL", "d": "Apple"},
+                        {"s": "TSLA", "d": "Tesla"},
+                        {"s": "MSFT", "d": "Microsoft"},
+                        {"s": "AMZN", "d": "Amazon"}
+                    ]
+                }
+            ],
+            "container_id": "tradingview_market_overview"
+        });
+    }
+}
+
+function loadTechnicalAnalysis(symbol) {
+    if (typeof TradingView !== 'undefined') {
+        new TradingView.TechnicalAnalysisWidget({
+            "interval": "1D",
+            "width": "100%",
+            "isTransparent": false,
+            "height": "300",
+            "symbol": symbol,
+            "showIntervalTabs": true,
+            "locale": "no",
+            "colorTheme": "light",
+            "container_id": "tradingview_technical_analysis"
+        });
+    }
+}
+
+function loadEconomicCalendar() {
+    if (typeof TradingView !== 'undefined') {
+        new TradingView.EconomicCalendarWidget({
+            "colorTheme": "light",
+            "isTransparent": false,
+            "width": "100%",
+            "height": "400",
+            "locale": "no",
+            "importanceFilter": "-1,0,1",
+            "container_id": "tradingview_economic_calendar"
+        });
+    }
+}
+</script>
+{% endblock %}

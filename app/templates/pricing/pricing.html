@@ -51,9 +51,12 @@
                                     <li class="mb-2">✓ Kanseller når som helst</li>
                                     <li class="mb-2 text-danger">✗ Dyrere på lang sikt</li>
                                 </ul>
-                                <a href="{{ url_for('pricing.index') }}" class="btn btn-outline-danger btn-lg w-100">
-                                    Velg månedlig
-                                </a>
+                                <form action="{{ url_for('stripe.create_checkout_session') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="subscription_type" value="monthly">
+                                    <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                                        Velg månedlig
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         
@@ -79,9 +82,12 @@
                                     <li class="mb-2">✓ Kanseller når som helst</li>
                                     <li class="mb-2 text-success"><strong>✓ Spar kr 1,789 per år</strong></li>
                                 </ul>
-                                <a href="{{ url_for('pricing.index') }}" class="btn btn-success btn-lg w-100 shadow">
-                                    <i class="bi bi-star-fill me-2"></i>Velg årlig - Spar penger!
-                                </a>
+                                <form action="{{ url_for('stripe.create_checkout_session') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="subscription_type" value="yearly">
+                                    <button type="submit" class="btn btn-success btn-lg w-100 shadow">
+                                        <i class="bi bi-star-fill me-2"></i>Velg årlig - Spar penger!
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -168,22 +174,22 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-4">
-                    <strong>Hvordan fungerer plattformen?</strong>
-                    <p>Du får full tilgang til alle funksjoner med ditt abonnement. Alle priser vises i norske kroner (kr) og er inkl. mva.</p>
+                    <strong>Hvordan fungerer plattformen med abonnement?</strong>
+                    <p>Du får full tilgang til alle funksjoner med ditt abonnement, og det er ingen forskjell i tilgang til full funksjonalitet om du har Premium måneds-abonnement, eller Premium års-abonnement.</p>
                 </div>
                 <div class="mb-4">
                     <strong>Hvordan betaler jeg?</strong>
-                    <p>Du kan betale med kort. Alle priser vises i norske kroner (kr) og er inkl. mva.</p>
+                    <p>Du kan betale med kort (Visa, Mastercard). Alle priser vises i norske kroner (kr) og er inkl. mva.</p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-4">
-                    <strong>Kan jeg si opp når som helst?</strong>
-                    <p>Kun betaling med kort. Hvis du avslutter abonnementet løper det ut perioden du har betalt for (månedlig eller årlig), og fornyes automatisk neste periode hvis det ikke sies opp i forkant av utløpsdato.</p>
+                    <strong>Er det bindingstid og kan jeg si opp når som helst?</strong>
+                    <p>Ditt abonnement fortsetter til slutten av betalingsperioden. Hvis du avslutter abonnementet ditt, løper det ut perioden du har betalt for (månedlig eller årlig), og fornyes automatisk neste periode hvis det ikke sies opp i forkant av utløpsdato for abonnert periode.</p>
                 </div>
                 <div class="mb-4">
-                    <strong>Er det bindingstid?</strong>
-                    <p>Nei, ingen bindingstid på noen av planene. Du kan si opp når som helst, men abonnementet fortsetter til slutten av betalingsperioden.</p>
+                    <strong>Hva får jeg med Premium?</strong>
+                    <p>Full tilgang til alle analyser, real-time data, AI-verktøy, portfolio tracking, varsler og alle premium funksjoner uten begrensninger.</p>
                 </div>
             </div>
         </div>

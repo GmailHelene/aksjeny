@@ -33,7 +33,7 @@ PRICING_PLANS = {
     },
     'pro_yearly': {
         'name': 'Pro Årlig',
-        'price': 3499,
+        'price': 2999,
         'currency': 'NOK', 
         'period': 'year',
         'features': [
