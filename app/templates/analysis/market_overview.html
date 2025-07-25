@@ -244,43 +244,6 @@
             </div>
         </div>
 
-        <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Valuta Markedsoversikt</h5>
-                </div>
-                <div class="card-body">
-                    {% if currency_data %}
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Par</th>
-                                    <th>Kurs</th>
-                                    <th>Endring</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for pair, data in currency_data.items() %}
-                                <tr>
-                                    <td><strong>{{ pair }}</strong></td>
-                                    <td>{{ data.rate|default('N/A') }}</td>
-                                    <td class="{{ 'text-success' if data.change >= 0 else 'text-danger' }}">
-                                        {{ "{:+.4f}".format(data.change|default(0)) }}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-4">
-                        <i class="fas fa-dollar-sign fa-2x text-muted mb-2"></i>
-                        <p class="text-muted">Ingen valutakurs data tilgjengelig.</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
         </div>
     </div>
 

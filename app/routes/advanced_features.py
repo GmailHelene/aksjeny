@@ -54,7 +54,7 @@ def index():
                              competitive_features=[],
                              error=str(e))
 
-@advanced_features.route('/market-overview')
+@advanced_features.route('/api/market-data')
 @access_required  # SECURITY FIX: Added missing access control
 def market_overview():
     """Real-time market overview API endpoint"""

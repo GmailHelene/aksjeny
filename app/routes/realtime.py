@@ -65,7 +65,7 @@ def realtime_charts(symbol):
         logger.error(f"Real-time charts error: {e}")
         return render_template('error.html', error=str(e)), 500
 
-@realtime.route('/market-overview')
+@realtime.route('/live-market-overview')
 @access_required
 def market_overview():
     """Market overview with multiple data sources"""
