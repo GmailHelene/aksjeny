@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="cache-bust" content="20250724_205000">
+    <meta name="cache-bust" content="20250725_133704">
     <!-- Force production cache refresh -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -165,7 +165,12 @@
     @media (max-width: 768px) {
         .navbar-toggler {
             border: none;
-            padding: 0.2rem 0.4rem;
+            padding: 0.4rem 0.6rem;
+            margin-right: 0.25rem;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
         
         .navbar-collapse {
@@ -174,11 +179,12 @@
         }
         
         .navbar-nav {
-            padding: 0.1rem 0 !important;
+            padding: 0.5rem 0 !important;
             margin: 0 !important;
             background: #343a40;
-            border-radius: 0.4rem;
-            margin-top: 0.2rem !important;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .navbar-nav .nav-item {
@@ -192,24 +198,30 @@
         }
         
         .navbar-nav .nav-link {
-            padding: 0.5rem 1rem !important;
+            padding: 0.75rem 1.25rem !important;
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
             margin: 0 !important;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
         }
         
-        .navbar-nav .nav-link:hover {
-            background: rgba(255,255,255,0.1);
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            background: rgba(255,255,255,0.15);
             color: white !important;
         }
         
         .navbar-nav .dropdown-toggle::after {
             float: right;
             margin-top: 0.4rem;
+            margin-left: auto;
         }
         
         .navbar-nav .dropdown-menu {
-            padding: 0 !important;
+            padding: 0.25rem 0 !important;
             margin: 0 !important;
             border: none;
             border-radius: 0;
@@ -221,32 +233,37 @@
         }
         
         .navbar-nav .dropdown-item {
-            padding: 0.2rem 1rem !important;
+            padding: 0.5rem 1.5rem !important;
             margin: 0 !important;
             color: rgba(255,255,255,0.8) !important;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
         
-        .navbar-nav .dropdown-item:hover {
-            background: rgba(255,255,255,0.1) !important;
+        .navbar-nav .dropdown-item:hover,
+        .navbar-nav .dropdown-item:focus {
+            background: rgba(255,255,255,0.15) !important;
             color: white !important;
             transform: none;
         }
         
         .navbar-nav .dropdown-header {
-            padding: 0.2rem 1rem 0.1rem !important;
+            padding: 0.5rem 1.5rem 0.25rem !important;
             color: rgba(255,255,255,0.6) !important;
             background: transparent;
             margin: 0;
             border: none;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
         
         .navbar-nav .dropdown-divider {
-            margin: 0.1rem 0;
+            margin: 0.25rem 0;
             border-color: rgba(255,255,255,0.2);
         }
         
@@ -257,6 +274,28 @@
         
         .navbar-nav .nav-item:last-child .dropdown-item {
             color: rgba(255,255,255,0.8) !important;
+        }
+        
+        /* Improve touch targets for mobile */
+        .navbar-nav .nav-link,
+        .navbar-nav .dropdown-item {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Add subtle animations for mobile */
+        .navbar-nav .nav-link,
+        .navbar-nav .dropdown-item {
+            transition: all 0.2s ease;
+        }
+        
+        /* Fix spacing around navigation */
+        .navbar {
+            padding: 0.5rem 0;
+        }
+        
+        .navbar .container {
+            padding: 0 1rem;
         }
     }
 
@@ -295,6 +334,190 @@
         .navbar-nav .dropdown-toggle[aria-expanded="true"]::after {
             content: ' ⏶';
         }
+    }
+
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 576px) {
+        /* Container padding fixes for small screens */
+        .container {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+        
+        /* Card and content spacing */
+        .card {
+            margin-bottom: 1rem;
+        }
+        
+        .card-body {
+            padding: 1rem 0.75rem;
+        }
+        
+        /* Button improvements for touch */
+        .btn {
+            min-height: 44px;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-lg {
+            min-height: 48px;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+        }
+        
+        /* Form improvements */
+        .form-control,
+        .form-select {
+            min-height: 44px;
+            font-size: 1rem;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        /* Table responsiveness */
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.5rem 0.25rem;
+            vertical-align: middle;
+        }
+        
+        /* Hero section mobile optimization */
+        .hero-section {
+            padding: 2rem 0 !important;
+        }
+        
+        .hero-section h1 {
+            font-size: 1.75rem !important;
+            line-height: 1.3;
+        }
+        
+        .hero-section .lead {
+            font-size: 1rem !important;
+        }
+        
+        /* Demo page mobile fixes */
+        .demo-features .col-md-4 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .pricing-card {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Analysis page mobile fixes */
+        .analysis-grid .col-lg-6,
+        .analysis-grid .col-md-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Chart container mobile optimization */
+        .chart-container {
+            height: 300px !important;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal mobile optimization */
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+        
+        /* Breadcrumb mobile fix */
+        .breadcrumb {
+            font-size: 0.85rem;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer mobile optimization */
+        .footer {
+            text-align: center;
+        }
+        
+        .footer .col-md-3,
+        .footer .col-md-4 {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    /* Tablet optimization */
+    @media (min-width: 577px) and (max-width: 991px) {
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        /* Navigation improvements for tablet */
+        .navbar-nav .nav-link {
+            padding: 0.5rem 0.75rem !important;
+        }
+        
+        /* Card grid for tablets */
+        .row .col-md-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Hero section tablet optimization */
+        .hero-section h1 {
+            font-size: 2.25rem;
+        }
+        
+        .hero-section .lead {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Fix viewport zoom issues on iOS */
+    @media screen and (max-width: 768px) {
+        select,
+        textarea,
+        input[type="text"],
+        input[type="password"],
+        input[type="datetime"],
+        input[type="datetime-local"],
+        input[type="date"],
+        input[type="month"],
+        input[type="time"],
+        input[type="week"],
+        input[type="number"],
+        input[type="email"],
+        input[type="url"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="color"] {
+            font-size: 16px !important;
+        }
+    }
+
+    /* Loading states for better UX */
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid transparent;
+        border-top: 2px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
     </style>
 </head>
@@ -574,8 +797,10 @@
     {% endwith %}
 
     <!-- Main Content -->
-    <main class="py-4">
-        {% block content %}{% endblock %}
+        <main class="main-content">
+        <div class="container-fluid px-2 px-md-3">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
     <!-- Footer -->

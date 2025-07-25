@@ -1,60 +1,119 @@
-/* cache-buster.js - Add to main.js to help clear browser cache */
+// Aksjeradar Cache Busting Utilities
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if the site version is different from the stored version
-    fetch('/static/version.txt?' + Date.now())
-        .then(response => response.text())
-        .then(version => {
-            const storedVersion = localStorage.getItem('aksjeradarVersion');
-            
-            if (storedVersion !== version) {
-                console.log('New version detected, clearing cache...');
-                
-                // Clear caches if possible
-                if ('caches' in window) {
-                    caches.keys().then(cacheNames => {
-                        return Promise.all(
-                            cacheNames.map(cacheName => {
-                                if (cacheName.startsWith('aksjeradar-cache')) {
-                                    return caches.delete(cacheName);
-                                }
-                            })
-                        );
-                    }).then(() => {
-                        console.log('Caches cleared successfully');
-                    });
-                }
-                
-                // Update stored version
-                localStorage.setItem('aksjeradarVersion', version);
-                
-                // Show a message to the user
-                const refreshMsg = document.createElement('div');
-                refreshMsg.style.position = 'fixed';
-                refreshMsg.style.top = '10px';
-                refreshMsg.style.left = '50%';
-                refreshMsg.style.transform = 'translateX(-50%)';
-                refreshMsg.style.backgroundColor = '#343a40';
-                refreshMsg.style.color = 'white';
-                refreshMsg.style.padding = '10px 20px';
-                refreshMsg.style.borderRadius = '5px';
-                refreshMsg.style.zIndex = '9999';
-                refreshMsg.textContent = 'Ny versjon av Aksjeradar er lastet. Trykk her for å oppdatere.';
-                refreshMsg.style.cursor = 'pointer';
-                
-                refreshMsg.addEventListener('click', function() {
-                    window.location.reload(true);
-                });
-                
-                document.body.appendChild(refreshMsg);
-                
-                // Remove the message after 10 seconds if not clicked
-                setTimeout(() => {
-                    if (document.body.contains(refreshMsg)) {
-                        document.body.removeChild(refreshMsg);
-                    }
-                }, 10000);
+class CacheBuster {
+    constructor() {
+        this.version = this.getCacheVersion();
+    }
+
+    getCacheVersion() {
+        const meta = document.querySelector('meta[name="cache-bust"]');
+        return meta ? meta.getAttribute('content') : Date.now();
+    }
+
+    // Force refresh all cached resources
+    refreshStaticAssets() {
+        const links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.includes('v=')) {
+                link.setAttribute('href', `${href}?v=${this.version}`);
             }
-        })
-        .catch(err => console.log('Failed to check version:', err));
+        });
+
+        const scripts = document.querySelectorAll('script[src]');
+        scripts.forEach(script => {
+            if (!script.src.includes('bootstrap') && !script.src.includes('cdn')) {
+                const src = script.getAttribute('src');
+                if (src && !src.includes('v=')) {
+                    script.setAttribute('src', `${src}?v=${this.version}`);
+                }
+            }
+        });
+    }
+
+    // API call to trigger server-side cache bust
+    async triggerServerCacheBust() {
+        try {
+            const response = await fetch('/api/cache/bust', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ Server cache busted:', result.timestamp);
+                return result.timestamp;
+            } else {
+                console.error('❌ Cache bust failed:', result.error);
+                return null;
+            }
+        } catch (error) {
+            console.error('❌ Cache bust error:', error);
+            return null;
+        }
+    }
+
+    // Force reload page with cache bust
+    hardRefresh() {
+        const url = new URL(window.location);
+        url.searchParams.set('v', this.version);
+        url.searchParams.set('cache_bust', Date.now());
+        window.location.href = url.toString();
+    }
+
+    // Clear browser storage
+    clearBrowserCache() {
+        // Clear localStorage
+        if (typeof Storage !== "undefined") {
+            localStorage.clear();
+            sessionStorage.clear();
+        }
+
+        // Clear service worker cache if available
+        if ('serviceWorker' in navigator && 'caches' in window) {
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.map(cacheName => caches.delete(cacheName))
+                );
+            });
+        }
+    }
+
+    // Complete cache refresh
+    async fullCacheRefresh() {
+        console.log('🚀 Starting full cache refresh...');
+        
+        // 1. Clear browser cache
+        this.clearBrowserCache();
+        
+        // 2. Trigger server cache bust
+        const newVersion = await this.triggerServerCacheBust();
+        
+        // 3. Refresh static assets
+        this.refreshStaticAssets();
+        
+        // 4. Hard refresh page
+        setTimeout(() => {
+            this.hardRefresh();
+        }, 1000);
+        
+        return newVersion;
+    }
+}
+
+// Global cache buster instance
+window.cacheBuster = new CacheBuster();
+
+// Keyboard shortcut for cache refresh (Ctrl+Shift+R alternative)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'F5') {
+        e.preventDefault();
+        window.cacheBuster.fullCacheRefresh();
+    }
 });
+
+// Expose cache busting functions globally
+window.refreshCache = () => window.cacheBuster.fullCacheRefresh();
+window.hardRefresh = () => window.cacheBuster.hardRefresh();

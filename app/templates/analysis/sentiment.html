@@ -121,7 +121,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Sentiment Trend - {{ selected_symbol }}</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body position-relative">
                     <canvas id="sentimentChart" height="300"></canvas>
                 </div>
             </div>
@@ -229,17 +229,90 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: data.map(d => d.score),
                     borderColor: 'rgb(75, 192, 192)',
                     backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                    tension: 0.1
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: window.innerWidth < 768 ? 12 : 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1,
+                        displayColors: true,
+                        callbacks: {
+                            title: function(context) {
+                                return 'Datum: ' + context[0].label;
+                            },
+                            label: function(context) {
+                                return 'Sentiment: ' + context.parsed.y.toFixed(2) + '/10';
+                            }
+                        }
+                    }
+                },
                 scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Datum',
+                            font: {
+                                size: window.innerWidth < 768 ? 12 : 14
+                            }
+                        },
+                        ticks: {
+                            maxTicksLimit: window.innerWidth < 768 ? 5 : 10,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
+                        }
+                    },
                     y: {
                         beginAtZero: true,
-                        max: 10
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Sentiment Score (0-10)',
+                            font: {
+                                size: window.innerWidth < 768 ? 12 : 14
+                            }
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
                     }
+                },
+                animation: {
+                    duration: window.innerWidth < 768 ? 1000 : 1500,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
@@ -323,8 +396,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card-header">
                     <h5 class="mb-0">Sentiment Utvikling (30 dager)</h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="sentimentChart" height="100"></canvas>
+                <div class="card-body position-relative">
+                    <canvas id="sentimentChart" height="200"></canvas>
                 </div>
             </div>
             {% endif %}
