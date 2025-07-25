@@ -8,9 +8,17 @@ import pandas as pd
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 import logging
-from scipy.optimize import minimize
-from scipy import stats
 import warnings
+
+# Graceful imports for optional dependencies
+try:
+    from scipy.optimize import minimize
+    from scipy import stats
+    HAS_SCIPY = True
+except ImportError:
+    HAS_SCIPY = False
+    logging.warning("SciPy not available - advanced optimization features disabled")
+
 warnings.filterwarnings('ignore')
 
 logger = logging.getLogger(__name__)
@@ -103,6 +111,20 @@ class PortfolioOptimizer:
         
         optimization_type: 'sharpe', 'min_variance', 'max_return', 'risk_parity'
         """
+        if not HAS_SCIPY:
+            logger.warning("SciPy not available - using equal weight fallback")
+            n_assets = len(returns.columns)
+            equal_weights = np.array([1.0 / n_assets] * n_assets)
+            portfolio_metrics = self.calculate_portfolio_metrics(equal_weights, returns)
+            
+            return {
+                'success': True,
+                'weights': dict(zip(returns.columns, equal_weights.tolist())),
+                'metrics': portfolio_metrics,
+                'optimization_type': 'equal_weight_fallback',
+                'message': 'Using equal weights - SciPy not available for optimization'
+            }
+            
         try:
             n_assets = len(returns.columns)
             
@@ -307,6 +329,20 @@ class PortfolioOptimizer:
     def risk_budgeting(self, returns: pd.DataFrame, 
                       risk_budgets: Dict[str, float]) -> Dict:
         """Optimize portfolio based on risk budgets"""
+        if not HAS_SCIPY:
+            logger.warning("SciPy not available - using equal weight fallback for risk budgeting")
+            assets = returns.columns.tolist()
+            n_assets = len(assets)
+            equal_weights = np.array([1.0 / n_assets] * n_assets)
+            portfolio_metrics = self.calculate_portfolio_metrics(equal_weights, returns)
+            
+            return {
+                'success': True,
+                'weights': dict(zip(assets, equal_weights.tolist())),
+                'metrics': portfolio_metrics,
+                'message': 'Using equal weights - SciPy not available for risk budgeting'
+            }
+            
         try:
             assets = returns.columns.tolist()
             n_assets = len(assets)
