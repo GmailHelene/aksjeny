@@ -390,7 +390,7 @@ def index():
             except:
                 pass
         
-        return render_template('index_premium.html',
+        return render_template('index.html',
                              oslo_stocks=oslo_stocks,
                              global_stocks=global_stocks,
                              crypto_data=crypto_data,
@@ -400,7 +400,7 @@ def index():
                              
     except Exception as e:
         logger.error(f"Error in index: {e}")
-        return render_template('index_premium.html',
+        return render_template('index.html',
                              oslo_stocks={},
                              global_stocks={},
                              crypto_data={},

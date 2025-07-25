@@ -68,6 +68,13 @@ def create_app(config_class=None):
     # Set up CSRF protection
     app.config['WTF_CSRF_TIME_LIMIT'] = None
     
+    # Exempt API routes from CSRF protection
+    csrf.exempt(lambda: request.endpoint and (
+        request.endpoint.startswith('api.') or 
+        '/api/' in request.path or
+        request.endpoint.startswith('insider_trading.api_')
+    ))
+    
     # Custom unauthorized handler to ensure users aren't redirected to /
     @login_manager.unauthorized_handler
     def unauthorized():

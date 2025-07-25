@@ -151,28 +151,40 @@ class InsiderTradingService:
         
         try:
             ticker = yf.Ticker(symbol)
-            insider_transactions = ticker.insider_transactions
             
-            if insider_transactions is None or insider_transactions.empty:
+            # Check if insider data is available
+            insider_transactions = None
+            try:
+                # Try to get insider transactions (not all tickers have this)
+                if hasattr(ticker, 'insider_transactions'):
+                    insider_transactions = ticker.insider_transactions
+                elif hasattr(ticker, 'insider'):
+                    insider_transactions = ticker.insider
+            except:
+                pass
+            
+            if insider_transactions is None or (hasattr(insider_transactions, 'empty') and insider_transactions.empty):
                 return []
             
             transactions = []
-            for _, row in insider_transactions.iterrows():
-                transaction = InsiderTransaction(
-                    symbol=symbol,
-                    insider_name=row.get('Insider', 'Unknown'),
-                    title=row.get('Title', 'Unknown'),
-                    transaction_date=row.get('Date', datetime.now().strftime('%Y-%m-%d')),
-                    transaction_type=row.get('Transaction', 'Unknown'),
-                    shares=int(row.get('Shares', 0)),
-                    price=float(row.get('Price', 0)),
-                    value=float(row.get('Value', 0)),
-                    shares_owned_after=int(row.get('Shares Owned After', 0)),
-                    ownership_percentage=float(row.get('% Owned', 0)),
-                    filing_date=row.get('Date', datetime.now().strftime('%Y-%m-%d')),
-                    form_type='Form 4'
-                )
-                transactions.append(transaction)
+            # Handle different data formats
+            if hasattr(insider_transactions, 'iterrows'):
+                for _, row in insider_transactions.iterrows():
+                    transaction = InsiderTransaction(
+                        symbol=symbol,
+                        insider_name=str(row.get('Insider', 'Unknown')),
+                        title=str(row.get('Title', 'Unknown')),
+                        transaction_date=str(row.get('Date', datetime.now().strftime('%Y-%m-%d'))),
+                        transaction_type=str(row.get('Transaction', 'Unknown')),
+                        shares=int(row.get('Shares', 0)),
+                        price=float(row.get('Price', 0)),
+                        value=float(row.get('Value', 0)),
+                        shares_owned_after=int(row.get('Shares Owned After', 0)),
+                        ownership_percentage=float(row.get('% Owned', 0)),
+                        filing_date=str(row.get('Date', datetime.now().strftime('%Y-%m-%d'))),
+                        form_type='Form 4'
+                    )
+                    transactions.append(transaction)
             
             return transactions[:20]  # Limit to recent 20 transactions
             

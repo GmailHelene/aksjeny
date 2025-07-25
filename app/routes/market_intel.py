@@ -2,8 +2,8 @@
 Market Intelligence Routes - for insider trading, institutional ownership, and market data
 """
 from flask import Blueprint, render_template, jsonify, request
-from flask_login import login_required
-from ..utils.access_control import access_required
+from flask_login import login_required, current_user
+from ..utils.access_control import access_required, demo_access
 
 # Import service here to avoid issues
 try:
@@ -90,18 +90,50 @@ def index():
                              error="Kunne ikke hente alle markedsdata. Viser tilgjengelig informasjon.")
 
 @market_intel.route('/insider-trading')
-@access_required
+@demo_access
 def insider_trading():
     """Dedicated insider trading page"""
     ticker = request.args.get('ticker', 'EQNR.OL')
     
     try:
+        # Check if user has access to real data
+        has_access = current_user.is_authenticated and (
+            current_user.email in {'helene@luxushair.com', 'helene721@gmail.com', 'eiriktollan.berntsen@gmail.com', 'tonjekit91@gmail.com'} or
+            (hasattr(current_user, 'has_active_subscription') and current_user.has_active_subscription())
+        )
+        
         # Validate ticker format
         if not ticker or len(ticker) < 2:
             ticker = 'EQNR.OL'
         
         # Clean ticker (remove extra spaces, convert to uppercase)
         ticker = ticker.strip().upper()
+        
+        # For demo users or users without access, show demo template
+        if not has_access:
+            return render_template('insider_trading/demo_insider_trading.html',
+                                 ticker=ticker,
+                                 demo_data=[
+                                     {
+                                         'date': '2024-07-20',
+                                         'insider_name': 'John Doe',
+                                         'title': 'CEO',
+                                         'transaction_type': 'Purchase',
+                                         'shares': 10000,
+                                         'price': 245.50,
+                                         'value': 2455000
+                                     },
+                                     {
+                                         'date': '2024-07-18',
+                                         'insider_name': 'Jane Smith',
+                                         'title': 'CFO',
+                                         'transaction_type': 'Sale',
+                                         'shares': 5000,
+                                         'price': 244.00,
+                                         'value': 1220000
+                                     }
+                                 ],
+                                 restricted=True)
         
         # Check if service is available
         if not ExternalAPIService:

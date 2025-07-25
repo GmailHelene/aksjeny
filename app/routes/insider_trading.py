@@ -301,7 +301,7 @@ def prices():
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from ..services.data_service import DataService
 from ..services.insider_trading_service import InsiderTradingService
-from ..utils.access_control import demo_access
+from ..utils.access_control import demo_access, access_required
 import logging
 
 insider_trading = Blueprint('insider_trading', __name__)
@@ -311,7 +311,7 @@ logger = logging.getLogger(__name__)
 insider_service_2 = InsiderTradingService()
 
 @insider_trading.route('/')
-@demo_access
+@access_required
 def index():
     """Enhanced insider trading main page with comprehensive data and analytics"""
     try:
@@ -373,7 +373,7 @@ def index():
                              alerts_count=0)
 
 @insider_trading.route('/search', methods=['GET', 'POST'])
-@demo_access
+@access_required
 def search():
     """Enhanced insider trading search with advanced filtering"""
     symbol = request.args.get('symbol', '').strip().upper()
@@ -434,38 +434,41 @@ def search():
         for transaction in insider_transactions:
             # Date filter
             if period:
-                transaction_date = datetime.strptime(transaction.get('date', '2024-01-01'), '%Y-%m-%d')
+                try:
+                    transaction_date = datetime.strptime(transaction.transaction_date, '%Y-%m-%d')
+                except:
+                    transaction_date = datetime.now()
                 cutoff_date = datetime.now() - timedelta(days=period)
                 if transaction_date < cutoff_date:
                     continue
             
             # Transaction type filter
-            if transaction_type and transaction.get('transaction_type') != transaction_type:
+            if transaction_type and transaction.transaction_type != transaction_type:
                 continue
                 
             # Minimum value filter
-            if min_value and transaction.get('value', 0) < min_value:
+            if min_value and transaction.value < min_value:
                 continue
                 
             # Role filter
-            if role and transaction.get('role') != role:
+            if role and transaction.title != role:
                 continue
                 
             # Significant transactions only
-            if significant_only and transaction.get('value', 0) < 1000000:  # 1M threshold
+            if significant_only and transaction.value < 1000000:  # 1M threshold
                 continue
                 
             filtered_transactions.append(transaction)
         
         # Sort transactions
         if sort == 'date_desc':
-            filtered_transactions.sort(key=lambda x: x.get('date', ''), reverse=True)
+            filtered_transactions.sort(key=lambda x: x.transaction_date, reverse=True)
         elif sort == 'date_asc':
-            filtered_transactions.sort(key=lambda x: x.get('date', ''))
+            filtered_transactions.sort(key=lambda x: x.transaction_date)
         elif sort == 'value_desc':
-            filtered_transactions.sort(key=lambda x: x.get('value', 0), reverse=True)
+            filtered_transactions.sort(key=lambda x: x.value, reverse=True)
         elif sort == 'value_asc':
-            filtered_transactions.sort(key=lambda x: x.get('value', 0))
+            filtered_transactions.sort(key=lambda x: x.value)
         
         popular_stocks = DataService.get_popular_stocks() or []
         
@@ -565,7 +568,7 @@ def search():
 
 # New API endpoints for enhanced functionality
 @insider_trading.route('/api/latest')
-@demo_access
+@access_required
 def api_latest():
     """API endpoint for latest insider trading data"""
     try:
@@ -575,17 +578,31 @@ def api_latest():
         # Format for JSON response
         transactions = []
         for trade in insider_data[:limit]:
-            transactions.append({
-                'symbol': trade.get('symbol', 'N/A'),
-                'date': trade.get('date', 'N/A'),
-                'time': '12:45',  # Mock time
-                'person': trade.get('person', 'Ukjent'),
-                'role': trade.get('role', 'Officer'),
-                'transaction_type': trade.get('transaction_type', 'KJØP'),
-                'quantity': trade.get('quantity', 0),
-                'price': trade.get('price', 0),
-                'total_value': trade.get('total_value', 0)
-            })
+            # Handle both dict and InsiderTransaction objects
+            if hasattr(trade, '__dict__'):  # InsiderTransaction object
+                transactions.append({
+                    'symbol': getattr(trade, 'symbol', 'N/A'),
+                    'date': getattr(trade, 'transaction_date', 'N/A'),
+                    'time': '12:45',  # Mock time
+                    'person': getattr(trade, 'insider_name', 'Ukjent'),
+                    'role': getattr(trade, 'title', 'Officer'),
+                    'transaction_type': getattr(trade, 'transaction_type', 'KJØP'),
+                    'quantity': getattr(trade, 'shares', 0),
+                    'price': getattr(trade, 'price', 0),
+                    'total_value': getattr(trade, 'value', 0)
+                })
+            else:  # Dict object
+                transactions.append({
+                    'symbol': trade.get('symbol', 'N/A'),
+                    'date': trade.get('date', 'N/A'),
+                    'time': '12:45',  # Mock time
+                    'person': trade.get('person', 'Ukjent'),
+                    'role': trade.get('role', 'Officer'),
+                    'transaction_type': trade.get('transaction_type', 'KJØP'),
+                    'quantity': trade.get('quantity', 0),
+                    'price': trade.get('price', 0),
+                    'total_value': trade.get('total_value', 0)
+                })
         
         return jsonify({
             'success': True,
