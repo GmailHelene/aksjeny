@@ -12,7 +12,7 @@ import yfinance as yf
 from flask import current_app
 import threading
 import time
-from ..extensions import db
+from app.extensions import db
 from dataclasses import dataclass, asdict
 import numpy as np
 from collections import defaultdict, deque
@@ -23,7 +23,7 @@ import traceback
 
 # Import rate limiter
 try:
-    from .rate_limiter import rate_limiter
+    from app.utils.rate_limiter import rate_limiter
 except ImportError:
     # Fallback if rate limiter is not available
     class DummyRateLimiter:

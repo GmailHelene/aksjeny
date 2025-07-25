@@ -2,54 +2,101 @@ import redis
 import time
 from flask import current_app, has_app_context
 from typing import Optional
+import logging
+import os
+from collections import defaultdict, deque
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 class RateLimiter:
-    """Simple in-memory rate limiter"""
+    """Simple in-memory rate limiter with optional Redis support"""
     
     def __init__(self, redis_url: Optional[str] = None):
         try:
-            self.redis_client = redis.Redis.from_url(redis_url or 'redis://localhost:6379')
-        except Exception:
-            self.redis_client = None
-    
-    def is_allowed(self, key: str, max_requests: int, window: int) -> bool:
-        """Check if request is allowed based on rate limiting"""
-        try:
-            if not self.redis_client:
-                return True  # Allow if Redis is not available
-                
-            current_time = int(time.time())
-            window_start = current_time - window
-            
-            # Use Redis sorted set for sliding window
-            pipe = self.redis_client.pipeline()
-            
-            # Remove expired entries
-            pipe.zremrangebyscore(key, 0, window_start)
-            
-            # Count current requests in window
-            pipe.zcard(key)
-            
-            # Add current request
-            pipe.zadd(key, {str(current_time): current_time})
-            
-            # Set expiry
-            pipe.expire(key, window)
-            
-            results = pipe.execute()
-            current_requests = results[1]
-            
-            return current_requests < max_requests
-            
+            # Configure Redis if URL is provided
+            self.redis_url = redis_url or os.environ.get('REDIS_URL')
+            self.redis = None
+            if self.redis_url:
+                self.redis = redis.from_url(self.redis_url)
+                self.redis.ping()  # Test connection
+                logger.info("Rate limiter using Redis backend")
+            else:
+                logger.info("Rate limiter using in-memory backend")
         except Exception as e:
-            # Log error only if we have app context
-            if has_app_context():
-                current_app.logger.error(f"Rate limiter error: {str(e)}")
-            return True  # Allow request on error
+            logger.warning(f"Redis connection failed, using in-memory rate limiting: {str(e)}")
+            self.redis = None
+        
+        # In-memory rate limiting (fallback or default)
+        self.api_calls = defaultdict(lambda: deque(maxlen=1000))
+        self.api_limits = {
+            'yfinance': {'calls': 2, 'per_seconds': 60},  # 2 calls per minute
+            'default': {'calls': 5, 'per_seconds': 60}    # 5 calls per minute
+        }
+    
+    def _get_app_limit(self, api_name: str) -> dict:
+        """Get rate limit from app config if available"""
+        if has_app_context():
+            config_key = f"RATE_LIMIT_{api_name.upper()}"
+            if hasattr(current_app.config, config_key):
+                return current_app.config[config_key]
+        return self.api_limits.get(api_name, self.api_limits['default'])
+    
+    def wait_if_needed(self, api_name: str = 'default') -> float:
+        """
+        Check if we need to wait before making another API call
+        Returns the wait time in seconds (0 if no wait needed)
+        """
+        limit_config = self._get_app_limit(api_name)
+        max_calls = limit_config['calls']
+        period_seconds = limit_config['per_seconds']
+        
+        now = datetime.now()
+        cutoff_time = now - timedelta(seconds=period_seconds)
+        
+        # Use Redis if available
+        if self.redis:
+            try:
+                # Trim old entries and count recent calls
+                key = f"rate_limit:{api_name}"
+                self.redis.zremrangebyscore(key, 0, cutoff_time.timestamp())
+                recent_calls = self.redis.zcount(key, cutoff_time.timestamp(), float('inf'))
+                
+                if recent_calls >= max_calls:
+                    # Get oldest timestamp in window
+                    oldest = self.redis.zrange(key, 0, 0, withscores=True)
+                    if oldest:
+                        oldest_ts = oldest[0][1]
+                        wait_time = period_seconds - (now.timestamp() - oldest_ts)
+                        if wait_time > 0:
+                            time.sleep(wait_time)
+                            return wait_time
+                
+                # Record this call
+                self.redis.zadd(key, {now.isoformat(): now.timestamp()})
+                self.redis.expire(key, period_seconds * 2)  # Set expiry
+                return 0
+                
+            except Exception as e:
+                logger.warning(f"Redis rate limiting failed, falling back to in-memory: {str(e)}")
+                # Fall through to in-memory implementation
+        
+        # In-memory implementation
+        calls = self.api_calls[api_name]
+        calls = [ts for ts in calls if ts > cutoff_time]
+        self.api_calls[api_name] = deque(calls, maxlen=1000)
+        
+        if len(calls) >= max_calls:
+            # Need to wait - calculate time
+            oldest_call = min(calls)
+            wait_time = (oldest_call + timedelta(seconds=period_seconds) - now).total_seconds()
+            if wait_time > 0:
+                time.sleep(wait_time)
+                return wait_time
+        
+        # Record this call
+        self.api_calls[api_name].append(now)
+        return 0
 
-# Global rate limiter instance
+# Singleton instance
 rate_limiter = RateLimiter()
-
-def rate_limit(key: str, max_requests: int = 60, window: int = 60) -> bool:
-    """Convenience function for rate limiting"""
-    return rate_limiter.is_allowed(key, max_requests, window)

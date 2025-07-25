@@ -1,3 +1,13 @@
+from flask import Blueprint, jsonify, request, make_response, current_app, render_template_string, url_for, redirect
+from datetime import datetime
+import os
+import re
+import glob
+from ..services.realtime_data_service import get_real_time_service
+
+# Blueprint definition
+cache_bp = Blueprint('cache_management_refresh', __name__)
+
 @cache_bp.route('/force-refresh', methods=['GET'])
 def force_refresh():
     """Force a complete cache refresh - useful for fixing stale content"""
