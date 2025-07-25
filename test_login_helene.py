@@ -35,7 +35,7 @@ def test_login():
             
             # Test passwords that were found in the search results
             test_passwords = [
-                'aksjeradar2024',  # The one we just set
+                'aksjeradar2025',  # The one we just set
                 'password123',     # Common test password
                 'test123',         # Another common one
                 'Soda2001??',      # From search results
@@ -76,6 +76,6 @@ if __name__ == '__main__':
         print("="*60)
         print("You can now log in to aksjeradar.trade with:")
         print("📧 Email: helene721@gmail.com")
-        print("🔑 Password: aksjeradar2024")
+        print("🔑 Password: aksjeradar2025")
         print("="*60)
     sys.exit(0 if success else 1)
