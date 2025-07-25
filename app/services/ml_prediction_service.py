@@ -7,13 +7,31 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 import logging
-import joblib
 import os
 from typing import Dict, List, Tuple, Optional
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
+
+# Conditional imports for ML dependencies
+try:
+    import joblib
+    JOBLIB_AVAILABLE = True
+except ImportError:
+    JOBLIB_AVAILABLE = False
+    joblib = None
+
+try:
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.linear_model import LinearRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import mean_squared_error, r2_score
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    RandomForestRegressor = None
+    LinearRegression = None
+    StandardScaler = None
+    mean_squared_error = None
+    r2_score = None
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -28,6 +46,13 @@ class MLPredictionService:
         self.model_cache = {}
         self.feature_cache = {}
         self.prediction_cache = {}
+        
+        # Check if ML dependencies are available
+        if not SKLEARN_AVAILABLE or not JOBLIB_AVAILABLE:
+            logger.warning("ML dependencies not available. ML features will be disabled.")
+            self.ml_enabled = False
+        else:
+            self.ml_enabled = True
         
         # Initialize models directory
         self.models_dir = os.path.join(os.path.dirname(__file__), '..', 'ml_models')
@@ -187,6 +212,11 @@ class MLPredictionService:
                              horizon: int = 5) -> Dict:
         """Predict price movement for given horizon"""
         try:
+            # Check if ML is enabled
+            if not self.ml_enabled:
+                logger.warning("ML not available, returning fallback prediction")
+                return self._get_fallback_prediction(ticker)
+                
             # Check cache first
             cache_key = f"{ticker}_{horizon}_{datetime.now().strftime('%Y%m%d_%H')}"
             if cache_key in self.prediction_cache:
