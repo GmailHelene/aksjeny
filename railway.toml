@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --worker-class eventlet main:app"
+startCommand = "python3 railway_startup.py"
 healthcheckPath = "/health/ready"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
