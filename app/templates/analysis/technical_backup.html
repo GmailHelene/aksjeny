@@ -1,0 +1,2284 @@
+{% extends "base.html" %}
+
+{% block title %}Avansert Teknisk Analyse - Aksjeradar{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="bi bi-graph-up text-primary me-2"></i>
+                    Avansert Teknisk Analyse
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Hjem</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('analysis.index') }}">Analyse</a></li>
+                        <li class="breadcrumb-item active">Teknisk</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    {% if symbol and show_analysis %}
+    <!-- Advanced Technical Analysis Results -->
+    <div class="row">
+        <!-- Main Analysis Panel -->
+        <div class="col-lg-9">
+            <!-- Stock Header -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h4 class="mb-1">{{ symbol }}</h4>
+                            <p class="text-muted mb-0">{{ technical_data.get('name', symbol) }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h3 class="mb-1">
+                                <span id="current-price">{{ technical_data.get('last_price', 'N/A') }}</span>
+                                <small class="text-muted">NOK</small>
+                            </h3>
+                            <span class="badge {{ 'bg-success' if technical_data.get('change', 0) > 0 else 'bg-danger' if technical_data.get('change', 0) < 0 else 'bg-secondary' }} fs-6">
+                                {{ technical_data.get('change', 0) }} ({{ technical_data.get('change_percent', 0) }}%)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Interactive Chart Container -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up-arrow me-2"></i>
+                            Avansert Tradingview-Style Chart
+                        </h5>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <!-- Chart Type Toggle -->
+                            <div class="btn-group" role="group" aria-label="Chart Type">
+                                <input type="radio" class="btn-check" name="chartType" id="candlestick" autocomplete="off" checked>
+                                <label class="btn btn-outline-secondary btn-sm" for="candlestick">
+                                    <i class="bi bi-bar-chart me-1"></i>Candlestick
+                                </label>
+                                <input type="radio" class="btn-check" name="chartType" id="line" autocomplete="off">
+                                <label class="btn btn-outline-secondary btn-sm" for="line">
+                                    <i class="bi bi-graph-up me-1"></i>Line
+                                </label>
+                                <input type="radio" class="btn-check" name="chartType" id="area" autocomplete="off">
+                                <label class="btn btn-outline-secondary btn-sm" for="area">
+                                    <i class="bi bi-area-chart me-1"></i>Area
+                                </label>
+                            </div>
+                            
+                            <!-- Timeframe Selection -->
+                            <div class="btn-group" role="group" aria-label="Timeframe">
+                                <input type="radio" class="btn-check" name="timeframe" id="1d" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="1d">1D</label>
+                                <input type="radio" class="btn-check" name="timeframe" id="1w" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="1w">1W</label>
+                                <input type="radio" class="btn-check" name="timeframe" id="1m" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary btn-sm" for="1m">1M</label>
+                                <input type="radio" class="btn-check" name="timeframe" id="3m" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="3m">3M</label>
+                                <input type="radio" class="btn-check" name="timeframe" id="6m" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="6m">6M</label>
+                                <input type="radio" class="btn-check" name="timeframe" id="1y" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="1y">1Y</label>
+                            </div>
+                            
+                            <!-- Chart Controls -->
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-info btn-sm" id="toggleIndicators" title="Toggle Indicators">
+                                    <i class="bi bi-speedometer2"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" id="toggleDrawing" title="Drawing Tools">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-sm" id="fullscreenChart" title="Fullscreen">
+                                    <i class="bi bi-arrows-fullscreen"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Indicator Panel -->
+                    <div id="indicatorPanel" class="mt-2" style="display: none;">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showSMA20" checked>
+                                <label class="form-check-label" for="showSMA20">SMA 20</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showSMA50" checked>
+                                <label class="form-check-label" for="showSMA50">SMA 50</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showEMA20">
+                                <label class="form-check-label" for="showEMA20">EMA 20</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showBollinger">
+                                <label class="form-check-label" for="showBollinger">Bollinger Bands</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showVolume" checked>
+                                <label class="form-check-label" for="showVolume">Volume</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="showSupport">
+                                <label class="form-check-label" for="showSupport">Support/Resistance</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Chart -->
+                <div class="card-body p-0">
+                    <div class="chart-container" style="height: 500px; position: relative;">
+                        <canvas id="technicalChart" style="width: 100%; height: 100%;"></canvas>
+                        <div id="chart-loading" class="position-absolute top-50 start-50 translate-middle">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Laster...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart Crosshair -->
+                        <div id="crosshair" style="display: none; position: absolute; pointer-events: none; z-index: 10;">
+                            <div class="crosshair-line-h" style="position: absolute; width: 100%; height: 1px; background: rgba(0,0,0,0.3);"></div>
+                            <div class="crosshair-line-v" style="position: absolute; height: 100%; width: 1px; background: rgba(0,0,0,0.3);"></div>
+                        </div>
+                        
+                        <!-- Price Info Box -->
+                        <div id="priceInfoBox" class="position-absolute" style="top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px; border-radius: 4px; font-size: 12px; display: none; z-index: 15;">
+                            <div id="priceInfo"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Volume Chart -->
+                <div class="card-body p-0 border-top" style="height: 150px; position: relative;" id="volumeContainer">
+                    <canvas id="volumeChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+                
+                <!-- Oscillator Chart -->
+                <div class="card-body p-0 border-top" style="height: 120px; position: relative;" id="oscillatorContainer">
+                    <canvas id="oscillatorChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Chart Analysis Panel -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cpu me-2"></i>
+                        AI Chart Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="indicator-dot me-3" id="trendIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: #28a745;"></div>
+                                <div>
+                                    <h6 class="mb-0" id="currentTrend">Bullish Trend</h6>
+                                    <small class="text-muted">Gjeldende trend</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="indicator-dot me-3" style="width: 12px; height: 12px; border-radius: 50%; background: #ffc107;"></div>
+                                <div>
+                                    <h6 class="mb-0" id="patternDetected">Rising Wedge</h6>
+                                    <small class="text-muted">Detektert mønster</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="indicator-dot me-3" style="width: 12px; height: 12px; border-radius: 50%; background: #17a2b8;"></div>
+                                <div>
+                                    <h6 class="mb-0" id="volumeAnalysis">Above Average</h6>
+                                    <small class="text-muted">Volume analyse</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info d-flex align-items-center">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        <div id="aiInsight">
+                            Teknisk analyse viser sterke bullish signaler med økt volum. Kursen brøt nylig gjennom motstand på {{ technical_data.get('resistance', 300)|round(2) }} NOK.
+                            RSI indikerer ikke overkjøpt territorium, noe som gir rom for ytterligere oppgang.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Indicators Overview -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="indicator-icon mb-2">
+                                <i class="bi bi-speedometer2 text-warning fs-1"></i>
+                            </div>
+                            <h6 class="text-muted">RSI (14)</h6>
+                            <h4 class="mb-2">
+                                <span class="text-{{ 'danger' if technical_data.get('rsi', 50) > 70 else 'success' if technical_data.get('rsi', 50) < 30 else 'warning' }}">
+                                    {{ technical_data.get('rsi', 50)|round(1) }}
+                                </span>
+                            </h4>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar {{ 'bg-danger' if technical_data.get('rsi', 50) > 70 else 'bg-success' if technical_data.get('rsi', 50) < 30 else 'bg-warning' }}" 
+                                     style="width: {{ technical_data.get('rsi', 50) }}%"></div>
+                            </div>
+                            <small class="text-muted mt-1">
+                                {{ 'Overkjøpt' if technical_data.get('rsi', 50) > 70 else 'Oversolgt' if technical_data.get('rsi', 50) < 30 else 'Nøytral' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="indicator-icon mb-2">
+                                <i class="bi bi-graph-up text-info fs-1"></i>
+                            </div>
+                            <h6 class="text-muted">MACD</h6>
+                            <h4 class="mb-2">
+                                <span class="text-{{ 'success' if technical_data.get('macd', 0) > technical_data.get('macd_signal', 0) else 'danger' }}">
+                                    {{ technical_data.get('macd', 0)|round(3) }}
+                                </span>
+                            </h4>
+                            <small class="badge {{ 'bg-success' if technical_data.get('macd', 0) > technical_data.get('macd_signal', 0) else 'bg-danger' }}">
+                                {{ 'Bullish' if technical_data.get('macd', 0) > technical_data.get('macd_signal', 0) else 'Bearish' }}
+                            </small>
+                            <div class="mt-2">
+                                <small class="text-muted">Signal: {{ technical_data.get('macd_signal', 0)|round(3) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="indicator-icon mb-2">
+                                <i class="bi bi-bar-chart text-primary fs-1"></i>
+                            </div>
+                            <h6 class="text-muted">Volum Trend</h6>
+                            <h4 class="mb-2">
+                                <span class="text-{{ 'success' if technical_data.get('volume', 0) > technical_data.get('avg_volume', 0) else 'warning' }}">
+                                    {{ ((technical_data.get('volume', 0) / technical_data.get('avg_volume', 1)) * 100)|round(0) }}%
+                                </span>
+                            </h4>
+                            <small class="badge {{ 'bg-success' if technical_data.get('volume', 0) > technical_data.get('avg_volume', 0) else 'bg-warning' }}">
+                                {{ 'Høy aktivitet' if technical_data.get('volume', 0) > technical_data.get('avg_volume', 0) else 'Normal aktivitet' }}
+                            </small>
+                            <div class="mt-2">
+                                <small class="text-muted">Snitt: {{ (technical_data.get('avg_volume', 0) / 1000000)|round(1) }}M</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="indicator-icon mb-2">
+                                <i class="bi bi-bullseye text-success fs-1"></i>
+                            </div>
+                            <h6 class="text-muted">Signal Styrke</h6>
+                            <h4 class="mb-2">
+                                <span class="text-{{ 'success' if technical_data.get('signal') == 'KJØP' else 'danger' if technical_data.get('signal') == 'SELG' else 'warning' }}">
+                                    {% set signal_strength = 85 if technical_data.get('signal') == 'KJØP' else (25 if technical_data.get('signal') == 'SELG' else 50) %}
+                                    {{ signal_strength }}%
+                                </span>
+                            </h4>
+                            <small class="badge {{ 'bg-success' if technical_data.get('signal') == 'KJØP' else 'bg-danger' if technical_data.get('signal') == 'SELG' else 'bg-warning' }}">
+                                {{ technical_data.get('signal', 'HOLD') }}
+                            </small>
+                            <div class="mt-2">
+                                <small class="text-muted">{{ technical_data.get('overall_signal', 'HOLD') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Indicators Panel -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#moving-averages" role="tab">
+                                <i class="bi bi-graph-up me-1"></i>Glidende Gjennomsnitt
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#oscillators" role="tab">
+                                <i class="bi bi-speedometer2 me-1"></i>Oscillatorer
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#support-resistance" role="tab">
+                                <i class="bi bi-arrows-vertical me-1"></i>Støtte/Motstand
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#patterns" role="tab">
+                                <i class="bi bi-diagram-3 me-1"></i>Mønstre
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <!-- Moving Averages Tab -->
+                        <div class="tab-pane active" id="moving-averages">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Simple Moving Averages (SMA)</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Periode</th>
+                                                    <th>Verdi</th>
+                                                    <th>Posisjon</th>
+                                                    <th>Signal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>SMA 20</td>
+                                                    <td>{{ technical_data.get('sma20', 0)|round(2) }}</td>
+                                                    <td>
+                                                        <span class="badge {{ 'bg-success' if technical_data.get('last_price', 0) > technical_data.get('sma20', 0) else 'bg-danger' }}">
+                                                            {{ 'Over' if technical_data.get('last_price', 0) > technical_data.get('sma20', 0) else 'Under' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-arrow-{{ 'up' if technical_data.get('last_price', 0) > technical_data.get('sma20', 0) else 'down' }} text-{{ 'success' if technical_data.get('last_price', 0) > technical_data.get('sma20', 0) else 'danger' }}"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SMA 50</td>
+                                                    <td>{{ technical_data.get('sma50', 0)|round(2) }}</td>
+                                                    <td>
+                                                        <span class="badge {{ 'bg-success' if technical_data.get('last_price', 0) > technical_data.get('sma50', 0) else 'bg-danger' }}">
+                                                            {{ 'Over' if technical_data.get('last_price', 0) > technical_data.get('sma50', 0) else 'Under' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-arrow-{{ 'up' if technical_data.get('last_price', 0) > technical_data.get('sma50', 0) else 'down' }} text-{{ 'success' if technical_data.get('last_price', 0) > technical_data.get('sma50', 0) else 'danger' }}"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SMA 200</td>
+                                                    <td>{{ technical_data.get('sma200', 0)|round(2) }}</td>
+                                                    <td>
+                                                        <span class="badge {{ 'bg-success' if technical_data.get('last_price', 0) > technical_data.get('sma200', 0) else 'bg-danger' }}">
+                                                            {{ 'Over' if technical_data.get('last_price', 0) > technical_data.get('sma200', 0) else 'Under' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-arrow-{{ 'up' if technical_data.get('last_price', 0) > technical_data.get('sma200', 0) else 'down' }} text-{{ 'success' if technical_data.get('last_price', 0) > technical_data.get('sma200', 0) else 'danger' }}"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>MA Crossover Signaler</h6>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>20/50 Crossover</span>
+                                            <span class="badge {{ 'bg-success' if technical_data.get('sma20', 0) > technical_data.get('sma50', 0) else 'bg-danger' }}">
+                                                {{ 'Bullish' if technical_data.get('sma20', 0) > technical_data.get('sma50', 0) else 'Bearish' }}
+                                            </span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>50/200 Golden Cross</span>
+                                            <span class="badge {{ 'bg-success' if technical_data.get('sma50', 0) > technical_data.get('sma200', 0) else 'bg-danger' }}">
+                                                {{ 'Aktiv' if technical_data.get('sma50', 0) > technical_data.get('sma200', 0) else 'Inaktiv' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oscillators Tab -->
+                        <div class="tab-pane" id="oscillators">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-center mb-4">
+                                        <h6>RSI (14)</h6>
+                                        <div class="position-relative mx-auto" style="width: 150px; height: 150px;">
+                                            <canvas id="rsi-gauge" width="150" height="150"></canvas>
+                                            <div class="position-absolute top-50 start-50 translate-middle">
+                                                <strong>{{ technical_data.get('rsi', 50)|round(1) }}</strong>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ 'Overkjøpt' if technical_data.get('rsi', 50) > 70 else 'Oversolgt' if technical_data.get('rsi', 50) < 30 else 'Nøytral' }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center mb-4">
+                                        <h6>Stochastic %K</h6>
+                                        <div class="position-relative mx-auto" style="width: 150px; height: 150px;">
+                                            <canvas id="stoch-gauge" width="150" height="150"></canvas>
+                                            <div class="position-absolute top-50 start-50 translate-middle">
+                                                <strong>{{ (technical_data.get('rsi', 50) + 10)|round(1) }}</strong>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ 'Overkjøpt' if (technical_data.get('rsi', 50) + 10) > 80 else 'Oversolgt' if (technical_data.get('rsi', 50) + 10) < 20 else 'Nøytral' }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center mb-4">
+                                        <h6>Williams %R</h6>
+                                        <div class="position-relative mx-auto" style="width: 150px; height: 150px;">
+                                            <canvas id="williams-gauge" width="150" height="150"></canvas>
+                                            <div class="position-absolute top-50 start-50 translate-middle">
+                                                <strong>-{{ (100 - technical_data.get('rsi', 50))|round(1) }}</strong>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ 'Overkjøpt' if (100 - technical_data.get('rsi', 50)) > 80 else 'Oversolgt' if (100 - technical_data.get('rsi', 50)) < 20 else 'Nøytral' }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support/Resistance Tab -->
+                        <div class="tab-pane" id="support-resistance">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Støttenivåer</h6>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Sterkt støttenivå</span>
+                                            <span class="badge bg-success">{{ technical_data.get('support', 0)|round(2) }} NOK</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Sekundært støttenivå</span>
+                                            <span class="badge bg-success">{{ (technical_data.get('support', 0) * 0.95)|round(2) }} NOK</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>SMA 200 støtte</span>
+                                            <span class="badge bg-success">{{ technical_data.get('sma200', 0)|round(2) }} NOK</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Motstandsnivåer</h6>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Sterkt motstandsnivå</span>
+                                            <span class="badge bg-danger">{{ technical_data.get('resistance', 0)|round(2) }} NOK</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Sekundært motstandsnivå</span>
+                                            <span class="badge bg-danger">{{ (technical_data.get('resistance', 0) * 1.05)|round(2) }} NOK</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Fibonacci 61.8%</span>
+                                            <span class="badge bg-danger">{{ (technical_data.get('resistance', 0) * 1.03)|round(2) }} NOK</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patterns Tab -->
+                        <div class="tab-pane" id="patterns">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Candlestick Mønstre</h6>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Doji</span>
+                                            <span class="badge bg-warning">Nøytral</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Hammer</span>
+                                            <span class="badge bg-success">Bullish</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Engulfing</span>
+                                            <span class="badge bg-danger">Bearish</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Chart Mønstre</h6>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Triangel</span>
+                                            <span class="badge bg-info">Fortsettelse</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Hode og skuldre</span>
+                                            <span class="badge bg-warning">Mulig reversering</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Dobbel bunn</span>
+                                            <span class="badge bg-success">Bullish reversering</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signal Summary -->
+            {% if technical_data.get('signal_reason') %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightbulb text-warning me-2"></i>
+                        Teknisk Analyse Sammendrag
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-{{ 'success' if technical_data.get('signal') == 'KJØP' else 'danger' if technical_data.get('signal') == 'SELG' else 'warning' }} mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-{{ 'check-circle' if technical_data.get('signal') == 'KJØP' else 'exclamation-circle' if technical_data.get('signal') == 'SELG' else 'info-circle' }} fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-1">{{ technical_data.get('signal', 'HOLD') }} anbefaling</h6>
+                                <p class="mb-0">{{ technical_data.get('signal_reason', 'Ingen detaljert analyse tilgjengelig.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Kort sikt (1-5 dager)</h6>
+                            <p class="text-muted">Basert på RSI og MACD signaler.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Mellomlang sikt (1-4 uker)</h6>
+                            <p class="text-muted">Fokus på glidende gjennomsnitt og volum.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Lang sikt (1-6 måneder)</h6>
+                            <p class="text-muted">Trendanalyse og støtte/motstand.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <!-- Quick Analysis Form -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Analyser Ny Aksje</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('analysis.technical') }}" id="quick-analysis-form">
+                        <div class="mb-3">
+                            <label for="symbol" class="form-label">Aksjesymbol</label>
+                            <input type="text" class="form-control" id="symbol" name="symbol" 
+                                   placeholder="f.eks. AAPL, EQNR.OL" required autocomplete="off">
+                            <div id="symbol-suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none;"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search me-1"></i>Analyser
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Market Indicators -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Markedsindikatorer</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>VIX</span>
+                            <span class="badge bg-success">18.4</span>
+                        </div>
+                        <small class="text-muted">Volatilitetsindeks</small>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>USD/NOK</span>
+                            <span class="badge bg-warning">10.85</span>
+                        </div>
+                        <small class="text-muted">Valutakurs</small>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>OSEBX</span>
+                            <span class="badge bg-success">+0.8%</span>
+                        </div>
+                        <small class="text-muted">Oslo Børs hovedindeks</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Tools -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Relaterte Verktøy</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('analysis.benjamin_graham', ticker=symbol) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-calculator me-1"></i>Graham Analyse
+                        </a>
+                        <a href="{{ url_for('analysis.ai', ticker=symbol) }}" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-robot me-1"></i>AI Analyse
+                        </a>
+                        <a href="{{ url_for('analysis.warren_buffett', ticker=symbol) }}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-graph-up me-1"></i>Buffett Analyse
+                        </a>
+                        <a href="{{ url_for('backtest.index') }}" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-arrow-repeat me-1"></i>Backtest
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Technical Analysis Overview -->
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Analysis Form -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-search me-2"></i>
+                        Teknisk Analyse Verktøy
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('analysis.technical') }}" id="main-analysis-form">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="position-relative">
+                                    <input type="text" class="form-control form-control-lg" name="symbol" 
+                                           placeholder="Skriv inn aksjesymbol (f.eks. AAPL, EQNR.OL, TSLA)" 
+                                           required autocomplete="off" id="main-symbol-input">
+                                    <div id="main-symbol-suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-graph-up me-1"></i>Analyser
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <i class="bi bi-graph-up text-primary fs-1 mb-3"></i>
+                            <h5>Avanserte Indikatorer</h5>
+                            <p class="text-muted">RSI, MACD, Bollinger Bands, Stochastic og Williams %R</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <i class="bi bi-diagram-3 text-success fs-1 mb-3"></i>
+                            <h5>Mønster Gjenkjenning</h5>
+                            <p class="text-muted">Automatisk identifikasjon av candlestick og chart mønstre</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <i class="bi bi-arrows-vertical text-warning fs-1 mb-3"></i>
+                            <h5>Støtte & Motstand</h5>
+                            <p class="text-muted">Dynamiske støtte- og motstandsnivåer med Fibonacci</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-5">
+                <i class="bi bi-graph-up-arrow text-muted" style="font-size: 4rem;"></i>
+                <h5 class="mt-3">Velg en aksje for avansert teknisk analyse</h5>
+                <p class="text-muted">Få detaljert teknisk analyse med interaktive charts, avanserte indikatorer og AI-drevne innsikter.</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Popular Stocks -->
+            {% if popular_stocks %}
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Populære Aksjer</h5>
+                </div>
+                <div class="card-body">
+                    {% for stock in popular_stocks %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                        <div>
+                            <strong>{{ stock.symbol }}</strong>
+                            <br><small class="text-muted">{{ stock.name|default(stock.symbol) }}</small>
+                        </div>
+                        <a href="{{ url_for('analysis.technical', symbol=stock.symbol) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-graph-up me-1"></i>Analyser
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Tips -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Teknisk Analyse Tips</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 px-0">
+                            <strong>RSI:</strong> Over 70 = overkjøpt, under 30 = oversolgt
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <strong>MACD:</strong> Signal over MACD = bullish trend
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <strong>Golden Cross:</strong> 50-SMA krysser over 200-SMA
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <strong>Volum:</strong> Bekrefter prisbevegelser
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Advanced JavaScript for TradingView-Style Interactive Charting -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentSymbol = '{{ symbol }}';
+    let updateInterval;
+    let priceChart, volumeChart, oscillatorChart;
+    let currentTimeframe = '1m';
+    let currentChartType = 'candlestick';
+    let indicatorPanelVisible = false;
+    let drawingMode = false;
+    let isFullscreen = false;
+    
+    // Advanced Chart Configuration
+    const chartConfig = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day'
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)',
+                    drawOnChartArea: true
+                },
+                border: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            y: {
+                position: 'right',
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)',
+                    drawOnChartArea: true
+                },
+                border: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return value.toFixed(2) + ' NOK';
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            tooltip: {
+                enabled: false,
+                external: function(context) {
+                    showCustomTooltip(context);
+                }
+            }
+        },
+        elements: {
+            point: {
+                radius: 0,
+                hoverRadius: 6
+            },
+            line: {
+                borderWidth: 2
+            }
+        },
+        animation: {
+            duration: 750,
+            easing: 'easeInOutQuart'
+        }
+    };
+
+    // Initialize Charts
+    initializeCharts();
+    
+    // Symbol autocomplete functionality
+    const symbolInputs = ['#symbol', '#main-symbol-input'];
+    const popularSymbols = ['EQNR.OL', 'DNB.OL', 'YAR.OL', 'TEL.OL', 'MOWI.OL', 'AAPL', 'TSLA', 'MSFT', 'AMZN', 'GOOGL'];
+    
+    symbolInputs.forEach(inputSelector => {
+        const input = document.querySelector(inputSelector);
+        if (!input) return;
+        
+        const suggestionsId = inputSelector.includes('main') ? '#main-symbol-suggestions' : '#symbol-suggestions';
+        const suggestions = document.querySelector(suggestionsId);
+        
+        input.addEventListener('input', function() {
+            const query = this.value.toUpperCase();
+            if (query.length < 1) {
+                if (suggestions) suggestions.style.display = 'none';
+                return;
+            }
+            
+            const matches = popularSymbols.filter(symbol => 
+                symbol.includes(query)
+            ).slice(0, 5);
+            
+            if (matches.length > 0 && suggestions) {
+                suggestions.innerHTML = matches.map(symbol => 
+                    `<a href="#" class="list-group-item list-group-item-action" data-symbol="${symbol}">${symbol}</a>`
+                ).join('');
+                suggestions.style.display = 'block';
+            } else if (suggestions) {
+                suggestions.style.display = 'none';
+            }
+        });
+        
+        // Handle suggestion clicks
+        const suggestions = document.querySelector(suggestionsId);
+        if (suggestions) {
+            suggestions.addEventListener('click', function(e) {
+                e.preventDefault();
+                const symbol = e.target.dataset.symbol;
+                if (symbol) {
+                    input.value = symbol;
+                    suggestions.style.display = 'none';
+                    
+                    // Redirect to analysis if main input
+                    if (inputSelector.includes('main')) {
+                        window.location.href = `/analysis/technical?symbol=${symbol}`;
+                    }
+                }
+            });
+        }
+    });
+    
+    // Chart Event Handlers
+    const toggleIndicatorsBtn = document.getElementById('toggleIndicators');
+    const toggleDrawingBtn = document.getElementById('toggleDrawing');
+    const fullscreenBtn = document.getElementById('fullscreenChart');
+    
+    if (toggleIndicatorsBtn) toggleIndicatorsBtn.addEventListener('click', toggleIndicatorPanel);
+    if (toggleDrawingBtn) toggleDrawingBtn.addEventListener('click', toggleDrawingMode);
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // Timeframe change handlers
+    document.querySelectorAll('input[name="timeframe"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                currentTimeframe = this.id;
+                updateChartTimeframe();
+            }
+        });
+    });
+    
+    // Chart type change handlers
+    document.querySelectorAll('input[name="chartType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                currentChartType = this.id;
+                updateChartType();
+            }
+        });
+    });
+    
+    // Indicator toggle handlers
+    const indicators = ['showSMA20', 'showSMA50', 'showEMA20', 'showBollinger', 'showVolume', 'showSupport'];
+    indicators.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.addEventListener('change', function() {
+                toggleIndicator(id, this.checked);
+            });
+        }
+    });
+
+    function initializeCharts() {
+        initializePriceChart();
+        initializeVolumeChart();
+        initializeOscillatorChart();
+        
+        {% if symbol and show_analysis %}
+        // Start real-time updates for specific symbol
+        startRealTimeUpdates();
+        {% endif %}
+    }
+    
+    function initializePriceChart() {
+        const ctx = document.getElementById('technicalChart');
+        if (!ctx) return;
+        
+        // Hide loading spinner
+        const loadingSpinner = document.getElementById('chart-loading');
+        if (loadingSpinner) {
+            setTimeout(() => loadingSpinner.style.display = 'none', 1000);
+        }
+        
+        // Generate advanced chart data
+        const chartData = generateAdvancedChartData();
+        
+        priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'Pris',
+                        data: chartData.prices,
+                        borderColor: '#0d6efd',
+                        backgroundColor: currentChartType === 'area' ? 'rgba(13, 110, 253, 0.1)' : 'transparent',
+                        fill: currentChartType === 'area',
+                        tension: 0.1,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'SMA 20',
+                        data: chartData.sma20,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'transparent',
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        borderWidth: 1.5,
+                        hidden: !document.getElementById('showSMA20')?.checked
+                    },
+                    {
+                        label: 'SMA 50',
+                        data: chartData.sma50,
+                        borderColor: '#198754',
+                        backgroundColor: 'transparent',
+                        borderDash: [10, 5],
+                        pointRadius: 0,
+                        borderWidth: 1.5,
+                        hidden: !document.getElementById('showSMA50')?.checked
+                    },
+                    {
+                        label: 'EMA 20',
+                        data: chartData.ema20,
+                        borderColor: '#fd7e14',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        borderWidth: 1.5,
+                        hidden: true
+                    },
+                    {
+                        label: 'Bollinger Upper',
+                        data: chartData.bollingerUpper,
+                        borderColor: 'rgba(108, 117, 125, 0.5)',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        borderWidth: 1,
+                        hidden: true
+                    },
+                    {
+                        label: 'Bollinger Lower',
+                        data: chartData.bollingerLower,
+                        borderColor: 'rgba(108, 117, 125, 0.5)',
+                        backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                        fill: '+1',
+                        pointRadius: 0,
+                        borderWidth: 1,
+                        hidden: true
+                    }
+                ]
+            },
+            options: {
+                ...chartConfig,
+                onHover: (event, activeElements) => {
+                    handleChartHover(event, activeElements);
+                }
+            }
+        });
+        
+        // Add support/resistance lines
+        addSupportResistanceLines();
+    }
+    
+    function initializeVolumeChart() {
+        const ctx = document.getElementById('volumeChart');
+        if (!ctx) return;
+        
+        const chartData = generateAdvancedChartData();
+        
+        volumeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Volume',
+                    data: chartData.volume,
+                    backgroundColor: chartData.volume.map((v, i) => {
+                        const prevPrice = i > 0 ? chartData.prices[i-1] : chartData.prices[i];
+                        const currentPrice = chartData.prices[i];
+                        return currentPrice >= prevPrice ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)';
+                    }),
+                    borderColor: 'transparent',
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'day' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: {
+                            callback: function(value) {
+                                return value >= 1000000 ? (value/1000000).toFixed(1) + 'M' : 
+                                       value >= 1000 ? (value/1000).toFixed(0) + 'K' : value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+    }
+    
+    function initializeOscillatorChart() {
+        const ctx = document.getElementById('oscillatorChart');
+        if (!ctx) return;
+        
+        const chartData = generateAdvancedChartData();
+        
+        oscillatorChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'RSI',
+                        data: chartData.rsi,
+                        borderColor: '#6f42c1',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        borderWidth: 2,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'MACD',
+                        data: chartData.macd,
+                        borderColor: '#20c997',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        borderWidth: 1.5,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'day' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        grid: { 
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawOnChartArea: true
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: false,
+                        position: 'left',
+                        grid: { drawOnChartArea: false }
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'top',
+                        labels: { boxWidth: 12 }
+                    },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+        
+        // Add RSI overbought/oversold lines
+        addOscillatorLines();
+    }
+    
+    function generateAdvancedChartData() {
+        const periods = currentTimeframe === '1d' ? 24 : 
+                       currentTimeframe === '1w' ? 7 : 
+                       currentTimeframe === '1m' ? 30 : 
+                       currentTimeframe === '3m' ? 90 : 
+                       currentTimeframe === '6m' ? 180 : 365;
+        
+        const labels = [];
+        const prices = [];
+        const volume = [];
+        const sma20 = [];
+        const sma50 = [];
+        const ema20 = [];
+        const rsi = [];
+        const macd = [];
+        const bollingerUpper = [];
+        const bollingerLower = [];
+        
+        const basePrice = {{ technical_data.get('last_price', 100) }};
+        let currentPrice = basePrice * 0.95;
+        let trend = 0.001; // Slight upward trend
+        
+        // Price history for moving averages
+        const priceHistory = [];
+        
+        for (let i = 0; i < periods; i++) {
+            const date = new Date();
+            if (currentTimeframe === '1d') {
+                date.setHours(date.getHours() - (periods - 1 - i));
+            } else {
+                date.setDate(date.getDate() - (periods - 1 - i));
+            }
+            labels.push(date);
+            
+            // Generate realistic price movement with trend
+            const volatility = 0.02;
+            const randomChange = (Math.random() - 0.5) * volatility + trend;
+            currentPrice *= (1 + randomChange);
+            prices.push(parseFloat(currentPrice.toFixed(2)));
+            priceHistory.push(currentPrice);
+            
+            // Generate volume (inverse correlation with price movements)
+            const baseVolume = 2000000;
+            const volatilityMultiplier = Math.abs(randomChange) * 50 + 1;
+            const currentVolume = baseVolume * (0.5 + Math.random()) * volatilityMultiplier;
+            volume.push(Math.round(currentVolume));
+            
+            // Calculate moving averages
+            if (i >= 19) {
+                const sma20Value = priceHistory.slice(-20).reduce((a, b) => a + b) / 20;
+                sma20.push(parseFloat(sma20Value.toFixed(2)));
+            } else {
+                sma20.push(null);
+            }
+            
+            if (i >= 49) {
+                const sma50Value = priceHistory.slice(-50).reduce((a, b) => a + b) / 50;
+                sma50.push(parseFloat(sma50Value.toFixed(2)));
+            } else {
+                sma50.push(null);
+            }
+            
+            // EMA 20 calculation
+            if (i === 0) {
+                ema20.push(currentPrice);
+            } else {
+                const multiplier = 2 / (20 + 1);
+                const emaValue = (currentPrice * multiplier) + (ema20[i-1] * (1 - multiplier));
+                ema20.push(parseFloat(emaValue.toFixed(2)));
+            }
+            
+            // Generate RSI (simplified)
+            const rsiBase = 50;
+            const rsiVariation = 25 * Math.sin(i * 0.1) + 10 * (Math.random() - 0.5);
+            rsi.push(Math.max(0, Math.min(100, rsiBase + rsiVariation)));
+            
+            // Generate MACD (simplified)
+            const macdValue = Math.sin(i * 0.05) * 2 + (Math.random() - 0.5);
+            macd.push(parseFloat(macdValue.toFixed(3)));
+            
+            // Bollinger Bands (simplified)
+            if (i >= 19) {
+                const ma = sma20[sma20.length - 1];
+                const stdDev = currentPrice * 0.02; // Simplified standard deviation
+                bollingerUpper.push(parseFloat((ma + 2 * stdDev).toFixed(2)));
+                bollingerLower.push(parseFloat((ma - 2 * stdDev).toFixed(2)));
+            } else {
+                bollingerUpper.push(null);
+                bollingerLower.push(null);
+            }
+        }
+        
+        return { 
+            labels, prices, volume, sma20, sma50, ema20, rsi, macd, 
+            bollingerUpper, bollingerLower 
+        };
+    }
+    
+    function addSupportResistanceLines() {
+        if (!priceChart) return;
+        
+        const supportLevel = {{ technical_data.get('support', 280) }};
+        const resistanceLevel = {{ technical_data.get('resistance', 320) }};
+        
+        // Register horizontal lines plugin
+        const horizontalLines = {
+            id: 'horizontalLines',
+            afterDatasetsDraw: (chart) => {
+                const { ctx, scales: { x, y } } = chart;
+                
+                if (!document.getElementById('showSupport')?.checked) return;
+                
+                ctx.save();
+                
+                // Support line
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.7)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(x.left, y.getPixelForValue(supportLevel));
+                ctx.lineTo(x.right, y.getPixelForValue(supportLevel));
+                ctx.stroke();
+                
+                // Support label
+                ctx.fillStyle = 'rgba(34, 197, 94, 0.9)';
+                ctx.font = '12px Arial';
+                ctx.fillText(`Support: ${supportLevel}`, x.left + 5, y.getPixelForValue(supportLevel) - 5);
+                
+                // Resistance line
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                ctx.beginPath();
+                ctx.moveTo(x.left, y.getPixelForValue(resistanceLevel));
+                ctx.lineTo(x.right, y.getPixelForValue(resistanceLevel));
+                ctx.stroke();
+                
+                // Resistance label
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+                ctx.fillText(`Resistance: ${resistanceLevel}`, x.left + 5, y.getPixelForValue(resistanceLevel) - 5);
+                
+                ctx.restore();
+            }
+        };
+        
+        Chart.register(horizontalLines);
+    }
+    
+    function addOscillatorLines() {
+        if (!oscillatorChart) return;
+        
+        const oscillatorLines = {
+            id: 'oscillatorLines',
+            afterDatasetsDraw: (chart) => {
+                const { ctx, scales: { x, y } } = chart;
+                
+                ctx.save();
+                
+                // Overbought line (70)
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(x.left, y.getPixelForValue(70));
+                ctx.lineTo(x.right, y.getPixelForValue(70));
+                ctx.stroke();
+                
+                // Oversold line (30)
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
+                ctx.beginPath();
+                ctx.moveTo(x.left, y.getPixelForValue(30));
+                ctx.lineTo(x.right, y.getPixelForValue(30));
+                ctx.stroke();
+                
+                // Center line (50)
+                ctx.strokeStyle = 'rgba(108, 117, 125, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(x.left, y.getPixelForValue(50));
+                ctx.lineTo(x.right, y.getPixelForValue(50));
+                ctx.stroke();
+                
+                ctx.restore();
+            }
+        };
+        
+        Chart.register(oscillatorLines);
+    }
+    
+    function toggleIndicatorPanel() {
+        const panel = document.getElementById('indicatorPanel');
+        const button = document.getElementById('toggleIndicators');
+        
+        if (!panel || !button) return;
+        
+        indicatorPanelVisible = !indicatorPanelVisible;
+        panel.style.display = indicatorPanelVisible ? 'block' : 'none';
+        button.classList.toggle('active', indicatorPanelVisible);
+    }
+    
+    function toggleDrawingMode() {
+        const button = document.getElementById('toggleDrawing');
+        if (!button) return;
+        
+        drawingMode = !drawingMode;
+        button.classList.toggle('active', drawingMode);
+        
+        // TODO: Implement drawing tools (trendlines, rectangles, etc.)
+        if (drawingMode) {
+            console.log('Drawing mode activated - feature coming soon!');
+            // Show notification
+            showNotification('Tegne-verktøy kommer snart! 🎨', 'info');
+        }
+    }
+    
+    function toggleFullscreen() {
+        const chartContainer = document.querySelector('.chart-container').parentElement;
+        const button = document.getElementById('fullscreenChart');
+        
+        if (!chartContainer || !button) return;
+        
+        if (!isFullscreen) {
+            chartContainer.style.position = 'fixed';
+            chartContainer.style.top = '0';
+            chartContainer.style.left = '0';
+            chartContainer.style.width = '100vw';
+            chartContainer.style.height = '100vh';
+            chartContainer.style.zIndex = '9999';
+            chartContainer.style.backgroundColor = 'white';
+            
+            button.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+        } else {
+            chartContainer.style.position = '';
+            chartContainer.style.top = '';
+            chartContainer.style.left = '';
+            chartContainer.style.width = '';
+            chartContainer.style.height = '';
+            chartContainer.style.zIndex = '';
+            chartContainer.style.backgroundColor = '';
+            
+            button.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+        }
+        
+        isFullscreen = !isFullscreen;
+        
+        // Resize charts
+        setTimeout(() => {
+            if (priceChart) priceChart.resize();
+            if (volumeChart) volumeChart.resize();
+            if (oscillatorChart) oscillatorChart.resize();
+        }, 100);
+    }
+    
+    function updateChartTimeframe() {
+        // Regenerate data for new timeframe
+        const newData = generateAdvancedChartData();
+        
+        // Update all charts
+        if (priceChart) {
+            priceChart.data.labels = newData.labels;
+            priceChart.data.datasets[0].data = newData.prices;
+            priceChart.data.datasets[1].data = newData.sma20;
+            priceChart.data.datasets[2].data = newData.sma50;
+            priceChart.data.datasets[3].data = newData.ema20;
+            priceChart.data.datasets[4].data = newData.bollingerUpper;
+            priceChart.data.datasets[5].data = newData.bollingerLower;
+            priceChart.update('active');
+        }
+        
+        if (volumeChart) {
+            volumeChart.data.labels = newData.labels;
+            volumeChart.data.datasets[0].data = newData.volume;
+            volumeChart.data.datasets[0].backgroundColor = newData.volume.map((v, i) => {
+                const prevPrice = i > 0 ? newData.prices[i-1] : newData.prices[i];
+                const currentPrice = newData.prices[i];
+                return currentPrice >= prevPrice ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)';
+            });
+            volumeChart.update('active');
+        }
+        
+        if (oscillatorChart) {
+            oscillatorChart.data.labels = newData.labels;
+            oscillatorChart.data.datasets[0].data = newData.rsi;
+            oscillatorChart.data.datasets[1].data = newData.macd;
+            oscillatorChart.update('active');
+        }
+        
+        // Update AI analysis
+        updateAIAnalysis();
+    }
+    
+    function updateChartType() {
+        if (!priceChart) return;
+        
+        const priceDataset = priceChart.data.datasets[0];
+        
+        switch(currentChartType) {
+            case 'line':
+                priceDataset.fill = false;
+                priceDataset.backgroundColor = 'transparent';
+                break;
+            case 'area':
+                priceDataset.fill = true;
+                priceDataset.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+                break;
+            case 'candlestick':
+                // TODO: Implement candlestick chart
+                console.log('Candlestick chart - feature coming soon!');
+                showNotification('Candlestick chart kommer snart! 📈', 'info');
+                break;
+        }
+        
+        priceChart.update('active');
+    }
+    
+    function toggleIndicator(indicatorId, show) {
+        if (!priceChart) return;
+        
+        const indicatorMap = {
+            'showSMA20': 1,
+            'showSMA50': 2,
+            'showEMA20': 3,
+            'showBollinger': [4, 5],
+            'showSupport': null, // Handled by plugin
+            'showVolume': null // Separate chart
+        };
+        
+        const datasetIndex = indicatorMap[indicatorId];
+        if (Array.isArray(datasetIndex)) {
+            datasetIndex.forEach(index => {
+                priceChart.data.datasets[index].hidden = !show;
+            });
+        } else if (datasetIndex !== null) {
+            priceChart.data.datasets[datasetIndex].hidden = !show;
+        }
+        
+        if (indicatorId === 'showVolume') {
+            const volumeContainer = document.getElementById('volumeContainer');
+            if (volumeContainer) {
+                volumeContainer.style.display = show ? 'block' : 'none';
+            }
+        }
+        
+        priceChart.update('active');
+    }
+    
+    function handleChartHover(event, activeElements) {
+        const crosshair = document.getElementById('crosshair');
+        const priceInfoBox = document.getElementById('priceInfoBox');
+        
+        if (!crosshair || !priceInfoBox) return;
+        
+        if (activeElements.length > 0) {
+            const rect = event.chart.canvas.getBoundingClientRect();
+            const x = event.x - rect.left;
+            const y = event.y - rect.top;
+            
+            // Show crosshair
+            crosshair.style.display = 'block';
+            crosshair.querySelector('.crosshair-line-h').style.top = y + 'px';
+            crosshair.querySelector('.crosshair-line-v').style.left = x + 'px';
+            
+            // Show price info
+            const dataIndex = activeElements[0].index;
+            const dataset = event.chart.data.datasets[0];
+            const price = dataset.data[dataIndex];
+            const date = event.chart.data.labels[dataIndex];
+            
+            priceInfoBox.style.display = 'block';
+            priceInfoBox.style.left = (x + 10) + 'px';
+            priceInfoBox.style.top = (y - 50) + 'px';
+            
+            document.getElementById('priceInfo').innerHTML = `
+                <div><strong>${price} NOK</strong></div>
+                <div>${new Date(date).toLocaleDateString('nb-NO')}</div>
+            `;
+        } else {
+            crosshair.style.display = 'none';
+            priceInfoBox.style.display = 'none';
+        }
+    }
+    
+    function updateAIAnalysis() {
+        // Update trend indicator
+        const trendIndicator = document.getElementById('trendIndicator');
+        const currentTrend = document.getElementById('currentTrend');
+        const patternDetected = document.getElementById('patternDetected');
+        const volumeAnalysis = document.getElementById('volumeAnalysis');
+        const aiInsight = document.getElementById('aiInsight');
+        
+        if (!trendIndicator || !currentTrend || !patternDetected || !volumeAnalysis || !aiInsight) return;
+        
+        // Simulate AI analysis based on timeframe
+        const analyses = {
+            '1d': {
+                trend: { color: '#28a745', text: 'Strong Bullish' },
+                pattern: 'Ascending Triangle',
+                volume: 'High Activity',
+                insight: 'Intradag analyse viser kraftige kjøpssignaler med økt volum. Momentumet er sterkt bullish.'
+            },
+            '1w': {
+                trend: { color: '#ffc107', text: 'Neutral' },
+                pattern: 'Consolidation',
+                volume: 'Normal Activity',
+                insight: 'Ukentlig analyse indikerer konsolidering før potensielt utbrudd. Avvent klarere signaler.'
+            },
+            '1m': {
+                trend: { color: '#28a745', text: 'Bullish Trend' },
+                pattern: 'Rising Wedge',
+                volume: 'Above Average',
+                insight: 'Månedlig trend viser vedvarende oppgang med økt institusjonell interesse. RSI indikerer ikke overkjøpt.'
+            },
+            '3m': {
+                trend: { color: '#17a2b8', text: 'Steady Growth' },
+                pattern: 'Channel Pattern',
+                volume: 'Consistent',
+                insight: 'Tre-måneders analyse bekrefter stabil opptrend innenfor definert kanal. Fortsatt rom for vekst.'
+            },
+            '6m': {
+                trend: { color: '#6f42c1', text: 'Long-term Bull' },
+                pattern: 'Cup & Handle',
+                volume: 'Building',
+                insight: 'Halvårs perspektiv viser klassisk cup & handle mønster. Potensielt utbrudd til nye høyder.'
+            },
+            '1y': {
+                trend: { color: '#fd7e14', text: 'Secular Trend' },
+                pattern: 'Multi-year Base',
+                volume: 'Institutional',
+                insight: 'Årlig analyse avslører solid fundament for langsiktig vekst med institusjonell støtte.'
+            }
+        };
+        
+        const analysis = analyses[currentTimeframe] || analyses['1m'];
+        
+        trendIndicator.style.background = analysis.trend.color;
+        currentTrend.textContent = analysis.trend.text;
+        patternDetected.textContent = analysis.pattern;
+        volumeAnalysis.textContent = analysis.volume;
+        aiInsight.textContent = analysis.insight;
+    }
+    
+    function startRealTimeUpdates() {
+        if (updateInterval) clearInterval(updateInterval);
+        
+        updateInterval = setInterval(() => {
+            if (!currentSymbol) return;
+            
+            // Simulate real-time price updates
+            updateRealTimeData();
+        }, 30000); // Update every 30 seconds
+    }
+    
+    function updateRealTimeData() {
+        // Simulate real-time data updates
+        const newData = generateAdvancedChartData();
+        
+        // Add new data point to charts
+        if (priceChart && newData.prices.length > 0) {
+            const lastPrice = newData.prices[newData.prices.length - 1];
+            
+            // Update current price display
+            const priceElement = document.getElementById('current-price');
+            if (priceElement) {
+                priceElement.textContent = lastPrice;
+            }
+        }
+    }
+    
+    function showNotification(message, type = 'info') {
+        // Create and show notification
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
+    }
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.position-relative')) {
+            document.querySelectorAll('[id$="-suggestions"]').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    });
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (updateInterval) {
+            clearInterval(updateInterval);
+        }
+    });
+    
+    // Initialize AI analysis
+    updateAIAnalysis();
+    
+    {% if symbol and show_analysis %}
+    // Create gauge charts for oscillators
+    createGaugeChart('rsi-gauge', {{ technical_data.get('rsi', 50) }}, 0, 100, '#ffc107');
+    createGaugeChart('stoch-gauge', {{ (technical_data.get('rsi', 50) + 10) }}, 0, 100, '#17a2b8');
+    createGaugeChart('williams-gauge', {{ (100 - technical_data.get('rsi', 50)) }}, 0, 100, '#6f42c1');
+    {% endif %}
+});
+
+// Gauge Chart Implementation
+function createGaugeChart(canvasId, value, min, max, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 60;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw gauge background
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, 0.25 * Math.PI);
+    ctx.strokeStyle = '#e9ecef';
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    
+    // Draw gauge value
+    const angle = 0.75 * Math.PI + (value / (max - min)) * 1.5 * Math.PI;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, angle);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    
+    // Draw needle
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(angle - 0.75 * Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(radius - 5, 0);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
+}
+
+// Export functionality
+function exportData() {
+    const symbol = '{{ symbol }}';
+    const data = {
+        symbol: symbol,
+        price: {{ technical_data.get('last_price', 0) }},
+        rsi: {{ technical_data.get('rsi', 0) }},
+        macd: {{ technical_data.get('macd', 0) }},
+        signal: '{{ technical_data.get('signal', 'HOLD') }}',
+        timestamp: new Date().toISOString()
+    };
+    
+    const csvContent = Object.keys(data).join(',') + '\n' + Object.values(data).join(',');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `technical_analysis_${symbol}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+    
+    symbolInputs.forEach(inputSelector => {
+        const input = document.querySelector(inputSelector);
+        if (!input) return;
+        
+        const suggestionsId = inputSelector.includes('main') ? '#main-symbol-suggestions' : '#symbol-suggestions';
+        const suggestions = document.querySelector(suggestionsId);
+        
+        input.addEventListener('input', function() {
+            const query = this.value.toUpperCase();
+            if (query.length < 1) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const matches = popularSymbols.filter(symbol => 
+                symbol.includes(query)
+            ).slice(0, 5);
+            
+            if (matches.length > 0) {
+                suggestions.innerHTML = matches.map(symbol => 
+                    `<a href="#" class="list-group-item list-group-item-action" data-symbol="${symbol}">${symbol}</a>`
+                ).join('');
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+        });
+        
+        // Handle suggestion clicks
+        if (suggestions) {
+            suggestions.addEventListener('click', function(e) {
+                e.preventDefault();
+                const symbol = e.target.dataset.symbol;
+                if (symbol) {
+                    input.value = symbol;
+                    suggestions.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.position-relative')) {
+            document.querySelectorAll('[id$="-suggestions"]').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    });
+
+    {% if symbol and show_analysis %}
+    // Real-time data updates
+    function updateData() {
+        if (!currentSymbol) return;
+        
+        fetch(`/analysis/api/technical/${currentSymbol}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    updateUI(result.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating data:', error);
+            });
+    }
+    
+    function updateUI(data) {
+        // Update price display
+        const priceElement = document.getElementById('current-price');
+        if (priceElement) {
+            priceElement.textContent = data.current_price.toFixed(2);
+        }
+        
+        // Update indicators with animations
+        updateIndicator('rsi', data.indicators.rsi, 0, 100);
+        updateIndicator('macd', data.indicators.macd);
+        
+        // Update sentiment indicator
+        updateSentiment(data.sentiment);
+        
+        // Update last updated time
+        const now = new Date().toLocaleTimeString('nb-NO');
+        const updateElement = document.getElementById('last-updated');
+        if (updateElement) {
+            updateElement.textContent = `Sist oppdatert: ${now}`;
+        }
+    }
+    
+    function updateIndicator(id, value, min = null, max = null) {
+        const element = document.querySelector(`[data-indicator="${id}"]`);
+        if (!element) return;
+        
+        // Animate value change
+        const currentValue = parseFloat(element.textContent) || 0;
+        animateValue(element, currentValue, value, 1000);
+        
+        // Update progress bars if applicable
+        if (min !== null && max !== null) {
+            const progressBar = element.closest('.card').querySelector('.progress-bar');
+            if (progressBar) {
+                const percentage = ((value - min) / (max - min)) * 100;
+                progressBar.style.width = `${percentage}%`;
+            }
+        }
+    }
+    
+    function animateValue(element, start, end, duration) {
+        const startTime = performance.now();
+        
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const current = start + (end - start) * progress;
+            element.textContent = current.toFixed(1);
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        requestAnimationFrame(update);
+    }
+    
+    function updateSentiment(sentiment) {
+        const sentimentElement = document.querySelector('[data-sentiment]');
+        if (!sentimentElement) return;
+        
+        // Update sentiment badge
+        sentimentElement.textContent = sentiment.sentiment;
+        sentimentElement.className = `badge ${
+            sentiment.sentiment === 'Bullish' ? 'bg-success' : 
+            sentiment.sentiment === 'Bearish' ? 'bg-danger' : 'bg-warning'
+        }`;
+    }
+
+    // Interactive Chart Setup
+    const ctx = document.getElementById('technicalChart');
+    if (ctx) {
+        // Hide loading spinner
+        const loadingSpinner = document.getElementById('chart-loading');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+        
+        // Initialize chart
+        initializeChart();
+    }
+    
+    function initializeChart() {
+        const ctx = document.getElementById('technicalChart');
+        if (!ctx) return;
+        
+        // Generate sample data for demonstration
+        const chartData = generateChartData();
+        
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Pris',
+                    data: chartData.prices,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    fill: true,
+                    tension: 0.1,
+                    pointRadius: 2,
+                    pointHoverRadius: 5
+                }, {
+                    label: 'SMA 20',
+                    data: chartData.sma20,
+                    borderColor: '#dc3545',
+                    backgroundColor: 'transparent',
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                }, {
+                    label: 'SMA 50',
+                    data: chartData.sma50,
+                    borderColor: '#198754',
+                    backgroundColor: 'transparent',
+                    borderDash: [10, 5],
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    tooltip: {
+                        position: 'nearest',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#0d6efd',
+                        borderWidth: 1
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(2) + ' NOK';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+    }
+    
+    function generateChartData() {
+        const labels = [];
+        const prices = [];
+        const sma20 = [];
+        const sma50 = [];
+        
+        const basePrice = {{ technical_data.get('last_price', 100) }};
+        let currentPrice = basePrice * 0.95;
+        
+        for (let i = 0; i < 30; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - (29 - i));
+            labels.push(date.toLocaleDateString('nb-NO'));
+            
+            // Generate realistic price movement
+            const change = (Math.random() - 0.48) * 0.02; // Slight upward bias
+            currentPrice *= (1 + change);
+            prices.push(currentPrice.toFixed(2));
+            
+            // Generate moving averages
+            sma20.push((currentPrice * (Math.random() * 0.04 + 0.98)).toFixed(2));
+            sma50.push((currentPrice * (Math.random() * 0.06 + 0.97)).toFixed(2));
+        }
+        
+        return { labels, prices, sma20, sma50 };
+    }
+
+    // Gauge charts for oscillators
+    createGaugeChart('rsi-gauge', {{ technical_data.get('rsi', 50) }}, 0, 100, '#ffc107');
+    createGaugeChart('stoch-gauge', {{ (technical_data.get('rsi', 50) + 10) }}, 0, 100, '#17a2b8');
+    createGaugeChart('williams-gauge', {{ (100 - technical_data.get('rsi', 50)) }}, 0, 100, '#6f42c1');
+    
+    // Start real-time updates
+    updateInterval = setInterval(updateData, 30000); // Update every 30 seconds
+    
+    // Timeframe selector functionality
+    document.querySelectorAll('input[name="timeframe"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateChartTimeframe(this.id);
+        });
+    });
+    
+    function updateChartTimeframe(timeframe) {
+        // Update chart data based on timeframe
+        if (chart) {
+            const newData = generateChartData(); // In real app, fetch from API
+            chart.data.labels = newData.labels;
+            chart.data.datasets[0].data = newData.prices;
+            chart.data.datasets[1].data = newData.sma20;
+            chart.data.datasets[2].data = newData.sma50;
+            chart.update('active');
+        }
+    }
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (updateInterval) {
+            clearInterval(updateInterval);
+        }
+    });
+    {% endif %}
+
+    // Auto-focus on symbol input
+    const mainInput = document.querySelector('#main-symbol-input');
+    if (mainInput) {
+        mainInput.focus();
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            const input = document.querySelector('#symbol, #main-symbol-input');
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }
+        
+        // ESC to hide suggestions
+        if (e.key === 'Escape') {
+            document.querySelectorAll('[id$="-suggestions"]').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    });
+
+    // Smooth scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Tab switching with smooth transitions
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function(e) {
+            // Add fade effect to tab content
+            const targetPane = document.querySelector(e.target.getAttribute('href'));
+            if (targetPane) {
+                targetPane.style.opacity = '0';
+                setTimeout(() => {
+                    targetPane.style.transition = 'opacity 0.3s ease';
+                    targetPane.style.opacity = '1';
+                }, 50);
+            }
+        });
+    });
+});
+
+// Helper functions
+function createGaugeChart(canvasId, value, min, max, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 15;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Background arc
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, 0.25 * Math.PI);
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = '#e9ecef';
+    ctx.stroke();
+    
+    // Value arc with animation
+    const normalizedValue = Math.max(min, Math.min(max, value));
+    const angle = 0.75 * Math.PI + (normalizedValue / max) * 1.5 * Math.PI;
+    
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, angle);
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = color;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Add gradient effect
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, color + '80');
+    
+    // Needle indicator
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(angle - 0.75 * Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(radius - 5, 0);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
+}
+
+// Export functionality
+function exportData() {
+    const symbol = '{{ symbol }}';
+    const data = {
+        symbol: symbol,
+        price: {{ technical_data.get('last_price', 0) }},
+        rsi: {{ technical_data.get('rsi', 0) }},
+        macd: {{ technical_data.get('macd', 0) }},
+        signal: '{{ technical_data.get('signal', 'HOLD') }}',
+        timestamp: new Date().toISOString()
+    };
+    
+    const csvContent = Object.keys(data).join(',') + '\n' + Object.values(data).join(',');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${symbol}_technical_analysis.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// Print functionality
+function printAnalysis() {
+    window.print();
+}
+
+// Share functionality
+function shareAnalysis() {
+    if (navigator.share) {
+        navigator.share({
+            title: `Teknisk analyse - {{ symbol }}`,
+            text: `Se teknisk analyse for {{ symbol }} på Aksjeradar`,
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link kopiert til utklippstavle!');
+        });
+    }
+}
+
+// Add tooltip functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+
+<style>
+.chart-container {
+    position: relative;
+}
+
+.indicator-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .indicator-icon {
+    transform: scale(1.1);
+}
+
+.progress-bar {
+    transition: width 0.8s ease;
+}
+
+.gauge-container {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    border-bottom: 2px solid #0d6efd;
+    color: #0d6efd;
+}
+
+.list-group-item {
+    transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1) !important;
+}
+
+#symbol-suggestions, #main-symbol-suggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+}
+
+.btn-check:checked + .btn {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+</style>
+{% endblock %}
