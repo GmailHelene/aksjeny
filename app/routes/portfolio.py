@@ -294,20 +294,35 @@ def stock_tips():
 
 @portfolio.route('/create', methods=['GET', 'POST'])
 @login_required
+@access_required
 def create_portfolio():
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        description = request.form.get('description', '').strip()
-        if not name:
-            flash('Du må gi porteføljen et navn.', 'danger')
-            return render_template('portfolio/create.html')
-        # Opprett og lagre portefølje
-        new_portfolio = Portfolio(name=name, description=description, user_id=current_user.id)
-        db.session.add(new_portfolio)
-        db.session.commit()
-        flash('Porteføljen ble opprettet!', 'success')
-        return redirect(url_for('portfolio.portfolio_index'))
-    return render_template('portfolio/create.html')
+    try:
+        if request.method == 'POST':
+            name = request.form.get('name', '').strip()
+            description = request.form.get('description', '').strip()
+            if not name:
+                flash('Du må gi porteføljen et navn.', 'danger')
+                return render_template('portfolio/create.html')
+            
+            # Opprett og lagre portefølje
+            try:
+                new_portfolio = Portfolio(name=name, description=description, user_id=current_user.id)
+                db.session.add(new_portfolio)
+                db.session.commit()
+                flash('Porteføljen ble opprettet!', 'success')
+                return redirect(url_for('portfolio.portfolio_index'))
+            except Exception as e:
+                logger.error(f"Error creating portfolio: {e}")
+                db.session.rollback()
+                flash('Kunne ikke opprette portefølje. Prøv igjen.', 'error')
+                return render_template('portfolio/create.html')
+                
+        return render_template('portfolio/create.html')
+        
+    except Exception as e:
+        logger.error(f"Error in create_portfolio: {e}")
+        flash('Teknisk feil. Prøv igjen senere.', 'error')
+        return render_template('portfolio/create.html', error="Teknisk feil")
 
 @portfolio.route('/view/<int:id>')
 @login_required

@@ -779,7 +779,7 @@ def forgot_password():
             try:
                 msg = Message(
                     'Tilbakestill passord - Aksjeradar',
-                    sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@aksjeradar.com'),
+                    sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@aksjeradar.trade'),
                     recipients=[user.email]
                 )
                 reset_url = url_for('main.reset_password', token=token, _external=True)
@@ -876,7 +876,7 @@ def send_referral():
     try:
         msg = Message(
             f'{current_user.username} inviterer deg til Aksjeradar',
-            sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@aksjeradar.com'),
+            sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@aksjeradar.trade'),
             recipients=[email]
         )
         msg.body = f'''Hei!

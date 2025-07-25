@@ -685,7 +685,7 @@ def create_premium_user():
     """Create test premium user for testing"""
     data = request.get_json() or request.form
     username = data.get('username', 'premium_user')
-    email = data.get('email', 'premium@aksjeradar.no')
+    email = data.get('email', 'premium@aksjeradar.trade')
     password = data.get('password', 'test123')
     subscription_type = data.get('subscription_type', 'basic')
     

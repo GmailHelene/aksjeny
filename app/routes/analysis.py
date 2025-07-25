@@ -733,11 +733,10 @@ def sentiment_view():
         
     except Exception as e:
         logger.error(f"Error in sentiment view: {e}")
-        flash('Sentiment analyse midlertidig utilgjengelig.', 'error')
         return render_template('analysis/sentiment.html',
                              sentiment_data={},
                              ticker='AAPL',
-                             error=True)
+                             error="Det oppstod en feil med screeneren. Prøv igjen senere.")
 
 
 @analysis.route('/screener')
@@ -946,11 +945,19 @@ def screener_view():
 def currency_overview():
     """Currency market overview page"""
     try:
-        # Get currency data
-        currency_data = DataService.get_currency_overview()
+        # Get currency data with fallback
+        try:
+            currency_data = DataService.get_currency_overview() or {}
+        except Exception as e:
+            logger.warning(f"Could not get currency data: {e}")
+            currency_data = {}
         
         # Get economic indicators that affect currencies
-        indicators = DataService.get_economic_indicators()
+        try:
+            indicators = DataService.get_economic_indicators() or {}
+        except Exception as e:
+            logger.warning(f"Could not get economic indicators: {e}")
+            indicators = {}
         
         return render_template('analysis/currency_overview.html',
                              currency_data=currency_data,
@@ -958,8 +965,10 @@ def currency_overview():
                              
     except Exception as e:
         logger.error(f"Error in currency overview: {e}")
-        flash('Kunne ikke laste valutaoversikt.', 'error')
-        return redirect(url_for('analysis.index'))
+        return render_template('analysis/currency_overview.html',
+                             currency_data={},
+                             indicators={},
+                             error="Kunne ikke laste valutaoversikt.")
 
 @analysis.route('/prediction', methods=['GET', 'POST'])
 @access_required
