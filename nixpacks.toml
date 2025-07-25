@@ -13,4 +13,5 @@ dependsOn = ["install"]
 cmds = ["echo 'Build phase completed'"]
 
 [start]
-cmd = "python3 gunicorn_start.py"
+[start]
+cmd = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --worker-class eventlet main:app"

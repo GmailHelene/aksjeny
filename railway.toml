@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "python3 gunicorn_start.py"
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --worker-class eventlet main:app"
 healthcheckPath = "/health/ready"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
