@@ -824,6 +824,68 @@ def screener_view():
                 else:
                     flash('Velg minst ett filter eller preset', 'warning')
         
+        # If no results but showing results (after search), use empty list
+        # If not showing results (first load), show demo data
+        if not show_results:
+            results = [
+                {
+                    'ticker': 'EQNR.OL',
+                    'name': 'Equinor ASA',
+                    'price': '320.50',
+                    'change': '+2.5%',
+                    'volume': '1.2M',
+                    'market_cap': '1020B',
+                    'pe_ratio': '12.4',
+                    'dividend_yield': '5.2%',
+                    'sector': 'Energy'
+                },
+                {
+                    'ticker': 'DNB.OL',
+                    'name': 'DNB Bank ASA',
+                    'price': '195.80',
+                    'change': '+1.1%',
+                    'volume': '850K',
+                    'market_cap': '285B',
+                    'pe_ratio': '8.9',
+                    'dividend_yield': '6.8%',
+                    'sector': 'Financials'
+                },
+                {
+                    'ticker': 'TEL.OL',
+                    'name': 'Telenor ASA',
+                    'price': '155.20',
+                    'change': '-0.3%',
+                    'volume': '620K',
+                    'market_cap': '205B',
+                    'pe_ratio': '15.2',
+                    'dividend_yield': '4.1%',
+                    'sector': 'Telecommunications'
+                },
+                {
+                    'ticker': 'YAR.OL',
+                    'name': 'Yara International',
+                    'price': '425.10',
+                    'change': '+3.2%',
+                    'volume': '380K',
+                    'market_cap': '115B',
+                    'pe_ratio': '18.7',
+                    'dividend_yield': '3.5%',
+                    'sector': 'Materials'
+                },
+                {
+                    'ticker': 'NHY.OL',
+                    'name': 'Norsk Hydro ASA',
+                    'price': '65.45',
+                    'change': '+0.8%',
+                    'volume': '2.1M',
+                    'market_cap': '135B',
+                    'pe_ratio': '22.1',
+                    'dividend_yield': '2.9%',
+                    'sector': 'Materials'
+                }
+            ]
+            show_results = True
+        
         return render_template('analysis/screener.html',
                              available_filters=available_filters,
                              preset_screens=preset_screens,
@@ -1320,21 +1382,6 @@ def sentiment():
                              selected_symbol='',
                              error="Kunne ikke laste sentiment data")
 
-@analysis.route('/api/sentiment/<symbol>')
-@access_required
-def api_sentiment(symbol):
-    """API endpoint for sentiment data"""
-    try:
-        sentiment_data = AnalysisService.get_sentiment_analysis(symbol)
-        return jsonify({
-            'success': True,
-            'data': sentiment_data,
-            'symbol': symbol
-        })
-    except Exception as e:
-        logger.error(f"Error in sentiment API for {symbol}: {e}")
-        return jsonify({'error': 'Failed to get sentiment data'}), 500
-
 @analysis.route('/insider-trading')
 @access_required
 def insider_trading():
@@ -1348,3 +1395,75 @@ def insider_trading():
         return render_template('analysis/insider_trading.html',
                              page_title="Innsidehandel Intelligens",
                              error="Siden kunne ikke lastes")
+
+@analysis.route('/api/insider/analysis')
+@access_required
+def api_insider_analysis():
+    """API endpoint for insider trading analysis"""
+    try:
+        ticker = request.args.get('ticker', '').upper()
+        timeframe = int(request.args.get('timeframe', 30))
+        transaction_type = request.args.get('transaction_type', 'all')
+        
+        # Mock insider trading data for demonstration
+        import random
+        from datetime import datetime, timedelta
+        
+        mock_data = []
+        popular_tickers = ['EQNR.OL', 'DNB.OL', 'TEL.OL', 'YAR.OL', 'MOWI.OL', 'NHY.OL']
+        
+        # If specific ticker requested, focus on that
+        if ticker:
+            tickers_to_use = [ticker] if ticker in popular_tickers else [ticker]
+        else:
+            tickers_to_use = popular_tickers
+        
+        for t in tickers_to_use:
+            for i in range(random.randint(2, 8)):
+                transaction_date = datetime.now() - timedelta(days=random.randint(1, timeframe))
+                is_buy = random.choice([True, False])
+                
+                # Filter by transaction type if specified
+                if transaction_type == 'buy' and not is_buy:
+                    continue
+                elif transaction_type == 'sell' and is_buy:
+                    continue
+                
+                mock_data.append({
+                    'date': transaction_date.strftime('%Y-%m-%d'),
+                    'ticker': t,
+                    'company': f"Company {t}",
+                    'insider_name': f"Director {random.randint(1, 10)}",
+                    'position': random.choice(['CEO', 'CFO', 'Director', 'VP Sales', 'Board Member']),
+                    'transaction_type': 'Kjøp' if is_buy else 'Salg',
+                    'shares': random.randint(1000, 50000),
+                    'price': round(random.uniform(50, 500), 2),
+                    'value': 0,  # Will be calculated
+                    'ownership_change': round(random.uniform(-5, 5), 2)
+                })
+        
+        # Calculate values
+        for trade in mock_data:
+            trade['value'] = trade['shares'] * trade['price']
+        
+        # Sort by date (newest first)
+        mock_data.sort(key=lambda x: x['date'], reverse=True)
+        
+        return jsonify({
+            'success': True,
+            'data': mock_data,
+            'count': len(mock_data),
+            'filters': {
+                'ticker': ticker,
+                'timeframe': timeframe,
+                'transaction_type': transaction_type
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in insider trading API: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Kunne ikke laste innsidehandel data',
+            'data': []
+        }), 500

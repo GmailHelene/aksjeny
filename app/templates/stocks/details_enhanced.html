@@ -430,13 +430,22 @@
                         <div class="col-md-8">
                             <div class="alert alert-info">
                                 <h6><i class="bi bi-lightbulb"></i> AI-Anbefaling for {{ ticker }}</h6>
-                                <p class="mb-2">Basert på teknisk og fundamental analyse anbefaler vi:</p>
+                                <p class="mb-2">{{ ai_recommendations.get('summary', 'Basert på teknisk og fundamental analyse') }}</p>
                                 <h5>
-                                    <span class="badge bg-success">KJØP</span>
-                                    <small class="text-muted">- Moderat risiko</small>
+                                    {% set rec = ai_recommendations.get('recommendation', 'HOLD') %}
+                                    <span class="badge {{ 'bg-success' if rec == 'BUY' else 'bg-danger' if rec == 'SELL' else 'bg-secondary' }}">
+                                        {{ 'KJØP' if rec == 'BUY' else 'SELG' if rec == 'SELL' else 'HOLD' }}
+                                    </span>
+                                    <small class="text-muted">- {{ ai_recommendations.get('risk_level', 'Moderat') }} risiko</small>
                                 </h5>
                                 <p class="small mb-0">
-                                    Selskapet viser sterke fundamentals med god lønnsomhet og tekniske indikatorer signaliserer oppgang.
+                                    {% if ai_recommendations.get('reasons') %}
+                                        {% for reason in ai_recommendations.get('reasons')[:2] %}
+                                            • {{ reason }}<br>
+                                        {% endfor %}
+                                    {% else %}
+                                        Selskapet viser sterke fundamentals med god lønnsomhet og tekniske indikatorer signaliserer oppgang.
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
@@ -444,8 +453,18 @@
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <h6>Kursmål</h6>
-                                    <h4 class="text-success">+15%</h4>
-                                    <p class="small text-muted">12 måneder</p>
+                                    {% if ai_recommendations.get('price_target') and stock_info.get('current_price') %}
+                                        {% set target = ai_recommendations.get('price_target') %}
+                                        {% set current = stock_info.get('current_price') %}
+                                        {% set percentage = ((target - current) / current * 100) %}
+                                        <h4 class="{{ 'text-success' if percentage > 0 else 'text-danger' }}">
+                                            {{ '+' if percentage > 0 else '' }}{{ "{:.1f}".format(percentage).replace('.', ',') }}%
+                                        </h4>
+                                        <p class="small text-muted">{{ "{:.0f}".format(target).replace('.', ',') }} kr</p>
+                                    {% else %}
+                                        <h4 class="text-success">+15%</h4>
+                                        <p class="small text-muted">12 måneder</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

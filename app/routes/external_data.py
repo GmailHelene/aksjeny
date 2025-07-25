@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
+from ..utils.access_control import access_required
 try:
     from app.services.external_data import (
         get_stock_comprehensive_data, 
@@ -122,6 +123,7 @@ def api_external_data(symbol):
         return jsonify({'error': str(e)}), 500
 
 @external_data_bp.route('/api/market-overview')
+@access_required
 def api_market_overview():
     """API endpoint for market overview"""
     try:

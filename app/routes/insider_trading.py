@@ -273,29 +273,6 @@ def add_to_favorites():
         logger.error(f"Error adding to favorites: {e}")
         return jsonify({'error': 'Failed to add to favorites'}), 500
 
-@stocks.route('/compare')
-@demo_access
-def compare():
-    """Stock comparison page"""
-    symbols = request.args.getlist('symbols')
-    
-    if not symbols:
-        return render_template('stocks/compare.html', stocks=[])
-    
-    try:
-        stocks_data = []
-        for symbol in symbols:
-            stock_info = DataService.get_stock_info(symbol)
-            if stock_info:
-                stocks_data.append(stock_info)
-        
-        return render_template('stocks/compare.html', stocks=stocks_data)
-        
-    except Exception as e:
-        logger.error(f"Error in stock comparison: {e}")
-        flash('Feil ved sammenligning av aksjer.', 'error')
-        return render_template('stocks/compare.html', stocks=[])
-
 @stocks.route('/prices')
 @demo_access
 def prices():

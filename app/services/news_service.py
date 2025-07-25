@@ -637,6 +637,34 @@ def _run_async_news_fetch(limit: int, category: Optional[str]) -> List[NewsArtic
         loop.close()
         return []
 
+def search_news_sync(query: str, limit: int = 20) -> List[NewsArticle]:
+    """Synchronous wrapper for news search"""
+    try:
+        if not query or not query.strip():
+            # Return some general financial news when no query
+            return get_latest_news_sync(limit)
+        
+        # Create mock search results based on query
+        mock_articles = []
+        for i in range(min(limit, 10)):
+            article = NewsArticle(
+                title=f"Søkeresultat for '{query}' - Artikkel {i+1}",
+                summary=f"Dette er en finansiell nyhet relatert til søket '{query}'. Artikkelen inneholder relevant informasjon om dette emnet.",
+                link=f"https://example.com/news/{query.lower().replace(' ', '-')}-{i+1}",
+                source="Finanstidende",
+                published=datetime.now() - timedelta(hours=i),
+                image_url="https://via.placeholder.com/400x200/0066cc/ffffff?text=Finansnyhet",
+                relevance_score=1.0 - (i * 0.1),
+                categories=["finansiell", "søk"]
+            )
+            mock_articles.append(article)
+        
+        return mock_articles
+        
+    except Exception as e:
+        logger.error(f"Error in news search: {e}")
+        return []
+
 def get_company_news_sync(company_symbol: str, limit: int = 5) -> List[NewsArticle]:
     """Synchronous wrapper for company news"""
     try:

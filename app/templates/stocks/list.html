@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ title if title else (category|default('Alle')) }} - Aksjer{% endblock %}
+{% block title %}{% if category == 'oslo' or not category or category == 'alle' %}Oslo Børs{% else %}{{ title if title else category }}{% endif %} - Aksjer{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -12,12 +12,12 @@
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-                <i class="bi bi-graph-up me-1"></i>{{ title if title else (category|default('Alle')) }}
+                <i class="bi bi-graph-up me-1"></i>{% if category == 'oslo' or not category or category == 'alle' %}Oslo Børs{% else %}{{ title if title else category }}{% endif %}
             </li>
         </ol>
     </nav>
     
-    <h1 class="mb-4">{% if category == 'oslo' %}Oslo Børs{% else %}{{ title if title else (category|default('Alle')) }}{% endif %}</h1>
+    <h1 class="mb-4">{% if category == 'oslo' or not category or category == 'alle' %}Oslo Børs{% else %}{{ title if title else category }}{% endif %}</h1>
     
     <div class="row">
         <div class="col-12">

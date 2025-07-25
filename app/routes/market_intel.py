@@ -229,6 +229,7 @@ def api_earnings_calendar():
         return jsonify({'error': str(e)}), 500
 
 @market_intel.route('/api/crypto-fear-greed')
+@access_required
 def api_crypto_fear_greed():
     """API endpoint for crypto fear & greed index"""
     try:

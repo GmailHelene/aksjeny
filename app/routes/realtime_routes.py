@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
+from ..utils.access_control import access_required
 from app.services.realtime_data_service import RealTimeDataService
 from app.models import User
 import logging
@@ -37,6 +38,7 @@ def dashboard():
                              error_message="Kunne ikke laste real-time dashboard"), 500
 
 @realtime_bp.route('/api/market-summary')
+@access_required
 def api_market_summary():
     """API endpoint for market summary data"""
     try:
@@ -53,6 +55,7 @@ def api_market_summary():
         }), 500
 
 @realtime_bp.route('/api/trending-stocks')
+@access_required
 def api_trending_stocks():
     """API endpoint for trending stocks"""
     try:
@@ -71,6 +74,7 @@ def api_trending_stocks():
         }), 500
 
 @realtime_bp.route('/api/price-history/<symbol>')
+@access_required
 def api_price_history(symbol):
     """API endpoint for stock price history"""
     try:
@@ -197,6 +201,7 @@ def api_delete_alert(alert_id):
         }), 500
 
 @realtime_bp.route('/api/statistics')
+@access_required
 def api_statistics():
     """Get real-time service statistics"""
     try:

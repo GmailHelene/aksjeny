@@ -4,6 +4,9 @@ from datetime import datetime, timedelta
 import logging
 import os
 
+# Import access control
+from ..utils.access_control import access_required
+
 # Import models and extensions
 from ..models import User
 from ..extensions import db
@@ -145,6 +148,7 @@ def subscription():
     return redirect(url_for('pricing.index'))
 
 @pricing.route('/api/pricing/plans')
+@access_required
 def api_pricing_plans():
     """API endpoint for pricing plans"""
     try:

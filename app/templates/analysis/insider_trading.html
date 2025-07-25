@@ -211,7 +211,7 @@ async function loadInsiderData() {
         `;
         
         // Build API URL with parameters
-        let apiUrl = '/api/insider/analysis';
+        let apiUrl = '/analysis/api/insider/analysis';
         const params = new URLSearchParams();
         if (ticker) params.append('ticker', ticker);
         params.append('timeframe', timeframe);
