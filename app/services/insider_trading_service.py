@@ -29,8 +29,8 @@ import yfinance as yf
 
 # Rate limiting
 try:
-    from ..rate_limiter import rate_limiter
-    from ..simple_cache import simple_cache
+    from ..utils.rate_limiter import rate_limiter
+    from ..utils.cache_manager import cache_manager as simple_cache
 except ImportError:
     class DummyLimiter:
         def wait_if_needed(self, api_name='default'): 

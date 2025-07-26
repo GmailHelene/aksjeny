@@ -567,53 +567,12 @@ def search():
         return redirect(url_for('insider_trading.index'))
 
 # New API endpoints for enhanced functionality
-@insider_trading.route('/api/latest')
-@access_required
-def api_latest():
-    """API endpoint for latest insider trading data"""
-    try:
-        limit = request.args.get('limit', 25, type=int)
-        insider_data = DataService.get_insider_trading_data() or []
-        
-        # Format for JSON response
-        transactions = []
-        for trade in insider_data[:limit]:
-            # Handle both dict and InsiderTransaction objects
-            if hasattr(trade, '__dict__'):  # InsiderTransaction object
-                transactions.append({
-                    'symbol': getattr(trade, 'symbol', 'N/A'),
-                    'date': getattr(trade, 'transaction_date', 'N/A'),
-                    'time': '12:45',  # Mock time
-                    'person': getattr(trade, 'insider_name', 'Ukjent'),
-                    'role': getattr(trade, 'title', 'Officer'),
-                    'transaction_type': getattr(trade, 'transaction_type', 'KJØP'),
-                    'quantity': getattr(trade, 'shares', 0),
-                    'price': getattr(trade, 'price', 0),
-                    'total_value': getattr(trade, 'value', 0)
-                })
-            else:  # Dict object
-                transactions.append({
-                    'symbol': trade.get('symbol', 'N/A'),
-                    'date': trade.get('date', 'N/A'),
-                    'time': '12:45',  # Mock time
-                    'person': trade.get('person', 'Ukjent'),
-                    'role': trade.get('role', 'Officer'),
-                    'transaction_type': trade.get('transaction_type', 'KJØP'),
-                    'quantity': trade.get('quantity', 0),
-                    'price': trade.get('price', 0),
-                    'total_value': trade.get('total_value', 0)
-                })
-        
-        return jsonify({
-            'success': True,
-            'transactions': transactions,
-            'count': len(transactions)
-        })
-    except Exception as e:
-        logger.error(f"Error in API latest endpoint: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+# Legacy API routes moved to /app/api/routes.py for consistency
+# /api/insider-trading/latest -> moved to main API blueprint
+# /api/insider-trading/export -> moved to main API blueprint  
+# /api/insider-trading/trending -> moved to main API blueprint
 
-@insider_trading.route('/api/export')
+@insider_trading.route('/api/insider-trading/export')
 @demo_access
 def api_export():
     """Export insider trading data"""
@@ -688,7 +647,7 @@ def api_stats():
         logger.error(f"Error in stats endpoint: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@insider_trading.route('/api/trending')
+@insider_trading.route('/api/insider-trading/trending')
 @demo_access
 def api_trending():
     """Get trending insider trading stocks"""

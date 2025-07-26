@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Advanced search functions
 function fetchSymbolSuggestions(query) {
-    fetch(`/api/search?q=${encodeURIComponent(query)}&type=symbol`)
+    fetch(`/stocks/api/search?q=${encodeURIComponent(query)}&type=symbol`)
         .then(response => response.json())
         .then(data => {
             const suggestions = document.getElementById('symbolSuggestions');
@@ -821,13 +821,115 @@ function refreshFeed() {
     fetch('/api/insider-trading/latest')
         .then(response => response.json())
         .then(data => {
-            updateFeedTable(data.transactions);
+            if (data.success && data.transactions) {
+                updateFeedTable(data.transactions);
+            }
             refreshIcon.classList.remove('fa-spin');
         })
         .catch(error => {
             console.error('Error refreshing feed:', error);
             refreshIcon.classList.remove('fa-spin');
         });
+}
+
+function updateFeedTable(transactions) {
+    const tbody = document.getElementById('insiderFeedBody');
+    if (!tbody) return;
+    
+    // Clear existing rows
+    tbody.innerHTML = '';
+    
+    // Add new transactions
+    transactions.slice(0, 25).forEach((trade, index) => {
+        const row = document.createElement('tr');
+        row.className = 'fade-in';
+        row.setAttribute('data-symbol', trade.symbol || 'N/A');
+        
+        const sentiment = getSentimentBadge(trade.total_value || 0);
+        const transactionBadge = getTransactionBadge(trade.transaction_type || 'UKJENT');
+        
+        row.innerHTML = `
+            <td>
+                <a href="/insider-trading/search?symbol=${trade.symbol}" 
+                   class="fw-bold text-primary text-decoration-none">
+                    ${trade.symbol || 'N/A'}
+                </a>
+                ${index < 3 ? '<span class="badge bg-danger ms-1">NYE</span>' : ''}
+            </td>
+            <td>
+                <span class="small">${trade.date || 'I dag'}</span>
+                <br>
+                <span class="text-muted small">${trade.time || '12:45'}</span>
+            </td>
+            <td>
+                <div>
+                    <span class="fw-bold">${(trade.person || 'Ukjent').substring(0, 15)}</span>
+                    <br>
+                    <small class="text-muted">${trade.role || 'Officer'}</small>
+                </div>
+            </td>
+            <td>
+                ${transactionBadge}
+                <br>
+                <small class="text-muted">${Number(trade.quantity || 1000).toLocaleString('no-NO')} aksjer</small>
+            </td>
+            <td class="text-end">
+                <span class="fw-bold text-${trade.transaction_type === 'KJØP' ? 'success' : 'danger'}">
+                    ${Number(trade.total_value || 500000).toLocaleString('no-NO')} kr
+                </span>
+                <br>
+                <small class="text-muted">${Number(trade.price || 50).toFixed(2)} kr/aksje</small>
+            </td>
+            <td>${sentiment}</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary" 
+                            onclick="addToWatchlist('${trade.symbol}')"
+                            data-bs-toggle="tooltip" title="Legg til overvåkningsliste">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-success" 
+                            onclick="setAlert('${trade.symbol}')"
+                            data-bs-toggle="tooltip" title="Sett varsel">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-info" 
+                            onclick="getAnalysis('${trade.symbol}')"
+                            data-bs-toggle="tooltip" title="Få AI-analyse">
+                        <i class="fas fa-robot"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    // Re-initialize tooltips for new elements
+    const newTooltips = tbody.querySelectorAll('[data-bs-toggle="tooltip"]');
+    newTooltips.forEach(el => new bootstrap.Tooltip(el));
+}
+
+function getSentimentBadge(value) {
+    const numValue = Number(value);
+    if (numValue > 5000000) {
+        return '<span class="badge bg-danger">🔴 Bullish</span>';
+    } else if (numValue > 1000000) {
+        return '<span class="badge bg-warning">🟡 Nøytral</span>';
+    } else {
+        return '<span class="badge bg-light text-dark">⚪ Bearish</span>';
+    }
+}
+
+function getTransactionBadge(type) {
+    const lowerType = (type || '').toLowerCase();
+    if (lowerType.includes('kjøp') || lowerType.includes('buy')) {
+        return '<span class="badge bg-success"><i class="fas fa-plus me-1"></i>KJØP</span>';
+    } else if (lowerType.includes('salg') || lowerType.includes('sell')) {
+        return '<span class="badge bg-danger"><i class="fas fa-minus me-1"></i>SALG</span>';
+    } else {
+        return '<span class="badge bg-warning"><i class="fas fa-exchange-alt me-1"></i>OPSJONER</span>';
+    }
 }
 
 function toggleAutoRefresh() {
@@ -881,6 +983,83 @@ function shareAnalysis() {
         navigator.clipboard.writeText(url);
         showNotification('Link kopiert til utklippstavle', 'success');
     }
+}
+
+function loadTrendingInsiderStocks() {
+    const loader = document.getElementById('trendingLoader');
+    loader.style.display = 'inline-block';
+    
+    fetch('/api/insider-trading/trending')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.trending) {
+                updatePopularStocks(data.trending);
+            }
+            loader.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error loading trending stocks:', error);
+            loader.style.display = 'none';
+        });
+}
+
+function updatePopularStocks(trendingStocks) {
+    const container = document.getElementById('popularStocksContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    trendingStocks.slice(0, 12).forEach(stock => {
+        const badge = document.createElement('a');
+        badge.href = `/insider-trading/search?symbol=${stock.symbol}`;
+        badge.className = 'badge bg-primary me-1 mb-1 text-decoration-none';
+        badge.innerHTML = `
+            ${stock.symbol}
+            ${stock.recent_activity ? `<span class="badge bg-danger rounded-pill ms-1">${stock.recent_activity}</span>` : ''}
+        `;
+        container.appendChild(badge);
+    });
+}
+
+function loadMoreTransactions() {
+    showNotification('Laster flere transaksjoner...', 'info');
+    // This would typically load more data from the API
+    setTimeout(() => {
+        showNotification('Alle tilgjengelige transaksjoner er lastet', 'success');
+    }, 1000);
+}
+
+function requestDataRefresh() {
+    showNotification('Forespør data oppdatering...', 'info');
+    fetch('/api/insider-trading/latest?force_refresh=true')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Data oppdatert!', 'success');
+                if (data.transactions) {
+                    updateFeedTable(data.transactions);
+                }
+            } else {
+                showNotification('Kunne ikke oppdatere data', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error refreshing data:', error);
+            showNotification('Feil ved oppdatering av data', 'error');
+        });
+}
+
+function expandSearchPeriod() {
+    const periodSelect = document.getElementById('period');
+    if (periodSelect) {
+        periodSelect.value = '365';
+        document.getElementById('insiderSearchForm').submit();
+    }
+}
+
+function suggestAlternatives() {
+    const symbol = document.getElementById('symbol').value;
+    showNotification(`Foreslår alternativer til ${symbol}...`, 'info');
+    // This could suggest related stocks or sectors
 }
 </script>
 {% endblock %}

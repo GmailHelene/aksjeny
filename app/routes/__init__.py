@@ -30,6 +30,7 @@ from .analysis import analysis
 from .portfolio import portfolio
 from .news import news_bp as news
 from .pricing import pricing
+from .insider_trading import insider_trading
 
 # Remove these if they exist as separate files but are duplicates:
 # from .dashboard import dashboard  # Consolidate into main
@@ -44,6 +45,7 @@ def register_blueprints(app):
     app.register_blueprint(portfolio, url_prefix='/portfolio')
     app.register_blueprint(news, url_prefix='/news')
     app.register_blueprint(pricing, url_prefix='/pricing')
+    app.register_blueprint(insider_trading, url_prefix='/insider-trading')
     
     # Add insider trading to analysis blueprint instead of separate
     # app.register_blueprint(insider_trading, url_prefix='/insider-trading')

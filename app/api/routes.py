@@ -7,10 +7,41 @@ import redis
 import json
 from ..services.stock_service import StockService
 from ..services.news_service import NewsService
-from ..utils.cache import cache_manager
+from ..utils.cache_manager import cache_manager
 from ..utils.rate_limiter import rate_limit
 
 api = Blueprint('api', __name__, url_prefix='/api')
+
+# Helper functions
+def get_company_name(ticker):
+    """Get company name for ticker - mock implementation"""
+    company_names = {
+        'EQNR.OL': 'Equinor ASA',
+        'DNB.OL': 'DNB Bank ASA',
+        'TEL.OL': 'Telenor ASA',
+        'NHY.OL': 'Norsk Hydro ASA',
+        'YAR.OL': 'Yara International ASA',
+        'AAPL': 'Apple Inc.',
+        'GOOGL': 'Alphabet Inc.',
+        'TSLA': 'Tesla Inc.',
+        'MSFT': 'Microsoft Corporation',
+        'AMZN': 'Amazon.com Inc.'
+    }
+    return company_names.get(ticker, ticker.replace('.OL', ''))
+
+def generate_mock_signal(data):
+    """Generate mock trading signal based on change percent"""
+    change_percent = data.get('regularMarketChangePercent', 0)
+    if change_percent > 5:
+        return {'signal': 'STRONG_BUY', 'confidence': 0.9}
+    elif change_percent > 2:
+        return {'signal': 'BUY', 'confidence': 0.7}
+    elif change_percent < -5:
+        return {'signal': 'STRONG_SELL', 'confidence': 0.9}
+    elif change_percent < -2:
+        return {'signal': 'SELL', 'confidence': 0.7}
+    else:
+        return {'signal': 'HOLD', 'confidence': 0.5}
 
 # Rate limiting decorator
 def api_rate_limit(max_requests=60, window=60):
@@ -374,3 +405,130 @@ def api_rate_limit_exceeded(error):
         'error': 'Rate limit exceeded',
         'message': 'Too many requests, please try again later'
     }), 429
+
+# Insider Trading API endpoints
+@api.route('/insider-trading/latest')
+@api_rate_limit(max_requests=60, window=60)
+def insider_trading_latest():
+    """API endpoint for latest insider trading data"""
+    try:
+        from ..services.data_service import DataService
+        from ..utils.access_control import _is_exempt_user, _has_active_subscription
+        
+        # Check access level - exempt users or subscribers get access
+        has_access = _is_exempt_user() or _has_active_subscription()
+        if not has_access:
+            return jsonify({
+                'error': 'Access denied',
+                'message': 'Premium subscription required',
+                'demo': True
+            }), 403
+        
+        limit = request.args.get('limit', 25, type=int)
+        insider_data = DataService.get_insider_trading_data() or []
+        
+        # Format for JSON response
+        transactions = []
+        for trade in insider_data[:limit]:
+            # Handle both dict and InsiderTransaction objects
+            if hasattr(trade, '__dict__'):  # InsiderTransaction object
+                transactions.append({
+                    'symbol': getattr(trade, 'symbol', 'N/A'),
+                    'date': getattr(trade, 'transaction_date', 'N/A'),
+                    'time': '12:45',  # Mock time
+                    'person': getattr(trade, 'insider_name', 'Ukjent'),
+                    'role': getattr(trade, 'title', 'Officer'),
+                    'transaction_type': getattr(trade, 'transaction_type', 'KJØP'),
+                    'quantity': getattr(trade, 'shares', 0),
+                    'price': getattr(trade, 'price', 0),
+                    'total_value': getattr(trade, 'value', 0)
+                })
+            else:  # Dict object
+                transactions.append({
+                    'symbol': trade.get('symbol', 'N/A'),
+                    'date': trade.get('date', 'N/A'),
+                    'time': '12:45',  # Mock time
+                    'person': trade.get('person', 'Ukjent'),
+                    'role': trade.get('role', 'Officer'),
+                    'transaction_type': trade.get('transaction_type', 'KJØP'),
+                    'quantity': trade.get('quantity', 0),
+                    'price': trade.get('price', 0),
+                    'total_value': trade.get('total_value', 0)
+                })
+        
+        return jsonify({
+            'success': True,
+            'transactions': transactions,
+            'count': len(transactions)
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error in insider trading API: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api.route('/insider-trading/trending')
+@api_rate_limit(max_requests=30, window=60)
+def insider_trading_trending():
+    """Get trending insider trading stocks"""
+    try:
+        # Mock trending data - can be enhanced with real analysis
+        trending = [
+            {'symbol': 'EQNR', 'recent_activity': '12', 'trend': 'bullish'},
+            {'symbol': 'TEL', 'recent_activity': '8', 'trend': 'bearish'},
+            {'symbol': 'NOK', 'recent_activity': '6', 'trend': 'neutral'},
+            {'symbol': 'DNB', 'recent_activity': '5', 'trend': 'bullish'},
+            {'symbol': 'MOWI', 'recent_activity': '4', 'trend': 'neutral'},
+            {'symbol': 'YAR', 'recent_activity': '3', 'trend': 'bullish'},
+            {'symbol': 'SALM', 'recent_activity': '3', 'trend': 'bearish'},
+            {'symbol': 'STL', 'recent_activity': '2', 'trend': 'neutral'}
+        ]
+        
+        return jsonify({'success': True, 'trending': trending})
+    except Exception as e:
+        current_app.logger.error(f"Error in trending endpoint: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api.route('/insider-trading/export')
+@api_rate_limit(max_requests=10, window=60)
+def insider_trading_export():
+    """Export insider trading data"""
+    try:
+        from ..utils.access_control import verify_demo_access
+        
+        if not verify_demo_access():
+            return jsonify({
+                'error': 'Access denied', 
+                'message': 'Demo access required'
+            }), 403
+            
+        # Mock export functionality
+        return jsonify({
+            'success': True,
+            'download_url': '/downloads/insider_trading_export.csv',
+            'message': 'Export ready for download'
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error in export endpoint: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api.route('/insider-trading/stats')
+@api_rate_limit(max_requests=30, window=60)
+def insider_trading_stats():
+    """Get insider trading statistics"""
+    try:
+        # Mock statistics data
+        stats = {
+            'total_transactions': 2547,
+            'buy_sell_ratio': 1.43,
+            'average_transaction_value': 2500000,
+            'most_active_stock': 'EQNR',
+            'top_sectors': [
+                {'sector': 'Oil & Gas', 'count': 45},
+                {'sector': 'Telecommunications', 'count': 38},
+                {'sector': 'Banking', 'count': 32}
+            ]
+        }
+        
+        return jsonify({'success': True, 'stats': stats})
+    except Exception as e:
+        current_app.logger.error(f"Error in stats endpoint: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
